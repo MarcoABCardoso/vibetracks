@@ -1,7 +1,7 @@
 {
   "name": "boss",
   "extends": "../soundtrack.json",
-  "_comment": "Dark, intense boss fight led by the 'danger' motif. The main theme appears only as its first 4 notes, dropped an octave — a haunting echo of the hook rather than the whole tune. Harmonic-minor cadence, fastest tempo.",
+  "_comment": "Dark, intense boss fight. A-section is led by the 'danger' motif with only the 4-note theme head (dropped an octave) as a haunting echo. B-section builds tension: an oscillating semitone lead and a doubled, octave-stacked danger motif over a Dm-E-F-E climb.",
   "bpm": 150,
   "key": "A harmonic_minor",
   "time_signature": [4, 4],
@@ -22,7 +22,7 @@
       }
     },
     {
-      "name": "loop",
+      "name": "A",
       "bars": 4,
       "loop": true,
       "parts": {
@@ -40,6 +40,31 @@
         "pad":   { "instrument": "pad", "chords": ["Am", "F", "Dm", "E"], "chord_beats": 4 },
         "drums": { "instrument": "drums",
                    "drums": { "kick": "x.xxx.x.", "snare": "....x...", "hat": "xoxoxoxo" } }
+      }
+    },
+    {
+      "name": "B",
+      "bars": 4,
+      "loop": true,
+      "_comment": "Tension build: semitone-oscillating lead (E-F menace) and danger stacked an octave up over a rising Dm-E-F-E climb.",
+      "parts": {
+        "lead":  { "instrument": "lead", "gain": 0.72,
+                   "notes": [["E5", 3], ["F5", 1], ["E5", 3], ["F5", 1],
+                             ["E5", 2], ["D5", 2], ["E5", 4]] },
+        "pluck":    { "instrument": "pluck", "motif": "danger", "repeat": 4, "pan": -0.3, "gain": 0.6 },
+        "pluck_hi": { "instrument": "pluck", "motif": "danger", "transpose": 12, "repeat": 4, "pan": 0.3, "gain": 0.38 },
+        "bass":  { "instrument": "bass",
+                   "notes": [["D2", 0.5], ["D2", 0.5], ["D3", 0.5], ["D2", 0.5],
+                             ["D2", 0.5], ["D2", 0.5], ["D3", 0.5], ["D2", 0.5],
+                             ["E2", 0.5], ["E2", 0.5], ["E3", 0.5], ["E2", 0.5],
+                             ["E2", 0.5], ["E2", 0.5], ["E3", 0.5], ["E2", 0.5],
+                             ["F2", 0.5], ["F2", 0.5], ["F3", 0.5], ["F2", 0.5],
+                             ["F2", 0.5], ["F2", 0.5], ["F3", 0.5], ["F2", 0.5],
+                             ["E2", 0.5], ["E2", 0.5], ["E3", 0.5], ["E2", 0.5],
+                             ["E2", 0.5], ["E2", 0.5], ["E3", 0.5], ["E2", 0.5]] },
+        "pad":   { "instrument": "pad", "chords": ["Dm", "E", "F", "E"], "chord_beats": 4 },
+        "drums": { "instrument": "drums",
+                   "drums": { "kick": "x.x.x.x.", "snare": "....x...", "hat": "xxxxxxxx" } }
       }
     }
   ]

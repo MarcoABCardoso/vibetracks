@@ -1,14 +1,10 @@
 {
   "name": "victory",
   "extends": "../soundtrack.json",
-  "_comment": "Short, bright fanfare. Quotes the opening phrase of the theme (up an octave) for one bar as a callback, then breaks into an original ascending flourish that resolves home. Plays once.",
+  "_comment": "Short, bright victory jingle (stays a stinger by design). Quotes the theme's opening phrase, breaks into an original flourish, lands a triumphant tag, then resolves home.",
   "bpm": 120,
   "time_signature": [4, 4],
   "loops": 1,
-
-  "palette": {
-    "lead": { "filter": 8000, "gain": 0.9 }
-  },
 
   "sections": [
     {
@@ -32,6 +28,26 @@
                              ["G5", 0.5], ["E5", 0.5], ["C5", 0.5], ["E5", 0.5]] },
         "drums": { "instrument": "drums",
                    "drums": { "kick": "x...x...", "snare": "x.x.x.xx", "hat": "x.x.x.x." } }
+      }
+    },
+    {
+      "name": "tag",
+      "bars": 4,
+      "_comment": "Triumphant restatement: a confident descending line lifted by a plagal F-C-G-Am cadence.",
+      "parts": {
+        "lead":  { "instrument": "lead", "gain": 0.9,
+                   "notes": [["C6", 1], ["B5", 1], ["A5", 1], ["G5", 1],
+                             ["F5", 1], ["E5", 1], ["D5", 1], ["E5", 1],
+                             ["A5", 2], ["E5", 2], ["C6", 2], ["A5", 2]] },
+        "bass":  { "instrument": "bass",
+                   "notes": [["F2", 2], ["F2", 2], ["C2", 2], ["C2", 2],
+                             ["G2", 2], ["G2", 2], ["A2", 2], ["A2", 2]] },
+        "pad":   { "instrument": "pad", "chords": ["F", "C", "G", "Am"], "chord_beats": 4 },
+        "arp":   { "instrument": "arp", "repeat": 4, "pan": -0.3,
+                   "notes": [["C5", 0.5], ["E5", 0.5], ["G5", 0.5], ["C6", 0.5],
+                             ["E6", 0.5], ["C6", 0.5], ["G5", 0.5], ["E5", 0.5]] },
+        "drums": { "instrument": "drums",
+                   "drums": { "kick": "x...x...", "snare": "....x...", "hat": "x.x.x.x." } }
       }
     },
     {
