@@ -1,0 +1,47 @@
+{
+  "title": "Amber Court",
+  "aesthetic": "cinematic orchestral (sample-based)",
+  "key": "G major",
+  "bpm": 92,
+  "_comment": "A Stage 2 demo: real recorded instruments via the 'soundfont' engine (FluidSynth + FluidR3_GM). French horn, strings, oboe, flute, orchestral harp, cello, timpani — none of this is synthesized. The 'glow' patch is a Stage 1 synth pad sitting underneath, proving the sample and synth engines mix in one score. 'program' is the General MIDI patch number. Requires FluidSynth + a GM soundfont installed (see CLAUDE.md).",
+
+  "palette": {
+    "horn":    { "engine": "soundfont", "program": 60, "gain": 0.9, "reverb": { "decay": 2.2, "mix": 0.26 } },
+    "strings": { "engine": "soundfont", "program": 48, "gain": 0.7, "octave": 3, "reverb": { "decay": 2.6, "mix": 0.30 } },
+    "oboe":    { "engine": "soundfont", "program": 68, "gain": 0.7, "reverb": { "decay": 2.2, "mix": 0.28 } },
+    "flute":   { "engine": "soundfont", "program": 73, "gain": 0.7, "reverb": { "decay": 2.2, "mix": 0.28 } },
+    "harp":    { "engine": "soundfont", "program": 46, "gain": 0.65, "octave": 4, "reverb": { "decay": 2.4, "mix": 0.30 } },
+    "cello":   { "engine": "soundfont", "program": 42, "gain": 0.8, "reverb": { "decay": 2.0, "mix": 0.22 } },
+    "abass":   { "engine": "soundfont", "program": 32, "gain": 0.85 },
+    "timpani": { "engine": "soundfont", "program": 47, "gain": 0.8, "reverb": { "decay": 2.4, "mix": 0.24 } },
+    "piano":   { "engine": "soundfont", "program": 0, "gain": 0.7, "octave": 4, "reverb": { "decay": 1.8, "mix": 0.20 } },
+    "vibe":    { "engine": "soundfont", "program": 11, "gain": 0.6, "reverb": { "decay": 2.4, "mix": 0.30 } },
+    "guitar":  { "engine": "soundfont", "program": 24, "gain": 0.7, "reverb": { "decay": 1.8, "mix": 0.22 } },
+
+    "glow": {
+      "_comment": "Stage 1 synth pad — a soft analog bed under the orchestra. Shows the two engine families coexisting.",
+      "engine": "subtractive", "wave": "saw", "voices": 5, "detune": 0.013,
+      "adsr": [0.6, 0.4, 0.85, 0.8], "filter": 2200, "gain": 0.22, "octave": 3,
+      "chorus": { "rate": 0.5, "depth": 0.0024, "mix": 0.4 },
+      "reverb": { "decay": 2.8, "mix": 0.32 }
+    }
+  },
+
+  "motifs": {
+    "court_theme": {
+      "_comment": "8 beats / 2 bars in G major. A noble, rising-then-settling melody — at home on a french horn.",
+      "notes": [
+        ["D4", 1], ["G4", 1], ["B4", 1.5], ["A4", 0.5],
+        ["G4", 1], ["F#4", 1], ["G4", 2]
+      ]
+    },
+    "herald": {
+      "_comment": "4 beats. A brighter answering call for oboe/flute.",
+      "notes": [
+        ["D5", 0.5], ["E5", 0.5], ["D5", 0.5], ["B4", 0.5], ["G4", 2]
+      ]
+    }
+  },
+
+  "tracks": ["throne-room", "garden"]
+}

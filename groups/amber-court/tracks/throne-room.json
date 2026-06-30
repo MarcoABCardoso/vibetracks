@@ -1,0 +1,49 @@
+{
+  "name": "throne-room",
+  "extends": "../soundtrack.json",
+  "_comment": "The full orchestral statement. French horn carries the court theme over a string ensemble, orchestral harp arpeggios and an oboe counter-line, with cello and timpani anchoring the low end — all real samples. A Stage 1 synth 'glow' pad breathes underneath.",
+  "bpm": 92,
+  "time_signature": [4, 4],
+
+  "sections": [
+    {
+      "name": "intro",
+      "bars": 4,
+      "_comment": "The hall fills: strings swell, harp shimmers, a single timpani heartbeat. No melody yet.",
+      "parts": {
+        "strings": { "instrument": "strings", "chords": ["G", "D", "Em", "C"], "chord_beats": 4 },
+        "piano": { "instrument": "piano", "chords": ["G", "D", "Em", "C"], "chord_beats": 4, "gain": 0.4, "pan": -0.2 },
+        "harp": { "instrument": "harp", "repeat": 4, "pan": 0.25, "gain": 0.5,
+                  "notes": [["G4", 0.5], ["B4", 0.5], ["D5", 0.5], ["G5", 0.5],
+                            ["D5", 0.5], ["B4", 0.5], ["G4", 0.5], ["B4", 0.5]] },
+        "timpani": { "instrument": "timpani",
+                     "notes": [["G2", 0.5], [null, 3.5], ["G2", 0.5], [null, 3.5],
+                               ["D2", 0.5], [null, 3.5], ["D2", 0.5], [null, 3.5]] },
+        "glow": { "instrument": "glow", "chords": ["G", "D", "Em", "C"], "chord_beats": 8 }
+      }
+    },
+    {
+      "name": "A",
+      "bars": 8,
+      "loop": true,
+      "_comment": "Horn states the full theme; oboe answers slowly above; harp and strings carry the harmony; cello and timpani drive it.",
+      "parts": {
+        "horn": { "instrument": "horn", "motif": "court_theme", "repeat": 4, "pan": -0.05, "gain": 0.95 },
+        "oboe": { "instrument": "oboe", "motif": "herald", "repeat": 4, "stretch": 2.0, "pan": 0.3, "gain": 0.55 },
+        "strings": { "instrument": "strings", "chords": ["G", "D", "Em", "C", "G", "D", "C", "D"], "chord_beats": 4 },
+        "harp": { "instrument": "harp", "repeat": 8, "pan": 0.25, "gain": 0.5,
+                  "notes": [["G4", 0.5], ["B4", 0.5], ["D5", 0.5], ["G5", 0.5],
+                            ["D5", 0.5], ["B4", 0.5], ["G4", 0.5], ["B4", 0.5]] },
+        "cello": { "instrument": "cello",
+                   "notes": [["G2", 4], ["D2", 4], ["E2", 4], ["C2", 4],
+                             ["G2", 4], ["D2", 4], ["C2", 4], ["D2", 4]] },
+        "timpani": { "instrument": "timpani", "gain": 0.7,
+                     "notes": [["G2", 0.5], [null, 3.5], ["D2", 0.5], [null, 3.5],
+                               ["E2", 0.5], [null, 3.5], ["C2", 0.5], [null, 3.5],
+                               ["G2", 0.5], [null, 3.5], ["D2", 0.5], [null, 3.5],
+                               ["C2", 0.5], [null, 1.5], ["D2", 0.5], [null, 1.5], ["D2", 0.5], [null, 1.5]] },
+        "glow": { "instrument": "glow", "chords": ["G", "Em", "C", "D"], "chord_beats": 8 }
+      }
+    }
+  ]
+}

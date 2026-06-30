@@ -158,6 +158,12 @@ def _validate_track(t: dict, path: str) -> None:
         if engine is not None and engine not in ENGINES:
             raise SpecError(f"{path}: instrument {name!r} has unknown engine "
                             f"{engine!r} (valid: {list(ENGINES)})")
+        if engine == "soundfont":
+            for fld in ("program", "bank"):
+                v = patch.get(fld)
+                if v is not None and not (isinstance(v, int) and 0 <= v <= 127):
+                    raise SpecError(f"{path}: instrument {name!r} {fld} must be an "
+                                    f"int in 0..127, got {v!r}")
 
     for si, section in enumerate(t["sections"]):
         where = f"{path}: section {section.get('name', si)!r}"

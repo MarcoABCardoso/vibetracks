@@ -1,0 +1,36 @@
+{
+  "name": "garden",
+  "extends": "../soundtrack.json",
+  "_comment": "A lighter, chamber-sized cue with a different palette of real instruments — flute melody, nylon guitar arpeggios, vibraphone sparkle, soft strings and acoustic bass. The theme is only hinted (flute quotes its tail), keeping this scene distinct from the throne room.",
+  "bpm": 80,
+  "time_signature": [4, 4],
+
+  "sections": [
+    {
+      "name": "still",
+      "bars": 4,
+      "parts": {
+        "guitar": { "instrument": "guitar", "repeat": 4, "pan": -0.2, "gain": 0.6,
+                    "notes": [["G3", 0.5], ["D4", 0.5], ["G4", 0.5], ["B4", 0.5],
+                              ["A4", 0.5], ["D4", 0.5], ["B3", 0.5], ["D4", 0.5]] },
+        "strings": { "instrument": "strings", "chords": ["G", "C"], "chord_beats": 8, "gain": 0.5 }
+      }
+    },
+    {
+      "name": "A",
+      "bars": 8,
+      "loop": true,
+      "parts": {
+        "flute": { "instrument": "flute", "motif": "court_theme", "slice": [2, 7], "repeat": 4, "transpose": 12, "pan": 0.1, "gain": 0.7 },
+        "vibe": { "instrument": "vibe", "motif": "herald", "repeat": 4, "stretch": 2.0, "pan": 0.35, "gain": 0.45 },
+        "guitar": { "instrument": "guitar", "repeat": 8, "pan": -0.25, "gain": 0.55,
+                    "notes": [["G3", 0.5], ["B3", 0.5], ["D4", 0.5], ["B3", 0.5],
+                              ["C4", 0.5], ["E4", 0.5], ["G4", 0.5], ["E4", 0.5]] },
+        "strings": { "instrument": "strings", "chords": ["G", "Em", "C", "D", "G", "Em", "Am", "D"], "chord_beats": 4, "gain": 0.45 },
+        "abass": { "instrument": "abass",
+                   "notes": [["G2", 4], ["E2", 4], ["C2", 4], ["D2", 4],
+                             ["G2", 4], ["E2", 4], ["A2", 4], ["D2", 4]] }
+      }
+    }
+  ]
+}
