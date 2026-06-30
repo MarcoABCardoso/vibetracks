@@ -5,7 +5,9 @@ compiled to WAV by a pure-Python synth (`numpy` + `scipy` only — no FluidSynth
 SoX, ffmpeg, or soundfonts; those aren't installable in this environment).
 
 When the user wants to make game music, use the **`/soundtrack` skill** — it
-encodes the compose→render→iterate workflow. This file is the **spec reference**.
+encodes the compose→render→iterate workflow. This file is the **spec reference**;
+**`docs/composition.md`** is the craft guide (leitmotif transformation, melody,
+harmony, form — lessons from Zelda/Castlevania/Undertale and others).
 
 ## Commands
 
@@ -56,8 +58,13 @@ Each section's `parts` is a map of part-name → part. Every part needs an
 - **`notes`** — `[[pitch, beats, velocity?], ...]`. `pitch` is a note name
   (`"C#4"`, `"Bb2"`); use `null` for a rest. `beats` are quarter notes.
   Supports `transpose` (semitones) and `repeat` (tile the figure).
-- **`motif`** — name of a bible motif; supports `transpose` and `repeat`. Prefer
-  this for melodic cues so the theme recurs across tracks.
+- **`motif`** — name of a bible motif; supports `slice` (`[start, end]`, quote only
+  those notes), `repeat`, and the leitmotif transforms below. Prefer this for melodic
+  cues so the theme recurs across tracks.
+
+  Transforms (also work on `notes` parts; applied retrograde→invert→transpose→stretch):
+  `transpose` (semitones), `stretch` (×duration: `2.0` augment/slow, `0.5` diminish/
+  fast), `invert` (`true`, or a pivot note like `"A4"`), `retrograde` (`true`).
 - **`chords`** — `["Am", "F", "C", "G"]`; each chord held `chord_beats` (default =
   one bar), tiled to fill the section. Qualities: `m, maj, dim, aug, sus2, sus4, 7,
   maj7, m7, add9, 5`, default major. `octave` sets the chord root octave.
@@ -81,6 +88,10 @@ Optional per-part knobs: `gain` (level), `pan` (−1 left … 1 right).
 ## Conventions
 
 - Keep tracks coherent: `extends` the bible, reuse motifs, keep keys/tempos related.
+- **State the full theme in one place** (usually the title). Elsewhere, vary how
+  prominent it is — `slice` a fragment, move it off the lead, or drop it entirely
+  and let the shared key/palette plus a secondary motif (e.g. `danger`) carry
+  continuity. Restating the whole hook in every track makes them sound identical.
 - The master stage normalizes every track to the same peak (≈0.89), so don't fight
   loudness with per-part `gain` — use `gain` only for *balance within* a track.
 - WAV is the only output format (no MIDI/OGG yet). 44.1 kHz, 16-bit, stereo.

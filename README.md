@@ -23,16 +23,17 @@ python -m vibetracks new menu        # scaffold tracks/menu.json
 
 ## The included demo: *Neon Frontier*
 
-A coherent five-cue synthwave score in A minor, all built from one shared hook
-(`main_theme`) so the set sounds like a single game:
+A coherent five-cue synthwave score in A minor. Cohesion comes from a shared key,
+palette, and motifs — but the full `main_theme` is stated in only **one** track, so
+the set feels like a family of cues rather than one song on repeat:
 
-| Track | Feel | How it reuses the theme |
-|-------|------|--------------------------|
-| `title-theme` | Anthemic | Hook stated in full over Am–F–C–G |
-| `exploration` | Calm, spacious | Hook sparse + slow, soft drums |
-| `battle` | Fast, driving | Hook at 140 BPM, eighth-note bass, `danger` motif underneath |
-| `boss` | Dark, intense | Hook dropped an octave, harmonic-minor cadence |
-| `victory` | Bright fanfare | Hook up an octave, major-leaning cadence, resolves home |
+| Track | Feel | Theme treatment |
+|-------|------|------------------|
+| `title-theme` | Anthemic | Full hook over Am–F–C–G (the anchor) |
+| `exploration` | Calm, spacious | Only the first 3 notes, as a sparse callback |
+| `battle` | Fast, driving | Original riff; the shared `danger` motif carries continuity |
+| `boss` | Dark, intense | Just the 4-note head, dropped an octave; `danger` leads |
+| `victory` | Bright fanfare | Quotes the opening phrase, then an original flourish home |
 
 ## How a song is modeled
 
@@ -46,12 +47,14 @@ Two file kinds:
 A **part** is exactly one of:
 
 - `notes`: explicit events `[pitch, beats, velocity?]`, e.g. `["A4", 1, 0.8]`
-- `motif`: a named motif from the bible, with optional `transpose` and `repeat`
+- `motif`: a named motif from the bible, with leitmotif transforms — `slice` (quote a fragment), `transpose`, `stretch` (augment/diminish), `invert`, `retrograde`, `repeat`
 - `chords`: chord symbols like `["Am", "F", "C", "G"]`, each held `chord_beats`
 - `drums`: per-voice step patterns, e.g. `{"kick": "x...x...", "hat": "x.x.x.x."}`
 
-See **`CLAUDE.md`** for the complete spec reference, and the `/soundtrack` skill
-for the compose→render→iterate workflow.
+See **`CLAUDE.md`** for the complete spec reference, **`docs/composition.md`** for
+the craft of writing a coherent score (leitmotif transformation, melody, harmony,
+form — lessons from Zelda/Castlevania/Undertale and others), and the `/soundtrack`
+skill for the compose→render→iterate workflow.
 
 ## How it compiles to sound
 

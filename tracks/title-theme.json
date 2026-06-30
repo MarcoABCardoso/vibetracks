@@ -1,7 +1,7 @@
 {
   "name": "title-theme",
   "extends": "../soundtrack.json",
-  "_comment": "Anthemic main theme for the title/menu screen. States the hook in full over the home progression Am-F-C-G.",
+  "_comment": "Anthemic main theme. A-section states the hook in full (the score's one literal statement); the B-section bridge answers with the SAME motif in retrograde over an Fmaj7-C-G-Am lift, so it's recognisably related yet new.",
   "bpm": 112,
   "time_signature": [4, 4],
 
@@ -17,7 +17,7 @@
       }
     },
     {
-      "name": "loop",
+      "name": "A",
       "bars": 4,
       "loop": true,
       "parts": {
@@ -35,6 +35,28 @@
                              ["G4", 0.5], ["B4", 0.5], ["D5", 0.5], ["B4", 0.5]] },
         "drums": { "instrument": "drums",
                    "drums": { "kick": "x...x...", "snare": "....x...", "hat": "x.x.x.x." } }
+      }
+    },
+    {
+      "name": "B",
+      "bars": 4,
+      "loop": true,
+      "_comment": "Bridge: the hook in retrograde (its pitches/rhythm reversed) over a brighter Fmaj7-C-G-Am lift.",
+      "parts": {
+        "lead":  { "instrument": "lead", "motif": "main_theme", "retrograde": true, "repeat": 2, "gain": 0.88 },
+        "bass":  { "instrument": "bass",
+                   "notes": [["F2", 1], ["F2", 1], ["F2", 1], ["F2", 1],
+                             ["C2", 1], ["C2", 1], ["C2", 1], ["C2", 1],
+                             ["G2", 1], ["G2", 1], ["G2", 1], ["G2", 1],
+                             ["A2", 1], ["A2", 1], ["A2", 1], ["A2", 1]] },
+        "pad":   { "instrument": "pad", "chords": ["Fmaj7", "C", "G", "Am"], "chord_beats": 4 },
+        "arp":   { "instrument": "arp", "pan": -0.4,
+                   "notes": [["F4", 1], ["A4", 1], ["C5", 1], ["A4", 1],
+                             ["C5", 1], ["E5", 1], ["G5", 1], ["E5", 1],
+                             ["G4", 1], ["B4", 1], ["D5", 1], ["B4", 1],
+                             ["A4", 1], ["C5", 1], ["E5", 1], ["C5", 1]] },
+        "drums": { "instrument": "drums",
+                   "drums": { "kick": "x...x...", "snare": "....x..x", "hat": "x.x.x.x." } }
       }
     }
   ]

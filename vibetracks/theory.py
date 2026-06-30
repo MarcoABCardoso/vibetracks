@@ -73,6 +73,15 @@ def transpose(name: str, semitones: int) -> str:
     return midi_to_name(note_to_midi(name) + semitones)
 
 
+def invert(name: str, pivot: str) -> str:
+    """Mirror a note around a ``pivot`` (melodic inversion): up becomes down.
+
+    Used to transform a motif while keeping its rhythmic identity — a classic
+    leitmotif technique. ``invert("C5", "A4")`` reflects C5 below A4.
+    """
+    return midi_to_name(2 * note_to_midi(pivot) - note_to_midi(name))
+
+
 _SHARP_NAMES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
 
 

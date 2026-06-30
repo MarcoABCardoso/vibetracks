@@ -1,12 +1,12 @@
 {
   "name": "battle",
   "extends": "../soundtrack.json",
-  "_comment": "Fast, driving combat music. Same hook, urgent tempo, eighth-note bass pulse and busy drums. The 'danger' motif answers underneath.",
+  "_comment": "Fast combat. A-section drives on an original sixteenth-note riff with the 'danger' motif underneath. The B-section drops to half-time and states the main theme grandly (augmentation) — the 'here comes the hero' moment — before the riff returns.",
   "bpm": 140,
   "time_signature": [4, 4],
 
   "palette": {
-    "lead": { "filter": 7000, "gain": 0.9 },
+    "lead": { "filter": 7000, "gain": 0.85 },
     "bass": { "filter": 1600 }
   },
 
@@ -23,11 +23,15 @@
       }
     },
     {
-      "name": "loop",
+      "name": "A",
       "bars": 4,
       "loop": true,
       "parts": {
-        "lead":  { "instrument": "lead", "motif": "main_theme", "repeat": 2 },
+        "lead":  { "instrument": "lead", "repeat": 2,
+                   "notes": [["E5", 0.5], ["A5", 0.5], ["E5", 0.5], ["G5", 0.5],
+                             ["A5", 0.5], ["E5", 0.5], ["C5", 0.5], ["E5", 0.5],
+                             ["D5", 0.5], ["A5", 0.5], ["D5", 0.5], ["F5", 0.5],
+                             ["E5", 1], ["C5", 0.5], ["B4", 0.5]] },
         "bass":  { "instrument": "bass",
                    "notes": [["A2", 0.5], ["A2", 0.5], ["A2", 0.5], ["A3", 0.5],
                              ["A2", 0.5], ["A2", 0.5], ["A2", 0.5], ["A3", 0.5],
@@ -37,10 +41,26 @@
                              ["C2", 0.5], ["C2", 0.5], ["C2", 0.5], ["C3", 0.5],
                              ["G2", 0.5], ["G2", 0.5], ["G2", 0.5], ["G3", 0.5],
                              ["G2", 0.5], ["G2", 0.5], ["G2", 0.5], ["G3", 0.5]] },
-        "pluck": { "instrument": "pluck", "motif": "danger", "repeat": 4, "transpose": 0, "pan": -0.3, "gain": 0.5 },
+        "pluck": { "instrument": "pluck", "motif": "danger", "repeat": 4, "pan": -0.3, "gain": 0.5 },
         "pad":   { "instrument": "pad", "chords": ["Am", "F", "C", "G"], "chord_beats": 4, "gain": 0.35 },
         "drums": { "instrument": "drums",
                    "drums": { "kick": "x.x.x.x.", "snare": "....x...", "hat": "xxxxxxxx" } }
+      }
+    },
+    {
+      "name": "B",
+      "bars": 4,
+      "loop": true,
+      "_comment": "Half-time grand statement: the main theme augmented (stretch 2.0) over a rising F-G-Am-E climb; danger keeps pulsing.",
+      "parts": {
+        "lead":  { "instrument": "lead", "motif": "main_theme", "stretch": 2.0, "gain": 0.9 },
+        "bass":  { "instrument": "bass",
+                   "notes": [["F2", 2], ["F2", 2], ["G2", 2], ["G2", 2],
+                             ["A2", 2], ["A2", 2], ["E2", 2], ["E2", 2]] },
+        "pluck": { "instrument": "pluck", "motif": "danger", "repeat": 4, "pan": 0.3, "gain": 0.5 },
+        "pad":   { "instrument": "pad", "chords": ["F", "G", "Am", "E"], "chord_beats": 4, "gain": 0.4 },
+        "drums": { "instrument": "drums",
+                   "drums": { "kick": "x...x...", "snare": "....x...", "hat": "x.x.x.x." } }
       }
     }
   ]

@@ -1,13 +1,13 @@
 {
   "name": "boss",
   "extends": "../soundtrack.json",
-  "_comment": "Dark, intense boss fight. The hook is dropped an octave; harmonic-minor cadence (Am-F-Dm-E) and the 'danger' motif drive the menace. Fastest tempo.",
+  "_comment": "Dark boss fight led by the 'danger' motif. A-section echoes the theme head an octave down; the B-section twists the same head with melodic INVERSION (its contour mirrored) — the familiar hook turned chromatic and wrong-sounding, then a tension build.",
   "bpm": 150,
   "key": "A harmonic_minor",
   "time_signature": [4, 4],
 
   "palette": {
-    "lead": { "filter": 5000, "gain": 0.85 },
+    "lead": { "filter": 4200, "gain": 0.7, "reverb": 0.25 },
     "pad":  { "filter": 2200, "gain": 0.4 },
     "bass": { "filter": 1500, "gain": 1.0 }
   },
@@ -22,12 +22,12 @@
       }
     },
     {
-      "name": "loop",
+      "name": "A",
       "bars": 4,
       "loop": true,
       "parts": {
-        "lead":  { "instrument": "lead", "motif": "main_theme", "repeat": 2, "transpose": -12, "gain": 0.85 },
-        "pluck": { "instrument": "pluck", "motif": "danger", "repeat": 4, "pan": -0.25, "gain": 0.55 },
+        "lead":  { "instrument": "lead", "motif": "main_theme", "slice": [0, 4], "transpose": -12, "gain": 0.7 },
+        "pluck": { "instrument": "pluck", "motif": "danger", "repeat": 4, "pan": -0.25, "gain": 0.6 },
         "bass":  { "instrument": "bass",
                    "notes": [["A1", 0.5], ["A1", 0.5], ["A2", 0.5], ["A1", 0.5],
                              ["A1", 0.5], ["A1", 0.5], ["A2", 0.5], ["A1", 0.5],
@@ -40,6 +40,29 @@
         "pad":   { "instrument": "pad", "chords": ["Am", "F", "Dm", "E"], "chord_beats": 4 },
         "drums": { "instrument": "drums",
                    "drums": { "kick": "x.xxx.x.", "snare": "....x...", "hat": "xoxoxoxo" } }
+      }
+    },
+    {
+      "name": "B",
+      "bars": 4,
+      "loop": true,
+      "_comment": "The theme head, inverted and pushed low — a mirrored, chromatic version of the hook — over a rising Dm-E-F-E climb with danger stacked an octave up.",
+      "parts": {
+        "lead":  { "instrument": "lead", "motif": "main_theme", "slice": [0, 4], "invert": true, "transpose": -5, "stretch": 2.0, "gain": 0.72 },
+        "pluck":    { "instrument": "pluck", "motif": "danger", "repeat": 4, "pan": -0.3, "gain": 0.6 },
+        "pluck_hi": { "instrument": "pluck", "motif": "danger", "transpose": 12, "repeat": 4, "pan": 0.3, "gain": 0.38 },
+        "bass":  { "instrument": "bass",
+                   "notes": [["D2", 0.5], ["D2", 0.5], ["D3", 0.5], ["D2", 0.5],
+                             ["D2", 0.5], ["D2", 0.5], ["D3", 0.5], ["D2", 0.5],
+                             ["E2", 0.5], ["E2", 0.5], ["E3", 0.5], ["E2", 0.5],
+                             ["E2", 0.5], ["E2", 0.5], ["E3", 0.5], ["E2", 0.5],
+                             ["F2", 0.5], ["F2", 0.5], ["F3", 0.5], ["F2", 0.5],
+                             ["F2", 0.5], ["F2", 0.5], ["F3", 0.5], ["F2", 0.5],
+                             ["E2", 0.5], ["E2", 0.5], ["E3", 0.5], ["E2", 0.5],
+                             ["E2", 0.5], ["E2", 0.5], ["E3", 0.5], ["E2", 0.5]] },
+        "pad":   { "instrument": "pad", "chords": ["Dm", "E", "F", "E"], "chord_beats": 4 },
+        "drums": { "instrument": "drums",
+                   "drums": { "kick": "x.x.x.x.", "snare": "....x...", "hat": "xxxxxxxx" } }
       }
     }
   ]
