@@ -1,7 +1,7 @@
 {
   "name": "boss",
   "extends": "../soundtrack.json",
-  "_comment": "Dark, intense boss fight. A-section is led by the 'danger' motif with only the 4-note theme head (dropped an octave) as a haunting echo. B-section builds tension: an oscillating semitone lead and a doubled, octave-stacked danger motif over a Dm-E-F-E climb.",
+  "_comment": "Dark boss fight led by the 'danger' motif. A-section echoes the theme head an octave down; the B-section twists the same head with melodic INVERSION (its contour mirrored) — the familiar hook turned chromatic and wrong-sounding, then a tension build.",
   "bpm": 150,
   "key": "A harmonic_minor",
   "time_signature": [4, 4],
@@ -46,11 +46,9 @@
       "name": "B",
       "bars": 4,
       "loop": true,
-      "_comment": "Tension build: semitone-oscillating lead (E-F menace) and danger stacked an octave up over a rising Dm-E-F-E climb.",
+      "_comment": "The theme head, inverted and pushed low — a mirrored, chromatic version of the hook — over a rising Dm-E-F-E climb with danger stacked an octave up.",
       "parts": {
-        "lead":  { "instrument": "lead", "gain": 0.72,
-                   "notes": [["E5", 3], ["F5", 1], ["E5", 3], ["F5", 1],
-                             ["E5", 2], ["D5", 2], ["E5", 4]] },
+        "lead":  { "instrument": "lead", "motif": "main_theme", "slice": [0, 4], "invert": true, "transpose": -5, "stretch": 2.0, "gain": 0.72 },
         "pluck":    { "instrument": "pluck", "motif": "danger", "repeat": 4, "pan": -0.3, "gain": 0.6 },
         "pluck_hi": { "instrument": "pluck", "motif": "danger", "transpose": 12, "repeat": 4, "pan": 0.3, "gain": 0.38 },
         "bass":  { "instrument": "bass",

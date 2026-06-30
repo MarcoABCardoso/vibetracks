@@ -1,11 +1,12 @@
 {
   "name": "exploration",
   "extends": "../soundtrack.json",
-  "_comment": "Calm, spacious overworld music — long and evolving. A-section uses the first 3 notes of the theme as a sparse callback over minor pads; B-section brightens toward C major and answers with the theme's descending TAIL, so a long loop keeps unfolding instead of repeating.",
+  "_comment": "Calm overworld music. A-section only hints at the theme (its first 3 notes) over lush add9/maj7 pads; the B-section finally reveals the FULL theme at half-speed (stretch 2.0) — distant and dreamy, the emotional core heard from far away.",
   "bpm": 100,
   "time_signature": [4, 4],
 
   "palette": {
+    "lead":  { "gain": 0.5, "filter": 3200, "reverb": 0.3, "delay": { "time": 0.45, "feedback": 0.3, "mix": 0.25 } },
     "pluck": { "gain": 0.45, "filter": 3800, "reverb": 0.3 },
     "drums": { "gain": 0.55 }
   },
@@ -15,7 +16,7 @@
       "name": "intro",
       "bars": 4,
       "parts": {
-        "pad": { "instrument": "pad", "chords": ["Am", "C", "F", "G"], "chord_beats": 4, "gain": 0.5 }
+        "pad": { "instrument": "pad", "chords": ["Am", "Cadd9", "Fmaj7", "G"], "chord_beats": 4, "gain": 0.5 }
       }
     },
     {
@@ -23,7 +24,7 @@
       "bars": 8,
       "loop": true,
       "parts": {
-        "pad":   { "instrument": "pad", "chords": ["Am", "C", "F", "G", "Dm", "Am", "Em", "G"], "chord_beats": 4 },
+        "pad":   { "instrument": "pad", "chords": ["Am", "Cadd9", "Fmaj7", "G", "Dm", "Am", "Em", "G"], "chord_beats": 4 },
         "pluck": { "instrument": "pluck", "motif": "main_theme", "slice": [0, 3], "pan": -0.15, "gain": 0.4 },
         "bass":  { "instrument": "bass",
                    "notes": [["A2", 4], ["C2", 4], ["F2", 4], ["G2", 4],
@@ -38,14 +39,14 @@
       "name": "B",
       "bars": 8,
       "loop": true,
-      "_comment": "Brighter relative-major drift; the theme's tail (notes 3-6) answers, panned opposite the A-section callback.",
+      "_comment": "The full theme at half-speed (augmentation) floats over the pads — recognisable but transformed into something wistful.",
       "parts": {
-        "pad":   { "instrument": "pad", "chords": ["C", "G", "Am", "F", "Dm", "G", "C", "C"], "chord_beats": 4 },
-        "pluck": { "instrument": "pluck", "motif": "main_theme", "slice": [3, 7], "pan": 0.2, "gain": 0.4 },
+        "lead":  { "instrument": "lead", "motif": "main_theme", "stretch": 2.0, "repeat": 2, "pan": 0.0, "gain": 0.5 },
+        "pad":   { "instrument": "pad", "chords": ["Cadd9", "G", "Am", "Fmaj7", "Dm", "G", "C", "C"], "chord_beats": 4 },
         "bass":  { "instrument": "bass",
                    "notes": [["C2", 4], ["G2", 4], ["A2", 4], ["F2", 4],
                              ["D2", 4], ["G2", 4], ["C2", 4], ["C2", 4]] },
-        "arp":   { "instrument": "arp", "repeat": 8, "pan": -0.3, "gain": 0.28,
+        "arp":   { "instrument": "arp", "repeat": 8, "pan": -0.3, "gain": 0.26,
                    "notes": [["G5", 1], ["C6", 1], ["E6", 1], ["C6", 1]] },
         "drums": { "instrument": "drums",
                    "drums": { "kick": "x.......", "hat": "..x.x.x." } }

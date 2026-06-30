@@ -1,7 +1,7 @@
 {
   "name": "battle",
   "extends": "../soundtrack.json",
-  "_comment": "Fast, driving combat. A-section is an original sixteenth-note riff with the 'danger' motif underneath; B-section bridge swaps to long, anthemic held notes over a rising F-G-Am-E progression for contrast before the riff returns.",
+  "_comment": "Fast combat. A-section drives on an original sixteenth-note riff with the 'danger' motif underneath. The B-section drops to half-time and states the main theme grandly (augmentation) — the 'here comes the hero' moment — before the riff returns.",
   "bpm": 140,
   "time_signature": [4, 4],
 
@@ -51,24 +51,16 @@
       "name": "B",
       "bars": 4,
       "loop": true,
-      "_comment": "Anthemic bridge: sustained lead over a rising F-G-Am-E climb; danger motif keeps pulsing.",
+      "_comment": "Half-time grand statement: the main theme augmented (stretch 2.0) over a rising F-G-Am-E climb; danger keeps pulsing.",
       "parts": {
-        "lead":  { "instrument": "lead", "gain": 0.9,
-                   "notes": [["F5", 2], ["G5", 2], ["A5", 2], ["E5", 2],
-                             ["F5", 1], ["G5", 1], ["A5", 2], ["A5", 4]] },
+        "lead":  { "instrument": "lead", "motif": "main_theme", "stretch": 2.0, "gain": 0.9 },
         "bass":  { "instrument": "bass",
-                   "notes": [["F2", 0.5], ["F2", 0.5], ["F2", 0.5], ["F3", 0.5],
-                             ["F2", 0.5], ["F2", 0.5], ["F2", 0.5], ["F3", 0.5],
-                             ["G2", 0.5], ["G2", 0.5], ["G2", 0.5], ["G3", 0.5],
-                             ["G2", 0.5], ["G2", 0.5], ["G2", 0.5], ["G3", 0.5],
-                             ["A2", 0.5], ["A2", 0.5], ["A2", 0.5], ["A3", 0.5],
-                             ["A2", 0.5], ["A2", 0.5], ["A2", 0.5], ["A3", 0.5],
-                             ["E2", 0.5], ["E2", 0.5], ["E2", 0.5], ["E3", 0.5],
-                             ["E2", 0.5], ["E2", 0.5], ["E2", 0.5], ["E3", 0.5]] },
+                   "notes": [["F2", 2], ["F2", 2], ["G2", 2], ["G2", 2],
+                             ["A2", 2], ["A2", 2], ["E2", 2], ["E2", 2]] },
         "pluck": { "instrument": "pluck", "motif": "danger", "repeat": 4, "pan": 0.3, "gain": 0.5 },
         "pad":   { "instrument": "pad", "chords": ["F", "G", "Am", "E"], "chord_beats": 4, "gain": 0.4 },
         "drums": { "instrument": "drums",
-                   "drums": { "kick": "x.x.x.x.", "snare": "..x...x.", "hat": "xxxxxxxx" } }
+                   "drums": { "kick": "x...x...", "snare": "....x...", "hat": "x.x.x.x." } }
       }
     }
   ]

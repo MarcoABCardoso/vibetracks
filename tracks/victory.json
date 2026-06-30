@@ -1,7 +1,7 @@
 {
   "name": "victory",
   "extends": "../soundtrack.json",
-  "_comment": "Short, bright victory jingle (stays a stinger by design). Quotes the theme's opening phrase, breaks into an original flourish, lands a triumphant tag, then resolves home.",
+  "_comment": "Short victory jingle. Quotes the theme's opening phrase, then a fast DIMINISHED flurry of the theme (stretch 0.5) as a triumphant tag, resolving onto A MAJOR — a picardy third that turns the minor score bright at the finish.",
   "bpm": 120,
   "time_signature": [4, 4],
   "loops": 1,
@@ -33,12 +33,9 @@
     {
       "name": "tag",
       "bars": 4,
-      "_comment": "Triumphant restatement: a confident descending line lifted by a plagal F-C-G-Am cadence.",
+      "_comment": "Triumphant flurry: the theme at double-speed (diminution) up an octave, four times, over a plagal F-C-G-Am lift.",
       "parts": {
-        "lead":  { "instrument": "lead", "gain": 0.9,
-                   "notes": [["C6", 1], ["B5", 1], ["A5", 1], ["G5", 1],
-                             ["F5", 1], ["E5", 1], ["D5", 1], ["E5", 1],
-                             ["A5", 2], ["E5", 2], ["C6", 2], ["A5", 2]] },
+        "lead":  { "instrument": "lead", "motif": "main_theme", "stretch": 0.5, "transpose": 12, "repeat": 4, "gain": 0.9 },
         "bass":  { "instrument": "bass",
                    "notes": [["F2", 2], ["F2", 2], ["C2", 2], ["C2", 2],
                              ["G2", 2], ["G2", 2], ["A2", 2], ["A2", 2]] },
@@ -53,9 +50,10 @@
     {
       "name": "resolve",
       "bars": 1,
+      "_comment": "Land on A major (picardy third) — the minor home turned triumphant.",
       "parts": {
         "lead":  { "instrument": "lead", "notes": [["A5", 4]] },
-        "pad":   { "instrument": "pad", "chords": ["Am"], "chord_beats": 4 },
+        "pad":   { "instrument": "pad", "chords": ["A"], "chord_beats": 4 },
         "bass":  { "instrument": "bass", "notes": [["A2", 4]] },
         "drums": { "instrument": "drums", "drums": { "kick": "x.......", "snare": "x.......", "hat": "xx......" } }
       }
