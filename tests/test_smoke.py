@@ -63,6 +63,17 @@ class TestSpecs(unittest.TestCase):
         with self.assertRaises(spec.SpecError):
             spec._validate_note_events([["A4", -1]], where="x")
 
+    def test_motif_slice_quotes_fragment(self):
+        track = {"motifs": {"m": {"notes": [["A4", 1], ["C5", 1], ["E5", 1]]}},
+                 "palette": {"lead": {}}}
+        # A valid slice passes validation.
+        spec._validate_part({"instrument": "lead", "motif": "m", "slice": [0, 2]},
+                            track, where="x")
+        # A malformed slice is rejected.
+        with self.assertRaises(spec.SpecError):
+            spec._validate_part({"instrument": "lead", "motif": "m", "slice": [0]},
+                                track, where="x")
+
 
 class TestRender(unittest.TestCase):
     def test_track_renders_in_range(self):

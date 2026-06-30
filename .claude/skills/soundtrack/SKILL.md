@@ -43,13 +43,20 @@ key. Optionally add answer phrases like `danger` for tense cues.
    raise BPM or add an eighth-note bass; "doesn't fit the others" → reuse the motif
    or pull the chords toward the bible's progression.
 
-## 4. Derive variation tracks from the theme (coherence)
+## 4. Derive variation tracks from the theme (coherence ≠ repetition)
 
-Make new cues recognisably part of the same score by transforming the shared motif
-rather than inventing unrelated melodies:
-- **Battle** — same motif, faster BPM, eighth-note bass, busy hats.
-- **Boss** — motif dropped `-12`, harmonic-minor cadence, the `danger` motif.
-- **Victory** — motif up `+12`, bright major-leaning cadence, short, `"loops": 1`.
+Make new cues feel like the same score — but don't restate the whole hook in every
+track, or they all sound like one song. **State the full theme in one place** (the
+title), then vary its prominence everywhere else. Tools for that:
+- **Fragment it** — `"slice": [0, 3]` quotes just the opening cell as a callback.
+- **Move it off the lead / drop it** — let a track stand on its own melody and rely
+  on the shared key, palette, and a secondary motif (e.g. `danger`) for continuity.
+- **Transform it** — `transpose`, change tempo, re-harmonise.
+
+How the demo does it: `title-theme` states the full hook; `exploration` quotes only
+its first 3 notes; `battle` has an original riff with `danger` underneath; `boss`
+echoes just the 4-note head dropped `-12`; `victory` quotes the opening phrase then
+breaks into an original flourish.
 
 ## 5. Master pass
 

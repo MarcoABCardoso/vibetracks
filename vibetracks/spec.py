@@ -172,6 +172,10 @@ def _validate_part(part: dict, track: dict, where: str) -> None:
         if part["motif"] not in track["motifs"]:
             raise SpecError(f"{where}: unknown motif {part['motif']!r} "
                             f"(motifs: {sorted(track['motifs'])})")
+        sl = part.get("slice")
+        if sl is not None and not (isinstance(sl, list) and len(sl) == 2
+                                   and all(isinstance(i, int) for i in sl)):
+            raise SpecError(f"{where}: 'slice' must be [start, end] integers")
     elif "chords" in part:
         for sym in part["chords"]:
             try:

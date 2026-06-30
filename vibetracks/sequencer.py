@@ -134,6 +134,9 @@ def render_section(section, track, sr, drum_cache):
             if "motif" in part:
                 events = list(track["motifs"][part["motif"]].get("notes",
                               track["motifs"][part["motif"]]))
+                sl = part.get("slice")
+                if sl:  # quote only part of the motif, e.g. [0, 3] = first 3 notes
+                    events = events[sl[0]:sl[1]]
             else:
                 events = list(part["notes"])
             semis = int(part.get("transpose", 0))
