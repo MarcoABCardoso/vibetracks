@@ -108,6 +108,33 @@ def _drum_cache(sr):
     return {name: fn(sr=sr) for name, fn in synth.DRUM_VOICES.items()}
 
 
+def _transform(events, part):
+    """Apply leitmotif transformations to a melody, in musical order.
+
+    retrograde (reverse) -> invert (mirror) -> transpose (shift) -> stretch
+    (augment/diminish durations). Rests (pitch ``None``) pass through untouched.
+    These are how one motif recolors itself across a score (Undertale/Zelda style)
+    rather than being restated verbatim.
+    """
+    if part.get("retrograde"):
+        events = list(reversed(events))
+    inv = part.get("invert")
+    if inv:
+        pivot = inv if isinstance(inv, str) else next(
+            (e[0] for e in events if e[0] is not None), None)
+        if pivot:
+            events = [[None if e[0] is None else theory.invert(e[0], pivot), *e[1:]]
+                      for e in events]
+    semis = int(part.get("transpose", 0))
+    if semis:
+        events = [[None if e[0] is None else theory.transpose(e[0], semis), *e[1:]]
+                  for e in events]
+    stretch = float(part.get("stretch", 1.0))
+    if stretch != 1.0:
+        events = [[e[0], e[1] * stretch, *e[2:]] for e in events]
+    return events
+
+
 # --- Section / track assembly -----------------------------------------------
 
 def render_section(section, track, sr, drum_cache):
@@ -139,10 +166,7 @@ def render_section(section, track, sr, drum_cache):
                     events = events[sl[0]:sl[1]]
             else:
                 events = list(part["notes"])
-            semis = int(part.get("transpose", 0))
-            if semis:
-                events = [[None if e[0] is None else theory.transpose(e[0], semis),
-                           *e[1:]] for e in events]
+            events = _transform(events, part)
             events = events * int(part.get("repeat", 1))
             mono = _render_melody(events, patch, bpm, sr, section_samples)
 

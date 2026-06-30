@@ -11,7 +11,10 @@ JSON specs and render them. A whole soundtrack stays coherent because every trac
 shares one **bible** (`soundtrack.json`): the same key, tempo family, instrument
 `palette`, and reusable **motifs**.
 
-Read `CLAUDE.md` for the full spec reference. The loop below is the procedure.
+Read `CLAUDE.md` for the full spec reference, and **`docs/composition.md` for the
+craft** — how to write a score that sounds intentional (leitmotif transformation,
+singable melodies, accompaniment-driven energy, harmony, form). The loop below is
+the procedure; the composition guide is what makes the output good.
 
 ## 1. Establish the bible (do this first, once)
 
@@ -47,11 +50,12 @@ key. Optionally add answer phrases like `danger` for tense cues.
 
 Make new cues feel like the same score — but don't restate the whole hook in every
 track, or they all sound like one song. **State the full theme in one place** (the
-title), then vary its prominence everywhere else. Tools for that:
+title), then vary its prominence everywhere else. Tools for that (see `docs/composition.md` for the full kit):
 - **Fragment it** — `"slice": [0, 3]` quotes just the opening cell as a callback.
+- **Transform it** — `transpose`, `stretch` (2.0 = grand/augmented, 0.5 = frantic/
+  diminished), `invert`, `retrograde`. Same DNA, opposite mood (the Undertale move).
 - **Move it off the lead / drop it** — let a track stand on its own melody and rely
   on the shared key, palette, and a secondary motif (e.g. `danger`) for continuity.
-- **Transform it** — `transpose`, change tempo, re-harmonise.
 
 How the demo does it: `title-theme` states the full hook; `exploration` quotes only
 its first 3 notes; `battle` has an original riff with `danger` underneath; `boss`

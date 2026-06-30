@@ -47,12 +47,14 @@ Two file kinds:
 A **part** is exactly one of:
 
 - `notes`: explicit events `[pitch, beats, velocity?]`, e.g. `["A4", 1, 0.8]`
-- `motif`: a named motif from the bible, with optional `transpose`, `repeat`, and `slice` (quote a fragment)
+- `motif`: a named motif from the bible, with leitmotif transforms — `slice` (quote a fragment), `transpose`, `stretch` (augment/diminish), `invert`, `retrograde`, `repeat`
 - `chords`: chord symbols like `["Am", "F", "C", "G"]`, each held `chord_beats`
 - `drums`: per-voice step patterns, e.g. `{"kick": "x...x...", "hat": "x.x.x.x."}`
 
-See **`CLAUDE.md`** for the complete spec reference, and the `/soundtrack` skill
-for the compose→render→iterate workflow.
+See **`CLAUDE.md`** for the complete spec reference, **`docs/composition.md`** for
+the craft of writing a coherent score (leitmotif transformation, melody, harmony,
+form — lessons from Zelda/Castlevania/Undertale and others), and the `/soundtrack`
+skill for the compose→render→iterate workflow.
 
 ## How it compiles to sound
 

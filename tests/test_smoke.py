@@ -13,7 +13,7 @@ import unittest
 import numpy as np
 
 from vibetracks import spec, theory
-from vibetracks.sequencer import render_track
+from vibetracks.sequencer import _transform, render_track
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BIBLE = os.path.join(ROOT, "soundtrack.json")
@@ -31,6 +31,33 @@ class TestTheory(unittest.TestCase):
         self.assertEqual(theory.transpose("A4", -12), "A3")
         self.assertEqual(theory.chord_notes("Am", octave=3), ["A3", "C4", "E4"])
         self.assertEqual(theory.chord_notes("C", octave=4), ["C4", "E4", "G4"])
+
+    def test_invert_mirrors_around_pivot(self):
+        # C5 is 3 semitones above A4, so its mirror is 3 below -> F#4.
+        self.assertEqual(theory.invert("C5", "A4"), "F#4")
+        self.assertEqual(theory.invert("A4", "A4"), "A4")  # pivot is fixed
+
+
+class TestTransforms(unittest.TestCase):
+    def setUp(self):
+        self.motif = [["A4", 1], ["C5", 1], ["E5", 2]]
+
+    def test_stretch_scales_durations(self):
+        out = _transform(self.motif, {"stretch": 2.0})
+        self.assertEqual([e[1] for e in out], [2.0, 2.0, 4.0])
+
+    def test_retrograde_reverses(self):
+        out = _transform(self.motif, {"retrograde": True})
+        self.assertEqual([e[0] for e in out], ["E5", "C5", "A4"])
+
+    def test_invert_and_rests_preserved(self):
+        out = _transform([["A4", 1], [None, 1], ["C5", 1]], {"invert": "A4"})
+        self.assertEqual([e[0] for e in out], ["A4", None, "F#4"])
+
+    def test_transforms_compose(self):
+        # retrograde then up an octave: reversed pitches, each +12.
+        out = _transform(self.motif, {"retrograde": True, "transpose": 12})
+        self.assertEqual([e[0] for e in out], ["E6", "C6", "A5"])
 
     def test_scale(self):
         self.assertEqual(theory.scale_notes("A minor"),

@@ -5,7 +5,9 @@ compiled to WAV by a pure-Python synth (`numpy` + `scipy` only — no FluidSynth
 SoX, ffmpeg, or soundfonts; those aren't installable in this environment).
 
 When the user wants to make game music, use the **`/soundtrack` skill** — it
-encodes the compose→render→iterate workflow. This file is the **spec reference**.
+encodes the compose→render→iterate workflow. This file is the **spec reference**;
+**`docs/composition.md`** is the craft guide (leitmotif transformation, melody,
+harmony, form — lessons from Zelda/Castlevania/Undertale and others).
 
 ## Commands
 
@@ -56,9 +58,13 @@ Each section's `parts` is a map of part-name → part. Every part needs an
 - **`notes`** — `[[pitch, beats, velocity?], ...]`. `pitch` is a note name
   (`"C#4"`, `"Bb2"`); use `null` for a rest. `beats` are quarter notes.
   Supports `transpose` (semitones) and `repeat` (tile the figure).
-- **`motif`** — name of a bible motif; supports `transpose`, `repeat`, and
-  `slice` (`[start, end]`, quote only those notes — e.g. `[0, 3]` for the first
-  three). Prefer this for melodic cues so the theme recurs across tracks.
+- **`motif`** — name of a bible motif; supports `slice` (`[start, end]`, quote only
+  those notes), `repeat`, and the leitmotif transforms below. Prefer this for melodic
+  cues so the theme recurs across tracks.
+
+  Transforms (also work on `notes` parts; applied retrograde→invert→transpose→stretch):
+  `transpose` (semitones), `stretch` (×duration: `2.0` augment/slow, `0.5` diminish/
+  fast), `invert` (`true`, or a pivot note like `"A4"`), `retrograde` (`true`).
 - **`chords`** — `["Am", "F", "C", "G"]`; each chord held `chord_beats` (default =
   one bar), tiled to fill the section. Qualities: `m, maj, dim, aug, sus2, sus4, 7,
   maj7, m7, add9, 5`, default major. `octave` sets the chord root octave.

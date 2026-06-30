@@ -166,6 +166,15 @@ def _validate_part(part: dict, track: dict, where: str) -> None:
     if len(kinds) != 1:
         raise SpecError(f"{where}: a part needs exactly one of "
                         f"notes/motif/chords/drums, found {kinds}")
+    if "stretch" in part and not (isinstance(part["stretch"], (int, float))
+                                  and part["stretch"] > 0):
+        raise SpecError(f"{where}: 'stretch' must be a positive number")
+    inv = part.get("invert")
+    if isinstance(inv, str):
+        try:
+            theory.note_to_midi(inv)
+        except ValueError as e:
+            raise SpecError(f"{where}: 'invert' pivot {inv!r} is not a note: {e}") from e
     if "notes" in part:
         _validate_note_events(part["notes"], where)
     elif "motif" in part:
