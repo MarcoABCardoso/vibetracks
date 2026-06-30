@@ -23,7 +23,7 @@ import os
 from dataclasses import dataclass, field
 
 from . import theory
-from .instruments import DEFAULT_PALETTE, merge_patch
+from .instruments import DEFAULT_PALETTE, ENGINES, merge_patch
 
 VALID_DRUM_CHARS = set("x.Xo-")  # x/X = hit, o = open (hat), '.'/'-' = rest
 
@@ -152,6 +152,12 @@ def _validate_track(t: dict, path: str) -> None:
         raise SpecError(f"{path}: bpm must be positive")
     if not t["sections"]:
         raise SpecError(f"{path}: track has no sections")
+
+    for name, patch in t["palette"].items():
+        engine = patch.get("engine")
+        if engine is not None and engine not in ENGINES:
+            raise SpecError(f"{path}: instrument {name!r} has unknown engine "
+                            f"{engine!r} (valid: {list(ENGINES)})")
 
     for si, section in enumerate(t["sections"]):
         where = f"{path}: section {section.get('name', si)!r}"

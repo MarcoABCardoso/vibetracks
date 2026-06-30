@@ -14,15 +14,24 @@ from . import synth
 
 # --- Default synthwave palette ----------------------------------------------
 # Each patch:
-#   wave     : oscillator shape (sine/square/saw/triangle)
-#   voices   : detuned voices for a supersaw (1 = single oscillator)
-#   detune   : detune spread for supersaw voices (in octaves, small)
+#   engine   : synthesis engine — "subtractive" (default), "fm", or "karplus"
+#   wave     : oscillator shape (sine/square/saw/triangle) [subtractive]
+#   voices   : detuned voices for a supersaw (1 = single oscillator) [subtractive]
+#   detune   : detune spread for supersaw voices (in octaves, small) [subtractive]
+#   ratio    : FM modulator:carrier frequency ratio [fm]
+#   index    : FM modulation depth / brightness [fm]
+#   mod_decay: FM modulator fade for a struck, evolving attack [fm]
+#   decay    : Karplus-Strong string decay, near 1.0 = long sustain [karplus]
 #   adsr     : [attack, decay, sustain, release] in seconds/level
-#   filter   : one-pole lowpass cutoff in Hz (0 = off)
+#   filter   : lowpass cutoff in Hz (0 = off)
+#   resonance: filter Q; >0.7 adds a resonant peak (switches to a biquad)
+#   vibrato  : optional {rate, depth, shape} pitch modulation (depth in semitones)
+#   tremolo  : optional {rate, depth, shape} amplitude modulation (depth 0..1)
 #   gain     : per-instrument level before the master mix
 #   octave   : default octave shift applied to chord/arp helpers
 #   delay    : optional {time, feedback, mix} echo
-#   reverb   : optional wet amount in [0, 1]
+#   chorus   : optional {rate, depth, mix} modulated-delay widener
+#   reverb   : wet amount in [0, 1], or {decay, mix, predelay} convolution reverb
 
 DEFAULT_PALETTE = {
     "lead": {
@@ -60,34 +69,90 @@ def merge_patch(default: dict, override: dict | None) -> dict:
     return out
 
 
-def render_note(freq: float, dur: float, patch: dict, sr: int = synth.SR) -> np.ndarray:
-    """Render a single pitched note through a patch (osc -> env -> filter).
+ENGINES = ("subtractive", "fm", "karplus")
 
-    Per-note effects (filter) are applied here; buffer-wide effects (delay,
-    reverb) are applied once per part by the sequencer for efficiency.
+
+def _vibrato_freq(freq: float, n: int, patch: dict, sr: int):
+    """Return a per-sample frequency array if the patch has vibrato, else ``freq``.
+
+    Vibrato depth is in semitones; an optional ``delay`` (seconds) ramps the
+    wobble in so the note starts steady — the way a player adds it mid-note.
     """
-    voices = int(patch.get("voices", 1))
-    detune = float(patch.get("detune", 0.0))
-    wave = patch.get("wave", "saw")
-    if voices > 1:
-        sig = synth.supersaw(freq, dur, sr, voices=voices, detune=detune, wave=wave)
+    vib = patch.get("vibrato")
+    if not vib:
+        return freq
+    depth = float(vib.get("depth", 0.0))
+    if depth <= 0:
+        return freq
+    mod = synth.lfo(float(vib.get("rate", 5.0)), n, sr, vib.get("shape", "sine"))
+    onset = float(vib.get("delay", 0.0))
+    if onset > 0:
+        ramp = np.clip(np.arange(n) / sr / onset, 0.0, 1.0)
+        mod = mod * ramp
+    return freq * (2.0 ** (depth * mod / 12.0))
+
+
+def render_note(freq: float, dur: float, patch: dict, sr: int = synth.SR) -> np.ndarray:
+    """Render a single pitched note through a patch (engine -> env -> filter).
+
+    The engine (subtractive/fm/karplus) generates the raw tone; an ADSR shapes
+    its amplitude and trims it to the note slot; an optional resonant filter and
+    tremolo finish it. Per-note work lives here; buffer-wide effects (delay,
+    chorus, reverb) are applied once per part by the sequencer for efficiency.
+    """
+    engine = patch.get("engine", "subtractive")
+    n = max(1, int(dur * sr))
+    if engine == "karplus":
+        # Pitch is fixed by the delay line, so vibrato does not apply here.
+        sig = synth.karplus_strong(freq, dur, sr, decay=float(patch.get("decay", 0.996)))
+    elif engine == "fm":
+        f = _vibrato_freq(freq, n, patch, sr)
+        sig = synth.fm(f, dur, sr, ratio=float(patch.get("ratio", 2.0)),
+                       index=float(patch.get("index", 3.0)),
+                       mod_decay=float(patch.get("mod_decay", 0.0)))
     else:
-        sig = synth.oscillator(freq, dur, sr, wave)
+        f = _vibrato_freq(freq, n, patch, sr)
+        voices = int(patch.get("voices", 1))
+        if voices > 1:
+            sig = synth.supersaw(f, dur, sr, voices=voices,
+                                 detune=float(patch.get("detune", 0.0)),
+                                 wave=patch.get("wave", "saw"))
+        else:
+            sig = synth.oscillator(f, dur, sr, patch.get("wave", "saw"))
+
     a, d, s, r = patch.get("adsr", [0.01, 0.08, 0.7, 0.12])
     sig = sig * synth.adsr(len(sig), sr, a, d, s, r)
+
+    trem = patch.get("tremolo")
+    if trem and float(trem.get("depth", 0.0)) > 0:
+        depth = float(trem["depth"])
+        mod = synth.lfo(float(trem.get("rate", 5.0)), len(sig), sr,
+                        trem.get("shape", "sine"))
+        sig = sig * (1.0 - depth * (0.5 - 0.5 * mod))
+
     cutoff = float(patch.get("filter", 0) or 0)
     if cutoff:
-        sig = synth.lowpass(sig, cutoff, sr)
+        q = float(patch.get("resonance", 0) or 0)
+        sig = (synth.resonant_lowpass(sig, cutoff, q, sr) if q
+               else synth.lowpass(sig, cutoff, sr))
     return sig
 
 
 def apply_part_effects(sig: np.ndarray, patch: dict, sr: int = synth.SR) -> np.ndarray:
-    """Apply buffer-wide effects (delay, reverb) declared on a patch."""
+    """Apply buffer-wide effects (delay, chorus, reverb) declared on a patch."""
     dly = patch.get("delay")
     if dly:
         sig = synth.delay(sig, dly.get("time", 0.25), dly.get("feedback", 0.3),
                           dly.get("mix", 0.2), sr)
+    cho = patch.get("chorus")
+    if cho:
+        sig = synth.chorus(sig, sr, rate=cho.get("rate", 0.8),
+                           depth=cho.get("depth", 0.002), mix=cho.get("mix", 0.4))
     rev = patch.get("reverb")
-    if rev:
+    if isinstance(rev, dict):
+        sig = synth.conv_reverb(sig, decay=rev.get("decay", 1.5),
+                                mix=rev.get("mix", 0.3),
+                                predelay=rev.get("predelay", 0.02), sr=sr)
+    elif rev:
         sig = synth.reverb(sig, float(rev), sr)
     return sig

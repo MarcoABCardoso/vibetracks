@@ -12,26 +12,38 @@ Conventions:
 from __future__ import annotations
 
 import numpy as np
-from scipy.signal import lfilter
+from scipy.signal import fftconvolve, lfilter
 
 SR = 44100
 
 
 # --- Oscillators -------------------------------------------------------------
 
-def _phase(freq: float, n: int, sr: int) -> np.ndarray:
+def _phase(freq, n: int, sr: int) -> np.ndarray:
+    """Instantaneous phase for a scalar or per-sample frequency.
+
+    A scalar ``freq`` gives a linear phase ramp; an array ``freq`` (length ``n``)
+    is integrated sample-by-sample (``cumsum``) so the oscillator can be
+    frequency-modulated — this is what makes vibrato and glides possible.
+    """
+    if np.ndim(freq) > 0:
+        freq = np.asarray(freq, dtype=np.float64)
+        # Exclusive prefix sum so phase starts at 0, matching the scalar ramp
+        # for a constant frequency (no half-sample offset).
+        return 2.0 * np.pi * (np.cumsum(freq) - freq) / sr
     t = np.arange(n, dtype=np.float64) / sr
-    return 2.0 * np.pi * freq * t
+    return 2.0 * np.pi * float(freq) * t
 
 
-def oscillator(freq: float, dur: float, sr: int = SR, wave: str = "saw") -> np.ndarray:
+def oscillator(freq, dur: float, sr: int = SR, wave: str = "saw") -> np.ndarray:
     """Generate ``dur`` seconds of a waveform at ``freq``.
 
-    Supported waves: sine, square, saw, triangle, noise. Band-limiting is naive
-    (no PolyBLEP); a gentle one-pole lowpass is applied by instruments to tame
-    the harshest aliasing, which is fine for the lo-fi synthwave aesthetic.
+    ``freq`` may be a scalar or a per-sample array (for vibrato/glide). Supported
+    waves: sine, square, saw, triangle, noise. Band-limiting is naive (no
+    PolyBLEP); a gentle lowpass is applied by instruments to tame the harshest
+    aliasing.
     """
-    n = max(1, int(dur * sr))
+    n = freq.shape[0] if np.ndim(freq) > 0 else max(1, int(dur * sr))
     if wave == "noise":
         return np.random.uniform(-1.0, 1.0, n).astype(np.float64)
     ph = _phase(freq, n, sr)
@@ -47,12 +59,15 @@ def oscillator(freq: float, dur: float, sr: int = SR, wave: str = "saw") -> np.n
     raise ValueError(f"unknown wave {wave!r}")
 
 
-def supersaw(freq: float, dur: float, sr: int = SR, voices: int = 3,
+def supersaw(freq, dur: float, sr: int = SR, voices: int = 3,
              detune: float = 0.012, wave: str = "saw") -> np.ndarray:
-    """Stack ``voices`` slightly detuned oscillators for a fat synth lead/pad."""
+    """Stack ``voices`` slightly detuned oscillators for a fat synth lead/pad.
+
+    ``freq`` may be a scalar or per-sample array; detuning scales it either way.
+    """
     if voices <= 1:
         return oscillator(freq, dur, sr, wave)
-    n = max(1, int(dur * sr))
+    n = freq.shape[0] if np.ndim(freq) > 0 else max(1, int(dur * sr))
     out = np.zeros(n, dtype=np.float64)
     # Spread voices symmetrically around the centre frequency.
     spread = np.linspace(-1.0, 1.0, voices)
@@ -60,6 +75,60 @@ def supersaw(freq: float, dur: float, sr: int = SR, voices: int = 3,
         f = freq * (2.0 ** (s * detune))
         out += oscillator(f, dur, sr, wave)
     return out / voices
+
+
+def lfo(rate: float, n: int, sr: int = SR, shape: str = "sine",
+        phase: float = 0.0) -> np.ndarray:
+    """Low-frequency oscillator in [-1, 1] for vibrato/tremolo/chorus modulation."""
+    t = np.arange(n, dtype=np.float64) / sr
+    ph = 2.0 * np.pi * rate * t + phase
+    if shape == "triangle":
+        return 2.0 * np.abs(2.0 * (ph / (2.0 * np.pi) % 1.0) - 1.0) - 1.0
+    if shape == "square":
+        return np.sign(np.sin(ph))
+    return np.sin(ph)
+
+
+def fm(freq, dur: float, sr: int = SR, ratio: float = 2.0, index: float = 3.0,
+       mod_decay: float = 0.0) -> np.ndarray:
+    """Two-operator FM synthesis: a sine carrier phase-modulated by a sine.
+
+    ``ratio`` is the modulator:carrier frequency ratio (integer ratios give
+    harmonic/clean tones, inharmonic ones give bells and metallic timbres).
+    ``index`` is the modulation depth (brightness). A positive ``mod_decay``
+    fades the modulator over the note for an evolving, struck attack (EP/bell).
+    ``freq`` may be a scalar or per-sample array (vibrato).
+    """
+    n = freq.shape[0] if np.ndim(freq) > 0 else max(1, int(dur * sr))
+    t = np.arange(n, dtype=np.float64) / sr
+    car_ph = _phase(freq, n, sr)
+    mod_ph = _phase(freq * ratio if np.ndim(freq) > 0 else freq * ratio, n, sr)
+    mod = np.sin(mod_ph)
+    if mod_decay > 0:
+        mod = mod * np.exp(-t * mod_decay)
+    return np.sin(car_ph + index * mod)
+
+
+def karplus_strong(freq: float, dur: float, sr: int = SR,
+                   decay: float = 0.996) -> np.ndarray:
+    """Karplus-Strong plucked string: a noise burst fed through a tuned, lossy
+    comb (digital waveguide). Sounds like guitar/harp/koto from pure math.
+
+    Realised as an IIR via :func:`lfilter` (denominator taps a two-sample
+    averaging filter at the loop delay) so it is fast on long notes. ``decay``
+    near 1.0 sustains longer; lower values mute faster.
+    """
+    n = max(1, int(dur * sr))
+    period = max(2, int(round(sr / max(freq, 1e-6))))
+    x = np.zeros(n, dtype=np.float64)
+    burst = np.random.uniform(-1.0, 1.0, min(period, n))
+    x[: burst.shape[0]] = burst
+    # y[k] = x[k] + 0.5*decay*(y[k-period] + y[k-period-1])
+    a = np.zeros(period + 2, dtype=np.float64)
+    a[0] = 1.0
+    a[period] = -0.5 * decay
+    a[period + 1] = -0.5 * decay
+    return lfilter([1.0], a, x)
 
 
 # --- Envelopes ---------------------------------------------------------------
@@ -110,6 +179,70 @@ def lowpass(sig: np.ndarray, cutoff: float, sr: int = SR) -> np.ndarray:
     rc = 1.0 / (2.0 * np.pi * cutoff)
     alpha = dt / (rc + dt)
     return lfilter([alpha], [1.0, -(1.0 - alpha)], sig)
+
+
+def resonant_lowpass(sig: np.ndarray, cutoff: float, q: float = 0.707,
+                     sr: int = SR) -> np.ndarray:
+    """Resonant biquad lowpass (RBJ cookbook). ``q`` above ~0.7 peaks at the
+    cutoff for that classic 'analog' synth squelch; vectorised via ``lfilter``.
+    """
+    if cutoff <= 0 or cutoff >= sr / 2:
+        return sig
+    w0 = 2.0 * np.pi * cutoff / sr
+    cosw, sinw = np.cos(w0), np.sin(w0)
+    alpha = sinw / (2.0 * max(q, 1e-4))
+    b0 = (1.0 - cosw) / 2.0
+    b1 = 1.0 - cosw
+    b2 = (1.0 - cosw) / 2.0
+    a0 = 1.0 + alpha
+    a1 = -2.0 * cosw
+    a2 = 1.0 - alpha
+    return lfilter([b0 / a0, b1 / a0, b2 / a0], [1.0, a1 / a0, a2 / a0], sig)
+
+
+def chorus(sig: np.ndarray, sr: int = SR, rate: float = 0.8, depth: float = 0.002,
+           mix: float = 0.4) -> np.ndarray:
+    """Two-voice modulated-delay chorus for width and lush detuned motion.
+
+    Each voice reads from a short delay (~12 ms) whose time wobbles under an
+    LFO; fractional delays are interpolated with :func:`numpy.interp`.
+    """
+    n = sig.shape[0]
+    if n == 0 or mix <= 0:
+        return sig
+    idx = np.arange(n, dtype=np.float64)
+    base = 0.012 * sr
+    wet = np.zeros(n, dtype=np.float64)
+    for r, ph in ((rate, 0.0), (rate * 1.17, np.pi / 2.0)):
+        d = base + depth * sr * lfo(r, n, sr, phase=ph)
+        wet += np.interp(idx - d, idx, sig, left=0.0, right=0.0)
+    wet /= 2.0
+    return (1.0 - mix) * sig + mix * wet
+
+
+def conv_reverb(sig: np.ndarray, decay: float = 1.5, mix: float = 0.3,
+                predelay: float = 0.02, damp: float = 6000.0,
+                sr: int = SR) -> np.ndarray:
+    """Convolution reverb against a synthesized impulse response.
+
+    The IR is exponentially-decaying noise, lowpassed by ``damp`` to soften the
+    tail — a dense, smooth space that glues a mix far better than the cheap
+    Schroeder comb. ``decay`` is the tail length in seconds. FFT convolution
+    keeps it fast even for second-long tails.
+    """
+    if mix <= 0 or decay <= 0:
+        return sig
+    ir_len = max(1, int(decay * sr))
+    t = np.arange(ir_len, dtype=np.float64) / sr
+    ir = np.random.uniform(-1.0, 1.0, ir_len) * np.exp(-t * (4.0 / decay))
+    ir = lowpass(ir, damp, sr)
+    pre = int(max(0.0, predelay) * sr)
+    if pre:
+        ir = np.concatenate([np.zeros(pre, dtype=np.float64), ir])
+    # Normalise the IR's energy so wet level is independent of tail length.
+    ir /= np.sqrt(np.sum(ir * ir)) + 1e-9
+    wet = fftconvolve(sig, ir)[: sig.shape[0]]
+    return (1.0 - mix) * sig + mix * wet
 
 
 def delay(sig: np.ndarray, time: float, feedback: float = 0.35,

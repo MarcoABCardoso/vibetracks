@@ -89,6 +89,25 @@ Each section's `parts` is a map of part-name → part. Every part needs an
 
 Optional per-part knobs: `gain` (level), `pan` (−1 left … 1 right).
 
+## Instrument engines & expression (palette patches)
+
+A patch's `engine` chooses how a pitch becomes sound — this is the lever for
+going beyond bare-oscillator chiptune (full param list in `instruments.py`):
+
+- **`subtractive`** (default) — detuned `wave` oscillators → ADSR → filter. The
+  classic synthwave voice. Add `resonance` (filter Q) for an analog squelch.
+- **`fm`** — two-operator FM. `ratio` (modulator:carrier) + `index` (brightness);
+  integer ratios sound harmonic (Rhodes-like electric piano at `1.0`), inharmonic
+  ratios give bells/metallic tones. `mod_decay` fades the modulator for a struck attack.
+- **`karplus`** — Karplus-Strong plucked string (guitar/harp/koto) from a noise
+  burst through a tuned lossy comb. `decay` near `1.0` sustains longer.
+
+Expression knobs (any engine): `vibrato`/`tremolo` `{rate, depth, shape, delay}`
+(pitch / amplitude LFOs; vibrato `delay` eases the wobble in mid-note), `chorus`
+`{rate, depth, mix}` for width, and `reverb` as either a scalar (cheap Schroeder)
+or `{decay, mix, predelay}` for the denser convolution reverb. The `verdant-vale`
+group is a worked demo of all of these.
+
 ## How compilation works (where to edit)
 
 - `vibetracks/theory.py` — note↔frequency, scales, chord parsing, transpose.

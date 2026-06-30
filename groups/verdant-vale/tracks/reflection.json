@@ -1,0 +1,42 @@
+{
+  "name": "reflection",
+  "extends": "../soundtrack.json",
+  "_comment": "A still, drumless cue. The theme returns at half-speed (augmentation) on the FM bell — recognisable but distant — over electric piano and deep strings. Convolution reverb does the heavy lifting; nothing here sounds 8-bit.",
+  "bpm": 72,
+  "time_signature": [4, 4],
+
+  "palette": {
+    "bell": { "reverb": { "decay": 3.2, "mix": 0.45 }, "gain": 0.45 },
+    "strings": { "reverb": { "decay": 3.0, "mix": 0.40 }, "gain": 0.38 },
+    "ep": { "reverb": { "decay": 2.0, "mix": 0.28 } }
+  },
+
+  "sections": [
+    {
+      "name": "still",
+      "bars": 4,
+      "parts": {
+        "strings": { "instrument": "strings", "chords": ["D", "G"], "chord_beats": 8 },
+        "ep": { "instrument": "ep", "chords": ["Dadd9", "Gmaj7"], "chord_beats": 8, "gain": 0.4, "pan": 0.15 }
+      }
+    },
+    {
+      "name": "theme",
+      "bars": 8,
+      "loop": true,
+      "_comment": "Theme augmented (stretch 2.0) on the bell — the hook heard as a memory.",
+      "parts": {
+        "bell": { "instrument": "bell", "motif": "vale_theme", "stretch": 2.0, "repeat": 2, "pan": 0.0, "gain": 0.5 },
+        "ep": { "instrument": "ep", "chords": ["D", "Bm", "G", "A"], "chord_beats": 8, "gain": 0.4, "pan": 0.2 },
+        "strings": { "instrument": "strings", "chords": ["D", "Bm", "G", "A"], "chord_beats": 8 },
+        "guitar": { "instrument": "guitar", "pan": -0.2, "gain": 0.45,
+                    "notes": [["D3", 2], ["A3", 2], ["F#3", 2], ["D4", 2],
+                              ["B2", 2], ["F#3", 2], ["G2", 2], ["D3", 2],
+                              ["A2", 2], ["E3", 2], ["A2", 2], ["C#3", 2],
+                              ["D3", 2], ["A3", 2], ["F#3", 2], ["D4", 2]] },
+        "bass": { "instrument": "bass",
+                  "notes": [["D2", 8], ["B1", 8], ["G1", 8], ["A1", 8]] }
+      }
+    }
+  ]
+}

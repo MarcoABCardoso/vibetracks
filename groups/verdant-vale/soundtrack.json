@@ -1,0 +1,75 @@
+{
+  "title": "Verdant Vale",
+  "aesthetic": "cinematic / acoustic-leaning ambient",
+  "key": "D major",
+  "bpm": 84,
+  "_comment": "A demo score for the Stage 1 engines — the deliberate opposite of chiptune. Karplus-Strong plucks (guitar/harp) give real plucked-string tone, FM gives a Rhodes-like electric piano and inharmonic bells, and the strings/lead use vibrato + chorus + convolution reverb for an analog, breathing feel. Nothing here is a bare square wave.",
+
+  "palette": {
+    "guitar": {
+      "_comment": "Nylon-ish plucked string via Karplus-Strong. Real attack and natural decay, no oscillator can fake this.",
+      "engine": "karplus", "decay": 0.990,
+      "adsr": [0.001, 0.05, 0.9, 0.30], "filter": 4200, "gain": 0.7,
+      "octave": 3, "reverb": { "decay": 1.6, "mix": 0.22 }
+    },
+    "harp": {
+      "_comment": "Brighter, faster-decaying pluck for rolling arpeggios.",
+      "engine": "karplus", "decay": 0.984,
+      "adsr": [0.001, 0.05, 0.9, 0.20], "filter": 6800, "gain": 0.5,
+      "octave": 4, "reverb": { "decay": 2.0, "mix": 0.30 }
+    },
+    "ep": {
+      "_comment": "FM electric piano (Rhodes-like): 1:1 ratio, modulator fades for a struck, bell-tinged attack.",
+      "engine": "fm", "ratio": 1.0, "index": 2.4, "mod_decay": 6.0,
+      "adsr": [0.004, 0.25, 0.55, 0.45], "filter": 5200, "gain": 0.6,
+      "octave": 4, "chorus": { "rate": 0.5, "depth": 0.0018, "mix": 0.3 },
+      "reverb": { "decay": 1.4, "mix": 0.20 }
+    },
+    "bell": {
+      "_comment": "FM bell with an inharmonic 3.5 ratio — shimmering, metallic, decays to nothing.",
+      "engine": "fm", "ratio": 3.5, "index": 4.0, "mod_decay": 5.0,
+      "adsr": [0.002, 0.5, 0.0, 0.5], "gain": 0.4,
+      "octave": 5, "reverb": { "decay": 2.6, "mix": 0.38 }
+    },
+    "strings": {
+      "_comment": "Supersaw string pad warmed by vibrato (delayed onset, like a section swelling) and widened by chorus into convolution reverb.",
+      "engine": "subtractive", "wave": "saw", "voices": 5, "detune": 0.014,
+      "adsr": [0.45, 0.30, 0.85, 0.70], "filter": 2800, "gain": 0.4,
+      "octave": 3, "vibrato": { "rate": 5.2, "depth": 0.16, "delay": 0.5 },
+      "chorus": { "rate": 0.6, "depth": 0.0026, "mix": 0.45 },
+      "reverb": { "decay": 2.6, "mix": 0.35 }
+    },
+    "lead": {
+      "_comment": "Expressive solo voice: resonant analog filter + vibrato that eases in mid-note.",
+      "engine": "subtractive", "wave": "saw", "voices": 2, "detune": 0.010,
+      "adsr": [0.03, 0.18, 0.7, 0.30], "filter": 2600, "resonance": 2.8,
+      "gain": 0.6, "octave": 4, "vibrato": { "rate": 5.5, "depth": 0.22, "delay": 0.28 },
+      "delay": { "time": 0.357, "feedback": 0.26, "mix": 0.18 },
+      "reverb": { "decay": 1.6, "mix": 0.22 }
+    },
+    "bass": {
+      "_comment": "Round triangle sub, lightly filtered — felt more than heard.",
+      "engine": "subtractive", "wave": "triangle", "voices": 1,
+      "adsr": [0.01, 0.10, 0.85, 0.12], "filter": 850, "gain": 0.85, "octave": 2
+    },
+    "drums": { "gain": 0.5 }
+  },
+
+  "motifs": {
+    "vale_theme": {
+      "_comment": "8 beats / 2 bars in D major. The pastoral hook — stated in full in the title, fragmented elsewhere.",
+      "notes": [
+        ["F#4", 1], ["A4", 1], ["B4", 1.5], ["A4", 0.5],
+        ["F#4", 1], ["E4", 1], ["D4", 2]
+      ]
+    },
+    "breeze": {
+      "_comment": "4 beats. A gentle descending answer phrase that carries continuity without restating the hook.",
+      "notes": [
+        ["A4", 0.5], ["G4", 0.5], ["F#4", 1], ["E4", 1], ["D4", 1]
+      ]
+    }
+  },
+
+  "tracks": ["main-theme", "exploration", "reflection"]
+}
