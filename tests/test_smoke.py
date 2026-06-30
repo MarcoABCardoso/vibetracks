@@ -16,8 +16,9 @@ from vibetracks import spec, theory
 from vibetracks.sequencer import _transform, render_track
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-BIBLE = os.path.join(ROOT, "soundtrack.json")
-TRACKS = sorted(glob.glob(os.path.join(ROOT, "tracks", "*.json")))
+DEMO = os.path.join(ROOT, "groups", "neon-frontier")
+BIBLE = os.path.join(DEMO, "soundtrack.json")
+TRACKS = sorted(glob.glob(os.path.join(DEMO, "tracks", "*.json")))
 
 
 class TestTheory(unittest.TestCase):
@@ -102,10 +103,27 @@ class TestSpecs(unittest.TestCase):
                                 track, where="x")
 
 
+class TestGroups(unittest.TestCase):
+    def test_discover_finds_demo(self):
+        groups = spec.discover_groups(ROOT)
+        names = [g.name for g in groups]
+        self.assertIn("neon-frontier", names)
+
+    def test_group_track_names_follow_bible_order(self):
+        g = spec.find_group("neon-frontier", ROOT)
+        self.assertEqual(g.track_names(),
+                         ["title-theme", "exploration", "battle", "boss", "victory"])
+        self.assertTrue(os.path.isfile(g.track_path("boss")))
+
+    def test_unknown_group_raises(self):
+        with self.assertRaises(spec.SpecError):
+            spec.find_group("does-not-exist", ROOT)
+
+
 class TestRender(unittest.TestCase):
     def test_track_renders_in_range(self):
         bible = spec.load_bible(BIBLE)
-        track = spec.resolve_track(os.path.join(ROOT, "tracks", "victory.json"), bible)
+        track = spec.resolve_track(os.path.join(DEMO, "tracks", "victory.json"), bible)
         buf = render_track(track, sr=16000, loops=1)
         self.assertEqual(buf.ndim, 2)
         self.assertEqual(buf.shape[1], 2)

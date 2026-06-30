@@ -1,11 +1,16 @@
 """Load and validate song specs (the JSON "model of a song").
 
-Two kinds of file:
+Three layers:
 
-* **the bible** (``soundtrack.json``): global musical identity shared by every
-  track — key, bpm, instrument ``palette``, reusable ``motifs``, ``tracks`` list.
-* **a track** (``tracks/<name>.json``): one piece of music. A track may
-  ``extends`` the bible to inherit its key/bpm/palette and may override them.
+* **a group** (``groups/<name>/``): one self-contained soundtrack — its own
+  bible plus tracks. Groups let a single repo hold several independent scores
+  (different regions of a game, or different games entirely) without sharing or
+  overwriting one top-level bible.
+* **the bible** (``groups/<name>/soundtrack.json``): global musical identity
+  shared by every track in the group — key, bpm, instrument ``palette``,
+  reusable ``motifs``, ``tracks`` list.
+* **a track** (``groups/<name>/tracks/<track>.json``): one piece of music. A
+  track may ``extends`` the bible to inherit its key/bpm/palette and override.
 
 A resolved track is returned as a plain dict with the bible folded in, ready for
 the sequencer. Validation raises :class:`SpecError` with a human-readable path.
@@ -21,6 +26,10 @@ from . import theory
 from .instruments import DEFAULT_PALETTE, merge_patch
 
 VALID_DRUM_CHARS = set("x.Xo-")  # x/X = hit, o = open (hat), '.'/'-' = rest
+
+GROUPS_DIR = "groups"        # where soundtrack groups live
+BIBLE_FILE = "soundtrack.json"
+TRACKS_SUBDIR = "tracks"
 
 
 class SpecError(ValueError):
@@ -196,3 +205,76 @@ def _validate_part(part: dict, track: dict, where: str) -> None:
             bad = set(pattern) - VALID_DRUM_CHARS
             if bad:
                 raise SpecError(f"{where}: drum voice {voice!r} has bad chars {bad}")
+
+
+# --- Groups --------------------------------------------------------------- #
+
+@dataclass
+class Group:
+    """One self-contained soundtrack: a bible plus its tracks directory.
+
+    A group lives in ``groups/<name>/`` with its own ``soundtrack.json`` and
+    ``tracks/`` folder. Several groups coexist in one repo without sharing or
+    overwriting a single top-level bible, so users can spin up their own score
+    alongside the bundled demo.
+    """
+    name: str
+    dir: str
+
+    @property
+    def bible_path(self) -> str:
+        return os.path.join(self.dir, BIBLE_FILE)
+
+    @property
+    def tracks_dir(self) -> str:
+        return os.path.join(self.dir, TRACKS_SUBDIR)
+
+    def load_bible(self) -> Bible | None:
+        return load_bible(self.bible_path) if os.path.isfile(self.bible_path) else None
+
+    def track_path(self, name: str) -> str:
+        """Resolve a bare track name (or a path) to its JSON file in the group."""
+        if name.endswith(".json") or os.path.sep in name:
+            return name
+        return os.path.join(self.tracks_dir, f"{name}.json")
+
+    def track_names(self) -> list:
+        """Ordered track names: the bible's ``tracks`` list, else ``tracks/*.json``."""
+        bible = self.load_bible()
+        if bible and bible.tracks:
+            return list(bible.tracks)
+        if os.path.isdir(self.tracks_dir):
+            return [os.path.splitext(f)[0]
+                    for f in sorted(os.listdir(self.tracks_dir))
+                    if f.endswith(".json")]
+        return []
+
+
+def discover_groups(root: str = ".") -> list:
+    """Find every soundtrack group under ``root``.
+
+    Each subdirectory of ``groups/`` that holds a ``soundtrack.json`` is a group,
+    returned sorted by name. For backward compatibility a ``soundtrack.json`` at
+    ``root`` itself is exposed as the ``default`` group when there is no
+    ``groups/`` directory.
+    """
+    groups = []
+    gdir = os.path.join(root, GROUPS_DIR)
+    if os.path.isdir(gdir):
+        for name in sorted(os.listdir(gdir)):
+            d = os.path.join(gdir, name)
+            if os.path.isfile(os.path.join(d, BIBLE_FILE)):
+                groups.append(Group(name=name, dir=d))
+    if not groups and os.path.isfile(os.path.join(root, BIBLE_FILE)):
+        groups.append(Group(name="default", dir=root))
+    return groups
+
+
+def find_group(name: str, root: str = ".") -> Group:
+    """Look up a group by name, raising :class:`SpecError` if it is unknown."""
+    groups = discover_groups(root)
+    for g in groups:
+        if g.name == name:
+            return g
+    raise SpecError(f"unknown group {name!r} "
+                    f"(groups: {[g.name for g in groups]})")
