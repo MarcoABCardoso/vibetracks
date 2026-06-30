@@ -1,0 +1,43 @@
+{
+  "name": "exploration",
+  "extends": "../soundtrack.json",
+  "_comment": "Open-world wandering. The theme is never stated in full — the harp only quotes its first fragment while the 'breeze' answer phrase and shifting pads carry the mood. Demonstrates the Karplus harp doing fast rolling arpeggios.",
+  "bpm": 92,
+  "time_signature": [4, 4],
+
+  "palette": {
+    "harp": { "gain": 0.45 },
+    "ep": { "gain": 0.5 }
+  },
+
+  "sections": [
+    {
+      "name": "intro",
+      "bars": 4,
+      "parts": {
+        "ep": { "instrument": "ep", "chords": ["Gmaj7", "D", "Em7", "A"], "chord_beats": 4 },
+        "harp": { "instrument": "harp", "repeat": 4, "pan": 0.2, "gain": 0.35,
+                  "notes": [["D5", 0.5], ["F#5", 0.5], ["A5", 0.5], ["D6", 0.5],
+                            ["A5", 0.5], ["F#5", 0.5], ["A5", 0.5], ["D6", 0.5]] }
+      }
+    },
+    {
+      "name": "A",
+      "bars": 8,
+      "loop": true,
+      "parts": {
+        "harp": { "instrument": "harp", "repeat": 8, "pan": 0.3, "gain": 0.4,
+                  "notes": [["D5", 0.5], ["F#5", 0.5], ["A5", 0.5], ["B5", 0.5],
+                            ["A5", 0.5], ["F#5", 0.5], ["D5", 0.5], ["F#5", 0.5]] },
+        "harp_hint": { "instrument": "harp", "motif": "vale_theme", "slice": [0, 3], "transpose": 12, "pan": -0.2, "gain": 0.3 },
+        "breeze": { "instrument": "lead", "motif": "breeze", "repeat": 4, "stretch": 1.5, "pan": -0.1, "gain": 0.45 },
+        "strings": { "instrument": "strings", "chords": ["G", "D", "Em", "A", "Bm", "G", "A", "D"], "chord_beats": 4 },
+        "bass": { "instrument": "bass",
+                  "notes": [["G2", 4], ["D2", 4], ["E2", 4], ["A2", 4],
+                            ["B2", 4], ["G2", 4], ["A2", 4], ["D2", 4]] },
+        "drums": { "instrument": "drums",
+                   "drums": { "kick": "x.......", "hat": "x.x.x.x." } }
+      }
+    }
+  ]
+}

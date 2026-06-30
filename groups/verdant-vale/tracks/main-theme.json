@@ -1,0 +1,49 @@
+{
+  "name": "main-theme",
+  "extends": "../soundtrack.json",
+  "_comment": "The full statement of the vale theme. Showcases all three engines together: the FM electric piano and supersaw strings lay a warm bed, the Karplus guitar arpeggiates the harmony, and the resonant, vibrato'd lead sings the melody over a triangle sub.",
+  "bpm": 84,
+  "time_signature": [4, 4],
+
+  "sections": [
+    {
+      "name": "intro",
+      "bars": 4,
+      "_comment": "Strings swell in (delayed vibrato), FM bells sparkle overhead — no melody yet, just the space.",
+      "parts": {
+        "strings": { "instrument": "strings", "chords": ["D", "Bm", "G", "A"], "chord_beats": 4 },
+        "ep": { "instrument": "ep", "chords": ["Dadd9", "Bm7", "Gmaj7", "A"], "chord_beats": 4, "gain": 0.45 },
+        "bell": { "instrument": "bell", "pan": 0.25,
+                  "notes": [["A5", 1.5], [null, 2.5], ["D6", 1.5], [null, 2.5],
+                            ["F#5", 1.5], [null, 2.5], ["E6", 1], [null, 3]] }
+      }
+    },
+    {
+      "name": "A",
+      "bars": 8,
+      "loop": true,
+      "_comment": "Full theme on the lead; guitar arpeggiates each chord; strings + ep sustain; sub and brushed drums underneath.",
+      "parts": {
+        "lead": { "instrument": "lead", "motif": "vale_theme", "repeat": 4, "pan": 0.0, "gain": 0.6 },
+        "guitar": { "instrument": "guitar", "pan": -0.25, "gain": 0.6,
+                    "notes": [
+                      ["D3", 1], ["F#3", 1], ["A3", 1], ["D4", 1],
+                      ["A3", 1], ["C#4", 1], ["E4", 1], ["A3", 1],
+                      ["B3", 1], ["D4", 1], ["F#4", 1], ["B3", 1],
+                      ["F#3", 1], ["A3", 1], ["C#4", 1], ["F#3", 1],
+                      ["G3", 1], ["B3", 1], ["D4", 1], ["G3", 1],
+                      ["D3", 1], ["F#3", 1], ["A3", 1], ["D4", 1],
+                      ["G3", 1], ["B3", 1], ["D4", 1], ["G3", 1],
+                      ["A3", 1], ["C#4", 1], ["E4", 1], ["A3", 1]
+                    ] },
+        "ep": { "instrument": "ep", "chords": ["D", "A", "Bm", "F#m", "G", "D", "G", "A"], "chord_beats": 4, "gain": 0.42, "pan": 0.2 },
+        "strings": { "instrument": "strings", "chords": ["D", "Bm", "G", "A"], "chord_beats": 8 },
+        "bass": { "instrument": "bass",
+                  "notes": [["D2", 4], ["A2", 4], ["B2", 4], ["F#2", 4],
+                            ["G2", 4], ["D2", 4], ["G2", 4], ["A2", 4]] },
+        "drums": { "instrument": "drums",
+                   "drums": { "kick": "x.......", "snare": "....x...", "hat": "..x...x." } }
+      }
+    }
+  ]
+}
