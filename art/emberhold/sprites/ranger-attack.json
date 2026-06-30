@@ -1,0 +1,132 @@
+{
+  "name": "ranger-attack",
+  "extends": "../artbook.json",
+  "_comment": "4-frame bow shot: nock, draw back (held), loose, recover. The arrow is a separate motif that snaps to the string then flies off to the right.",
+  "size": [
+    32,
+    22
+  ],
+  "frames": [
+    {
+      "name": "ready",
+      "layers": [
+        {
+          "name": "body",
+          "shape": "ranger",
+          "offset": [
+            2,
+            1
+          ]
+        },
+        {
+          "name": "bow",
+          "shape": "bow",
+          "flip": "h",
+          "offset": [
+            13,
+            7
+          ]
+        },
+        {
+          "name": "arrow",
+          "shape": "arrow",
+          "offset": [
+            9,
+            10
+          ]
+        }
+      ]
+    },
+    {
+      "name": "draw",
+      "hold": 2,
+      "layers": [
+        {
+          "name": "body",
+          "shape": "ranger",
+          "offset": [
+            2,
+            1
+          ]
+        },
+        {
+          "name": "bow",
+          "shape": "bow",
+          "flip": "h",
+          "offset": [
+            13,
+            7
+          ]
+        },
+        {
+          "name": "arrow",
+          "shape": "arrow",
+          "offset": [
+            6,
+            10
+          ]
+        }
+      ]
+    },
+    {
+      "name": "loose",
+      "layers": [
+        {
+          "name": "body",
+          "shape": "ranger",
+          "offset": [
+            2,
+            1
+          ]
+        },
+        {
+          "name": "bow",
+          "shape": "bow",
+          "flip": "h",
+          "offset": [
+            13,
+            7
+          ]
+        },
+        {
+          "name": "arrow",
+          "shape": "arrow",
+          "offset": [
+            18,
+            10
+          ]
+        }
+      ]
+    },
+    {
+      "name": "recover",
+      "layers": [
+        {
+          "name": "body",
+          "shape": "ranger",
+          "offset": [
+            2,
+            1
+          ]
+        },
+        {
+          "name": "bow",
+          "shape": "bow",
+          "flip": "h",
+          "offset": [
+            13,
+            7
+          ]
+        },
+        {
+          "name": "arrow",
+          "shape": "arrow",
+          "offset": [
+            27,
+            10
+          ]
+        }
+      ]
+    }
+  ]
+}

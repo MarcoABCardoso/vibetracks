@@ -1,0 +1,416 @@
+{
+  "title": "Emberhold Vanguard",
+  "aesthetic": "20x20 classic-JRPG party \u2014 four heroes (knight, mage, ranger, cleric) and their foes, sharing one cool-fantasy palette with a warm gold accent",
+  "_comment": "The art bible for a 4-class RPG party. Coherence: every hero shares the same humanoid proportions, the gold accent, and the auto-outline; class identity comes from headgear, robe colour, and weapon. The PALETTE-SWAP leitmotif move is sprites/dark-knight.json (the knight recoloured into a boss). Monsters (slime/bat/skeleton) share only the palette + outline, not the hero shape.",
+  "size": [
+    20,
+    20
+  ],
+  "scale": 12,
+  "palette": {
+    "outline": "#181420",
+    "skin": "#e8b07a",
+    "skin_sh": "#bd7d4f",
+    "steel": "#6b8fc4",
+    "steel_hi": "#b7d4f0",
+    "steel_sh": "#3d5a86",
+    "gold": "#f2c14e",
+    "gold_sh": "#b8862f",
+    "cloak": "#c8443a",
+    "mage": "#6b4fb0",
+    "mage_hi": "#a98fe0",
+    "mage_sh": "#3f2c75",
+    "leaf": "#4f9d54",
+    "leaf_hi": "#84cf78",
+    "leaf_sh": "#2f6438",
+    "leather": "#9b6b3f",
+    "leather_sh": "#5f3f25",
+    "cloth": "#dcd6c4",
+    "cloth_hi": "#fbf7ea",
+    "cloth_sh": "#a39a82",
+    "magic": "#4ec0e0",
+    "magic_hi": "#bdf0fb",
+    "bone": "#e6e2cf",
+    "bone_sh": "#a39a82",
+    "shadow": "#5a3f7a",
+    "shadow_hi": "#8a6bb0",
+    "slime": "#6cc06c",
+    "slime_hi": "#aee6a6",
+    "flash": "#fff4d0"
+  },
+  "background": null,
+  "outline": {
+    "color": "outline"
+  },
+  "ramps": {
+    "steel": [
+      "steel_sh",
+      "steel",
+      "steel_hi"
+    ],
+    "gold": [
+      "gold_sh",
+      "gold"
+    ],
+    "mage": [
+      "mage_sh",
+      "mage",
+      "mage_hi"
+    ],
+    "leaf": [
+      "leaf_sh",
+      "leaf",
+      "leaf_hi"
+    ],
+    "cloth": [
+      "cloth_sh",
+      "cloth",
+      "cloth_hi"
+    ],
+    "magic": [
+      "magic",
+      "magic_hi"
+    ]
+  },
+  "motifs": {
+    "knight": {
+      "_comment": "Anchor hero. Steel plate, red surcoat, gold gorget+belt. Drawn without weapons so the same body rigs the attack animation; sword/shield are separate motifs.",
+      "legend": {
+        "a": "steel",
+        "h": "steel_hi",
+        "d": "steel_sh",
+        "c": "cloak",
+        "g": "gold",
+        "k": "skin",
+        "e": "outline"
+      },
+      "pixels": [
+        "....................",
+        ".........cc.........",
+        "........cc..........",
+        ".......aaaaaa.......",
+        "......ahhhhhha......",
+        "......akkkkkka......",
+        "......aekkkkea......",
+        "......akkkkkka......",
+        ".......gaaaag.......",
+        ".....daaaaaaaad.....",
+        ".....aaaaccaaaa.....",
+        ".....aaaaccaaaa.....",
+        ".....daaaccaaad.....",
+        ".....gggggggggg.....",
+        "......daaaaaad......",
+        "......aaa..aaa......",
+        "......aaa..aaa......",
+        "......daa..aad......",
+        ".....dddd..dddd.....",
+        "...................."
+      ]
+    },
+    "knight_torso": {
+      "_comment": "Knight from the belt up \u2014 split from the legs so the torso can lean while the feet plant/lunge in the attack rig.",
+      "legend": {
+        "a": "steel",
+        "h": "steel_hi",
+        "d": "steel_sh",
+        "c": "cloak",
+        "g": "gold",
+        "k": "skin",
+        "e": "outline"
+      },
+      "pixels": [
+        "....................",
+        ".........cc.........",
+        "........cc..........",
+        ".......aaaaaa.......",
+        "......ahhhhhha......",
+        "......akkkkkka......",
+        "......aekkkkea......",
+        "......akkkkkka......",
+        ".......gaaaag.......",
+        ".....daaaaaaaad.....",
+        ".....aaaaccaaaa.....",
+        ".....aaaaccaaaa.....",
+        ".....daaaccaaad.....",
+        ".....gggggggggg....."
+      ]
+    },
+    "knight_leg": {
+      "legend": {
+        "a": "steel",
+        "d": "steel_sh"
+      },
+      "pixels": [
+        "aaa",
+        "aaa",
+        "aaa",
+        "daa",
+        "ddd"
+      ]
+    },
+    "mage": {
+      "legend": {
+        "m": "mage",
+        "M": "mage_hi",
+        "n": "mage_sh",
+        "k": "skin",
+        "e": "outline",
+        "g": "gold"
+      },
+      "pixels": [
+        ".........m..........",
+        ".........mm.........",
+        "........mmm.........",
+        "........mMmm........",
+        ".......mmMMm........",
+        ".......mmMMmm.......",
+        "......mmmmmmmm......",
+        ".....mmmgggmmmm.....",
+        ".......kkkkkk.......",
+        ".......kekkek.......",
+        ".......kkkkkk.......",
+        "......mmmmmmmm......",
+        ".....mmMMMMMMmm.....",
+        ".....mnMMMMMMnm.....",
+        ".....mnMMMMMMnm.....",
+        "....mmnMMMMMMnmm....",
+        "....mmnnMMMMnnmm....",
+        "....mmmmmmmmmmmm....",
+        "....mmmm....mmmm....",
+        "...................."
+      ]
+    },
+    "ranger": {
+      "legend": {
+        "l": "leaf",
+        "L": "leaf_hi",
+        "s": "leaf_sh",
+        "b": "leather",
+        "B": "leather_sh",
+        "k": "skin",
+        "e": "outline"
+      },
+      "pixels": [
+        "....................",
+        "........llll........",
+        ".......llllll.......",
+        "......llLLLLll......",
+        "......llkkkkll......",
+        "......lekkkkel......",
+        "......llkkkkll......",
+        ".......lkkkkl.......",
+        "......bbbbbbbb......",
+        ".....bbBlllBbbb.....",
+        ".....bbbllllbbb.....",
+        ".....bsbbbbbbsb.....",
+        ".....bbbbbbbbbb.....",
+        "......bbbbbbbb......",
+        "......bbb..bbb......",
+        "......bbb..bbb......",
+        "......sbb..bbs......",
+        "......sss..sss......",
+        ".....ssss..ssss.....",
+        "...................."
+      ]
+    },
+    "cleric": {
+      "legend": {
+        "w": "cloth",
+        "W": "cloth_hi",
+        "v": "cloth_sh",
+        "k": "skin",
+        "e": "outline",
+        "g": "gold",
+        "G": "gold_sh"
+      },
+      "pixels": [
+        "....................",
+        ".......wwwwww.......",
+        "......wwwwwwww......",
+        "......wggggggw......",
+        "......wwkkkkww......",
+        "......wekkkkew......",
+        "......wwkkkkww......",
+        ".......wkkkkw.......",
+        "......wwwwwwww......",
+        ".....wwWggggWww.....",
+        ".....wwWgGGgWww.....",
+        ".....wwWWggWWww.....",
+        ".....wvWWWWWWvw.....",
+        "....wwvWWWWWWvww....",
+        "....wwvWWWWWWvww....",
+        "....wwWWWWWWWWww....",
+        "....wwvvWWWWvvww....",
+        "....wwwwwwwwwwww....",
+        "....wwww....wwww....",
+        "...................."
+      ]
+    },
+    "sword": {
+      "legend": {
+        "a": "steel",
+        "h": "steel_hi",
+        "g": "gold",
+        "p": "gold_sh"
+      },
+      "pixels": [
+        ".h.",
+        ".h.",
+        ".a.",
+        ".a.",
+        ".a.",
+        ".a.",
+        "ggg",
+        ".p.",
+        ".p."
+      ]
+    },
+    "shield": {
+      "legend": {
+        "a": "steel",
+        "h": "steel_hi",
+        "d": "steel_sh",
+        "g": "gold"
+      },
+      "pixels": [
+        "haaah",
+        "aaaaa",
+        "aagaa",
+        "aggga",
+        "aagaa",
+        "daaad",
+        ".ddd."
+      ]
+    },
+    "staff": {
+      "legend": {
+        "b": "leather",
+        "B": "leather_sh",
+        "o": "magic",
+        "O": "magic_hi"
+      },
+      "pixels": [
+        ".o.",
+        "oOo",
+        ".o.",
+        ".b.",
+        ".b.",
+        ".b.",
+        ".b.",
+        ".b.",
+        ".b.",
+        ".B.",
+        ".B."
+      ]
+    },
+    "bow": {
+      "legend": {
+        "b": "leather",
+        "B": "leather_sh",
+        "t": "cloth"
+      },
+      "pixels": [
+        "..bb.",
+        ".bB..",
+        "b....",
+        "b...t",
+        "b...t",
+        "b...t",
+        "b...t",
+        "b...t",
+        "b....",
+        ".bB..",
+        "..bb."
+      ]
+    },
+    "mace": {
+      "legend": {
+        "b": "leather",
+        "B": "leather_sh",
+        "g": "gold",
+        "G": "gold_sh"
+      },
+      "pixels": [
+        ".g.",
+        "gGg",
+        "gGg",
+        ".g.",
+        ".b.",
+        ".b.",
+        ".b.",
+        ".B.",
+        ".B."
+      ]
+    },
+    "crest": {
+      "_comment": "Shared gold emblem; rides on the cleric's chest and reused on the party banner.",
+      "legend": {
+        "g": "gold",
+        "G": "gold_sh"
+      },
+      "pixels": [
+        "..g..",
+        ".gGg.",
+        "gGGGg",
+        ".gGg.",
+        "..g.."
+      ]
+    },
+    "spark": {
+      "legend": {
+        "f": "flash",
+        "O": "magic_hi",
+        "X": "magic"
+      },
+      "pixels": [
+        "..f..",
+        ".fOf.",
+        "fOXOf",
+        ".fOf.",
+        "..f.."
+      ]
+    },
+    "slash": {
+      "legend": {
+        "f": "flash"
+      },
+      "pixels": [
+        "..ff",
+        ".ff.",
+        "ff..",
+        "ff..",
+        "ff..",
+        ".ff.",
+        "..ff"
+      ]
+    },
+    "arrow": {
+      "legend": {
+        "t": "leather",
+        "p": "steel_hi",
+        "f": "flash"
+      },
+      "pixels": [
+        "f....",
+        ".f...",
+        "ttttp",
+        ".f...",
+        "f...."
+      ]
+    }
+  },
+  "sprites": [
+    "knight",
+    "mage",
+    "ranger",
+    "cleric",
+    "slime",
+    "bat",
+    "skeleton",
+    "dark-knight",
+    "knight-attack",
+    "mage-attack",
+    "ranger-attack",
+    "cleric-attack"
+  ]
+}

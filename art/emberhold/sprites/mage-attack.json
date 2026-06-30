@@ -1,0 +1,130 @@
+{
+  "name": "mage-attack",
+  "extends": "../artbook.json",
+  "_comment": "4-frame spell cast. The mage charges the orb (a growing spark) and looses a magic bolt to the right; the body leans into the release. Pose-based: the body stays whole, the energy does the acting.",
+  "size": [
+    28,
+    22
+  ],
+  "frames": [
+    {
+      "name": "ready",
+      "layers": [
+        {
+          "name": "body",
+          "shape": "mage",
+          "offset": [
+            3,
+            1
+          ]
+        },
+        {
+          "name": "staff",
+          "shape": "staff",
+          "offset": [
+            5,
+            7
+          ]
+        }
+      ]
+    },
+    {
+      "name": "charge",
+      "layers": [
+        {
+          "name": "body",
+          "shape": "mage",
+          "offset": [
+            3,
+            1
+          ]
+        },
+        {
+          "name": "staff",
+          "shape": "staff",
+          "offset": [
+            5,
+            6
+          ]
+        },
+        {
+          "name": "glow",
+          "shape": "spark",
+          "offset": [
+            3,
+            4
+          ]
+        }
+      ]
+    },
+    {
+      "name": "cast",
+      "hold": 2,
+      "layers": [
+        {
+          "name": "body",
+          "shape": "mage",
+          "offset": [
+            4,
+            1
+          ]
+        },
+        {
+          "name": "staff",
+          "shape": "staff",
+          "offset": [
+            6,
+            6
+          ]
+        },
+        {
+          "name": "glow",
+          "shape": "spark",
+          "scale": 2,
+          "offset": [
+            2,
+            2
+          ]
+        },
+        {
+          "name": "bolt",
+          "shape": "spark",
+          "offset": [
+            18,
+            8
+          ]
+        }
+      ]
+    },
+    {
+      "name": "recover",
+      "layers": [
+        {
+          "name": "body",
+          "shape": "mage",
+          "offset": [
+            3,
+            1
+          ]
+        },
+        {
+          "name": "staff",
+          "shape": "staff",
+          "offset": [
+            5,
+            7
+          ]
+        },
+        {
+          "name": "bolt",
+          "shape": "spark",
+          "scale": 2,
+          "offset": [
+            20,
+            6
+          ]
+        }
+      ]
+    }
+  ]
+}

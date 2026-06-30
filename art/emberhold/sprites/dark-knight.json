@@ -1,0 +1,36 @@
+{
+  "name": "dark-knight",
+  "extends": "../artbook.json",
+  "_comment": "PALETTE SWAP of the knight \u2014 provably the same layers, only the colour table changes. The leitmotif move: a corrupted boss in shadow steel and bone gold.",
+  "palette": {
+    "steel": "#4a3d66",
+    "steel_hi": "#7d6ba6",
+    "steel_sh": "#2a2140",
+    "cloak": "#7a2f6a",
+    "gold": "#b9c0a0",
+    "gold_sh": "#7d8466",
+    "skin": "#9a8fb5"
+  },
+  "layers": [
+    {
+      "name": "shield",
+      "shape": "shield",
+      "offset": [
+        2,
+        9
+      ]
+    },
+    {
+      "name": "body",
+      "shape": "knight"
+    },
+    {
+      "name": "sword",
+      "shape": "sword",
+      "offset": [
+        15,
+        5
+      ]
+    }
+  ]
+}

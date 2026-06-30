@@ -1,0 +1,38 @@
+{
+  "name": "slime",
+  "extends": "../artbook.json",
+  "_comment": "Companion: shares only the palette + outline, none of the hero shape.",
+  "legend": {
+    "N": "slime_hi",
+    "n": "slime",
+    "w": "flash",
+    "e": "outline"
+  },
+  "layers": [
+    {
+      "name": "blob",
+      "pixels": [
+        "....................",
+        "....................",
+        "....................",
+        "......nnnnnn........",
+        "....nnNNNNNNnn......",
+        "...nNNNNNNNNNNn.....",
+        "..nNNNNNNNNNNNNn....",
+        "..nNNNNNNNNNNNNn....",
+        ".nNNeeNNNNNNeeNNn...",
+        ".nNNeeNNNNNNeeNNn...",
+        ".nNNNNNNNNNNNNNNn...",
+        ".nNNNNNwwNNNNNNNn...",
+        ".nNNNNNNNNNNNNNNn...",
+        "..nNNNNNNNNNNNNn....",
+        "...nnNNNNNNNNnn.....",
+        ".nn..nNNNNNNn..nn...",
+        ".NN...nnnnnn...NN...",
+        "....................",
+        "....................",
+        "...................."
+      ]
+    }
+  ]
+}

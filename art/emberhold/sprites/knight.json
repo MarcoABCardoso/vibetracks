@@ -1,0 +1,27 @@
+{
+  "name": "knight",
+  "extends": "../artbook.json",
+  "_comment": "Anchor sprite: knight body + shield on the left arm, sword held up on the right.",
+  "layers": [
+    {
+      "name": "shield",
+      "shape": "shield",
+      "offset": [
+        2,
+        9
+      ]
+    },
+    {
+      "name": "body",
+      "shape": "knight"
+    },
+    {
+      "name": "sword",
+      "shape": "sword",
+      "offset": [
+        15,
+        5
+      ]
+    }
+  ]
+}

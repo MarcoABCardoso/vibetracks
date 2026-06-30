@@ -1,0 +1,129 @@
+{
+  "name": "cleric-attack",
+  "extends": "../artbook.json",
+  "_comment": "4-frame holy smite: raise the mace overhead (held), bring it down, a gold flash bursts on impact, then settle. The mace swings about the grip through an arc.",
+  "size": [
+    26,
+    26
+  ],
+  "frames": [
+    {
+      "name": "ready",
+      "layers": [
+        {
+          "name": "body",
+          "shape": "cleric",
+          "offset": [
+            3,
+            4
+          ]
+        },
+        {
+          "name": "mace",
+          "shape": "mace",
+          "pivot": [
+            1,
+            8
+          ],
+          "rotate": 8,
+          "at": [
+            19,
+            12
+          ]
+        }
+      ]
+    },
+    {
+      "name": "raise",
+      "hold": 2,
+      "layers": [
+        {
+          "name": "body",
+          "shape": "cleric",
+          "offset": [
+            3,
+            4
+          ]
+        },
+        {
+          "name": "mace",
+          "shape": "mace",
+          "pivot": [
+            1,
+            8
+          ],
+          "rotate": -42,
+          "at": [
+            19,
+            11
+          ]
+        }
+      ]
+    },
+    {
+      "name": "smite",
+      "layers": [
+        {
+          "name": "body",
+          "shape": "cleric",
+          "offset": [
+            3,
+            5
+          ]
+        },
+        {
+          "name": "mace",
+          "shape": "mace",
+          "pivot": [
+            1,
+            8
+          ],
+          "rotate": 70,
+          "at": [
+            20,
+            13
+          ]
+        },
+        {
+          "name": "flash",
+          "shape": "spark",
+          "scale": 2,
+          "recolor": {
+            "magic_hi": "gold",
+            "magic": "gold_sh"
+          },
+          "offset": [
+            18,
+            12
+          ]
+        }
+      ]
+    },
+    {
+      "name": "recover",
+      "layers": [
+        {
+          "name": "body",
+          "shape": "cleric",
+          "offset": [
+            3,
+            4
+          ]
+        },
+        {
+          "name": "mace",
+          "shape": "mace",
+          "pivot": [
+            1,
+            8
+          ],
+          "rotate": 8,
+          "at": [
+            19,
+            12
+          ]
+        }
+      ]
+    }
+  ]
+}
