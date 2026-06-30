@@ -177,14 +177,15 @@
         {
           "name": "slash",
           "shape": "slash",
+          "flip": "h",
           "pivot": [
             2,
             3
           ],
-          "rotate": 100,
+          "rotate": 8,
           "at": [
-            28,
-            12
+            30,
+            10
           ]
         }
       ]
@@ -232,14 +233,15 @@
         {
           "name": "slash",
           "shape": "slash",
+          "flip": "h",
           "pivot": [
             2,
             3
           ],
-          "rotate": 150,
+          "rotate": 120,
           "at": [
-            26,
-            20
+            28,
+            23
           ]
         }
       ]
