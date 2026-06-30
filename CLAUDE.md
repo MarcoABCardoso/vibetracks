@@ -289,6 +289,44 @@ Optional per-layer `offset` `[dx, dy]` shifts the layer on the canvas.
 - One group = one coherent set. `new-group` to start a new world rather than
   overwriting an existing bible.
 
+## Authoring notes (lessons from building a party + attack animations)
+
+Practical things that bite when authoring a multi-character animated set (see the
+`emberhold` group: a 4-class RPG party with per-class attacks and monsters):
+
+- **Generate specs from a small builder script** that asserts every row in a
+  motif/`pixels` grid is the same length and *names the offending row*. Ragged
+  grids are the #1 hand-authoring error; catch them before the renderer does.
+- **Don't forget the `palette` field.** A missing bible `palette` surfaces as the
+  confusing `outline colour 'outline' is not in the palette` (the outline name has
+  nothing to resolve against). If validate complains about the outline colour,
+  check the palette exists first.
+- **Rig animations with shared sub-shapes, then transform — don't redraw.** Split
+  the hero into a `*_torso` + a reused `*_leg` (placed twice) so the torso can lean
+  while the back foot plants and the front foot lunges; swing the weapon as a
+  separate motif about a `pivot` pinned with `at`, through a real angle arc. Give
+  attack sprites a `size` override (wider/taller than the still) so the swung
+  weapon has room.
+- **A motion-trail crescent must be concentric with the swing — concave toward the
+  pivot, not toward the blade.** Reusing the *sword's* rotation for the `slash`
+  makes the crescent's opening face the blade, so the blade pokes through it and it
+  reads as a hollow "eyeglass" loop. Instead set the crescent's concavity with
+  `flip` and give it only a small `rotate` tangent to the blade, placed just past
+  the edge (e.g. strike `flip:h, rotate:~8`; follow-through `flip:h, rotate:~120`).
+- **Weapon facing must match the attack direction.** An arrow that flies right
+  needs the bow in the forward (right) hand — `flip:"h"` it — or the projectile
+  appears to pass back through the body. Draw back toward the body, loose away.
+- **Reuse one effect motif, recolour per class.** One `spark`/`flash` motif serves
+  every caster; `recolor` it at the placement (e.g. cyan→gold) so a cleric's smite
+  reads *holy* while a mage's bolt reads *arcane* — no second motif needed.
+- **A 4-class party justifies ~24-28 palette entries** (per-class material ramps),
+  above the 8-16 rule of thumb; hold coherence with one shared outline, one warm
+  gold accent across classes, and identical body proportions.
+- **You can see animations directly:** an animated sprite exports a horizontal
+  sheet PNG — `Read` it to view all frames at once. For stills, tile them into one
+  contact-sheet PNG (composite each `frame0`, `upscale`, paste onto a backdrop)
+  rather than reading a dozen files.
+
 ---
 
 ## The shared core & adding a Lab

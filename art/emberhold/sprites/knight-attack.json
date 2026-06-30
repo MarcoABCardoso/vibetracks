@@ -1,0 +1,292 @@
+{
+  "name": "knight-attack",
+  "extends": "../artbook.json",
+  "_comment": "6-frame sword swing built as an articulated RIG (not a slid stamp): the back leg plants while the front leg lunges, the torso leans into the blow, and the sword swings about the hand through a real arc (anticipation -> strike -> follow-through -> settle). The slash trails the blade on the action frames.",
+  "size": [
+    32,
+    26
+  ],
+  "frames": [
+    {
+      "name": "ready",
+      "layers": [
+        {
+          "name": "leg",
+          "shape": "knight_leg",
+          "offset": [
+            12,
+            18
+          ]
+        },
+        {
+          "name": "leg",
+          "shape": "knight_leg",
+          "offset": [
+            16,
+            18
+          ]
+        },
+        {
+          "name": "torso",
+          "shape": "knight_torso",
+          "offset": [
+            6,
+            4
+          ]
+        },
+        {
+          "name": "sword",
+          "shape": "sword",
+          "pivot": [
+            1,
+            7
+          ],
+          "rotate": 16,
+          "at": [
+            22,
+            13
+          ]
+        }
+      ]
+    },
+    {
+      "name": "windup",
+      "layers": [
+        {
+          "name": "leg",
+          "shape": "knight_leg",
+          "offset": [
+            12,
+            18
+          ]
+        },
+        {
+          "name": "leg",
+          "shape": "knight_leg",
+          "offset": [
+            15,
+            18
+          ]
+        },
+        {
+          "name": "torso",
+          "shape": "knight_torso",
+          "offset": [
+            5,
+            4
+          ]
+        },
+        {
+          "name": "sword",
+          "shape": "sword",
+          "pivot": [
+            1,
+            7
+          ],
+          "rotate": -38,
+          "at": [
+            21,
+            12
+          ]
+        }
+      ]
+    },
+    {
+      "name": "swing",
+      "layers": [
+        {
+          "name": "leg",
+          "shape": "knight_leg",
+          "offset": [
+            12,
+            18
+          ]
+        },
+        {
+          "name": "leg",
+          "shape": "knight_leg",
+          "offset": [
+            17,
+            18
+          ]
+        },
+        {
+          "name": "torso",
+          "shape": "knight_torso",
+          "offset": [
+            7,
+            4
+          ]
+        },
+        {
+          "name": "sword",
+          "shape": "sword",
+          "pivot": [
+            1,
+            7
+          ],
+          "rotate": 58,
+          "at": [
+            22,
+            12
+          ]
+        }
+      ]
+    },
+    {
+      "name": "strike",
+      "hold": 2,
+      "layers": [
+        {
+          "name": "leg",
+          "shape": "knight_leg",
+          "offset": [
+            12,
+            18
+          ]
+        },
+        {
+          "name": "leg",
+          "shape": "knight_leg",
+          "offset": [
+            19,
+            18
+          ]
+        },
+        {
+          "name": "torso",
+          "shape": "knight_torso",
+          "offset": [
+            8,
+            4
+          ]
+        },
+        {
+          "name": "sword",
+          "shape": "sword",
+          "pivot": [
+            1,
+            7
+          ],
+          "rotate": 102,
+          "at": [
+            23,
+            14
+          ]
+        },
+        {
+          "name": "slash",
+          "shape": "slash",
+          "flip": "h",
+          "pivot": [
+            2,
+            3
+          ],
+          "rotate": 8,
+          "at": [
+            30,
+            10
+          ]
+        }
+      ]
+    },
+    {
+      "name": "follow",
+      "layers": [
+        {
+          "name": "leg",
+          "shape": "knight_leg",
+          "offset": [
+            12,
+            18
+          ]
+        },
+        {
+          "name": "leg",
+          "shape": "knight_leg",
+          "offset": [
+            19,
+            18
+          ]
+        },
+        {
+          "name": "torso",
+          "shape": "knight_torso",
+          "offset": [
+            8,
+            5
+          ]
+        },
+        {
+          "name": "sword",
+          "shape": "sword",
+          "pivot": [
+            1,
+            7
+          ],
+          "rotate": 148,
+          "at": [
+            22,
+            17
+          ]
+        },
+        {
+          "name": "slash",
+          "shape": "slash",
+          "flip": "h",
+          "pivot": [
+            2,
+            3
+          ],
+          "rotate": 120,
+          "at": [
+            28,
+            23
+          ]
+        }
+      ]
+    },
+    {
+      "name": "recover",
+      "layers": [
+        {
+          "name": "leg",
+          "shape": "knight_leg",
+          "offset": [
+            12,
+            18
+          ]
+        },
+        {
+          "name": "leg",
+          "shape": "knight_leg",
+          "offset": [
+            16,
+            18
+          ]
+        },
+        {
+          "name": "torso",
+          "shape": "knight_torso",
+          "offset": [
+            6,
+            4
+          ]
+        },
+        {
+          "name": "sword",
+          "shape": "sword",
+          "pivot": [
+            1,
+            7
+          ],
+          "rotate": 20,
+          "at": [
+            22,
+            13
+          ]
+        }
+      ]
+    }
+  ]
+}
