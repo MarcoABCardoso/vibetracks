@@ -1,0 +1,81 @@
+{
+  "title": "Tiny Knight",
+  "aesthetic": "16x16 fantasy pixel-art, cool steel palette with a warm gold accent",
+  "_comment": "The art bible: one palette + reusable shape motifs every sprite shares. Coherence here is the visual analogue of a soundtrack's shared key + motifs. The leitmotif move is the PALETTE SWAP — see sprites/knight-dusk.json, which is the knight in different colours and nothing else.",
+  "size": [16, 16],
+  "scale": 16,
+
+  "palette": {
+    "outline": "#14131f",
+    "skin": "#e8b07a",
+    "steel": "#6b8fc4",
+    "steel_hi": "#b7d4f0",
+    "steel_sh": "#3d5a86",
+    "gold": "#f2c14e",
+    "gold_sh": "#b8862f",
+    "cloak": "#c8443a",
+    "slime": "#6cc06c",
+    "slime_hi": "#aee6a6",
+    "flash": "#fff4d0"
+  },
+
+  "background": null,
+  "outline": { "color": "outline" },
+
+  "ramps": {
+    "steel": ["steel_sh", "steel", "steel_hi"],
+    "gold": ["gold_sh", "gold"]
+  },
+
+  "motifs": {
+    "knight": {
+      "_comment": "The hero's pose, stated in full here once (like a soundtrack stating its main theme). The outer black outline is NOT drawn — the engine's auto-outline traces the silhouette, so motifs only carry interior shading.",
+      "legend": { "a": "steel", "h": "steel_hi", "d": "steel_sh", "c": "cloak", "p": "gold", "o": "outline" },
+      "pixels": [
+        "................",
+        ".......pp.......",
+        ".....aaaaaa.....",
+        "....ahhhhhha....",
+        "....adoddoda....",
+        "....adddddda....",
+        "...caaaaaaaac...",
+        "...caahhhhaac...",
+        "...caaaaaaaac...",
+        "....dddddddd....",
+        "....aaaaaaaa....",
+        ".....aa..aa.....",
+        ".....aa..aa.....",
+        ".....dd..dd.....",
+        "................",
+        "................"
+      ]
+    },
+
+    "crest": {
+      "_comment": "A small gold emblem — the repeated SHAPE motif. It rides on the knight's chest and reappears, enlarged, on the banner: the same shape with two faces, the way a leitmotif recurs across cues.",
+      "legend": { "g": "gold", "G": "gold_sh" },
+      "pixels": [
+        "..gg..",
+        ".gGGg.",
+        "gGGGGg",
+        "gGGGGg",
+        ".gGGg.",
+        "..gg.."
+      ]
+    },
+
+    "slash": {
+      "_comment": "A bright arc for the attack animation's strike frame.",
+      "legend": { "f": "flash" },
+      "pixels": [
+        "...ff",
+        "..ff.",
+        ".ff..",
+        "ff...",
+        "f...."
+      ]
+    }
+  },
+
+  "sprites": ["knight", "knight-dusk", "banner", "slime", "knight-attack"]
+}

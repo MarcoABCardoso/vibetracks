@@ -18,9 +18,11 @@ the sequencer. Validation raises :class:`SpecError` with a human-readable path.
 
 from __future__ import annotations
 
-import json
 import os
 from dataclasses import dataclass, field
+
+from labkit.groups import discover_group_dirs
+from labkit.specbase import SpecError, load_json  # shared across Labs
 
 from . import theory
 from .instruments import DEFAULT_PALETTE, ENGINES, merge_patch
@@ -31,17 +33,8 @@ GROUPS_DIR = "groups"        # where soundtrack groups live
 BIBLE_FILE = "soundtrack.json"
 TRACKS_SUBDIR = "tracks"
 
-
-class SpecError(ValueError):
-    """Raised when a spec is structurally or musically invalid."""
-
-
-def load_json(path: str) -> dict:
-    with open(path, "r", encoding="utf-8") as f:
-        try:
-            return json.load(f)
-        except json.JSONDecodeError as e:
-            raise SpecError(f"{path}: invalid JSON: {e}") from e
+__all__ = ["SpecError", "load_json", "Bible", "load_bible", "resolve_track",
+           "Group", "discover_groups", "find_group"]
 
 
 @dataclass
@@ -270,13 +263,9 @@ def discover_groups(root: str = ".") -> list:
     ``root`` itself is exposed as the ``default`` group when there is no
     ``groups/`` directory.
     """
-    groups = []
-    gdir = os.path.join(root, GROUPS_DIR)
-    if os.path.isdir(gdir):
-        for name in sorted(os.listdir(gdir)):
-            d = os.path.join(gdir, name)
-            if os.path.isfile(os.path.join(d, BIBLE_FILE)):
-                groups.append(Group(name=name, dir=d))
+    groups = [Group(name=name, dir=d)
+              for name, d in discover_group_dirs(os.path.join(root, GROUPS_DIR),
+                                                 BIBLE_FILE)]
     if not groups and os.path.isfile(os.path.join(root, BIBLE_FILE)):
         groups.append(Group(name="default", dir=root))
     return groups

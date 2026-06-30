@@ -78,7 +78,7 @@ class. Every Lab is the same machine with a different theory:
 | Lab | Artifact | "Theory" (constraints) | Engine spectrum |
 |-----|----------|------------------------|-----------------|
 | **VibeTracks** *(exists)* | music / SFX | scales, harmony, rhythm | pure DSP → soundfont |
-| **PixelTracks** *(prototyped)* | sprites, items, tiles, animation, VFX | palette, silhouette, light direction, frame timing | procedural raster → ControlNet/seeded diffusion, palette-conformed |
+| **PixelTracks** *(exists)* | sprites, items, animation, VFX | palette, silhouette, shape motifs, frame timing | procedural raster → (later) ControlNet/seeded diffusion, palette-conformed |
 | **TileTracks** | tilesets, autotiling, levels/maps | grid adjacency rules, Wang/blob tiles, connectivity | procedural → constrained gen |
 | **UITracks** | HUD, panels, icons, fonts | 9-slice, type scale, spacing grid, contrast | procedural (strongest fit) |
 | **LoreTracks** | dialogue, item text, quests, codex | character voice "palette", world facts, tone | templated → LLM-with-guardrails |
@@ -126,12 +126,16 @@ coherent because they share a root.
 motifs, transforms, deterministic synth + optional soundfont engine, validator,
 groups, demo scores, craft guide.
 
-**Phase 1 — A second Lab (PixelTracks).** Promote the visual prototype into a
-real Lab that mirrors VibeTracks' module layout: an art bible (palette, shape
-language, light, motif shapes), JSON sprite/animation specs, a procedural raster
-engine, a validator (palette adherence, silhouette readability, loop-seam), and
-exporters (PNG sheet, APNG, atlas JSON). **No generative model yet** — prove the
-structured core first, exactly as the music Lab did before soundfont.
+**Phase 1 — A second Lab (PixelTracks). _(done)_** The visual prototype is now a
+real Lab mirroring VibeTracks' module layout: an art bible (`artbook.json`:
+palette, shape motifs, outline), JSON sprite/animation specs, a procedural raster
+engine (`pixeltracks/`), a validator (palette adherence, well-formed grids,
+empty-silhouette coverage check), and exporters (PNG sheet + atlas JSON). The
+shared machine was factored into `labkit/` (group discovery, the Lab registry)
+and a `python -m labs` dispatcher now unifies both Labs. **No generative model
+yet** — the structured core is proven first, exactly as the music Lab did before
+soundfont. Worked demo: the `tiny-knight` group (a palette-swap variant and a
+re-posed attack animation included).
 
 **Phase 2 — The Root Spec.** Introduce `world.json` and refactor both Labs'
 bibles to `extend` it. Add cross-Lab references by entity id and the first

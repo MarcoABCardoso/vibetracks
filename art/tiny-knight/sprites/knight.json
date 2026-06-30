@@ -1,0 +1,9 @@
+{
+  "name": "knight",
+  "extends": "../artbook.json",
+  "_comment": "The anchor sprite: states the knight pose in full and wears the crest. Every other sprite is a transformation of, or a companion to, this one.",
+  "layers": [
+    { "name": "body", "shape": "knight" },
+    { "name": "crest", "shape": "crest", "offset": [5, 6] }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "name": "knight-attack",
+  "extends": "../artbook.json",
+  "_comment": "A 4-frame attack animation: the SAME knight shape re-posed by per-frame offsets (the temporal analogue of concatenating sections), with a flash 'slash' motif on the strike. Compiles to a horizontal sprite sheet plus a .atlas.json describing each frame's rect and hold — like render-all's manifest, but for animation.",
+  "frames": [
+    {
+      "name": "idle",
+      "layers": [
+        { "name": "body", "shape": "knight" }
+      ]
+    },
+    {
+      "name": "windup",
+      "layers": [
+        { "name": "body", "shape": "knight", "offset": [-1, -1] }
+      ]
+    },
+    {
+      "name": "strike",
+      "hold": 2,
+      "layers": [
+        { "name": "body", "shape": "knight", "offset": [1, 0] },
+        { "name": "slash", "shape": "slash", "offset": [10, 1], "scale": 2 }
+      ]
+    },
+    {
+      "name": "recover",
+      "layers": [
+        { "name": "body", "shape": "knight", "offset": [0, 1] }
+      ]
+    }
+  ]
+}

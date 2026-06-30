@@ -1,0 +1,13 @@
+{
+  "name": "banner",
+  "extends": "../artbook.json",
+  "_comment": "The crest motif recurs here on a heraldic banner — one shape with two faces (chest emblem + banner device), the leitmotif reappearing in a new setting. Also shows the procedural primitives (rect/line/ellipse) that stand in for music's chord symbols: higher-level shapes rather than per-pixel grids.",
+  "layers": [
+    { "name": "pole",     "rect": { "at": [3, 0], "size": [1, 16], "color": "steel_sh" } },
+    { "name": "finial",   "ellipse": { "at": [2, 0], "size": [3, 3], "color": "gold" } },
+    { "name": "cloth",    "rect": { "at": [4, 2], "size": [10, 11], "color": "cloak" } },
+    { "name": "trim_top", "line": { "from": [4, 2], "to": [13, 2], "color": "gold" } },
+    { "name": "trim_bot", "line": { "from": [4, 12], "to": [13, 12], "color": "gold" } },
+    { "name": "device",   "shape": "crest", "offset": [6, 4] }
+  ]
+}

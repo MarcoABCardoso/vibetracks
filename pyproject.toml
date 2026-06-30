@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "vibetracks"
-version = "0.1.0"
-description = "A game-soundtrack lab: model songs as JSON, compile them to WAV with pure-Python synthesis."
+version = "0.2.0"
+description = "A multi-Lab game-artifact workshop: model assets as JSON, compile them deterministically. VibeTracks (music) and PixelTracks (sprites)."
 readme = "README.md"
 requires-python = ">=3.9"
 dependencies = ["numpy>=1.24", "scipy>=1.10"]
@@ -16,7 +16,10 @@ dependencies = ["numpy>=1.24", "scipy>=1.10"]
 soundfont = ["pyfluidsynth>=1.3.0"]
 
 [project.scripts]
-vibetracks = "vibetracks.__main__:main"
+labs = "labs.__main__:main"               # dispatcher across every Lab
+vibetracks = "vibetracks.__main__:main"   # the music Lab
+pixeltracks = "pixeltracks.__main__:main" # the sprite Lab
 
 [tool.setuptools]
-packages = ["vibetracks"]
+# labkit is the shared core; labs is the dispatcher; the rest are the Labs.
+packages = ["labkit", "labs", "vibetracks", "pixeltracks"]

@@ -1,13 +1,42 @@
 # VibeTracks — guide for Claude
 
-This repo is a **game-soundtrack lab**: songs are modeled as JSON specs and
-compiled to WAV by a pure-Python synth (`numpy` + `scipy` only — no FluidSynth,
-SoX, ffmpeg, or soundfonts; those aren't installable in this environment).
+This repo is a **multi-Lab game-artifact workshop**. A *Lab* is a structured
+spec → validate → compile → iterate workshop for one artifact class. Every Lab is
+the same machine with a different theory (see `VISION.md`):
+
+| Lab | Artifact | Author edits | Compiles to | Skill |
+|-----|----------|--------------|-------------|-------|
+| **VibeTracks** | music / SFX | JSON song specs | WAV (pure-Python synth) | `/soundtrack` |
+| **PixelTracks** | sprites / images | JSON sprite specs | PNG (procedural raster) | `/spritesheet` |
+
+Shared core in **`labkit/`** (error type, group discovery, the Lab registry);
+each Lab is its own package (`vibetracks/`, `pixeltracks/`) with the *same* CLI
+verbs. A dispatcher unifies them:
+
+```bash
+python -m labs                       # list the Labs
+python -m labs <lab> <command...>    # run a Lab's CLI (e.g. labs pixeltracks render-all)
+python -m labs validate              # validate every Lab's specs
+python -m <lab> <command...>         # or run a Lab directly
+```
+
+**Pick the right Lab for the request:** game *music* → VibeTracks (`/soundtrack`);
+game *sprites / pixel art / images* → PixelTracks (`/spritesheet`). The rest of
+this file is the **spec reference** for both — VibeTracks first, then PixelTracks
+(see "PixelTracks — the sprite Lab" near the end).
+
+---
+
+## VibeTracks — the music Lab
+
+Songs are modeled as JSON specs and compiled to WAV by a pure-Python synth
+(`numpy` + `scipy` only — no FluidSynth, SoX, ffmpeg, or soundfonts; those aren't
+installable in this environment).
 
 When the user wants to make game music, use the **`/soundtrack` skill** — it
-encodes the compose→render→iterate workflow. This file is the **spec reference**;
-**`docs/composition.md`** is the craft guide (leitmotif transformation, melody,
-harmony, form — lessons from Zelda/Castlevania/Undertale and others).
+encodes the compose→render→iterate workflow. **`docs/composition.md`** is the
+craft guide (leitmotif transformation, melody, harmony, form — lessons from
+Zelda/Castlevania/Undertale and others).
 
 ## Commands
 
@@ -162,3 +191,111 @@ Schroeder) or `{decay, mix, predelay}` for the denser convolution reverb. The
 - Rendered `out/<group>/*.wav` are build artifacts (gitignored); commit the JSON specs.
 - One group = one coherent score. Don't reach across groups for motifs/palette; to
   start a new game or region, `new-group` rather than overwriting an existing bible.
+
+---
+
+# PixelTracks — the sprite Lab
+
+The visual sibling of VibeTracks, built on the same `labkit` core and mirroring
+its module layout. Sprites are modeled as JSON and compiled to **PNG** by a
+procedural raster engine (`numpy` + stdlib `zlib` for PNG — **no image
+generator**, no Pillow). When the user wants game sprites/pixel art, use the
+**`/spritesheet` skill**; **`docs/pixelcraft.md`** is the craft guide (palette,
+silhouette, shape motifs, the palette-swap leitmotif, animation).
+
+## Commands
+
+```bash
+python -m pixeltracks validate                  # check every group's specs
+python -m pixeltracks render <group>/<sprite>   # render one sprite to out/<group>/<sprite>.png
+python -m pixeltracks render-all                # render every sprite in every group
+python -m pixeltracks new <sprite> --group <g>  # scaffold art/<g>/sprites/<sprite>.json
+python -m pixeltracks new-group <name>          # scaffold a whole new group
+```
+
+Same addressing as VibeTracks: `<group>/<sprite>`, a bare `<sprite>` (with
+`--group`), or a path to its JSON. `render-all` writes `out/<group>/manifest.json`
+plus a top-level index; an animated sprite also gets a `<sprite>.atlas.json`.
+
+## The model (mirror of the music model)
+
+### Group — `art/<name>/`
+One self-contained sprite set: its own bible (`art/<name>/artbook.json`) plus
+`art/<name>/sprites/*.json`. The repo ships a demo group (`tiny-knight`).
+
+### Bible — `art/<name>/artbook.json`
+
+| Field | Meaning |
+|-------|---------|
+| `title`, `aesthetic` | Labels (informational). |
+| `size` | Default canvas `[width, height]` in pixels (e.g. `[16, 16]`). |
+| `scale` | Integer export upscale (nearest-neighbour); `16` → a 256px PNG. |
+| `palette` | Map of **role name → `#hex`**. The coherence anchor; sprites reference names, never raw hex. `#rgb`/`#rrggbb`/`#rrggbbaa` and `"transparent"` accepted. |
+| `ramps` | Optional named shadow→highlight lists of palette names (documentation/shading). |
+| `background` | Palette name to fill the canvas, or `null` for transparent. |
+| `outline` | `{"color": <name>}` to auto-trace a 1px silhouette outline, or `null`. |
+| `motifs` | Named reusable shapes, each `{"legend": {char: colorName}, "pixels": [rows]}`. The cohesion mechanism (= music's `motifs`). |
+| `sprites` | Ordered sprite names that `render-all` builds (= music's `tracks`). |
+
+### Sprite — `art/<name>/sprites/<sprite>.json`
+
+| Field | Meaning |
+|-------|---------|
+| `name` | Output filename stem. |
+| `extends` | Path to the bible, e.g. `"../artbook.json"`. |
+| `size`, `scale`, `palette`, `background`, `outline` | Optional overrides. A `palette` override is the **palette-swap leitmotif**. |
+| `legend` | Optional sprite-level default `char → colorName` for `pixels` layers. |
+| `motifs` | Optional per-sprite extra shapes. |
+| `layers` | List of layers composited in z-order (later paints over earlier). |
+| `frames` | Optional list of `{name?, hold?, layers}` for animation; absent ⇒ one frame from `layers`. |
+
+### Layers (= music's parts)
+Each layer is composited in order and is **exactly one** of:
+
+- **`pixels`** — `[rows]` of legend chars (`.`/space = transparent) + a `legend`
+  (or the sprite-level default). The workhorse; ASCII-art-legible in a diff.
+- **`shape`** — name of a bible/sprite motif (the coherence mechanism). Supports
+  the leitmotif transforms: `flip` (`"h"`/`"v"`/`"hv"`), `rotate` (0/90/180/270),
+  `scale` (positive int = augment), `recolor` (`{colorName: colorName}` swap for
+  this placement only). Applied flip→rotate→scale.
+- **`rect`** / **`ellipse`** — `{"at": [x,y], "size": [w,h], "color": <name>, "fill": bool}`.
+- **`line`** — `{"from": [x,y], "to": [x,y], "color": <name>}`.
+
+Optional per-layer `offset` `[dx, dy]` shifts the layer on the canvas.
+
+## How compilation works (where to edit)
+
+- `pixeltracks/palette.py` — hex↔RGBA, named palettes, `shade` (≈ `theory.py`).
+- `pixeltracks/shapes.py` — grids + transforms `flip`/`rotate`/`scale`/`recolor`.
+- `pixeltracks/raster.py` — canvas, pixel/rect/ellipse/line painters, auto-outline,
+  upscale (≈ `synth.py`: the low-level renderers/effects).
+- `pixeltracks/compositor.py` — composites a resolved sprite's layers/frames into a
+  sheet + atlas (≈ `sequencer.py`). Add new layer *kinds* here.
+- `pixeltracks/spec.py` — load/validate bible + sprites; `extends`; `Group`/
+  `discover_groups` for the `art/` layout (and validation in `_validate_layer`).
+- `pixeltracks/pngio.py` — RGBA array → PNG, stdlib only (≈ `wavio.py`).
+
+## Conventions
+
+- Keep sprites coherent: `extends` the bible, reference colours by **name**,
+  reuse shape motifs. The validator rejects off-palette colours like a wrong note.
+- **State the hero shape once** (the anchor sprite) and reuse it transformed
+  elsewhere; let companions share only the palette. Don't quote the hero in every
+  sprite, or the set looks monotonous (= the "don't restate the hook everywhere" rule).
+- Author motifs **without** the outer outline — the `outline` effect adds it; carry
+  only interior shading so grids stay readable.
+- PNG is the only output format. Rendered `out/<group>/*.png` are build artifacts
+  (gitignored); commit the JSON specs.
+- One group = one coherent set. `new-group` to start a new world rather than
+  overwriting an existing bible.
+
+---
+
+## The shared core & adding a Lab
+
+- `labkit/` — `SpecError` + `load_json` (`specbase.py`), generic group discovery
+  (`groups.py`), and the `Lab` registry (`registry.py`). Both Labs build on it.
+- `labs/__main__.py` — the dispatcher (`python -m labs`).
+- To add a Lab: create a package mirroring this layout (model + validator +
+  deterministic engine + CLI with the same verbs) and append a `Lab(...)` entry to
+  `labkit/registry.py`. See `VISION.md` for the roadmap of future Labs.
