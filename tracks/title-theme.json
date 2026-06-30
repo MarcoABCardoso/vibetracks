@@ -1,0 +1,41 @@
+{
+  "name": "title-theme",
+  "extends": "../soundtrack.json",
+  "_comment": "Anthemic main theme for the title/menu screen. States the hook in full over the home progression Am-F-C-G.",
+  "bpm": 112,
+  "time_signature": [4, 4],
+
+  "sections": [
+    {
+      "name": "intro",
+      "bars": 4,
+      "parts": {
+        "pad": { "instrument": "pad", "chords": ["Am", "F", "C", "G"], "chord_beats": 4 },
+        "arp": { "instrument": "arp", "repeat": 4,
+                 "notes": [["A4", 0.5], ["E5", 0.5], ["C5", 0.5], ["E5", 0.5],
+                           ["A4", 0.5], ["E5", 0.5], ["C5", 0.5], ["E5", 0.5]] }
+      }
+    },
+    {
+      "name": "loop",
+      "bars": 4,
+      "loop": true,
+      "parts": {
+        "lead":  { "instrument": "lead", "motif": "main_theme", "repeat": 2, "gain": 0.9 },
+        "bass":  { "instrument": "bass",
+                   "notes": [["A2", 1], ["A2", 1], ["A2", 1], ["A2", 1],
+                             ["F2", 1], ["F2", 1], ["F2", 1], ["F2", 1],
+                             ["C2", 1], ["C2", 1], ["C2", 1], ["C2", 1],
+                             ["G2", 1], ["G2", 1], ["G2", 1], ["G2", 1]] },
+        "pad":   { "instrument": "pad", "chords": ["Am", "F", "C", "G"], "chord_beats": 4 },
+        "arp":   { "instrument": "arp", "repeat": 2, "pan": 0.4,
+                   "notes": [["A4", 0.5], ["C5", 0.5], ["E5", 0.5], ["C5", 0.5],
+                             ["F4", 0.5], ["A4", 0.5], ["C5", 0.5], ["A4", 0.5],
+                             ["C4", 0.5], ["E4", 0.5], ["G4", 0.5], ["E4", 0.5],
+                             ["G4", 0.5], ["B4", 0.5], ["D5", 0.5], ["B4", 0.5]] },
+        "drums": { "instrument": "drums",
+                   "drums": { "kick": "x...x...", "snare": "....x...", "hat": "x.x.x.x." } }
+      }
+    }
+  ]
+}

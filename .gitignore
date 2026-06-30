@@ -1,0 +1,10 @@
+# Rendered audio + manifest are build artifacts — regenerate with `python -m vibetracks render-all`.
+out/
+
+__pycache__/
+*.pyc
+*.egg-info/
+.pytest_cache/
+build/
+dist/
+.venv/

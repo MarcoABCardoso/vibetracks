@@ -1,0 +1,46 @@
+{
+  "name": "boss",
+  "extends": "../soundtrack.json",
+  "_comment": "Dark, intense boss fight. The hook is dropped an octave; harmonic-minor cadence (Am-F-Dm-E) and the 'danger' motif drive the menace. Fastest tempo.",
+  "bpm": 150,
+  "key": "A harmonic_minor",
+  "time_signature": [4, 4],
+
+  "palette": {
+    "lead": { "filter": 5000, "gain": 0.85 },
+    "pad":  { "filter": 2200, "gain": 0.4 },
+    "bass": { "filter": 1500, "gain": 1.0 }
+  },
+
+  "sections": [
+    {
+      "name": "intro",
+      "bars": 2,
+      "parts": {
+        "pad":   { "instrument": "pad", "chords": ["Am", "E"], "chord_beats": 4, "gain": 0.45 },
+        "pluck": { "instrument": "pluck", "motif": "danger", "repeat": 2, "gain": 0.6 }
+      }
+    },
+    {
+      "name": "loop",
+      "bars": 4,
+      "loop": true,
+      "parts": {
+        "lead":  { "instrument": "lead", "motif": "main_theme", "repeat": 2, "transpose": -12, "gain": 0.85 },
+        "pluck": { "instrument": "pluck", "motif": "danger", "repeat": 4, "pan": -0.25, "gain": 0.55 },
+        "bass":  { "instrument": "bass",
+                   "notes": [["A1", 0.5], ["A1", 0.5], ["A2", 0.5], ["A1", 0.5],
+                             ["A1", 0.5], ["A1", 0.5], ["A2", 0.5], ["A1", 0.5],
+                             ["F1", 0.5], ["F1", 0.5], ["F2", 0.5], ["F1", 0.5],
+                             ["F1", 0.5], ["F1", 0.5], ["F2", 0.5], ["F1", 0.5],
+                             ["D2", 0.5], ["D2", 0.5], ["D3", 0.5], ["D2", 0.5],
+                             ["D2", 0.5], ["D2", 0.5], ["D3", 0.5], ["D2", 0.5],
+                             ["E2", 0.5], ["E2", 0.5], ["E3", 0.5], ["E2", 0.5],
+                             ["E2", 0.5], ["E2", 0.5], ["E3", 0.5], ["E2", 0.5]] },
+        "pad":   { "instrument": "pad", "chords": ["Am", "F", "Dm", "E"], "chord_beats": 4 },
+        "drums": { "instrument": "drums",
+                   "drums": { "kick": "x.xxx.x.", "snare": "....x...", "hat": "xoxoxoxo" } }
+      }
+    }
+  ]
+}
