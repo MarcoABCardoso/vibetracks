@@ -1,0 +1,16 @@
+{
+  "name": "knight-dusk",
+  "extends": "../artbook.json",
+  "_comment": "THE LEITMOTIF MOVE. Identical layers to knight.json — same pose, same surcoat+crest — but the palette is swapped to night colours. This is the visual analogue of transposing a theme into a darker key: change the identity in one place, the whole sprite moves with it. Nothing else differs.",
+  "palette": {
+    "steel": "#465089",
+    "steel_hi": "#737cc0",
+    "steel_sh": "#232a4d",
+    "cloak": "#7a2f6a",
+    "gold": "#d8a24a",
+    "gold_sh": "#9c6e2a"
+  },
+  "layers": [
+    { "name": "body", "shape": "knight" }
+  ]
+}

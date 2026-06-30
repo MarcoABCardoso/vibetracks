@@ -1,4 +1,5 @@
-# Rendered audio + manifest are build artifacts — regenerate with `python -m vibetracks render-all`.
+# Rendered artifacts (WAV/PNG) + manifests are build outputs — regenerate with
+# `python -m vibetracks render-all` / `python -m pixeltracks render-all`.
 out/
 
 __pycache__/
