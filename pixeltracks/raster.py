@@ -10,6 +10,8 @@ ones the way later parts mix over a track.
 
 from __future__ import annotations
 
+import math
+
 import numpy as np
 
 
@@ -50,6 +52,55 @@ def draw_grid(canvas, rows, legend_rgba, ox=0, oy=0) -> None:
             rgba = legend_rgba.get(ch)
             if rgba is not None:
                 paint(canvas, ox + i, oy + j, rgba)
+
+
+def draw_grid_rotated(canvas, rows, legend_rgba, degrees, pivot, at) -> None:
+    """Paint a char grid rotated by an arbitrary angle about a ``pivot``.
+
+    Unlike :func:`shapes.rotate` (a lossless 90°-step grid turn), this is a
+    *pixel-space* rotation by any angle, so a sword can trace a real swing arc
+    instead of snapping to a quarter-turn. ``degrees`` is clockwise; ``pivot``
+    ``[px, py]`` is the centre of rotation in the grid's own pixel coordinates,
+    and that pivot is placed at canvas point ``at`` ``[ax, ay]`` — i.e. the grid
+    rotates *about its hand/joint* and that joint is pinned to the body.
+
+    Inverse-mapped + nearest-neighbour so the result stays hole-free and crisp,
+    the way pixel art should look. Out-of-palette/transparent cells are skipped.
+    """
+    gh, gw = len(rows), len(rows[0])
+    tile = np.zeros((gh, gw, 4), dtype=np.uint8)
+    for j, row in enumerate(rows):
+        for i, ch in enumerate(row):
+            if ch in ". ":
+                continue
+            rgba = legend_rgba.get(ch)
+            if rgba is not None:
+                tile[j, i] = rgba
+
+    th = math.radians(degrees)
+    c, s = math.cos(th), math.sin(th)
+    px, py = pivot
+    ax, ay = at
+
+    # Output bounding box: forward-rotate the grid's corners about the pivot.
+    xs, ys = [], []
+    for gx, gy in ((0, 0), (gw, 0), (0, gh), (gw, gh)):
+        rx, ry = gx - px, gy - py
+        xs.append(c * rx - s * ry)
+        ys.append(s * rx + c * ry)
+    minx, maxx = math.floor(min(xs)), math.ceil(max(xs))
+    miny, maxy = math.floor(min(ys)), math.ceil(max(ys))
+
+    # Inverse map each output pixel back to a source cell (no gaps).
+    for oy in range(miny, maxy + 1):
+        for ox in range(minx, maxx + 1):
+            sx = int(round(px + c * ox + s * oy))
+            sy = int(round(py - s * ox + c * oy))
+            if 0 <= sx < gw and 0 <= sy < gh:
+                rgba = tile[sy, sx]
+                if rgba[3] > 0:
+                    paint(canvas, int(round(ax)) + ox, int(round(ay)) + oy,
+                          (int(rgba[0]), int(rgba[1]), int(rgba[2]), int(rgba[3])))
 
 
 def draw_rect(canvas, x, y, w, h, rgba, fill=True) -> None:

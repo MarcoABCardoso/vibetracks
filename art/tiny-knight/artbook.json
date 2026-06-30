@@ -51,6 +51,33 @@
       ]
     },
 
+    "knight_torso": {
+      "_comment": "The knight from the waist up — head, helm, chest, arms — for the ATTACK rig. The legs are a separate 'leg' motif so the torso can lean while the feet stay planted (a real weight shift). Same DNA as the full 'knight' motif; just split at the hips.",
+      "legend": { "a": "steel", "h": "steel_hi", "d": "steel_sh", "c": "cloak", "p": "gold", "o": "outline" },
+      "pixels": [
+        "................",
+        ".......pp.......",
+        ".....aaaaaa.....",
+        "....ahhhhhha....",
+        "....adoddoda....",
+        "....adddddda....",
+        "...caaaaaaaac...",
+        "...caahhhhaac...",
+        "...caaaaaaaac...",
+        "....dddddddd...."
+      ]
+    },
+
+    "leg": {
+      "_comment": "One armoured leg, placed twice by the attack rig — the back leg plants, the front leg lunges forward on the strike.",
+      "legend": { "a": "steel", "d": "steel_sh" },
+      "pixels": [
+        "aa",
+        "aa",
+        "dd"
+      ]
+    },
+
     "crest": {
       "_comment": "A small gold emblem — the repeated SHAPE motif. It rides on the knight's chest and reappears, enlarged, on the banner: the same shape with two faces, the way a leitmotif recurs across cues.",
       "legend": { "g": "gold", "G": "gold_sh" },

@@ -225,14 +225,30 @@ def _validate_layer(layer, sprite, names, where) -> None:
                             f"(palette: {sorted(names)})")
 
 
+def _is_num(v) -> bool:
+    return isinstance(v, (int, float)) and not isinstance(v, bool)
+
+
+def _is_point(v) -> bool:
+    return isinstance(v, (list, tuple)) and len(v) == 2 and all(_is_num(c) for c in v)
+
+
 def _check_transforms(layer, where) -> None:
     flip_axis = layer.get("flip")
     if flip_axis is not None and (not isinstance(flip_axis, str)
                                   or set(flip_axis) - set("hv") or not flip_axis):
         raise SpecError(f"{where}: 'flip' must be 'h', 'v' or 'hv'")
+    # rotate is any angle (degrees, clockwise). Multiples of 90 without a pivot
+    # use the lossless grid turn; anything else rotates about the pivot in pixels.
     rot = layer.get("rotate", 0)
-    if rot not in (0, 90, 180, 270):
-        raise SpecError(f"{where}: 'rotate' must be 0/90/180/270, got {rot!r}")
+    if not _is_num(rot):
+        raise SpecError(f"{where}: 'rotate' must be a number (degrees), got {rot!r}")
+    pivot = layer.get("pivot")
+    if pivot is not None and not _is_point(pivot):
+        raise SpecError(f"{where}: 'pivot' must be [px, py] numbers, got {pivot!r}")
+    at = layer.get("at")
+    if at is not None and not _is_point(at):
+        raise SpecError(f"{where}: 'at' must be [x, y] numbers, got {at!r}")
     sc = layer.get("scale", 1)
     if not (isinstance(sc, int) and sc >= 1):
         raise SpecError(f"{where}: 'scale' must be a positive int, got {sc!r}")

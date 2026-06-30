@@ -139,10 +139,29 @@ class TestRenderAndPng(unittest.TestCase):
         bible = spec.load_bible(BIBLE)
         s = spec.resolve_sprite(os.path.join(DEMO, "sprites", "knight-attack.json"), bible)
         out = render_sprite(s)
-        self.assertEqual(out["atlas"]["frame_count"], 4)
+        # Six posed frames of the articulated swing on a 28x24 canvas.
+        self.assertEqual(out["atlas"]["frame_count"], 6)
         self.assertTrue(out["atlas"]["loop"])
-        # Four 16-wide frames laid side by side.
-        self.assertEqual(out["sheet"].shape, (16, 64, 4))
+        self.assertEqual(out["sheet"].shape, (24, 28 * 6, 4))
+
+    def test_pivoted_rotation_swings_about_a_joint(self):
+        from pixeltracks.raster import draw_grid_rotated
+        # A 1x3 horizontal bar; pivot at its left end. A 90 turn should swing the
+        # far end from +x down to +y (clockwise) while the pinned end stays put.
+        rows = ["xxx"]
+        legend = {"x": (255, 255, 255, 255)}
+        canvas = new_canvas(8, 8)
+        draw_grid_rotated(canvas, rows, legend, 90, pivot=[0, 0], at=[4, 4])
+        self.assertEqual(tuple(canvas[4, 4]), (255, 255, 255, 255))  # pinned joint
+        self.assertEqual(tuple(canvas[6, 4]), (255, 255, 255, 255))  # tip swung to +y
+        self.assertEqual(canvas[4, 6, 3], 0)                          # no longer along +x
+
+    def test_arbitrary_rotation_validates(self):
+        bible = spec.load_bible(BIBLE)
+        layer = {"shape": "sword", "rotate": 37, "pivot": [1, 8], "at": [10, 10]}
+        sprite = {"motifs": bible.motifs}
+        names = set(bible.resolved_palette())
+        spec._validate_layer(layer, sprite, names, where="t")  # should not raise
 
     def test_png_has_signature_and_upscale(self):
         canvas = new_canvas(2, 2)

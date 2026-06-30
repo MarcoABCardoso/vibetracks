@@ -34,11 +34,28 @@ def _draw_layer(canvas, layer, sprite) -> None:
     elif "shape" in layer:
         motif = sprite["motifs"][layer["shape"]]
         legend = shapes.recolor_legend(motif.get("legend", {}), layer.get("recolor") or {})
-        rows = shapes.transform_grid(motif["pixels"],
-                                     flip_axis=layer.get("flip"),
-                                     rotate_deg=layer.get("rotate", 0),
-                                     scale_by=layer.get("scale", 1))
-        raster.draw_grid(canvas, rows, _legend_to_rgba(legend, pal), ox, oy)
+        legend_rgba = _legend_to_rgba(legend, pal)
+        rotate = layer.get("rotate", 0)
+        pivot = layer.get("pivot")
+        if pivot is None and rotate in (0, 90, 180, 270):
+            # Plain placement: lossless grid transforms, original fast path.
+            rows = shapes.transform_grid(motif["pixels"],
+                                         flip_axis=layer.get("flip"),
+                                         rotate_deg=rotate,
+                                         scale_by=layer.get("scale", 1))
+            raster.draw_grid(canvas, rows, legend_rgba, ox, oy)
+        else:
+            # Articulated placement: arbitrary-angle rotation about a joint. flip
+            # and scale still happen in grid space; the pivot is in that grid's
+            # coordinates and is pinned to canvas point `at` (default: offset).
+            rows = shapes.transform_grid(motif["pixels"],
+                                         flip_axis=layer.get("flip"),
+                                         rotate_deg=0,
+                                         scale_by=layer.get("scale", 1))
+            gw, gh = len(rows[0]), len(rows)
+            piv = pivot if pivot is not None else [gw / 2.0, gh / 2.0]
+            raster.draw_grid_rotated(canvas, rows, legend_rgba, rotate, piv,
+                                     layer.get("at", layer.get("offset", [0, 0])))
     elif "rect" in layer:
         r = layer["rect"]
         x, y = r.get("at", [0, 0])

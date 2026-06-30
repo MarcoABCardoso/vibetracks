@@ -50,7 +50,9 @@ Quote it across sprites the way a score quotes its theme, and the set coheres.
   reference (`{"shape": "knight"}`) rather than pasting pixels. One edit to the
   motif updates every sprite that uses it — the whole point of a spec.
 - **Transform instead of redrawing.** A layer that references a shape can
-  `flip` (mirror — a facing change), `rotate` (0/90/180/270), `scale` (integer
+  `flip` (mirror — a facing change), `rotate` (any angle; a multiple of 90 is a
+  lossless grid turn, any other angle rotates in pixel space about a `pivot`),
+  `scale` (integer
   enlarge — the augmentation move), and `recolor` (remap palette names for *this
   placement only*). Same DNA, new pose. These are the exact analogues of music's
   `invert` / `retrograde` / `stretch` / `transpose`.
@@ -91,14 +93,25 @@ An animated sprite is a list of `frames`; each frame is a still composited the
 same way, and they export to a horizontal **sheet** + an `.atlas.json` of frame
 rects and `hold` counts (the temporal analogue of concatenating sections).
 
-- **Re-pose the shared shape** with per-frame `offset`/`flip` rather than drawing
-  each frame from scratch — a windup leans back, a strike lunges forward.
-- **Anticipation → action → recovery.** Even a 3–4 frame attack reads far better
-  with a windup before the hit and a settle after, than with the hit alone.
+- **Rig it, don't slide it.** Split the character into parts (torso, a `leg`
+  placed twice, the weapon) and pose them *independently* per frame. Sliding one
+  baked stamp a pixel or two reads as nothing — the body must articulate: the
+  back leg **plants** while the front leg **lunges**, and the torso **leans**.
+  Weight shift is what sells a swing; a rigid body with only the sword moving
+  looks dead. (See `sprites/knight-attack.json`.)
+- **Swing about a joint, not a corner.** Give the weapon a `pivot` (the hand, in
+  the shape's own pixel coordinates), pin that pivot to a body point with `at`,
+  and animate `rotate` through a real arc (e.g. −32° → 60° → 102° → 145°). A
+  90°-only stamp rotation snaps and lands the blade in the wrong place; a pivoted
+  arbitrary angle traces the arc the way an arm actually moves.
+- **Anticipation → action → follow-through → settle.** Wind the blade *back* past
+  rest before the strike, and let it *overshoot* down-and-across after. A 5–6
+  frame swing with these reads far better than the hit alone.
 - **Hold the key frame.** Give the impact frame a `hold` of 2 so the eye catches
   it; keep in-between frames at 1.
-- **Add the spark on the action frame only** (a `slash`/`flash` motif), so the
-  energy spikes where the motion peaks.
+- **Trail the spark.** Put the `slash`/`flash` motif on the action frames only,
+  rotated to follow the blade (same `rotate`/`pivot` trick) so it *trails the
+  edge* instead of floating beside the body. Energy spikes where motion peaks.
 
 ## Cohesion checklist
 

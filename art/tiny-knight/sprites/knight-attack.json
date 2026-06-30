@@ -1,37 +1,70 @@
 {
   "name": "knight-attack",
   "extends": "../artbook.json",
-  "_comment": "A 4-frame overhead sword swing. The body re-poses by small offsets (lean back -> lean in -> settle), but the real motion is the SWORD layer, present in every frame: at rest, raised overhead (windup), rotated 90 into a horizontal chop with a flash swoosh (strike), then lowered (recover). The swing is the engine's `rotate` transform doing the work, not a redraw. Uses a per-sprite 24x24 canvas so the swing has room — the bible's other sprites stay 16x16.",
-  "size": [24, 24],
+  "_comment": "A 6-frame sword swing built as an articulated RIG, not a stamp slid around. Each frame is a POSE: the back leg plants while the front leg lunges (weight shift), the torso leans, and the SWORD rotates about the hand (pivot [1,8]) through a real arc — anticipation (wind back) -> strike -> follow-through -> settle. The slash trails the blade on the action frames. This is the animation analogue of the sequencer scheduling parts on a grid: parts re-posed per frame, the swing carried by arbitrary-angle pivoted rotation.",
+  "size": [28, 24],
   "frames": [
     {
-      "name": "idle",
+      "name": "ready",
       "layers": [
-        { "name": "body",  "shape": "knight", "offset": [3, 6] },
-        { "name": "sword", "shape": "sword",  "offset": [16, 6] }
+        { "name": "back_leg",  "shape": "leg", "offset": [11, 13] },
+        { "name": "front_leg", "shape": "leg", "offset": [15, 13] },
+        { "name": "torso", "shape": "knight_torso", "offset": [6, 2] },
+        { "name": "crest", "shape": "crest", "offset": [11, 8] },
+        { "name": "sword", "shape": "sword", "pivot": [1, 8], "rotate": 18, "at": [19, 9] }
       ]
     },
     {
       "name": "windup",
       "layers": [
-        { "name": "body",  "shape": "knight", "offset": [2, 6] },
-        { "name": "sword", "shape": "sword",  "offset": [13, 1] }
+        { "name": "back_leg",  "shape": "leg", "offset": [11, 13] },
+        { "name": "front_leg", "shape": "leg", "offset": [14, 13] },
+        { "name": "torso", "shape": "knight_torso", "offset": [5, 2] },
+        { "name": "crest", "shape": "crest", "offset": [10, 8] },
+        { "name": "sword", "shape": "sword", "pivot": [1, 8], "rotate": -32, "at": [18, 8] }
+      ]
+    },
+    {
+      "name": "swing",
+      "layers": [
+        { "name": "back_leg",  "shape": "leg", "offset": [11, 13] },
+        { "name": "front_leg", "shape": "leg", "offset": [16, 13] },
+        { "name": "torso", "shape": "knight_torso", "offset": [7, 2] },
+        { "name": "crest", "shape": "crest", "offset": [12, 8] },
+        { "name": "sword", "shape": "sword", "pivot": [1, 8], "rotate": 60, "at": [19, 8] }
       ]
     },
     {
       "name": "strike",
       "hold": 2,
       "layers": [
-        { "name": "body",  "shape": "knight", "offset": [5, 6] },
-        { "name": "sword", "shape": "sword",  "rotate": 90, "offset": [13, 11] },
-        { "name": "slash", "shape": "slash",  "offset": [20, 9] }
+        { "name": "back_leg",  "shape": "leg", "offset": [11, 13] },
+        { "name": "front_leg", "shape": "leg", "offset": [18, 13] },
+        { "name": "torso", "shape": "knight_torso", "offset": [8, 2] },
+        { "name": "crest", "shape": "crest", "offset": [13, 8] },
+        { "name": "sword", "shape": "sword", "pivot": [1, 8], "rotate": 102, "at": [19, 10] },
+        { "name": "slash", "shape": "slash", "pivot": [2, 3], "rotate": 100, "at": [24, 8] }
+      ]
+    },
+    {
+      "name": "follow",
+      "layers": [
+        { "name": "back_leg",  "shape": "leg", "offset": [11, 13] },
+        { "name": "front_leg", "shape": "leg", "offset": [18, 13] },
+        { "name": "torso", "shape": "knight_torso", "offset": [8, 3] },
+        { "name": "crest", "shape": "crest", "offset": [13, 9] },
+        { "name": "sword", "shape": "sword", "pivot": [1, 8], "rotate": 145, "at": [18, 12] },
+        { "name": "slash", "shape": "slash", "pivot": [2, 3], "rotate": 150, "at": [22, 16] }
       ]
     },
     {
       "name": "recover",
       "layers": [
-        { "name": "body",  "shape": "knight", "offset": [3, 7] },
-        { "name": "sword", "shape": "sword",  "offset": [16, 9] }
+        { "name": "back_leg",  "shape": "leg", "offset": [11, 13] },
+        { "name": "front_leg", "shape": "leg", "offset": [16, 13] },
+        { "name": "torso", "shape": "knight_torso", "offset": [6, 2] },
+        { "name": "crest", "shape": "crest", "offset": [11, 8] },
+        { "name": "sword", "shape": "sword", "pivot": [1, 8], "rotate": 22, "at": [19, 9] }
       ]
     }
   ]
