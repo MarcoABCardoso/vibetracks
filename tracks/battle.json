@@ -1,0 +1,47 @@
+{
+  "name": "battle",
+  "extends": "../soundtrack.json",
+  "_comment": "Fast, driving combat music. Same hook, urgent tempo, eighth-note bass pulse and busy drums. The 'danger' motif answers underneath.",
+  "bpm": 140,
+  "time_signature": [4, 4],
+
+  "palette": {
+    "lead": { "filter": 7000, "gain": 0.9 },
+    "bass": { "filter": 1600 }
+  },
+
+  "sections": [
+    {
+      "name": "intro",
+      "bars": 2,
+      "parts": {
+        "bass":  { "instrument": "bass", "repeat": 2,
+                   "notes": [["A2", 0.5], ["A2", 0.5], ["A2", 0.5], ["A2", 0.5],
+                             ["A2", 0.5], ["A2", 0.5], ["A2", 0.5], ["A2", 0.5]] },
+        "drums": { "instrument": "drums",
+                   "drums": { "kick": "x.x.x.x.", "snare": "....x...", "hat": "xxxxxxxx" } }
+      }
+    },
+    {
+      "name": "loop",
+      "bars": 4,
+      "loop": true,
+      "parts": {
+        "lead":  { "instrument": "lead", "motif": "main_theme", "repeat": 2 },
+        "bass":  { "instrument": "bass",
+                   "notes": [["A2", 0.5], ["A2", 0.5], ["A2", 0.5], ["A3", 0.5],
+                             ["A2", 0.5], ["A2", 0.5], ["A2", 0.5], ["A3", 0.5],
+                             ["F2", 0.5], ["F2", 0.5], ["F2", 0.5], ["F3", 0.5],
+                             ["F2", 0.5], ["F2", 0.5], ["F2", 0.5], ["F3", 0.5],
+                             ["C2", 0.5], ["C2", 0.5], ["C2", 0.5], ["C3", 0.5],
+                             ["C2", 0.5], ["C2", 0.5], ["C2", 0.5], ["C3", 0.5],
+                             ["G2", 0.5], ["G2", 0.5], ["G2", 0.5], ["G3", 0.5],
+                             ["G2", 0.5], ["G2", 0.5], ["G2", 0.5], ["G3", 0.5]] },
+        "pluck": { "instrument": "pluck", "motif": "danger", "repeat": 4, "transpose": 0, "pan": -0.3, "gain": 0.5 },
+        "pad":   { "instrument": "pad", "chords": ["Am", "F", "C", "G"], "chord_beats": 4, "gain": 0.35 },
+        "drums": { "instrument": "drums",
+                   "drums": { "kick": "x.x.x.x.", "snare": "....x...", "hat": "xxxxxxxx" } }
+      }
+    }
+  ]
+}

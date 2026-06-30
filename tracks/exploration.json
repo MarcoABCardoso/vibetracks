@@ -1,0 +1,38 @@
+{
+  "name": "exploration",
+  "extends": "../soundtrack.json",
+  "_comment": "Calm, spacious overworld music. Slower, softer drums, the theme stated sparsely so it can loop for a long time without fatigue.",
+  "bpm": 100,
+  "time_signature": [4, 4],
+
+  "palette": {
+    "lead": { "gain": 0.6, "filter": 4200, "reverb": 0.22 },
+    "drums": { "gain": 0.6 }
+  },
+
+  "sections": [
+    {
+      "name": "intro",
+      "bars": 4,
+      "parts": {
+        "pad": { "instrument": "pad", "chords": ["Am", "C", "F", "G"], "chord_beats": 4, "gain": 0.5 }
+      }
+    },
+    {
+      "name": "loop",
+      "bars": 4,
+      "loop": true,
+      "parts": {
+        "lead":  { "instrument": "lead", "motif": "main_theme", "repeat": 2, "pan": -0.15 },
+        "pad":   { "instrument": "pad", "chords": ["Am", "C", "F", "G"], "chord_beats": 4 },
+        "bass":  { "instrument": "bass",
+                   "notes": [["A2", 2], ["A2", 2], ["C2", 2], ["C2", 2],
+                             ["F2", 2], ["F2", 2], ["G2", 2], ["G2", 2]] },
+        "arp":   { "instrument": "arp", "repeat": 4, "pan": 0.3, "gain": 0.3,
+                   "notes": [["E5", 1], ["A5", 1], ["C6", 1], ["A5", 1]] },
+        "drums": { "instrument": "drums",
+                   "drums": { "kick": "x.......", "hat": "..x...x." } }
+      }
+    }
+  ]
+}

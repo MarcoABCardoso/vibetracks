@@ -1,0 +1,35 @@
+{
+  "title": "Neon Frontier",
+  "aesthetic": "synthwave",
+  "key": "A minor",
+  "bpm": 112,
+  "_comment": "The soundtrack bible. Every track extends this file, inheriting key/bpm/palette and the shared motifs below. Edit the motifs and the whole score shifts together.",
+
+  "palette": {
+    "lead":  { "wave": "saw",      "voices": 2, "detune": 0.011, "adsr": [0.008, 0.10, 0.65, 0.18], "filter": 6000, "gain": 0.85, "delay": { "time": 0.30, "feedback": 0.30, "mix": 0.22 }, "reverb": 0.12 },
+    "pad":   { "wave": "saw",      "voices": 4, "detune": 0.016, "adsr": [0.25, 0.20, 0.80, 0.40], "filter": 3000, "gain": 0.45, "reverb": 0.32, "octave": 3 },
+    "bass":  { "wave": "square",   "voices": 1, "adsr": [0.006, 0.06, 0.85, 0.06], "filter": 1300, "gain": 0.9 },
+    "arp":   { "wave": "triangle", "voices": 1, "adsr": [0.004, 0.05, 0.40, 0.06], "filter": 5200, "gain": 0.42, "delay": { "time": 0.21, "feedback": 0.30, "mix": 0.26 } },
+    "pluck": { "wave": "saw",      "voices": 1, "adsr": [0.002, 0.12, 0.0, 0.05], "filter": 4500, "gain": 0.55 },
+    "drums": { "gain": 0.95 }
+  },
+
+  "motifs": {
+    "main_theme": {
+      "_comment": "8 beats / 2 bars in A minor. The hook that recurs across every track.",
+      "notes": [
+        ["A4", 1], ["C5", 1], ["E5", 1.5], ["D5", 0.5],
+        ["C5", 1], ["B4", 1], ["A4", 2]
+      ]
+    },
+    "danger": {
+      "_comment": "4 beats. Low, tense answer phrase for battle/boss cues.",
+      "notes": [
+        ["A3", 0.5], ["A3", 0.5], ["A#3", 0.5], ["A3", 0.5],
+        ["E4", 1], ["F4", 1]
+      ]
+    }
+  },
+
+  "tracks": ["title-theme", "exploration", "battle", "boss", "victory"]
+}
