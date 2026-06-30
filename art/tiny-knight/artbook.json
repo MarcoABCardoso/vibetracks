@@ -65,14 +65,32 @@
     },
 
     "slash": {
-      "_comment": "A bright arc for the attack animation's strike frame.",
+      "_comment": "A bright crescent swoosh that trails the sword on the strike frame (the spark on the action frame only).",
       "legend": { "f": "flash" },
       "pixels": [
-        "...ff",
-        "..ff.",
-        ".ff..",
-        "ff...",
-        "f...."
+        "..ff",
+        ".ff.",
+        "ff..",
+        "ff..",
+        "ff..",
+        ".ff.",
+        "..ff"
+      ]
+    },
+
+    "sword": {
+      "_comment": "The knight's weapon, drawn pointing UP (tip at top). The attack animation rotates it 90 (overhead -> horizontal swing) — the engine's transforms doing the work instead of redrawing each frame.",
+      "legend": { "a": "steel", "h": "steel_hi", "g": "gold", "p": "gold_sh" },
+      "pixels": [
+        ".h.",
+        ".h.",
+        ".a.",
+        ".a.",
+        ".a.",
+        ".a.",
+        "ggg",
+        ".p.",
+        ".p."
       ]
     }
   },
