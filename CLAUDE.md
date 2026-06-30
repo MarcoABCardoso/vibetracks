@@ -12,20 +12,35 @@ harmony, form — lessons from Zelda/Castlevania/Undertale and others).
 ## Commands
 
 ```bash
-python -m vibetracks validate            # check the bible + all track specs
-python -m vibetracks render <name|path>  # render one track to out/<name>.wav
-python -m vibetracks render-all          # render every track + out/manifest.json
-python -m vibetracks new <name>          # scaffold tracks/<name>.json
-python -m unittest discover -s tests     # run tests
+python -m vibetracks validate                   # check every group's specs
+python -m vibetracks render <group>/<track>     # render one track to out/<group>/<track>.wav
+python -m vibetracks render-all                 # render every track in every group
+python -m vibetracks new <track> --group <g>    # scaffold groups/<g>/tracks/<track>.json
+python -m vibetracks new-group <name>           # scaffold a whole new group
+python -m unittest discover -s tests            # run tests
 ```
+
+`render`, `render-all`, `validate`, and `new` take an optional `--group`; when a
+repo has just one group you can omit it. A track is addressed as `<group>/<track>`,
+as a bare `<track>` (with `--group`), or as a path to its JSON. `render-all` writes
+`out/<group>/manifest.json` per group plus a top-level `out/manifest.json` index.
 
 Render is CPU-bound (pure-Python DSP): roughly real-time-ish — a 25 s track takes
 ~20 s. For a quick check, render a single short track rather than `render-all`.
 
 ## The model
 
-### Bible — `soundtrack.json`
-Global identity inherited by every track.
+### Group — `groups/<name>/`
+One self-contained soundtrack: its own bible plus tracks. Groups let a single repo
+hold several independent scores — different regions of a game, or different games
+entirely — without sharing or overwriting one top-level bible. The repo ships a
+demo group (`neon-frontier`); `new-group` scaffolds a fresh one alongside it. Each
+group is `groups/<name>/soundtrack.json` + `groups/<name>/tracks/*.json`. (For
+backward compatibility, a `soundtrack.json` at the repo root still works as a lone
+`default` group when there's no `groups/` directory.)
+
+### Bible — `groups/<name>/soundtrack.json`
+Global identity inherited by every track in its group.
 
 | Field | Meaning |
 |-------|---------|
@@ -36,7 +51,7 @@ Global identity inherited by every track.
 | `motifs` | Named melodies, each `{"notes": [[pitch, beats, vel?], ...]}`. The cohesion mechanism. |
 | `tracks` | Ordered track names that `render-all` builds. |
 
-### Track — `tracks/<name>.json`
+### Track — `groups/<name>/tracks/<track>.json`
 
 | Field | Meaning |
 |-------|---------|
@@ -82,7 +97,8 @@ Optional per-part knobs: `gain` (level), `pan` (−1 left … 1 right).
 - `vibetracks/instruments.py` — `DEFAULT_PALETTE` patches + the per-note renderer.
 - `vibetracks/sequencer.py` — schedules parts on a beat grid, mixes, pans, loops,
   master-normalizes. Add new part *kinds* here (and validation in `spec.py`).
-- `vibetracks/spec.py` — load/validate the bible and tracks; `extends` inheritance.
+- `vibetracks/spec.py` — load/validate the bible and tracks; `extends` inheritance;
+  `Group`/`discover_groups`/`find_group` for the `groups/` layout.
 - `vibetracks/wavio.py` — float buffer → 16-bit PCM WAV (stdlib `wave`).
 
 ## Conventions
@@ -95,4 +111,6 @@ Optional per-part knobs: `gain` (level), `pan` (−1 left … 1 right).
 - The master stage normalizes every track to the same peak (≈0.89), so don't fight
   loudness with per-part `gain` — use `gain` only for *balance within* a track.
 - WAV is the only output format (no MIDI/OGG yet). 44.1 kHz, 16-bit, stereo.
-- Rendered `out/*.wav` are build artifacts (gitignored); commit the JSON specs.
+- Rendered `out/<group>/*.wav` are build artifacts (gitignored); commit the JSON specs.
+- One group = one coherent score. Don't reach across groups for motifs/palette; to
+  start a new game or region, `new-group` rather than overwriting an existing bible.

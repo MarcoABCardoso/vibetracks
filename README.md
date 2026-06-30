@@ -10,16 +10,25 @@ that spec into sound. A whole soundtrack stays coherent because every track shar
 one **bible** — the same key, tempo family, instrument palette, and recurring
 musical motifs.
 
+Tracks are organized into **groups**. A group is one self-contained soundtrack —
+its own bible plus tracks — so a single repo can hold several independent scores:
+different regions of a game, or entirely different games. The repo ships a demo
+group, `neon-frontier`; spin up your own with `new-group` without touching it.
+
 ## Quickstart
 
 ```bash
 pip install -r requirements.txt
 
-python -m vibetracks validate        # check the bible + every track spec
-python -m vibetracks render-all      # render all tracks -> out/*.wav + manifest.json
-python -m vibetracks render battle   # render one track -> out/battle.wav
-python -m vibetracks new menu        # scaffold tracks/menu.json
+python -m vibetracks validate                  # check every group's specs
+python -m vibetracks render-all                # render all groups -> out/<group>/*.wav
+python -m vibetracks render neon-frontier/battle  # render one track -> out/neon-frontier/battle.wav
+python -m vibetracks new menu --group neon-frontier  # scaffold a track in a group
+python -m vibetracks new-group spooky-cave     # start a fresh, independent soundtrack
 ```
+
+A track is addressed as `<group>/<track>`, or as a bare `<track>` with `--group`
+(or when the repo has just one group).
 
 ## The included demo: *Neon Frontier*
 
@@ -37,12 +46,13 @@ the set feels like a family of cues rather than one song on repeat:
 
 ## How a song is modeled
 
-Two file kinds:
+Each group (`groups/<name>/`) has two file kinds:
 
-- **`soundtrack.json`** — the *bible*: global `key`, `bpm`, `aesthetic`, instrument
-  `palette`, reusable `motifs`, and the `tracks` list.
-- **`tracks/<name>.json`** — one cue. It `extends` the bible (inherits key/bpm/palette),
-  may override them, and is built from `sections` of named `parts`.
+- **`groups/<name>/soundtrack.json`** — the *bible*: global `key`, `bpm`,
+  `aesthetic`, instrument `palette`, reusable `motifs`, and the `tracks` list.
+- **`groups/<name>/tracks/<track>.json`** — one cue. It `extends` the bible
+  (inherits key/bpm/palette), may override them, and is built from `sections` of
+  named `parts`.
 
 A **part** is exactly one of:
 
@@ -66,12 +76,12 @@ normalized to a consistent peak so every track matches in loudness.
 ## Project layout
 
 ```
-soundtrack.json          # the bible
-tracks/*.json            # one spec per track
-vibetracks/              # the compiler (theory, synth, instruments, sequencer, wavio, CLI)
-tests/test_smoke.py      # theory + validation + render sanity
-.claude/skills/soundtrack # the authoring workflow skill
-out/                     # rendered WAVs (gitignored) + manifest.json
+groups/<name>/soundtrack.json   # a group's bible
+groups/<name>/tracks/*.json      # one spec per track in that group
+vibetracks/                      # the compiler (theory, synth, instruments, sequencer, wavio, CLI)
+tests/test_smoke.py              # theory + validation + render sanity
+.claude/skills/soundtrack        # the authoring workflow skill
+out/<group>/                     # rendered WAVs (gitignored) + per-group manifest.json
 ```
 
 ## Tests
