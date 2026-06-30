@@ -10,6 +10,11 @@ readme = "README.md"
 requires-python = ">=3.9"
 dependencies = ["numpy>=1.24", "scipy>=1.10"]
 
+[project.optional-dependencies]
+# Sample-based realism (the "soundfont" engine). Also needs the FluidSynth
+# system library + a General MIDI .sf2 — see CLAUDE.md / scripts/setup-soundfont.sh.
+soundfont = ["pyfluidsynth>=1.3.0"]
+
 [project.scripts]
 vibetracks = "vibetracks.__main__:main"
 

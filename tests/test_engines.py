@@ -12,7 +12,7 @@ import unittest
 import numpy as np
 
 from vibetracks import spec, synth
-from vibetracks.instruments import ENGINES, apply_part_effects, render_note
+from vibetracks.instruments import NOTE_ENGINES, apply_part_effects, render_note
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -86,7 +86,7 @@ class TestRenderNoteDispatch(unittest.TestCase):
             "fm": {"engine": "fm", "ratio": 2.0, "index": 4.0, "mod_decay": 3.0},
             "karplus": {"engine": "karplus", "decay": 0.99},
         }
-        for name in ENGINES:
+        for name in NOTE_ENGINES:
             with self.subTest(engine=name):
                 sig = render_note(330.0, 0.4, patches[name])
                 self.assertTrue(_finite(sig))

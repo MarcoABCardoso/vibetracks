@@ -69,7 +69,12 @@ def merge_patch(default: dict, override: dict | None) -> dict:
     return out
 
 
-ENGINES = ("subtractive", "fm", "karplus")
+# Note-level engines synthesize one pitch at a time (rendered by ``render_note``).
+NOTE_ENGINES = ("subtractive", "fm", "karplus")
+# Part-level engines render a whole part at once (handled in the sequencer);
+# ``soundfont`` streams scheduled notes through FluidSynth (see ``soundfont.py``).
+PART_ENGINES = ("soundfont",)
+ENGINES = NOTE_ENGINES + PART_ENGINES
 
 
 def _vibrato_freq(freq: float, n: int, patch: dict, sr: int):

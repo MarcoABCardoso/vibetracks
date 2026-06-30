@@ -101,19 +101,48 @@ going beyond bare-oscillator chiptune (full param list in `instruments.py`):
   ratios give bells/metallic tones. `mod_decay` fades the modulator for a struck attack.
 - **`karplus`** — Karplus-Strong plucked string (guitar/harp/koto) from a noise
   burst through a tuned lossy comb. `decay` near `1.0` sustains longer.
+- **`soundfont`** — *real recorded instruments* (piano, strings, brass, woodwinds,
+  harp, mallets…) via FluidSynth + a General MIDI soundfont. `program` is the GM
+  patch number (0–127), optional `bank`; `soundfont` overrides the `.sf2` path.
+  This engine is **optional and sample-based**, not numpy — see below.
 
-Expression knobs (any engine): `vibrato`/`tremolo` `{rate, depth, shape, delay}`
-(pitch / amplitude LFOs; vibrato `delay` eases the wobble in mid-note), `chorus`
-`{rate, depth, mix}` for width, and `reverb` as either a scalar (cheap Schroeder)
-or `{decay, mix, predelay}` for the denser convolution reverb. The `verdant-vale`
-group is a worked demo of all of these.
+### The `soundfont` engine (sample-based realism)
+
+The numpy engines synthesize every timbre from math; `soundfont` instead plays
+back real multisamples for genuine acoustic instruments. It needs FluidSynth and
+a GM `.sf2`, which the core synth path does not:
+
+```bash
+scripts/setup-soundfont.sh          # apt: fluidsynth + FluidR3_GM.sf2 + pyfluidsynth
+# or: pip install vibetracks[soundfont]  (still needs the FluidSynth system lib)
+```
+
+The soundfont is resolved from a patch's `soundfont` field, then
+`$VIBETRACKS_SOUNDFONT`, then `/usr/share/sounds/sf2/FluidR3_GM.sf2`. The engine
+is imported lazily — `validate` works without FluidSynth; only *rendering* a
+soundfont part needs it (and raises a clear `SoundfontError` with install hints
+if missing). A soundfont part is rendered whole (notes streamed through one
+cached FluidSynth instance), downmixed to mono, and flows through the same
+pan/effects/master-normalize pipeline as synth parts — so the two engine families
+mix freely in one track. The `amber-court` group is a worked orchestral demo
+(`vibetracks/soundfont.py`).
+
+Per-note expression (numpy engines only): `vibrato`/`tremolo` `{rate, depth,
+shape, delay}` (pitch / amplitude LFOs; vibrato `delay` eases the wobble in
+mid-note). Buffer effects (every engine, including `soundfont`): `delay`,
+`chorus` `{rate, depth, mix}` for width, and `reverb` as either a scalar (cheap
+Schroeder) or `{decay, mix, predelay}` for the denser convolution reverb. The
+`verdant-vale` group is a worked demo of the numpy engines and their expression.
 
 ## How compilation works (where to edit)
 
 - `vibetracks/theory.py` — note↔frequency, scales, chord parsing, transpose.
 - `vibetracks/synth.py` — oscillators, ADSR, drum synths, filters/delay/reverb,
   normalize. Add new waveforms or effects here.
-- `vibetracks/instruments.py` — `DEFAULT_PALETTE` patches + the per-note renderer.
+- `vibetracks/instruments.py` — `DEFAULT_PALETTE` patches + the per-note renderer
+  and engine dispatch (`NOTE_ENGINES`/`PART_ENGINES`).
+- `vibetracks/soundfont.py` — the optional `soundfont` engine: FluidSynth setup,
+  soundfont discovery, and the part-level scheduled renderer.
 - `vibetracks/sequencer.py` — schedules parts on a beat grid, mixes, pans, loops,
   master-normalizes. Add new part *kinds* here (and validation in `spec.py`).
 - `vibetracks/spec.py` — load/validate the bible and tracks; `extends` inheritance;

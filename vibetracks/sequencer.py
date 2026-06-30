@@ -12,8 +12,8 @@ from __future__ import annotations
 
 import numpy as np
 
-from . import synth, theory
-from .instruments import apply_part_effects, render_note
+from . import soundfont, synth, theory
+from .instruments import PART_ENGINES, apply_part_effects, render_note
 
 DEFAULT_LOOPS = 2          # times a section marked {"loop": true} repeats
 DEFAULT_VELOCITY = 0.8
@@ -83,6 +83,45 @@ def _render_chords(symbols, patch, bpm, sr, section_samples, chord_beats, bpb, o
     return buf
 
 
+# --- Soundfont (part-level) renderers ---------------------------------------
+
+def _melody_schedule(events, bpm, sr):
+    """Turn a sequence of [pitch, beats, vel?] into scheduled soundfont notes.
+
+    Notes are laid end to end (the same timing as :func:`_render_melody`);
+    returns ``(start_sample, dur_samples, midi, velocity)`` tuples, skipping rests.
+    """
+    spb = _spb(bpm)
+    sched = []
+    beat = 0.0
+    for ev in events:
+        pitch, dur_beats = ev[0], ev[1]
+        vel = ev[2] if len(ev) > 2 else DEFAULT_VELOCITY
+        if pitch is not None:
+            sched.append((int(round(beat * spb * sr)), int(round(dur_beats * spb * sr)),
+                          theory.note_to_midi(pitch), int(round(vel * 127))))
+        beat += dur_beats
+    return sched
+
+
+def _chord_schedule(symbols, bpm, sr, section_samples, chord_beats, octave):
+    """Schedule tiled chord symbols as simultaneous soundfont notes."""
+    spb = _spb(bpm)
+    total_beats = section_samples / (spb * sr)
+    dur = int(round(chord_beats * spb * sr))
+    sched = []
+    beat = 0.0
+    i = 0
+    while beat < total_beats - 1e-6:
+        start = int(round(beat * spb * sr))
+        for note_name in theory.chord_notes(symbols[i % len(symbols)], octave):
+            sched.append((start, dur, theory.note_to_midi(note_name),
+                          int(round(DEFAULT_VELOCITY * 127))))
+        beat += chord_beats
+        i += 1
+    return sched
+
+
 def _render_drums(voices, bpm, sr, section_samples, bpb, cache):
     """Render per-voice step patterns, tiled across the whole section."""
     buf = np.zeros(section_samples, dtype=np.float64)
@@ -150,13 +189,19 @@ def render_section(section, track, sr, drum_cache):
         pan = float(part.get("pan", 0.0))
         gain = float(part.get("gain", patch.get("gain", 0.8)))
         octave = int(part.get("octave", patch.get("octave", 3)))
+        is_sf = patch.get("engine") in PART_ENGINES
 
         if "drums" in part:
             mono = _render_drums(part["drums"], bpm, sr, section_samples, bpb, drum_cache)
         elif "chords" in part:
             chord_beats = float(part.get("chord_beats", bpb))
-            mono = _render_chords(part["chords"], patch, bpm, sr, section_samples,
-                                  chord_beats, bpb, octave)
+            if is_sf:
+                sched = _chord_schedule(part["chords"], bpm, sr, section_samples,
+                                        chord_beats, octave)
+                mono = soundfont.render_scheduled(sched, patch, sr, section_samples)
+            else:
+                mono = _render_chords(part["chords"], patch, bpm, sr, section_samples,
+                                      chord_beats, bpb, octave)
         else:
             if "motif" in part:
                 events = list(track["motifs"][part["motif"]].get("notes",
@@ -168,7 +213,11 @@ def render_section(section, track, sr, drum_cache):
                 events = list(part["notes"])
             events = _transform(events, part)
             events = events * int(part.get("repeat", 1))
-            mono = _render_melody(events, patch, bpm, sr, section_samples)
+            if is_sf:
+                mono = soundfont.render_scheduled(_melody_schedule(events, bpm, sr),
+                                                  patch, sr, section_samples)
+            else:
+                mono = _render_melody(events, patch, bpm, sr, section_samples)
 
         mono = apply_part_effects(mono, patch, sr)[:section_samples]
         if mono.shape[0] < section_samples:
