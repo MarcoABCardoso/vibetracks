@@ -161,7 +161,7 @@ class TestRenderAndPng(unittest.TestCase):
         bible = spec.load_bible(BIBLE)
         s = spec.resolve_sprite(os.path.join(DEMO, "sprites", "fox.json"), bible)
         frame = composite_frame(s, s["frames"][0])
-        self.assertEqual(frame.shape, (14, 14, 4))
+        self.assertEqual(frame.shape, (20, 20, 4))
         self.assertGreater(coverage(frame), 0.1)   # not empty
         self.assertEqual(frame.dtype, np.uint8)
 
@@ -169,10 +169,10 @@ class TestRenderAndPng(unittest.TestCase):
         bible = spec.load_bible(BIBLE)
         s = spec.resolve_sprite(os.path.join(DEMO, "sprites", "fox-hop.json"), bible)
         out = render_sprite(s)
-        # Four posed frames of the hop on a 14x19 canvas.
+        # Four posed frames of the hop on a 20x29 canvas.
         self.assertEqual(out["atlas"]["frame_count"], 4)
         self.assertTrue(out["atlas"]["loop"])
-        self.assertEqual(out["sheet"].shape, (19, 14 * 4, 4))
+        self.assertEqual(out["sheet"].shape, (29, 20 * 4, 4))
 
     def test_pivoted_rotation_swings_about_a_joint(self):
         from pixeltracks.raster import draw_grid_rotated

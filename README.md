@@ -107,7 +107,7 @@ is a **palette swap** — change the bible's colours and a sprite recolours in s
 
 ### The included demo: *Mossy Hollow*
 
-A five-sprite 14×14 set of woodland critters on a warm autumn palette —
+A five-sprite 20×20 set of woodland critters on a warm autumn palette —
 deliberately not a re-skin of an armoured hero, to show that swapping the
 artbook reshapes the whole world, not just the colours:
 

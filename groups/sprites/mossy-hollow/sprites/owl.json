@@ -1,26 +1,32 @@
 {
   "name": "owl",
   "extends": "../artbook.json",
-  "_comment": "Coherence is not repetition. The owl shares the bible's palette (its belly and eyes are literally the fox's cream and eye colour) and outline — so it belongs to the same hollow — but states none of the fox's shape. The visual equivalent of a cue that drops the main theme and rides the shared key + a secondary motif instead.",
-  "legend": { "o": "owl_body", "d": "owl_wing", "c": "cream", "w": "cream", "k": "eye", "n": "beak" },
+  "_comment": "Coherence is not repetition. The owl shares the bible's palette (its belly is literally the fox's cream, its eyes the fox's eye colour) and outline — so it belongs to the same hollow — but states none of the fox's shape. The visual equivalent of a cue that drops the main theme and rides the shared key + a secondary motif instead.",
+  "legend": { "o": "owl_body", "d": "owl_wing", "c": "cream", "f": "owl_wing", "g": "cream", "k": "eye", "n": "beak", "v": "beak", "w": "cream" },
   "layers": [
     {
       "name": "body",
       "pixels": [
-        "..............",
-        "....o....o....",
-        "...oo....oo...",
-        "......oo......",
-        "....oooooo....",
-        "...owoooowo...",
-        "...okkookko...",
-        "...dwonnowd...",
-        "..ddoonnoodd..",
-        "..dddoccoddd..",
-        "...ddccccdd...",
-        "...dccccccd...",
-        "....cccccc....",
-        ".....nccn....."
+        "....................",
+        "....................",
+        ".......o....o.......",
+        "......ooo..ooo......",
+        "......ooo..ooo......",
+        "......oooooooo......",
+        "....vvvoooooovvv....",
+        ".....oooooooooo.....",
+        "....owgwoooogkwo....",
+        "....dwkkooookkwd....",
+        "....ddwwoooowwdd....",
+        "...fddooonnoooddf...",
+        "...dddooonnoooddd...",
+        "...dddoooccoooddd...",
+        "....ddoccccccodd....",
+        "....ddccccccccdd....",
+        ".....dccccccccd.....",
+        ".....occcccccco.....",
+        "......cnnccnnc......",
+        ".......nnccnn......."
       ]
     }
   ]

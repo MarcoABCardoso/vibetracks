@@ -2,37 +2,37 @@
   "name": "fox-hop",
   "extends": "../artbook.json",
   "_comment": "A 4-frame hop: the same 'fox' motif re-posed by sliding it up and down the canvas (no separate limb rig needed for a simple bounce) — crouch, rise, peak, land — with a small dust puff on the landing frame. The animation analogue of restating a motif with only its timing changed.",
-  "size": [14, 19],
+  "size": [20, 29],
   "frames": [
     {
       "name": "crouch",
       "layers": [
-        { "name": "body", "shape": "fox", "offset": [0, 5] },
-        { "name": "charm", "shape": "leaf", "offset": [5, 13] }
+        { "name": "body", "shape": "fox", "offset": [0, 9] },
+        { "name": "charm", "shape": "leaf", "offset": [6, 20] }
       ]
     },
     {
       "name": "rise",
       "layers": [
-        { "name": "body", "shape": "fox", "offset": [0, 1] },
-        { "name": "charm", "shape": "leaf", "offset": [5, 9] }
+        { "name": "body", "shape": "fox", "offset": [0, 4] },
+        { "name": "charm", "shape": "leaf", "offset": [6, 15] }
       ]
     },
     {
       "name": "peak",
       "layers": [
-        { "name": "body", "shape": "fox", "offset": [0, 0] },
-        { "name": "charm", "shape": "leaf", "offset": [5, 8] }
+        { "name": "body", "shape": "fox", "offset": [0, 1] },
+        { "name": "charm", "shape": "leaf", "offset": [6, 12] }
       ]
     },
     {
       "name": "land",
       "hold": 2,
       "layers": [
-        { "name": "body", "shape": "fox", "offset": [0, 4] },
-        { "name": "charm", "shape": "leaf", "offset": [5, 12] },
-        { "name": "dust_l", "ellipse": { "at": [1, 16], "size": [5, 3], "color": "fur_sh" } },
-        { "name": "dust_r", "ellipse": { "at": [8, 16], "size": [5, 3], "color": "fur_sh" } }
+        { "name": "body", "shape": "fox", "offset": [0, 8] },
+        { "name": "charm", "shape": "leaf", "offset": [6, 19] },
+        { "name": "dust_l", "ellipse": { "at": [1, 26], "size": [7, 3], "color": "fur_sh" } },
+        { "name": "dust_r", "ellipse": { "at": [12, 26], "size": [7, 3], "color": "fur_sh" } }
       ]
     }
   ]

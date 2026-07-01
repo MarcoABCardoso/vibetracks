@@ -10,6 +10,6 @@
   },
   "layers": [
     { "name": "body", "shape": "fox" },
-    { "name": "charm", "shape": "leaf", "offset": [5, 8] }
+    { "name": "charm", "shape": "leaf", "offset": [6, 11] }
   ]
 }
