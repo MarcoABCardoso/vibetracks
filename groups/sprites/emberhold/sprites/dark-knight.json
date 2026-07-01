@@ -13,14 +13,6 @@
   },
   "layers": [
     {
-      "name": "shield",
-      "shape": "shield",
-      "offset": [
-        2,
-        9
-      ]
-    },
-    {
       "name": "body",
       "shape": "knight"
     },
@@ -30,6 +22,14 @@
       "offset": [
         15,
         5
+      ]
+    },
+    {
+      "name": "shield",
+      "shape": "shield",
+      "offset": [
+        5,
+        9
       ]
     }
   ]

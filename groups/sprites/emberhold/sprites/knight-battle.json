@@ -1,9 +1,9 @@
 {
   "name": "knight-battle",
   "extends": "../artbook.json",
-  "_comment": "Battle-ready STILL pose. Built from a CONNECTED core (head -> chest -> legs touch vertically, belt spans both hips) then posed with restrained transforms: a slight forward lean, a lunge stance, a 3/4 head turn toward the target, an asymmetric raised sword arm, a forward shield guard, and a cape skewed to stream. The figure sits low in the frame so the raised blade has headroom (an off-canvas tip reads as a stubby sword).",
+  "_comment": "Battle-ready STILL pose in an on-guard stance. Connected core (head -> chest -> legs), a 3/4 head turn toward the target, a slight forward lean, a lunge stance, the shield held dead-centre in front as a guard, and the sword levelled forward at head height (a ready guard, not a skyward charge). The cape streams behind to the back-left, clear of the torso front.",
   "size": [
-    26,
+    28,
     26
   ],
   "scale": 12,
@@ -12,16 +12,16 @@
       "name": "cape",
       "shape": "cape",
       "pivot": [
-        5,
+        6,
         0
       ],
       "skew": [
-        -0.28,
+        -0.3,
         0.0
       ],
       "at": [
-        13,
-        11
+        10,
+        10
       ]
     },
     {
@@ -36,7 +36,7 @@
       "name": "front-leg",
       "shape": "knight_leg",
       "skew": [
-        -0.25,
+        -0.22,
         0.0
       ],
       "pivot": [
@@ -52,7 +52,7 @@
       "name": "chest",
       "shape": "knight_chest",
       "skew": [
-        -0.18,
+        -0.1,
         0.0
       ],
       "pivot": [
@@ -65,31 +65,15 @@
       ]
     },
     {
-      "name": "shield",
-      "shape": "shield",
-      "offset": [
-        14,
-        14
-      ]
-    },
-    {
-      "name": "head",
-      "shape": "knight_head_3q",
-      "offset": [
-        9,
-        5
-      ]
-    },
-    {
       "name": "sword-arm",
       "shape": "knight_arm",
       "pivot": [
         1,
         5
       ],
-      "rotate": 45,
+      "rotate": 68,
       "at": [
-        15,
+        16,
         13
       ]
     },
@@ -100,10 +84,26 @@
         1,
         8
       ],
-      "rotate": 28,
+      "rotate": 56,
       "at": [
-        20,
-        9
+        19,
+        11
+      ]
+    },
+    {
+      "name": "shield",
+      "shape": "shield",
+      "offset": [
+        10,
+        13
+      ]
+    },
+    {
+      "name": "head",
+      "shape": "knight_head_3q",
+      "offset": [
+        9,
+        5
       ]
     }
   ]
