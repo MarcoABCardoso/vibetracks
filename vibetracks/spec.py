@@ -2,15 +2,15 @@
 
 Three layers:
 
-* **a group** (``groups/<name>/``): one self-contained soundtrack — its own
-  bible plus tracks. Groups let a single repo hold several independent scores
+* **a group** (``groups/music/<name>/``): one self-contained soundtrack — its
+  own bible plus tracks. Groups let a single repo hold several independent scores
   (different regions of a game, or different games entirely) without sharing or
   overwriting one top-level bible.
-* **the bible** (``groups/<name>/soundtrack.json``): global musical identity
-  shared by every track in the group — key, bpm, instrument ``palette``,
-  reusable ``motifs``, ``tracks`` list.
-* **a track** (``groups/<name>/tracks/<track>.json``): one piece of music. A
-  track may ``extends`` the bible to inherit its key/bpm/palette and override.
+* **the bible** (``groups/music/<name>/soundtrack.json``): global musical
+  identity shared by every track in the group — key, bpm, instrument
+  ``palette``, reusable ``motifs``, ``tracks`` list.
+* **a track** (``groups/music/<name>/tracks/<track>.json``): one piece of music.
+  A track may ``extends`` the bible to inherit its key/bpm/palette and override.
 
 A resolved track is returned as a plain dict with the bible folded in, ready for
 the sequencer. Validation raises :class:`SpecError` with a human-readable path.
@@ -29,7 +29,7 @@ from .instruments import DEFAULT_PALETTE, ENGINES, merge_patch
 
 VALID_DRUM_CHARS = set("x.Xo-")  # x/X = hit, o = open (hat), '.'/'-' = rest
 
-GROUPS_DIR = "groups"        # where soundtrack groups live
+GROUPS_DIR = os.path.join("groups", "music")   # where soundtrack groups live
 BIBLE_FILE = "soundtrack.json"
 TRACKS_SUBDIR = "tracks"
 
@@ -218,8 +218,8 @@ def _validate_part(part: dict, track: dict, where: str) -> None:
 class Group:
     """One self-contained soundtrack: a bible plus its tracks directory.
 
-    A group lives in ``groups/<name>/`` with its own ``soundtrack.json`` and
-    ``tracks/`` folder. Several groups coexist in one repo without sharing or
+    A group lives in ``groups/music/<name>/`` with its own ``soundtrack.json``
+    and ``tracks/`` folder. Several groups coexist in one repo without sharing or
     overwriting a single top-level bible, so users can spin up their own score
     alongside the bundled demo.
     """
@@ -258,10 +258,10 @@ class Group:
 def discover_groups(root: str = ".") -> list:
     """Find every soundtrack group under ``root``.
 
-    Each subdirectory of ``groups/`` that holds a ``soundtrack.json`` is a group,
-    returned sorted by name. For backward compatibility a ``soundtrack.json`` at
-    ``root`` itself is exposed as the ``default`` group when there is no
-    ``groups/`` directory.
+    Each subdirectory of ``groups/music/`` that holds a ``soundtrack.json`` is a
+    group, returned sorted by name. For backward compatibility a
+    ``soundtrack.json`` at ``root`` itself is exposed as the ``default`` group
+    when there is no ``groups/music/`` directory.
     """
     groups = [Group(name=name, dir=d)
               for name, d in discover_group_dirs(os.path.join(root, GROUPS_DIR),

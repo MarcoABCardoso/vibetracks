@@ -8,15 +8,19 @@ description: Compose or extend a coherent pixel-art sprite set in this PixelTrac
 PixelTracks is the sprite/image Lab — the visual sibling of the VibeTracks music
 Lab. It models a sprite as **JSON** and compiles it to **PNG** with a procedural
 raster engine (`numpy` + stdlib, no image generator). Your job is to author/edit
-the JSON specs and render them. Sprites live in **groups** — each `art/<name>/`
-is a self-contained set with its own bible (`art/<name>/artbook.json`) and
-`sprites/`. A group stays coherent because every sprite shares its bible: one
-colour `palette` and reusable shape **motifs**.
+the JSON specs and render them. Sprites live in **groups** — each
+`groups/sprites/<name>/` is a self-contained set with its own bible
+(`groups/sprites/<name>/artbook.json`) and `sprites/`. A group stays coherent
+because every sprite shares its bible: one colour `palette` and reusable shape
+**motifs**.
 
-Read `CLAUDE.md` for the full spec reference, and **`docs/pixelcraft.md` for the
-craft** — palette discipline, silhouette, shape motifs, the palette-swap
-leitmotif, animation timing, coherence ≠ repetition. The loop below is the
-procedure; the craft guide is what makes the output good.
+Read `pixeltracks/CLAUDE.md` for the full spec reference, and
+**`docs/pixelcraft.md` for the craft** — palette discipline, silhouette, shape
+motifs, the palette-swap leitmotif, animation timing, coherence ≠ repetition.
+The loop below is the procedure; the craft guide is what makes the output good.
+
+Note: PixelTracks is early, exploratory work — the raster engine is still
+limited, so sprites come out rough. Set expectations accordingly.
 
 You can **see your output**: render a sprite, then read the PNG (it displays
 inline) and iterate, exactly as the music skill sends a WAV to the user.
@@ -25,12 +29,12 @@ inline) and iterate, exactly as the music skill sends a WAV to the user.
 
 A new game or character set is a **new group** — never overwrite the demo
 (`tiny-knight`). `python -m pixeltracks new-group <name> --title "<Title>"`
-scaffolds `art/<name>/` with a starter bible + a `main` sprite. If extending an
+scaffolds `groups/sprites/<name>/` with a starter bible + a `main` sprite. If extending an
 existing set, work inside its group.
 
 ## 1. Establish the bible (do this first, once)
 
-Edit `art/<name>/artbook.json`. Interview briefly if needed: game & mood, the
+Edit `groups/sprites/<name>/artbook.json`. Interview briefly if needed: game & mood, the
 sprite list (hero, enemies, items, an animation), and the visual identity. Then
 write:
 - `size` — the canvas, e.g. `[16, 16]`. `scale` — export upscale (16 → a 256px PNG).
@@ -50,7 +54,7 @@ motifs (a crest) you can reuse on other sprites.
 
 ## 3. Draft → render → view → iterate (per sprite)
 
-1. Hand-write `art/<g>/sprites/<name>.json` (or `python -m pixeltracks new
+1. Hand-write `groups/sprites/<g>/sprites/<name>.json` (or `python -m pixeltracks new
    <name> --group <g>`). A sprite `extends` the bible and is built from `layers`
    (composited in z-order). A layer is exactly one of: `pixels` (+`legend`),
    `shape` (a bible motif, +`flip`/`rotate`/`scale`/`recolor`), `rect`,

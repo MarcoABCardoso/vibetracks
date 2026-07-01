@@ -1,6 +1,6 @@
 """VibeTracks CLI: validate specs and compile them to WAV.
 
-Tracks are organized into **groups** — each ``groups/<name>/`` is a
+Tracks are organized into **groups** — each ``groups/music/<name>/`` is a
 self-contained soundtrack with its own ``soundtrack.json`` bible and ``tracks/``.
 The repo ships a demo group (``neon-frontier``); spin up your own with
 ``new-group`` instead of overwriting it.
@@ -26,7 +26,7 @@ from . import spec
 from .sequencer import render_track
 from .wavio import write_wav
 
-GROUPS_DIR = "groups"
+GROUPS_DIR = spec.GROUPS_DIR
 OUT_DIR = "out"
 
 

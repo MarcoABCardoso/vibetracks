@@ -7,12 +7,13 @@ description: Compose or extend a coherent game soundtrack in this VibeTracks rep
 
 VibeTracks models a song as **JSON** and compiles it to **WAV** with a pure-Python
 synth (`numpy` + `scipy`, no system audio tools). Your job is to author/edit the
-JSON specs and render them. Tracks live in **groups** — each `groups/<name>/` is a
-self-contained soundtrack with its own bible (`groups/<name>/soundtrack.json`) and
-`tracks/`. A group stays coherent because every track shares its bible: the same
-key, tempo family, instrument `palette`, and reusable **motifs**.
+JSON specs and render them. Tracks live in **groups** — each `groups/music/<name>/`
+is a self-contained soundtrack with its own bible
+(`groups/music/<name>/soundtrack.json`) and `tracks/`. A group stays coherent
+because every track shares its bible: the same key, tempo family, instrument
+`palette`, and reusable **motifs**.
 
-Read `CLAUDE.md` for the full spec reference, and **`docs/composition.md` for the
+Read `vibetracks/CLAUDE.md` for the full spec reference, and **`docs/composition.md` for the
 craft** — how to write a score that sounds intentional (leitmotif transformation,
 singable melodies, accompaniment-driven energy, harmony, form). The loop below is
 the procedure; the composition guide is what makes the output good.
@@ -21,12 +22,12 @@ the procedure; the composition guide is what makes the output good.
 
 A new game or region is a **new group** — never overwrite the demo (`neon-frontier`)
 or another existing bible. `python -m vibetracks new-group <name> --title "<Title>"`
-scaffolds `groups/<name>/` with a starter bible and a `main-theme` track. If the
+scaffolds `groups/music/<name>/` with a starter bible and a `main-theme` track. If the
 user is extending a soundtrack that already exists, work inside its group instead.
 
 ## 1. Establish the bible (do this first, once)
 
-Edit the group's `groups/<name>/soundtrack.json`. If it doesn't reflect the game
+Edit the group's `groups/music/<name>/soundtrack.json`. If it doesn't reflect the game
 yet, interview the user briefly:
 - **Game & mood** — genre, setting, emotional tone.
 - **Track list** — which cues are needed (title, exploration, battle, boss, victory, …).
@@ -45,7 +46,7 @@ key. Optionally add answer phrases like `danger` for tense cues.
 ## 3. Draft → render → listen → iterate (per track)
 
 1. `python -m vibetracks new <name> --group <g>` to scaffold, or hand-write
-   `groups/<g>/tracks/<name>.json`. A track `extends` the bible and overrides
+   `groups/music/<g>/tracks/<name>.json`. A track `extends` the bible and overrides
    `bpm`/`key`/`palette` as needed. Build it from `sections`; each section has
    `bars` and named `parts`. A part is exactly one of: `notes`, `motif`
    (+`transpose`/`repeat`), `chords`, or `drums`.

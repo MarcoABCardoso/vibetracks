@@ -2,14 +2,15 @@
 
 The same three layers as VibeTracks, in a different medium:
 
-* **a group** (``art/<name>/``): one self-contained sprite set — its own bible
-  plus sprites — so a repo can hold several independent visual identities.
-* **the bible** (``art/<name>/artbook.json``): the visual identity shared by
-  every sprite in the group — canvas ``size``, the colour ``palette``, reusable
-  shape ``motifs``, an optional ``outline``/``background``, and the ``sprites``
-  list.
-* **a sprite** (``art/<name>/sprites/<sprite>.json``): one image. It ``extends``
-  the bible to inherit size/palette/motifs, and may override them.
+* **a group** (``groups/sprites/<name>/``): one self-contained sprite set — its
+  own bible plus sprites — so a repo can hold several independent visual
+  identities.
+* **the bible** (``groups/sprites/<name>/artbook.json``): the visual identity
+  shared by every sprite in the group — canvas ``size``, the colour ``palette``,
+  reusable shape ``motifs``, an optional ``outline``/``background``, and the
+  ``sprites`` list.
+* **a sprite** (``groups/sprites/<name>/sprites/<sprite>.json``): one image. It
+  ``extends`` the bible to inherit size/palette/motifs, and may override them.
 
 A resolved sprite is a plain dict with the bible folded in and the palette turned
 into RGBA, ready for the compositor. Validation raises :class:`SpecError` with a
@@ -28,7 +29,7 @@ from labkit.specbase import SpecError, load_json  # shared across Labs
 
 from . import palette, shapes
 
-ART_DIR = "art"                  # where sprite groups live
+ART_DIR = os.path.join("groups", "sprites")   # where sprite groups live
 BIBLE_FILE = "artbook.json"
 SPRITES_SUBDIR = "sprites"
 
@@ -269,7 +270,11 @@ def _check_transforms(layer, where) -> None:
 
 @dataclass
 class Group(_GroupBase):
-    """One sprite set: an ``artbook.json`` bible plus its ``sprites/`` directory."""
+    """One sprite set: an ``artbook.json`` bible plus its ``sprites/`` directory.
+
+    A group lives in ``groups/sprites/<name>/`` alongside the music groups under
+    ``groups/music/`` — one ``groups/`` tree, one subdirectory per medium.
+    """
 
     bible_file: str = BIBLE_FILE
     specs_subdir: str = SPRITES_SUBDIR
@@ -294,7 +299,7 @@ class Group(_GroupBase):
 
 
 def discover_groups(root: str = ".") -> list:
-    """Find every sprite group under ``root`` (each ``art/<name>/artbook.json``)."""
+    """Find every sprite group under ``root`` (each ``groups/sprites/<name>/artbook.json``)."""
     groups = [Group(name=name, dir=d)
               for name, d in discover_group_dirs(os.path.join(root, ART_DIR), BIBLE_FILE)]
     if not groups and os.path.isfile(os.path.join(root, BIBLE_FILE)):

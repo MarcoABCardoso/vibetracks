@@ -16,7 +16,7 @@ from pixeltracks.pngio import encode_png
 from pixeltracks.raster import add_outline, new_canvas, upscale
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-DEMO = os.path.join(ROOT, "art", "tiny-knight")
+DEMO = os.path.join(ROOT, "groups", "sprites", "tiny-knight")
 BIBLE = os.path.join(DEMO, "artbook.json")
 SPRITES = sorted(glob.glob(os.path.join(DEMO, "sprites", "*.json")))
 
