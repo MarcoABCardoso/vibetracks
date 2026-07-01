@@ -64,9 +64,10 @@ plus a top-level index; an animated sprite also gets a `<sprite>.atlas.json`.
 
 ### Group — `groups/sprites/<name>/`
 One self-contained sprite set: its own bible (`groups/sprites/<name>/artbook.json`)
-plus `groups/sprites/<name>/sprites/*.json`. The repo ships two demo groups:
-`mossy-hollow` (a small five-sprite demo — woodland critters) and `emberhold`
-(a bigger 4-class JRPG party). The two share no shape language or even outline
+plus `groups/sprites/<name>/sprites/*.json`. The repo ships three demo groups:
+`mossy-hollow` (a small five-sprite demo — woodland critters), `emberhold`
+(a bigger 4-class JRPG party), and `dusk-glade` (a **scene** demo — a 64px
+composed oak and a multi-sprite meadow). The two share no shape language or even outline
 colour — proof that the artbook, not the engine, is what shapes a set's world.
 Sprite groups live under `groups/sprites/` alongside the music groups under
 `groups/music/` — one `groups/` tree, one subdirectory per medium.
@@ -98,6 +99,7 @@ Sprite groups live under `groups/sprites/` alongside the music groups under
 | `layers` | List of layers composited in z-order (later paints over earlier). |
 | `skeleton` | Optional list of **bones** — parts attached at named anchors so they connect by construction (see below). Expands into `layers` (drawn beneath any explicit `layers`). |
 | `checks` | Optional list of declarative art-direction predicates, run by `inspect` (see below). |
+| `scene` | Optional `true` to mark a **scene** (a multi-object composite of `sprite` layers); relaxes `inspect`'s single-silhouette lint. See "Scenes" below. |
 | `frames` | Optional list of `{name?, hold?, layers?/skeleton?}` for animation; absent ⇒ one frame from `layers`/`skeleton`. |
 
 ### Layers (= music's parts)
@@ -118,8 +120,42 @@ Each layer is composited in order and is **exactly one** of:
   the pivot.
 - **`rect`** / **`ellipse`** — `{"at": [x,y], "size": [w,h], "color": <name>, "fill": bool}`.
 - **`line`** — `{"from": [x,y], "to": [x,y], "color": <name>}`.
+- **`sprite`** — name of **another sprite in the same group** (a sibling
+  `sprites/<name>.json`), stamped whole at `offset`. This is the **scene**
+  mechanism (see below): a scene is a sprite whose layers are other sprites.
+  Supports `flip` (`"h"`/`"v"`/`"hv"`), integer `scale`, and `frame` (which frame
+  of the referenced sprite to stamp, default 0). The child keeps its own outline
+  but its background is dropped so it composites cleanly.
 
 Optional per-layer `offset` `[dx, dy]` shifts the layer on the canvas.
+
+### Scenes — compose a picture from whole sprites
+
+Set **`"scene": true`** on a sprite and give it a big `size`; then place existing
+sprites into it with `sprite` layers over a painted backdrop (a `background`
+fill + `rect`/`ellipse`/`line` bands). Objects are **reused-transformed**, not
+re-authored — the same `boulder` flipped, the same `toadstool` scaled — exactly
+the leitmotif move, one level up. The `dusk-glade` group is the worked example:
+`meadow` stamps `great-oak`, `toadstool`, `boulder` and `fern` over a sky/pond
+backdrop. Notes:
+
+- **`scene: true`** tells `inspect` this is a deliberately multi-object composite,
+  so it skips the single-silhouette lint (a scene *is* many disconnected pieces).
+  Per-layer bounding boxes, off-canvas clipping and `checks` still apply — use
+  `on_canvas`/`left_of`/`above` to art-direct placement.
+- Set the scene's **`outline: null`** so the auto-outline doesn't trace one
+  silhouette around every object; each stamped sprite carries its own outline.
+- References must be siblings in the same group; cycles are rejected at load.
+
+### Large sprites (48/64px+) — compose, don't hand-pixel
+
+The engine takes any canvas `size`, so a 48² or 64² sprite already works — but
+authoring a 64-row ASCII grid by hand is impractical and `scale: 16` would emit a
+1024px PNG. Instead **build big sprites from small motifs placed with
+`shape`/skeleton + affine transforms**, and drop `scale` (6–8 is plenty at 64px).
+`great-oak` (64×64) is the pattern: one `trunk` motif plus one `leaf_cluster`
+motif stamped ~6× (scaled/offset/flipped) into a full canopy — a handful of specs
+lines, no giant grid.
 
 ### Skeleton — connect parts by construction (not by luck)
 

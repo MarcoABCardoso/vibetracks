@@ -78,6 +78,34 @@ def _draw_layer(canvas, layer, sprite) -> None:
         x0, y0 = ln.get("from", [0, 0])
         x1, y1 = ln.get("to", [0, 0])
         raster.draw_line(canvas, x0 + ox, y0 + oy, x1 + ox, y1 + oy, pal[ln["color"]])
+    elif "sprite" in layer:
+        # Scene composition: stamp an already-composited child sprite at `offset`.
+        # The child keeps its own outline (each object reads as a distinct piece)
+        # but its background is suppressed so it doesn't paint an opaque rectangle
+        # over the scene. Optional per-placement flip/scale mirror the leitmotif
+        # transforms — the same fox reused facing the other way, or enlarged.
+        tile = _child_tile(layer["_resolved"], layer.get("frame", 0))
+        flip = layer.get("flip")
+        if flip:
+            if "h" in flip:
+                tile = tile[:, ::-1]
+            if "v" in flip:
+                tile = tile[::-1, :]
+        sc = layer.get("scale", 1)
+        if sc and sc > 1:
+            tile = raster.upscale(tile, sc)
+        raster.blit(canvas, tile, ox, oy)
+
+
+def _child_tile(child: dict, frame_index: int) -> np.ndarray:
+    """Composite a referenced sprite's frame with its background suppressed.
+
+    A stamped sprite must arrive transparent-around-the-silhouette so it layers
+    into the scene; its own ``outline`` still applies (via ``composite_frame``),
+    so each placed object keeps its own edge.
+    """
+    frame = child["frames"][frame_index]
+    return composite_frame(dict(child, background=None), frame)
 
 
 def composite_frame(sprite: dict, frame: dict) -> np.ndarray:

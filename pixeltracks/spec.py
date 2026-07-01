@@ -33,7 +33,7 @@ ART_DIR = os.path.join("groups", "sprites")   # where sprite groups live
 BIBLE_FILE = "artbook.json"
 SPRITES_SUBDIR = "sprites"
 
-PRIMITIVES = ("pixels", "shape", "rect", "ellipse", "line")
+PRIMITIVES = ("pixels", "shape", "rect", "ellipse", "line", "sprite")
 TRANSPARENT_CHARS = set(". ")
 
 __all__ = ["SpecError", "load_json", "Bible", "load_bible", "resolve_sprite",
@@ -258,8 +258,19 @@ def resolve_skeleton(bones, motifs, where="skeleton") -> list:
 
 # --- Sprite resolution ------------------------------------------------------- #
 
-def resolve_sprite(path: str, bible: Bible | None = None) -> dict:
-    """Load a sprite spec and fold in the bible it ``extends`` (if any)."""
+def resolve_sprite(path: str, bible: Bible | None = None, _stack=frozenset()) -> dict:
+    """Load a sprite spec and fold in the bible it ``extends`` (if any).
+
+    A ``sprite`` layer (scene composition) references a sibling sprite by name;
+    that child is resolved recursively with the same bible and stashed on the
+    layer, so a scene is simply a sprite whose layers are other sprites. ``_stack``
+    carries the chain of sprites currently being resolved to reject reference
+    cycles.
+    """
+    abspath = os.path.abspath(path)
+    if abspath in _stack:
+        chain = " -> ".join([os.path.basename(p) for p in _stack] + [os.path.basename(path)])
+        raise SpecError(f"{path}: sprite reference cycle ({chain})")
     data = load_json(path)
     name = data.get("name", os.path.splitext(os.path.basename(path))[0])
 
@@ -302,13 +313,41 @@ def resolve_sprite(path: str, bible: Bible | None = None) -> dict:
         "frames": frames,
         "checks": data.get("checks", []),    # declarative art-direction predicates
         "flip": data.get("flip"),            # mirror the whole composite ("h"/"v"/"hv")
+        "scene": bool(data.get("scene", False)),  # a multi-object composite, not one figure
     }
+    if not isinstance(data.get("scene", False), bool):
+        raise SpecError(f"{path}: 'scene' must be true/false")
     if resolved["flip"] is not None and (not isinstance(resolved["flip"], str)
                                          or set(resolved["flip"]) - set("hv")
                                          or not resolved["flip"]):
         raise SpecError(f"{path}: sprite 'flip' must be 'h', 'v' or 'hv'")
+    _resolve_sprite_layers(resolved, path, bible, _stack | {abspath})
     _validate_sprite(resolved, path)
     return resolved
+
+
+def _resolve_sprite_layers(sprite: dict, path: str, bible, stack) -> None:
+    """Resolve every ``sprite`` layer to its referenced sibling (in place).
+
+    A ``sprite`` layer names another sprite in the same ``sprites/`` directory;
+    the child is resolved recursively (same bible, same cycle chain) and stashed
+    under ``_resolved`` so the compositor can stamp its composited frame. Missing
+    references and cycles are caught here, before any pixels are drawn.
+    """
+    sprite_dir = os.path.dirname(path)
+    for fi, frame in enumerate(sprite["frames"]):
+        for li, layer in enumerate(frame.get("layers", [])):
+            if not isinstance(layer, dict) or "sprite" not in layer:
+                continue
+            ref = layer["sprite"]
+            where = f"{path}: frame {fi} layer {li}"
+            if not isinstance(ref, str):
+                raise SpecError(f"{where}: 'sprite' must be a sprite name (string), got {ref!r}")
+            child_path = os.path.join(sprite_dir, ref + ".json")
+            if not os.path.isfile(child_path):
+                raise SpecError(f"{where}: sprite layer references unknown sprite {ref!r} "
+                                f"(looked for {child_path})")
+            layer["_resolved"] = resolve_sprite(child_path, bible, stack)
 
 
 def _validate_sprite(s: dict, path: str) -> None:
@@ -356,6 +395,23 @@ def _validate_layer(layer, sprite, names, where) -> None:
         for src, dst in (layer.get("recolor") or {}).items():
             if dst not in names:
                 raise SpecError(f"{where}: recolor target {dst!r} is not a palette colour")
+    elif kind == "sprite":
+        # A scene layer that stamps another sprite. Existence/cycles were checked
+        # at resolution (which attached `_resolved`); here we vet the placement.
+        frame = layer.get("frame", 0)
+        if not (isinstance(frame, int) and frame >= 0):
+            raise SpecError(f"{where}: sprite 'frame' must be a non-negative int, got {frame!r}")
+        sc = layer.get("scale", 1)
+        if not (isinstance(sc, int) and sc >= 1):
+            raise SpecError(f"{where}: sprite 'scale' must be a positive int, got {sc!r}")
+        flip_axis = layer.get("flip")
+        if flip_axis is not None and (not isinstance(flip_axis, str)
+                                      or set(flip_axis) - set("hv") or not flip_axis):
+            raise SpecError(f"{where}: sprite 'flip' must be 'h', 'v' or 'hv', got {flip_axis!r}")
+        child = layer.get("_resolved")
+        if child is not None and frame >= len(child["frames"]):
+            raise SpecError(f"{where}: sprite {layer['sprite']!r} has no frame {frame} "
+                            f"(it has {len(child['frames'])})")
     else:  # rect / ellipse / line
         spec = layer[kind]
         if not isinstance(spec, dict) or spec.get("color") not in names:

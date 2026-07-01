@@ -1,0 +1,19 @@
+{
+  "name": "boulder",
+  "extends": "../artbook.json",
+  "size": [
+    18,
+    12
+  ],
+  "scale": 9,
+  "layers": [
+    {
+      "name": "rock",
+      "shape": "boulder",
+      "offset": [
+        1,
+        2
+      ]
+    }
+  ]
+}

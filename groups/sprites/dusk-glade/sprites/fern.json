@@ -1,0 +1,19 @@
+{
+  "name": "fern",
+  "extends": "../artbook.json",
+  "size": [
+    15,
+    9
+  ],
+  "scale": 10,
+  "layers": [
+    {
+      "name": "fern",
+      "shape": "fern",
+      "offset": [
+        1,
+        1
+      ]
+    }
+  ]
+}

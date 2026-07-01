@@ -1,0 +1,171 @@
+{
+  "name": "meadow",
+  "extends": "../artbook.json",
+  "size": [
+    124,
+    80
+  ],
+  "scale": 5,
+  "background": "sky",
+  "outline": null,
+  "scene": true,
+  "layers": [
+    {
+      "name": "sky_glow",
+      "rect": {
+        "at": [
+          0,
+          0
+        ],
+        "size": [
+          124,
+          30
+        ],
+        "color": "sky_hi"
+      }
+    },
+    {
+      "name": "soil",
+      "rect": {
+        "at": [
+          0,
+          60
+        ],
+        "size": [
+          124,
+          20
+        ],
+        "color": "soil"
+      }
+    },
+    {
+      "name": "grass",
+      "rect": {
+        "at": [
+          0,
+          56
+        ],
+        "size": [
+          124,
+          6
+        ],
+        "color": "grass"
+      }
+    },
+    {
+      "name": "grass_hi",
+      "line": {
+        "from": [
+          0,
+          56
+        ],
+        "to": [
+          123,
+          56
+        ],
+        "color": "grass_hi"
+      }
+    },
+    {
+      "name": "pond",
+      "ellipse": {
+        "at": [
+          66,
+          60
+        ],
+        "size": [
+          46,
+          16
+        ],
+        "color": "water"
+      }
+    },
+    {
+      "name": "pond_hi",
+      "ellipse": {
+        "at": [
+          72,
+          62
+        ],
+        "size": [
+          28,
+          7
+        ],
+        "color": "water_hi"
+      }
+    },
+    {
+      "name": "oak",
+      "sprite": "great-oak",
+      "offset": [
+        2,
+        6
+      ]
+    },
+    {
+      "name": "rock_l",
+      "sprite": "boulder",
+      "offset": [
+        40,
+        52
+      ]
+    },
+    {
+      "name": "toad_1",
+      "sprite": "toadstool",
+      "offset": [
+        58,
+        46
+      ]
+    },
+    {
+      "name": "toad_2",
+      "sprite": "toadstool",
+      "flip": "h",
+      "offset": [
+        104,
+        44
+      ]
+    },
+    {
+      "name": "rock_r",
+      "sprite": "boulder",
+      "flip": "h",
+      "offset": [
+        98,
+        54
+      ]
+    },
+    {
+      "name": "fern_1",
+      "sprite": "fern",
+      "offset": [
+        70,
+        52
+      ]
+    },
+    {
+      "name": "fern_2",
+      "sprite": "fern",
+      "flip": "h",
+      "offset": [
+        50,
+        54
+      ]
+    },
+    {
+      "name": "fern_3",
+      "sprite": "fern",
+      "offset": [
+        110,
+        53
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "rule": "on_canvas",
+      "layer": "oak"
+    }
+  ]
+}
