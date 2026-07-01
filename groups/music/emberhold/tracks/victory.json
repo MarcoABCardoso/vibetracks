@@ -3,6 +3,8 @@
   "extends": "../soundtrack.json",
   "_comment": "A short, through-composed fanfare (no loop — a stinger, not a groove). The vanguard call, ONE bright statement of ember_theme an octave up, and a plagal G→D cadence that lifts to D major (a picardy third — the long night broken). Leans on the secondary `vanguard` motif so it doesn't just replay the hook.",
   "bpm": 108,
+  "meaning": "resolve",
+  "entity": "the-vanguard",
 
   "sections": [
     {

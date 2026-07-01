@@ -1,6 +1,8 @@
 {
   "name": "banner",
   "extends": "../artbook.json",
+  "meaning": "hope",
+  "entity": "the-keep",
   "_comment": "The Vanguard's banner: the world's cross-modal `ember` motif made visible. It flies the shared `crest` motif (this Lab's FACE of the ember) enlarged on the cloth — the SAME sun-crest whose melodic twin is ember_theme in the music Lab. Built by REUSE, not redraw: a pole line, a cloak-red cloth, and the crest shape stamped at scale 2.",
   "size": [20, 20],
 

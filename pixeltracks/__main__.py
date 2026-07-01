@@ -27,6 +27,8 @@ import json
 import os
 import sys
 
+from labkit import world as world_mod
+
 from . import spec
 from .compositor import coverage, render_sprite
 from .pngio import write_png
@@ -105,7 +107,8 @@ def cmd_validate(args) -> int:
                 frames = len(s["frames"])
                 shape = f"{s['size'][0]}x{s['size'][1]}"
                 extra = f", {frames} frames" if frames > 1 else ""
-                print(f"  ok  {path}  ({shape}{extra})")
+                tags = world_mod.fmt_refs(s.get("meaning"), s.get("entities"))
+                print(f"  ok  {path}  ({shape}{extra}){tags}")
             except (spec.SpecError, FileNotFoundError) as e:
                 print(f"  ERR  {e}")
                 ok = False

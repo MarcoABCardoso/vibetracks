@@ -11,7 +11,7 @@ import unittest
 
 from labkit import world as world_mod
 from labkit.specbase import SpecError
-from labkit.world import check_world, discover_worlds, load_world
+from labkit.world import check_spec_refs, check_world, discover_worlds, load_world
 
 import vibetracks.spec as vspec
 import pixeltracks.spec as pspec
@@ -115,6 +115,73 @@ class TestBibleExtendsWorld(unittest.TestCase):
         b = pspec.load_bible(os.path.join(ROOT, "groups", "sprites", "mossy-hollow",
                                           "artbook.json"))
         self.assertIsNone(b.world)
+
+
+class TestLeafSpecRefs(unittest.TestCase):
+    """Leaf specs (a track / a sprite) reference the world's meaning + entities.
+
+    The Phase-2 finisher: the *palette of meaning* and named entities, until now
+    only nameable by the world's own motifs, are inherited down to the specs the
+    AI actually authors — with the same "cannot drift" guarantee the faces get.
+    """
+
+    def setUp(self):
+        self.world = load_world(EMBERHOLD)
+
+    def test_valid_meaning_and_entity_resolve(self):
+        m, ents = check_spec_refs({"meaning": "hope", "entity": "the-keep"},
+                                  self.world, "spec")
+        self.assertEqual(m, "hope")
+        self.assertEqual(ents, ["the-keep"])
+
+    def test_entities_list_takes_precedence_over_entity(self):
+        _, ents = check_spec_refs(
+            {"entities": ["the-keep", "the-shadow"], "entity": "ignored"},
+            self.world, "spec")
+        self.assertEqual(ents, ["the-keep", "the-shadow"])
+
+    def test_no_refs_is_a_noop_even_without_a_world(self):
+        self.assertEqual(check_spec_refs({}, None, "spec"), (None, []))
+
+    def test_unknown_meaning_rejected(self):
+        with self.assertRaises(SpecError):
+            check_spec_refs({"meaning": "ghost"}, self.world, "spec")
+
+    def test_comment_key_is_not_a_selectable_meaning(self):
+        # A world's `_comment` documentation key must not validate as a tag.
+        with self.assertRaises(SpecError):
+            check_spec_refs({"meaning": "_comment"}, self.world, "spec")
+
+    def test_unknown_entity_rejected(self):
+        with self.assertRaises(SpecError):
+            check_spec_refs({"entity": "nobody"}, self.world, "spec")
+
+    def test_entities_must_be_a_list(self):
+        with self.assertRaises(SpecError):
+            check_spec_refs({"entities": "the-keep"}, self.world, "spec")
+
+    def test_reference_without_a_world_is_an_error(self):
+        # You cannot point at a world you do not descend from.
+        with self.assertRaises(SpecError):
+            check_spec_refs({"meaning": "hope"}, None, "spec")
+
+    def test_emberhold_track_carries_its_meaning(self):
+        t = vspec.resolve_track(
+            os.path.join(ROOT, "groups", "music", "emberhold", "tracks", "siege.json"))
+        self.assertEqual(t["meaning"], "hostile")
+        self.assertEqual(t["entities"], ["the-shadow"])
+
+    def test_emberhold_sprite_carries_its_meaning(self):
+        s = pspec.resolve_sprite(
+            os.path.join(ROOT, "groups", "sprites", "emberhold", "sprites",
+                         "dark-knight.json"))
+        self.assertEqual(s["meaning"], "hostile")
+        self.assertEqual(s["entities"], ["the-shadow"])
+
+    def test_fmt_refs(self):
+        self.assertEqual(world_mod.fmt_refs(None, []), "")
+        self.assertEqual(world_mod.fmt_refs("hope", ["the-keep"]),
+                         "  [means hope; about the-keep]")
 
 
 if __name__ == "__main__":

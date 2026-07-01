@@ -3,6 +3,8 @@
   "extends": "../soundtrack.json",
   "_comment": "The world's `fallen` transform, driven as a CALL TO ARMS — the enemy is at the wall, act now. Urgency comes from the accompaniment, not the tune: a relentless eighth-note harp ostinato, a galloping octave bass, four-on-the-floor kick and sixteenth hats at double the old tempo. Still the inverted ember_theme (the fallen face), but stated AT TEMPO, never augmented: A is a tense call-and-response (the inverted head cuts, then space over the churning engine); B is the rally — the whole inverted theme surging twice over a VI–VII–V push back to the tonic.",
   "bpm": 152,
+  "meaning": "hostile",
+  "entity": "the-shadow",
 
   "sections": [
     {

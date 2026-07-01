@@ -23,7 +23,7 @@ from dataclasses import dataclass, field
 
 from labkit.groups import discover_group_dirs
 from labkit.specbase import SpecError, extends_path, load_json  # shared across Labs
-from labkit.world import World, load_world
+from labkit.world import World, check_spec_refs, load_world
 
 from . import theory
 from .instruments import DEFAULT_PALETTE, ENGINES, merge_patch
@@ -131,6 +131,12 @@ def resolve_track(path: str, bible: Bible | None = None) -> dict:
     for inst, override in (data.get("palette") or {}).items():
         palette[inst] = merge_patch(palette.get(inst, {}), override)
 
+    # A track may claim a world `meaning` tag and reference world `entities` —
+    # the Root Spec's palette of meaning inherited down to the leaf spec. Checked
+    # against the bible's world, so a stray tag/id fails like a wrong note.
+    world = bible.world if bible else None
+    meaning, entities = check_spec_refs(data, world, path)
+
     resolved = {
         "name": name,
         "key": data.get("key", base_key),
@@ -140,6 +146,8 @@ def resolve_track(path: str, bible: Bible | None = None) -> dict:
         "palette": palette,
         "motifs": motifs,
         "loops": data.get("loops"),  # default loop repeats; CLI can override
+        "meaning": meaning,          # world meaning tag (or None)
+        "entities": entities,        # world entity ids this track is about
     }
     _validate_track(resolved, path)
     return resolved
