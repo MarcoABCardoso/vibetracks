@@ -1,9 +1,9 @@
 {
-  "name": "knight-portrait",
+  "name": "mage-portrait",
   "extends": "../artbook.json",
   "meaning": "resolve",
   "entity": "the-vanguard",
-  "_comment": "Bust-up RPG dialogue portrait: the Vanguard knight, higher detail than the 20x20 field sprite. Built from the shared 'knight_bust' base plus one pface_* expression overlay per frame, so the three faces (neutral / grin / angry) differ by expression alone and stay on-model with the rest of the Vanguard portraits. 32x34, renders to a 3-cell expression sheet + atlas.",
+  "_comment": "Bust-up RPG dialogue portrait: the party mage. Built from the shared 'mage_bust' base plus one pface_* expression overlay per frame, so the three faces (neutral / grin / angry) differ by expression alone and stay on-model with the rest of the Vanguard portraits. 32x34, renders to a 3-cell expression sheet + atlas.",
   "size": [
     32,
     34
@@ -25,7 +25,7 @@
       "layers": [
         {
           "name": "bust",
-          "shape": "knight_bust"
+          "shape": "mage_bust"
         },
         {
           "name": "face",
@@ -38,7 +38,7 @@
       "layers": [
         {
           "name": "bust",
-          "shape": "knight_bust"
+          "shape": "mage_bust"
         },
         {
           "name": "face",
@@ -51,7 +51,7 @@
       "layers": [
         {
           "name": "bust",
-          "shape": "knight_bust"
+          "shape": "mage_bust"
         },
         {
           "name": "face",
