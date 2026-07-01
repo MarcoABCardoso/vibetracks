@@ -1,10 +1,11 @@
 # PixelTracks — the sprite Lab (spec reference)
 
-> ⚠️ **Early, exploratory work.** PixelTracks is much younger than VibeTracks and
-> its procedural raster engine is still limited — rendered sprites come out rough
-> and results may fall well short of the music Lab. Treat it as a proof that the
-> `labkit` core generalizes to a second medium, not a finished sprite generator,
-> and set the user's expectations accordingly.
+> ✅ **A capable, deterministic pixel-art engine.** PixelTracks renders coherent
+> sprite sets straight from JSON with **no image model** — palette-swap leitmotifs,
+> skeleton-rigged poses, frame animation, multi-object scenes, and higher-detail
+> bust portraits all work today. It's tuned for pixel art and flat/stylised work
+> rather than photoreal or painterly illustration; author within that lane (see
+> `docs/pixelcraft.md`) and it holds its own beside the music Lab.
 
 The visual sibling of VibeTracks, built on the same `labkit` core and mirroring
 its module layout (see the root `CLAUDE.md` for the multi-Lab overview). Sprites

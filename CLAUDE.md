@@ -12,10 +12,12 @@ scope, roadmap).
 | **VibeTracks** | music / SFX | JSON song specs | WAV (pure-Python synth) | `/soundtrack` | `vibetracks/CLAUDE.md` |
 | **PixelTracks** | sprites / images | JSON sprite specs | PNG (procedural raster) | `/spritesheet` | `pixeltracks/CLAUDE.md` |
 
-> ⚠️ **PixelTracks is early, exploratory work.** Its procedural raster engine is
-> still limited, so rendered sprites are rough and results may fall well short of
-> the music Lab. It's a proof that the shared core generalizes to a second medium,
-> not a finished sprite generator — set expectations accordingly.
+> 🖼️ **PixelTracks is a capable pixel-art engine.** Its deterministic raster
+> engine renders coherent sprite sets straight from JSON — palette-swap
+> leitmotifs, skeleton-rigged poses, frame animation, multi-object scenes, even
+> higher-detail bust portraits — with no image model in the loop. It's tuned for
+> pixel art and flat/stylised work, not photoreal or painterly illustration; author
+> within that lane and it stands beside the music Lab.
 
 ## This file is an index, not the whole manual
 

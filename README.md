@@ -95,10 +95,11 @@ with leitmotif transforms — `slice`/`transpose`/`stretch`/`invert`/`retrograde
 
 ## 🖼️ PixelTracks — the sprite Lab
 
-> ⚠️ **Early, exploratory work.** PixelTracks is much younger than VibeTracks and
-> its procedural raster engine is still limited — rendered sprites come out rough
-> and results may fall short of the music Lab. Treat it as a proof of the
-> multi-Lab structure, not a finished sprite generator.
+> 🖼️ **A deterministic pixel-art engine.** Built on the same `labkit` core as
+> VibeTracks, PixelTracks renders coherent sprite sets from JSON — palette swaps,
+> skeleton-rigged poses, animation, scenes, higher-detail portraits — with **no
+> image model**. It targets pixel art and flat/stylised work rather than photoreal
+> illustration, and within that lane it delivers.
 
 The visual sibling, built on the same `labkit` core and mirroring VibeTracks
 module-for-module. A sprite set stays coherent because every sprite shares one

@@ -74,18 +74,20 @@ end up disappointed. Choose the fight you can win:
   systems/balance data, and flat/pixel art. Here structure *is* the medium, and
   the deterministic engine reaches near the quality ceiling on its own. This is
   the core, and it's real: **VibeTracks' synth output is legitimately good.**
-- **Where it's a boundary case — organic, illustrative work.** Painterly
-  portraits, photoreal scenes, richly rendered sprites. Pure procedural rendering
-  visibly falls short here, and no amount of structure fixes that. This is
-  exactly where the caged generative engine earns its place (below) — and until
-  it lands, set expectations accordingly.
+- **Where it's a boundary — organic, illustrative work.** Painterly portraits
+  and photoreal scenes. Pure procedural rendering can't reach a hand-painted or
+  photographic finish, and no amount of structure fixes that. This is exactly
+  where the caged generative engine earns its place (below); note this is the
+  *painterly/photoreal* edge, not sprites in general — stylised pixel art sits
+  firmly on the good side of the line.
 - **So: pick a style whose constraints are natural** — pixel art, flat vector,
   low-poly, chiptune/synth. That's the visual equivalent of VibeTracks choosing a
   synth-forward aesthetic. Fighting for photoreal-everything is the fast road
   back to dissonance.
 
-The tool's honesty is a feature: it will show you a coherent *rough* sprite and a
-polished track, and it will tell you which is which.
+The tool's honesty is a feature: it renders exactly what the spec says and no
+more — a coherent sprite, a polished track — so what you see on screen is what
+ships, with nothing hallucinated in.
 
 ## What exists today
 
@@ -95,13 +97,15 @@ polished track, and it will tell you which is which.
   optional sample-based `soundfont` engine conformed to the same mix, a validator
   that catches wrong notes before you render, and worked demo scores. This is the
   existence proof that a deterministic engine can hit the quality bar.
-- **PixelTracks (sprites) — the honest boundary case.** The same machine in a
-  second medium: an art bible (palette, shape motifs, outline), JSON sprite/
+- **PixelTracks (sprites) — the second Lab, and it delivers.** The same machine
+  in a second medium: an art bible (palette, shape motifs, outline), JSON sprite/
   animation specs, a procedural raster engine, a skeleton rig for connected poses,
   and a text-based `inspect`/`describe` toolchain for judging a sprite without
-  squinting at a PNG. It proves the *architecture* ports cleanly — and it also
-  maps precisely where procedural *quality* runs out. That boundary is a finding,
-  not a failure: it's the map of where a leashed generator will go.
+  squinting at a PNG. It proves the *architecture* ports cleanly *and* produces
+  genuinely presentable pixel art — coherent sets, rigged poses, animations,
+  scenes, higher-detail portraits. The one thing still out of reach is
+  painterly/photoreal finish, and that's precisely the slot a leashed generator
+  will fill.
 - **The world layer — coherence made checkable.** `worlds/<name>/world.json` is
   the root spec every medium's bible descends from: an identity, a *palette of
   meaning* (shape/colour/voice tags), named entities, and **cross-modal motifs**
