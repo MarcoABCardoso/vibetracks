@@ -35,7 +35,7 @@
         "fallen": {
           "_comment": "Darken the ember for the invaded keep — one intent, both media obey it.",
           "pixeltracks": { "sprite": "dark-knight", "how": "palette-swap gold/steel -> shadow-violet" },
-          "vibetracks":  { "track": "siege",        "how": "theme inverted, dropped an octave into a minor dirge" }
+          "vibetracks":  { "track": "siege",        "how": "theme inverted, driven at battle tempo — a call to arms" }
         }
       }
     }
