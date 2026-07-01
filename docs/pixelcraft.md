@@ -113,6 +113,27 @@ rects and `hold` counts (the temporal analogue of concatenating sections).
   rotated to follow the blade (same `rotate`/`pivot` trick) so it *trails the
   edge* instead of floating beside the body. Energy spikes where motion peaks.
 
+## 7. Scenes & big sprites: build up, don't blow up
+
+Two ways to go bigger than one small figure — both are *composition*, the same
+"reuse transformed" discipline one level up (see the `dusk-glade` demo).
+
+- **A scene is a sprite made of sprites.** Give it a wide `size`, `"scene": true`,
+  `outline: null`, paint a backdrop with a `background` fill + `rect`/`ellipse`/
+  `line` bands (sky, ground, water), then stamp finished sprites with `sprite`
+  layers. Compose for depth: **overlap** (a near rock crossing the tree base) and
+  **size/height** (things lower on the canvas read as closer) do the work a flat
+  row of icons can't. Vary each stamp — `flip` and `scale` the same object so a
+  scatter of three ferns isn't three identical stamps. Because the pieces are
+  *meant* to be separate, `scene: true` mutes the single-body lint; keep using
+  `on_canvas`/`left_of`/`above` `checks` to pin placement.
+- **A 64px hero is a canopy of motifs, not a 64-row grid.** Hand-pixelling a big
+  grid is a trap; instead draw a few small motifs (a `trunk`, one `leaf_cluster`)
+  and stamp them with `shape`/skeleton + `scale`/`flip`/`offset` into the large
+  form — then drop `scale` to 6–8 so the PNG isn't enormous. `great-oak` is six
+  leaf stamps and a trunk. The silhouette rule still rules: get the big shape
+  reading first, shade second.
+
 ## Cohesion checklist
 
 - [ ] Every sprite `extends` its group's `artbook.json`.

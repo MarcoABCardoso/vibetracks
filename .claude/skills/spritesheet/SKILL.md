@@ -61,7 +61,8 @@ motifs (a crest) you can reuse on other sprites.
    <name> --group <g>`). A sprite `extends` the bible and is built from `layers`
    (composited in z-order). A layer is exactly one of: `pixels` (+`legend`),
    `shape` (a bible motif, +`flip`/`rotate`/`scale`/`recolor`), `rect`,
-   `ellipse`, or `line`. Optional `offset` per layer.
+   `ellipse`, `line`, or `sprite` (stamp another sprite — the scene mechanism,
+   §7). Optional `offset` per layer.
 2. `python -m pixeltracks validate` — catches off-palette colours, ragged grids,
    unknown motifs (the visual analogue of a wrong note).
 3. `python -m pixeltracks inspect <g>/<name>` — **evaluate as text before you
@@ -108,7 +109,25 @@ recover), `hold` the impact frame, and add a `flash`/`slash` motif on the action
 frame only. It compiles to a horizontal sheet + `<name>.atlas.json` (frame rects
 + holds). See `docs/pixelcraft.md` §6.
 
-## 6. Master pass
+## 6. Scenes & large sprites (optional)
+
+Two moves beyond a single small sprite (see the `dusk-glade` demo):
+
+- **Scenes** — compose a picture from *whole sprites*. Give a sprite a big `size`,
+  `"scene": true`, `outline: null`, a `background` fill + `rect`/`ellipse`/`line`
+  backdrop bands, then place objects with **`sprite` layers** (`{ "sprite":
+  "<sibling>", "offset": [x,y], "flip"?, "scale"?, "frame"? }`). Objects are
+  reused-transformed, not re-authored — the same rock flipped, the same mushroom
+  scaled. `scene: true` relaxes the single-silhouette lint (a scene is meant to be
+  many pieces); per-layer bboxes, off-canvas clipping and `checks` still work for
+  placement. `dusk-glade/meadow` stamps a 64px oak + toadstools + boulders + ferns
+  over a pond backdrop.
+- **Large sprites (48/64px+)** — the engine takes any `size`, but don't hand-draw
+  a 64-row grid. **Compose from small motifs** with `shape`/skeleton + affine, and
+  lower `scale` (6–8). `dusk-glade/great-oak` is a 64² tree = one `trunk` motif +
+  one `leaf_cluster` stamped ~6× into a canopy.
+
+## 7. Master pass
 
 `python -m pixeltracks render-all --group <g>` renders every sprite and writes
 `out/<g>/manifest.json` (per-sprite size/frames/coverage); plain `render-all`

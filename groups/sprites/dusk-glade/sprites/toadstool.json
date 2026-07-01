@@ -1,0 +1,19 @@
+{
+  "name": "toadstool",
+  "extends": "../artbook.json",
+  "size": [
+    16,
+    16
+  ],
+  "scale": 10,
+  "layers": [
+    {
+      "name": "cap",
+      "shape": "toadstool",
+      "offset": [
+        1,
+        1
+      ]
+    }
+  ]
+}

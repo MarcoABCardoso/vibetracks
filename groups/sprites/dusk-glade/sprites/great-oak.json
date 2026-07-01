@@ -1,0 +1,82 @@
+{
+  "name": "great-oak",
+  "extends": "../artbook.json",
+  "size": [
+    64,
+    64
+  ],
+  "scale": 8,
+  "layers": [
+    {
+      "name": "trunk",
+      "shape": "trunk",
+      "scale": 2,
+      "offset": [
+        22,
+        18
+      ]
+    },
+    {
+      "name": "canopy_c",
+      "shape": "leaf_cluster",
+      "scale": 2,
+      "offset": [
+        14,
+        2
+      ]
+    },
+    {
+      "name": "canopy_l",
+      "shape": "leaf_cluster",
+      "offset": [
+        4,
+        14
+      ]
+    },
+    {
+      "name": "canopy_r",
+      "shape": "leaf_cluster",
+      "flip": "h",
+      "offset": [
+        42,
+        14
+      ]
+    },
+    {
+      "name": "canopy_bl",
+      "shape": "leaf_cluster",
+      "offset": [
+        10,
+        24
+      ]
+    },
+    {
+      "name": "canopy_br",
+      "shape": "leaf_cluster",
+      "flip": "h",
+      "offset": [
+        36,
+        24
+      ]
+    },
+    {
+      "name": "canopy_top",
+      "shape": "leaf_cluster",
+      "offset": [
+        23,
+        0
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "rule": "on_canvas",
+      "layer": "all"
+    },
+    {
+      "rule": "above",
+      "layer": "canopy_top",
+      "of": "trunk"
+    }
+  ]
+}

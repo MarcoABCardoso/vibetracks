@@ -208,16 +208,22 @@ def geometry(sprite: dict, frame_index: int = 0) -> dict:
         if off:
             warnings.append(f"layer '{name}' clipped off-canvas ({', '.join(off)})")
 
+    # A scene is a deliberately multi-object composite — separate figures are the
+    # point — so the single-silhouette lint (floating / disconnected pieces) does
+    # not apply. Per-layer bbox and off-canvas clipping above still do.
+    is_scene = bool(sprite.get("scene"))
+
     # Floating layers: a layer whose (dilated) mask touches no other layer.
-    for i, (name, mask) in enumerate(plain_masks):
-        if not mask.any():
-            continue
-        others = np.zeros_like(mask)
-        for j, (_, om) in enumerate(plain_masks):
-            if j != i:
-                others |= om
-        if others.any() and not (_dilate(mask) & others).any():
-            warnings.append(f"layer '{name}' is FLOATING (touches no other layer)")
+    if not is_scene:
+        for i, (name, mask) in enumerate(plain_masks):
+            if not mask.any():
+                continue
+            others = np.zeros_like(mask)
+            for j, (_, om) in enumerate(plain_masks):
+                if j != i:
+                    others |= om
+            if others.any() and not (_dilate(mask) & others).any():
+                warnings.append(f"layer '{name}' is FLOATING (touches no other layer)")
 
     union = np.zeros((h, w), dtype=bool)
     for _, mask in plain_masks:
@@ -225,10 +231,10 @@ def geometry(sprite: dict, frame_index: int = 0) -> dict:
     comps = _components(union)
     solid = [c for c in comps if c >= SPECK]      # real body pieces
     specks = [c for c in comps if c < SPECK]      # 1-2px rotation crumbs
-    if len(solid) > 1:
+    if len(solid) > 1 and not is_scene:
         warnings.append(f"silhouette is in {len(solid)} disconnected pieces "
                         f"(sizes {solid}); expected 1 — a part is detached")
-    if specks:
+    if specks and not is_scene:
         warnings.append(f"{len(specks)} stray speck(s) (<= {SPECK - 1}px): a thin "
                         f"rotated/sheared part likely has gaps")
     return {"layers": infos, "components": comps, "solid": solid,

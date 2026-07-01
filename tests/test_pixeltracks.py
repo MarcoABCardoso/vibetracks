@@ -329,5 +329,89 @@ class TestThinRotation(unittest.TestCase):
         self.assertEqual(len(solid), 1)        # supersampling keeps it one piece
 
 
+GLADE = os.path.join(ROOT, "groups", "sprites", "dusk-glade")
+
+
+class TestSceneComposition(unittest.TestCase):
+    """The `sprite` layer kind: a scene is a sprite whose layers are other sprites."""
+
+    def _resolve(self, name):
+        return spec.resolve_sprite(os.path.join(GLADE, "sprites", name + ".json"))
+
+    def test_scene_resolves_and_attaches_children(self):
+        meadow = self._resolve("meadow")
+        self.assertTrue(meadow["scene"])
+        sprite_layers = [L for L in meadow["frames"][0]["layers"] if "sprite" in L]
+        self.assertTrue(sprite_layers, "scene has no sprite layers")
+        # every sprite layer resolved its referenced child sprite in place
+        for L in sprite_layers:
+            self.assertIn("_resolved", L)
+            self.assertTrue(L["_resolved"]["frames"])
+        # the hero oak is reused whole, not re-authored
+        oak = next(L for L in sprite_layers if L["sprite"] == "great-oak")
+        self.assertEqual(oak["_resolved"]["size"], (64, 64))
+
+    def test_scene_renders_with_stamped_children(self):
+        meadow = self._resolve("meadow")
+        out = render_sprite(meadow)
+        self.assertEqual(out["sheet"].shape, (80, 124, 4))
+        self.assertGreater(coverage(out["frames"][0]), 0.9)  # backdrop fills it
+        # a stamped child actually paints: the oak's trunk brown lands on the canvas
+        frame = out["frames"][0]
+        bark = meadow["palette"]["bark"]
+        self.assertTrue(np.any(np.all(frame == np.array(bark, np.uint8), axis=-1)),
+                        "stamped oak did not paint its trunk into the scene")
+
+    def test_child_flip_mirrors_the_stamp(self):
+        # two boulders, one flipped: the mirror lands as a horizontal reflection.
+        base = self._resolve("boulder")
+        btile = composite_frame(dict(base, background=None), base["frames"][0])
+        # place plain vs flipped via a tiny synthetic scene layer path
+        from pixeltracks import raster
+        plain = raster.new_canvas(*base["size"])
+        raster.blit(plain, btile, 0, 0)
+        flipped = raster.new_canvas(*base["size"])
+        raster.blit(flipped, btile[:, ::-1], 0, 0)
+        self.assertTrue(np.array_equal(flipped, plain[:, ::-1]))
+
+    def test_scene_geometry_suppresses_single_body_lint(self):
+        from pixeltracks import inspect
+        meadow = self._resolve("meadow")
+        geo = inspect.geometry(meadow, 0)
+        joined = " ".join(geo["warnings"])
+        self.assertNotIn("disconnected", joined)
+        self.assertNotIn("FLOATING", joined)
+        # but per-layer bounding boxes are still reported
+        names = {info["name"] for info in geo["layers"]}
+        self.assertIn("oak", names)
+
+    def test_unknown_sprite_reference_raises(self):
+        bible = spec.load_bible(os.path.join(GLADE, "artbook.json"))
+        with self.assertRaises(spec.SpecError):
+            spec._resolve_sprite_layers(
+                {"frames": [{"layers": [{"sprite": "no-such-sprite"}]}]},
+                os.path.join(GLADE, "sprites", "x.json"), bible, frozenset())
+
+    def test_reference_cycle_raises(self):
+        import json as _json
+        import tempfile
+        d = tempfile.mkdtemp()
+        for a, b in (("a", "b"), ("b", "a")):
+            with open(os.path.join(d, a + ".json"), "w") as f:
+                _json.dump({"name": a, "size": [8, 8],
+                            "palette": {"x": "#fff"},
+                            "layers": [{"sprite": b}]}, f)
+        with self.assertRaises(spec.SpecError):
+            spec.resolve_sprite(os.path.join(d, "a.json"))
+
+    def test_bad_frame_index_rejected(self):
+        names = {"x"}
+        sprite = {"palette": {"x": (0, 0, 0, 255)}, "motifs": {}}
+        layer = {"sprite": "child", "frame": 5,
+                 "_resolved": {"frames": [{"layers": []}]}}
+        with self.assertRaises(spec.SpecError):
+            spec._validate_layer(layer, sprite, names, where="t")
+
+
 if __name__ == "__main__":
     unittest.main()

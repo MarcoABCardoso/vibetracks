@@ -1,0 +1,176 @@
+{
+  "title": "Dusk Glade",
+  "aesthetic": "A dusk meadow: a big oak, toadstools, boulders and ferns around a pond. Demonstrates large (64px) composed sprites and multi-sprite SCENES.",
+  "size": [
+    16,
+    16
+  ],
+  "scale": 10,
+  "palette": {
+    "outline": "#241f2e",
+    "bark": "#6b4a2f",
+    "bark_hi": "#916a41",
+    "bark_sh": "#452c1b",
+    "leaf": "#4f9d5b",
+    "leaf_hi": "#83c976",
+    "leaf_sh": "#2f6b3d",
+    "cap": "#cf5646",
+    "cap_hi": "#e8897a",
+    "cap_dot": "#f3e6cb",
+    "stem": "#ece1c4",
+    "stem_sh": "#c7b892",
+    "rock": "#7d8590",
+    "rock_hi": "#aab2ba",
+    "grass": "#5a8a3a",
+    "grass_hi": "#82b957",
+    "water": "#4a76a8",
+    "water_hi": "#8fb8dc",
+    "soil": "#5b4632",
+    "sky": "#f4b89e",
+    "sky_hi": "#f9d7bd"
+  },
+  "background": null,
+  "outline": {
+    "color": "outline"
+  },
+  "ramps": {
+    "leaf": [
+      "leaf_sh",
+      "leaf",
+      "leaf_hi"
+    ],
+    "bark": [
+      "bark_sh",
+      "bark",
+      "bark_hi"
+    ]
+  },
+  "motifs": {
+    "leaf_cluster": {
+      "legend": {
+        "l": "leaf",
+        "L": "leaf_hi",
+        "k": "leaf_sh"
+      },
+      "pixels": [
+        "......LLlllk......",
+        ".....LLLlllkk.....",
+        "....LLLLlllkkk....",
+        "...LLLLLlllkkkk...",
+        "..LLLLLLlllkkkkk..",
+        "..LLLLLLlllkkkkk..",
+        ".LLLLLLLlllkkkkkk.",
+        ".llllllllllkkkkkk.",
+        ".llllllllllkkkkkk.",
+        "kkkkkkkkkkkkkkkkkk",
+        ".kkkkkkkkkkkkkkkk.",
+        ".kkkkkkkkkkkkkkkk.",
+        "..kkkkkkkkkkkkkk..",
+        ".....kkkkkkkk....."
+      ]
+    },
+    "trunk": {
+      "legend": {
+        "b": "bark",
+        "B": "bark_hi",
+        "r": "bark_sh"
+      },
+      "pixels": [
+        "...Bbbr...",
+        "...Bbbr...",
+        "..BBbbrr..",
+        "..BBbbrr..",
+        "..BBbbrr..",
+        "..BBbbrr..",
+        "..BBbbrr..",
+        "..BBbbrr..",
+        "..BBbbrr..",
+        "..BBbbrr..",
+        ".BBBbbrrr.",
+        ".BBBbbrrr.",
+        ".BBbbbbrr.",
+        ".BBbbbbrr.",
+        ".BBbbbbrr.",
+        ".BBbbbbrr.",
+        ".BBbbbbrr.",
+        ".BBbbbbrr.",
+        "BBBbbbbrrr",
+        "BBBbbbbrrr",
+        "BBBbbbbrrr",
+        "BBBbbbbrrr"
+      ]
+    },
+    "toadstool": {
+      "legend": {
+        "c": "cap",
+        "C": "cap_hi",
+        "k": "cap",
+        "o": "cap_dot",
+        "s": "stem",
+        "t": "stem_sh"
+      },
+      "pixels": [
+        "CCCCccccccckkk",
+        "CCCCcccccckkkk",
+        "CCCCoccccckkkk",
+        ".CCCccoccckkk.",
+        ".CCCCcccockkk.",
+        "..CCCcccccok..",
+        "..CCCcccckkk..",
+        "....CCkkkk....",
+        "....sssttt....",
+        "....sssttt....",
+        "....sssttt....",
+        "....sssttt....",
+        "....sssttt....",
+        "....sssttt....",
+        "....sssttt...."
+      ],
+      "anchors": {
+        "base": [
+          7,
+          14
+        ]
+      }
+    },
+    "boulder": {
+      "legend": {
+        "g": "rock",
+        "G": "rock_hi"
+      },
+      "pixels": [
+        "....GGggggg....",
+        "..GGGGggggggg..",
+        "..GGGGggggggg..",
+        ".GGGGGGggggggg.",
+        ".ggggggggggggg.",
+        "ggggggggggggggg",
+        "ggggggggggggggg",
+        ".ggggggggggggg.",
+        "....ggggggg...."
+      ]
+    },
+    "fern": {
+      "legend": {
+        "v": "grass",
+        "V": "grass_hi"
+      },
+      "pixels": [
+        ".V....V....V.",
+        ".VV...V....V.",
+        "..V...V...V..",
+        "..v...v...v..",
+        "..v...v...v..",
+        "..vv..v..vv..",
+        "..vv..v..vv.."
+      ]
+    }
+  },
+  "sprites": [
+    "great-oak",
+    "toadstool",
+    "boulder",
+    "fern",
+    "meadow"
+  ]
+}

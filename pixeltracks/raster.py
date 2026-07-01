@@ -206,6 +206,24 @@ def add_outline(canvas, rgba) -> None:
         canvas[y, x] = rgba
 
 
+def blit(canvas, tile, x: int, y: int) -> None:
+    """Alpha-over a whole RGBA ``tile`` onto ``canvas`` with its top-left at ``(x, y)``.
+
+    The compositing counterpart of :func:`draw_grid` for a *pre-rendered* image:
+    a scene stamps an already-composited child sprite here, so later stamps paint
+    over earlier ones exactly as layers do. Out-of-bounds rows/columns are clipped;
+    fully transparent tile pixels are skipped (they must not punch holes).
+    """
+    th, tw = tile.shape[:2]
+    for j in range(th):
+        cy = y + j
+        for i in range(tw):
+            px = tile[j, i]
+            if px[3] == 0:
+                continue
+            paint(canvas, x + i, cy, (int(px[0]), int(px[1]), int(px[2]), int(px[3])))
+
+
 def upscale(canvas, factor: int) -> np.ndarray:
     """Nearest-neighbour integer upscale for a viewable export (master stage)."""
     if factor <= 1:
