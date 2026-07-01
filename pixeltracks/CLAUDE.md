@@ -140,7 +140,10 @@ Encode the target as predicates so iterating is "fix the failures", not "guess
 from the picture". `inspect` evaluates them. Rules: `connected` (one solid
 piece); `on_canvas` (`layer?`, `margin?` — nothing clipped); `centered_x`
 (`layer`, `in`, `tol?`); `left_of`/`right_of`/`above`/`below` (`layer`, `of`,
-`slack?`); `touches` (`layer`, `of?`); `min_coverage` (`value`). A target region
+`slack?`, whole-bbox ordering); `top_above` (`layer`, `of`, `by?` — the layer's
+*highest* point sits above the other's, e.g. a blade rising past the shoulders
+even while the grip is low); `touches` (`layer`, `of?`); `min_coverage`
+(`value`). A target region
 is a layer name, a list of names, or `"all"`.
 
 ```jsonc

@@ -293,6 +293,16 @@ def run_checks(sprite: dict, frame_index: int = 0) -> list:
                   "above": a[3] <= b[2] + s, "below": a[2] >= b[3] - s}[rule]
             emit(ok, rule, f"{c['layer']}{_box_short(a)} vs {c['of']}{_box_short(b)}"
                  + (f" (slack {s})" if s else ""))
+        elif rule == "top_above":
+            a = _region_box(masks, c["layer"], w, h)
+            b = _region_box(masks, c["of"], w, h)
+            by = c.get("by", 0)
+            if a is None or b is None:
+                emit(False, "top_above", f"missing region ({c['layer']} or {c['of']})")
+                continue
+            emit(a[2] <= b[2] - by, "top_above",
+                 f"{c['layer']} top y{a[2]} vs {c['of']} top y{b[2]}"
+                 + (f" (by {by})" if by else ""))
         elif rule == "centered_x":
             a = _region_box(masks, c["layer"], w, h)
             b = _region_box(masks, c["in"], w, h)
