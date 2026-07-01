@@ -78,6 +78,34 @@ and which `entities` it is about, checked against the world at validate time
 (shared `check_spec_refs` in `labkit`). Not every group needs a world — a bible
 with no `extends` is a standalone identity, exactly as before.
 
+### When to use a world (and when not to)
+
+A world earns its keep only when something has to cohere *across* media; its
+unique machinery — the meaning palette, cross-modal motifs, `fallen`-style
+transforms — is inert or redundant for a single artifact class. So don't default
+to `worlds/` for every job:
+
+| The ask | Start at |
+|---------|----------|
+| one artifact class ("a boss theme", "a fox sprite") | a **standalone group** (`new-group`), no world |
+| music **and** art for one game; "a whole world"; a shared identity across media | a **world** (`new-world`), then author in each Lab's group |
+| single medium now, maybe more later | a group now — **promote** it later (add `extends`) with no rewrite |
+
+Prefer **lazy promotion**: build the group world-less, and only add the world the
+moment a second medium or a genuine cross-modal motif appears. A world-scale
+project starts coherent with:
+
+```bash
+python -m labs new-world <name>            # world.json + one wired group per Lab
+python -m labs new-world <name> --media vibetracks   # only some media
+python -m labs new-world <name> --world-only         # just the Root Spec
+```
+
+Each scaffolded group's bible is pre-wired to `extends` the new world; the world
+ships with a starter meaning palette + entities and an **empty** `motifs` map (add
+a cross-modal motif once each medium has a face to bind). `python -m labs validate`
+passes immediately, so you fill in identity from a coherent base.
+
 ## The shared core & adding a Lab
 
 - `labkit/` — `SpecError` + `load_json` + the shared `extends_path` inheritance
