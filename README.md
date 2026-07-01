@@ -45,17 +45,21 @@ the dispatcher (`python -m labs vibetracks …`).
 ```
 labkit/           # shared core: SpecError/load_json, group discovery, the Lab registry
 labs/             # the multi-Lab dispatcher (python -m labs)
+CLAUDE.md         # index; per-Lab spec reference in vibetracks/ & pixeltracks/CLAUDE.md
 
 vibetracks/       # the music Lab (theory, synth, instruments, sequencer, wavio, CLI)
-groups/<g>/soundtrack.json + tracks/*.json    # music groups (demo: neon-frontier)
+groups/music/<g>/soundtrack.json + tracks/*.json     # music groups (demo: neon-frontier)
 
 pixeltracks/      # the sprite Lab (palette, shapes, raster, compositor, pngio, CLI)
-art/<g>/artbook.json + sprites/*.json          # sprite groups (demo: tiny-knight)
+groups/sprites/<g>/artbook.json + sprites/*.json     # sprite groups (demo: tiny-knight)
 
 docs/composition.md   # music craft guide      docs/pixelcraft.md   # sprite craft guide
 .claude/skills/soundtrack                       .claude/skills/spritesheet
 tests/                                          out/<group>/   # build artifacts (gitignored)
 ```
+
+All assets live under one **`groups/`** tree, split by medium: `groups/music/`
+for VibeTracks and `groups/sprites/` for PixelTracks.
 
 Adding a Lab is a new package mirroring this layout plus one `Lab(...)` entry in
 `labkit/registry.py` — that's the structural claim of the vision.
@@ -66,7 +70,7 @@ Adding a Lab is a new package mirroring this layout plus one `Lab(...)` entry in
 
 A coherent soundtrack stays coherent because every track shares one bible: the
 same key, tempo family, instrument palette, and recurring musical **motifs**.
-Tracks live in **groups** (`groups/<name>/`) — independent scores in one repo.
+Tracks live in **groups** (`groups/music/<name>/`) — independent scores in one repo.
 
 ### The included demo: *Neon Frontier*
 
@@ -90,6 +94,11 @@ with leitmotif transforms — `slice`/`transpose`/`stretch`/`invert`/`retrograde
 ---
 
 ## 🖼️ PixelTracks — the sprite Lab
+
+> ⚠️ **Early, exploratory work.** PixelTracks is much younger than VibeTracks and
+> its procedural raster engine is still limited — rendered sprites come out rough
+> and results may fall short of the music Lab. Treat it as a proof of the
+> multi-Lab structure, not a finished sprite generator.
 
 The visual sibling, built on the same `labkit` core and mirroring VibeTracks
 module-for-module. A sprite set stays coherent because every sprite shares one

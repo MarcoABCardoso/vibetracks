@@ -16,7 +16,7 @@ from vibetracks import spec, theory
 from vibetracks.sequencer import _transform, render_track
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-DEMO = os.path.join(ROOT, "groups", "neon-frontier")
+DEMO = os.path.join(ROOT, "groups", "music", "neon-frontier")
 BIBLE = os.path.join(DEMO, "soundtrack.json")
 TRACKS = sorted(glob.glob(os.path.join(DEMO, "tracks", "*.json")))
 

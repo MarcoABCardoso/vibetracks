@@ -22,7 +22,7 @@ class Lab:
     name: str
     artifact: str          # what it compiles, e.g. "music / SFX", "sprites"
     summary: str           # one-line description for `python -m labs`
-    assets_dir: str        # where this Lab's groups live, e.g. "groups", "art"
+    assets_dir: str        # where this Lab's groups live, e.g. "groups/music"
     bible_file: str        # the per-group bible filename
     specs_subdir: str      # the per-group specs subfolder
     entry: str             # "module:function" returning an int exit code
@@ -41,7 +41,7 @@ LABS = [
         name="vibetracks",
         artifact="music / SFX",
         summary="Game soundtracks: JSON song specs compiled to WAV by a pure-Python synth.",
-        assets_dir="groups",
+        assets_dir="groups/music",
         bible_file="soundtrack.json",
         specs_subdir="tracks",
         entry="vibetracks.__main__:main",
@@ -49,8 +49,8 @@ LABS = [
     Lab(
         name="pixeltracks",
         artifact="sprites / images",
-        summary="Pixel-art sprites: JSON sprite specs compiled to PNG by a procedural raster engine.",
-        assets_dir="art",
+        summary="Pixel-art sprites: JSON sprite specs compiled to PNG by a procedural raster engine. (Early work — results are limited.)",
+        assets_dir="groups/sprites",
         bible_file="artbook.json",
         specs_subdir="sprites",
         entry="pixeltracks.__main__:main",
