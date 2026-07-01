@@ -61,11 +61,21 @@ motifs (a crest) you can reuse on other sprites.
    `ellipse`, or `line`. Optional `offset` per layer.
 2. `python -m pixeltracks validate` — catches off-palette colours, ragged grids,
    unknown motifs (the visual analogue of a wrong note).
-3. `python -m pixeltracks render <g>/<name>` — writes `out/<g>/<name>.png`.
-4. **Read the PNG** to see it (and/or send it to the user with SendUserFile).
-   Translate feedback into spec edits: "muddy" → widen the shadow/highlight
-   spread; "unreadable" → simplify the silhouette; "doesn't fit" → pull colours
-   back to the palette or reuse a shared motif.
+3. `python -m pixeltracks inspect <g>/<name>` — **evaluate as text before you
+   trust the picture.** The ASCII dump, per-layer bounding boxes, and
+   connectivity lint catch the structural bugs a glance at the PNG misses
+   (floating limbs, disconnected "horseshoe" bodies, clipped weapons, off-centre
+   parts). For anything articulated — a pose, a multi-part body, an animation —
+   this is where you spend your iterations, not on re-rendering. Add `checks`
+   (connected / centred / above / left_of …) to the sprite so the target is
+   pass/fail. For rigged poses, prefer a `skeleton` (parts attached at anchors)
+   so connection is guaranteed, not tuned. See `pixeltracks/CLAUDE.md`.
+4. `python -m pixeltracks render <g>/<name>` — writes `out/<g>/<name>.png`.
+5. **Read the PNG** to judge *colour/shading/read* (what text can't tell you),
+   and/or send it to the user with SendUserFile. Translate feedback into spec
+   edits: "muddy" → widen the shadow/highlight spread; "unreadable" → simplify
+   the silhouette; "doesn't fit" → pull colours back to the palette or reuse a
+   shared motif.
 
 ## 4. Derive variants from the hero (coherence ≠ repetition)
 

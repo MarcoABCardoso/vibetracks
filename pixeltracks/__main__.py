@@ -147,6 +147,26 @@ def cmd_render(args) -> int:
     return 0
 
 
+def cmd_inspect(args) -> int:
+    from . import inspect as _inspect
+    groups = spec.discover_groups()
+    g, path = _locate(args.sprite, args.group, groups)
+    bible = g.load_bible()
+    sprite = spec.resolve_sprite(path, bible)
+    frames = range(len(sprite["frames"])) if args.all_frames else [args.frame]
+    any_fail = False
+    for fi in frames:
+        print(_inspect.report(sprite, fi,
+                              ascii=not args.no_ascii,
+                              geom=not args.no_geometry,
+                              checks=not args.no_checks))
+        if not args.no_checks:
+            any_fail = any_fail or any(not r["ok"] for r in _inspect.run_checks(sprite, fi))
+        if not args.no_geometry:
+            any_fail = any_fail or bool(_inspect.geometry(sprite, fi)["warnings"])
+    return 1 if (any_fail and args.strict) else 0
+
+
 def cmd_render_all(args) -> int:
     groups = spec.discover_groups()
     if not groups:
@@ -287,6 +307,17 @@ def main(argv=None) -> int:
     pr.add_argument("-o", "--out", help="explicit output PNG path")
     pr.add_argument("--out-dir", default=OUT_DIR)
 
+    pi = sub.add_parser("inspect", help="evaluate a sprite as text/geometry (no PNG)")
+    pi.add_argument("sprite", help="<group>/<sprite>, a sprite name, or a path to JSON")
+    pi.add_argument("--group", help="group to look up a bare sprite name in")
+    pi.add_argument("--frame", type=int, default=0, help="which frame to inspect")
+    pi.add_argument("--all-frames", action="store_true", help="inspect every frame")
+    pi.add_argument("--no-ascii", action="store_true")
+    pi.add_argument("--no-geometry", action="store_true")
+    pi.add_argument("--no-checks", action="store_true")
+    pi.add_argument("--strict", action="store_true",
+                    help="exit non-zero if any warning or check fails")
+
     pa = sub.add_parser("render-all", help="render every sprite in every group")
     pa.add_argument("--group", help="limit to one group")
     pa.add_argument("--out-dir", default=OUT_DIR)
@@ -305,6 +336,7 @@ def main(argv=None) -> int:
     return {
         "validate": cmd_validate,
         "render": cmd_render,
+        "inspect": cmd_inspect,
         "render-all": cmd_render_all,
         "new": cmd_new,
         "new-group": cmd_new_group,

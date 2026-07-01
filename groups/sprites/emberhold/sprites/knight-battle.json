@@ -1,110 +1,74 @@
 {
   "name": "knight-battle",
   "extends": "../artbook.json",
-  "_comment": "Battle-ready STILL pose in an on-guard stance. Connected core (head -> chest -> legs), a 3/4 head turn toward the target, a slight forward lean, a lunge stance, the shield held dead-centre in front as a guard, and the sword levelled forward at head height (a ready guard, not a skyward charge). The cape streams behind to the back-left, clear of the torso front.",
+  "_comment": "Battle-ready on-guard STILL, built as a SKELETON: the chest is the root (its 'hips' pinned to the canvas) and every other part attaches at a named anchor (head.neck -> chest.neck, legs' hip -> chest.hip_l/hip_r, arm.shoulder -> chest.shoulder_r, sword.grip -> arm.hand, shield.center -> chest torso). Parts meet by construction, so leaning the chest can't open a gap. The 'checks' encode the art direction (connected, on-canvas, shield centred, sword above the chest, cape behind) as pass/fail predicates.",
   "size": [
-    28,
+    30,
     26
   ],
   "scale": 12,
-  "layers": [
+  "checks": [
+    { "rule": "connected" },
+    { "rule": "on_canvas", "margin": 0 },
+    { "rule": "centered_x", "layer": "shield", "in": ["chest", "back-leg", "front-leg"], "tol": 1 },
+    { "rule": "above", "layer": "sword", "of": "chest" },
+    { "rule": "left_of", "layer": "cape", "of": "chest", "slack": 1 },
+    { "rule": "touches", "layer": "front-leg" },
+    { "rule": "touches", "layer": "sword", "of": "sword-arm" }
+  ],
+  "skeleton": [
     {
       "name": "cape",
       "shape": "cape",
-      "pivot": [
-        6,
-        0
-      ],
-      "skew": [
-        -0.3,
-        0.0
-      ],
-      "at": [
-        10,
-        10
-      ]
+      "pivot": "collar",
+      "attach": { "to": "chest", "anchor": "shoulder_l" },
+      "skew": [ -0.3, 0.0 ]
     },
     {
       "name": "back-leg",
       "shape": "knight_leg",
-      "offset": [
-        8,
-        18
-      ]
+      "pivot": "hip",
+      "attach": { "to": "chest", "anchor": "hip_l" }
     },
     {
       "name": "front-leg",
       "shape": "knight_leg",
-      "skew": [
-        -0.22,
-        0.0
-      ],
-      "pivot": [
-        1,
-        0
-      ],
-      "at": [
-        14,
-        18
-      ]
+      "pivot": "hip",
+      "attach": { "to": "chest", "anchor": "hip_r" },
+      "skew": [ -0.22, 0.0 ]
     },
     {
       "name": "chest",
       "shape": "knight_chest",
-      "skew": [
-        -0.1,
-        0.0
-      ],
-      "pivot": [
-        5,
-        5
-      ],
-      "at": [
-        13,
-        17
-      ]
-    },
-    {
-      "name": "sword-arm",
-      "shape": "knight_arm",
-      "pivot": [
-        1,
-        5
-      ],
-      "rotate": 68,
-      "at": [
-        16,
-        13
-      ]
-    },
-    {
-      "name": "sword",
-      "shape": "sword",
-      "pivot": [
-        1,
-        8
-      ],
-      "rotate": 56,
-      "at": [
-        19,
-        11
-      ]
+      "pivot": "hips",
+      "at": [ 13, 17 ],
+      "skew": [ -0.1, 0.0 ]
     },
     {
       "name": "shield",
       "shape": "shield",
-      "offset": [
-        10,
-        13
-      ]
+      "pivot": "center",
+      "attach": { "to": "chest", "anchor": "hips", "shift": [ -1, -1 ] }
+    },
+    {
+      "name": "sword-arm",
+      "shape": "knight_arm",
+      "pivot": "shoulder",
+      "attach": { "to": "chest", "anchor": "shoulder_r" },
+      "rotate": 68
+    },
+    {
+      "name": "sword",
+      "shape": "sword",
+      "pivot": "grip",
+      "attach": { "to": "sword-arm", "anchor": "hand" },
+      "rotate": 56
     },
     {
       "name": "head",
       "shape": "knight_head_3q",
-      "offset": [
-        9,
-        5
-      ]
+      "pivot": "neck",
+      "attach": { "to": "chest", "anchor": "neck" }
     }
   ]
 }

@@ -147,6 +147,16 @@
         "a": "steel",
         "d": "steel_sh"
       },
+      "anchors": {
+        "hip": [
+          1,
+          0
+        ],
+        "foot": [
+          1,
+          4
+        ]
+      },
       "pixels": [
         "aaa",
         "aaa",
@@ -165,6 +175,32 @@
         "C": "cloak_hi",
         "s": "cloak_sh",
         "g": "gold"
+      },
+      "anchors": {
+        "neck": [
+          5,
+          0
+        ],
+        "shoulder_l": [
+          1,
+          1
+        ],
+        "shoulder_r": [
+          8,
+          1
+        ],
+        "hip_l": [
+          3,
+          5
+        ],
+        "hip_r": [
+          6,
+          5
+        ],
+        "hips": [
+          5,
+          5
+        ]
       },
       "pixels": [
         "..gaaaag..",
@@ -187,6 +223,12 @@
         "C": "cloak_hi",
         "g": "gold"
       },
+      "anchors": {
+        "neck": [
+          4,
+          7
+        ]
+      },
       "pixels": [
         "..Caaa..",
         ".cCaahh.",
@@ -205,6 +247,16 @@
         "h": "steel_hi",
         "d": "steel_sh"
       },
+      "anchors": {
+        "shoulder": [
+          1,
+          5
+        ],
+        "hand": [
+          1,
+          0
+        ]
+      },
       "pixels": [
         "hha",
         "aah",
@@ -220,6 +272,12 @@
         "c": "cloak",
         "C": "cloak_hi",
         "s": "cloak_sh"
+      },
+      "anchors": {
+        "collar": [
+          5,
+          0
+        ]
       },
       "pixels": [
         "..Cc...",
@@ -339,6 +397,16 @@
         "g": "gold",
         "p": "gold_sh"
       },
+      "anchors": {
+        "grip": [
+          1,
+          8
+        ],
+        "guard": [
+          1,
+          6
+        ]
+      },
       "pixels": [
         ".h.",
         ".h.",
@@ -357,6 +425,12 @@
         "h": "steel_hi",
         "d": "steel_sh",
         "g": "gold"
+      },
+      "anchors": {
+        "center": [
+          2,
+          3
+        ]
       },
       "pixels": [
         "haaah",

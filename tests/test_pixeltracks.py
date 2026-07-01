@@ -206,5 +206,82 @@ class TestRenderAndPng(unittest.TestCase):
         self.assertEqual(upscale(canvas, 4).shape, (8, 8, 4))
 
 
+EMBER = os.path.join(ROOT, "groups", "sprites", "emberhold")
+
+
+class TestSkeleton(unittest.TestCase):
+    def test_attach_meets_parent_anchor(self):
+        motifs = {
+            "trunk": {"legend": {"a": "steel"}, "anchors": {"top": [1, 0], "bot": [1, 3]},
+                      "pixels": ["aaa", "aaa", "aaa", "aaa"]},
+            "limb": {"legend": {"a": "steel"}, "anchors": {"root": [0, 0]},
+                     "pixels": ["aa", "aa"]},
+        }
+        bones = [
+            {"name": "t", "shape": "trunk", "pivot": "top", "at": [10, 10]},
+            {"name": "l", "shape": "limb", "pivot": "root",
+             "attach": {"to": "t", "anchor": "bot"}},
+        ]
+        layers = spec.resolve_skeleton(bones, motifs)
+        limb = next(L for L in layers if L["name"] == "l")
+        # trunk 'top' pinned at (10,10); 'bot' sits 3px below -> world (10,13);
+        # the limb's 'root' is pinned there.
+        self.assertEqual([round(v) for v in limb["at"]], [10, 13])
+        # bones lower to numeric pivot/at so the rest of the pipeline is unchanged.
+        for L in layers:
+            self.assertTrue(all(isinstance(v, (int, float)) for v in L["pivot"] + L["at"]))
+
+    def test_unknown_anchor_raises(self):
+        motifs = {"m": {"legend": {"a": "steel"}, "anchors": {"a": [0, 0]}, "pixels": ["a"]}}
+        with self.assertRaises(spec.SpecError):
+            spec.resolve_skeleton([{"name": "x", "shape": "m", "pivot": "nope", "at": [0, 0]}],
+                                  motifs)
+
+    def test_battle_sprite_is_one_connected_piece(self):
+        from pixeltracks import inspect
+        s = spec.resolve_sprite(os.path.join(EMBER, "sprites", "knight-battle.json"))
+        geo = inspect.geometry(s, 0)
+        self.assertEqual(len(geo["solid"]), 1, geo["warnings"])
+        self.assertTrue(all(r["ok"] for r in inspect.run_checks(s, 0)))
+
+
+class TestInspect(unittest.TestCase):
+    def _knight(self):
+        return spec.resolve_sprite(os.path.join(EMBER, "sprites", "knight.json"))
+
+    def test_ascii_dump_has_grid_and_legend(self):
+        from pixeltracks import inspect
+        dump = inspect.ascii_dump(self._knight(), 0)
+        self.assertIn("legend:", dump)
+        self.assertIn("#=outline", dump)   # outline always renders as '#'
+
+    def test_geometry_flags_disconnected_and_floating(self):
+        from pixeltracks import inspect
+        s = self._knight()
+        s["frames"][0]["layers"].append(
+            {"name": "floater", "rect": {"at": [0, 0], "size": [3, 3], "color": "gold"}})
+        geo = inspect.geometry(s, 0)
+        self.assertTrue(any("disconnected" in w or "FLOATING" in w for w in geo["warnings"]))
+
+    def test_checks_detect_violation(self):
+        from pixeltracks import inspect
+        s = self._knight()
+        s["checks"] = [{"rule": "above", "layer": "body", "of": "sword"}]  # false by design
+        res = inspect.run_checks(s, 0)
+        self.assertFalse(res[0]["ok"])
+
+
+class TestThinRotation(unittest.TestCase):
+    def test_thin_line_rotates_without_gaps(self):
+        from pixeltracks import inspect
+        from pixeltracks.raster import affine_matrix, draw_grid_affine
+        rows = ["a"] * 8                       # 1px-wide, 8-tall blade
+        legend = {"a": (255, 255, 255, 255)}
+        c = new_canvas(24, 24)
+        draw_grid_affine(c, rows, legend, affine_matrix(56), pivot=[0, 7], at=[12, 12])
+        solid = [n for n in inspect._components(c[:, :, 3] > 0) if n >= inspect.SPECK]
+        self.assertEqual(len(solid), 1)        # supersampling keeps it one piece
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -27,7 +27,7 @@ from labkit.groups import Group as _GroupBase
 from labkit.groups import discover_group_dirs
 from labkit.specbase import SpecError, load_json  # shared across Labs
 
-from . import palette, shapes
+from . import palette, raster, shapes
 
 ART_DIR = os.path.join("groups", "sprites")   # where sprite groups live
 BIBLE_FILE = "artbook.json"
@@ -94,6 +94,12 @@ def _validate_motif(name, motif, names, where) -> None:
     except ValueError as e:
         raise SpecError(f"{where}: motif {name!r}: {e}") from e
     _check_legend(legend, motif["pixels"], names, f"{where}: motif {name!r}")
+    anchors = motif.get("anchors", {})
+    if not isinstance(anchors, dict):
+        raise SpecError(f"{where}: motif {name!r}: 'anchors' must be a map of name -> [x, y]")
+    for an, pt in anchors.items():
+        if not _is_point(pt):
+            raise SpecError(f"{where}: motif {name!r}: anchor {an!r} must be [x, y] numbers, got {pt!r}")
 
 
 def _check_legend(legend, rows, palette_names, where) -> None:
@@ -138,6 +144,118 @@ def _check_outline(outline, names, where) -> None:
         raise SpecError(f"{where}: outline colour {outline['color']!r} is not in the palette")
 
 
+# --- Skeleton resolution ----------------------------------------------------- #
+#
+# A skeleton makes connection STRUCTURAL instead of lucky. Motifs declare named
+# `anchors` (neck, shoulder, hips, hand, foot) in their own grid coords; a bone
+# pins one of its anchors to a parent bone's world anchor, so a chest's `hips`
+# and a leg's `hip` meet exactly no matter how the chest is rotated/leaned. Each
+# bone lowers to an ordinary affine `shape` layer (numeric pivot/at), so the rest
+# of the pipeline — compositor, ascii, geometry, checks — is unchanged.
+
+def _anchor_in_transformed(pt, flip_axis, scale_by, gw0, gh0):
+    """Map an anchor from raw motif coords into the flip/scale-transformed grid,
+    matching :func:`shapes.transform_grid` (flip on the original, then scale)."""
+    x, y = pt
+    if flip_axis and "h" in flip_axis:
+        x = gw0 - 1 - x
+    if flip_axis and "v" in flip_axis:
+        y = gh0 - 1 - y
+    if scale_by and scale_by > 1:
+        x = x * scale_by + (scale_by - 1) / 2.0
+        y = y * scale_by + (scale_by - 1) / 2.0
+    return (float(x), float(y))
+
+
+def resolve_skeleton(bones, motifs, where="skeleton") -> list:
+    """Expand a list of skeleton bones into plain affine ``shape`` layers.
+
+    Each bone is drawn like a normal shape layer but its ``at`` (where its pivot
+    lands on the canvas) may be *derived* from a parent bone's world anchor via
+    ``attach: {to, anchor}``. Returns the layers in bone order (z-order).
+    """
+    by_name, order = {}, []
+    for b in bones:
+        if not isinstance(b, dict) or "shape" not in b:
+            raise SpecError(f"{where}: each bone needs a 'shape'")
+        name = b.get("name", b["shape"])
+        by_name[name] = b
+        order.append(name)
+
+    world_anchors = {}   # bone name -> {anchor name -> [wx, wy]}
+    layers, done = [], set()
+
+    def resolve(name, stack):
+        if name in done:
+            return
+        if name in stack:
+            raise SpecError(f"{where}: attach cycle through {name!r}")
+        b = by_name[name]
+        motif = motifs.get(b["shape"])
+        if motif is None:
+            raise SpecError(f"{where}: bone {name!r} unknown shape {b['shape']!r}")
+        anchors = motif.get("anchors", {})
+        gw0, gh0 = shapes.grid_size(motif["pixels"])
+        flip_axis = b.get("flip")
+        scale_by = b.get("scale", 1)
+
+        def anchor_pt(a):
+            if isinstance(a, str):
+                if a not in anchors:
+                    raise SpecError(f"{where}: bone {name!r} shape {b['shape']!r} "
+                                    f"has no anchor {a!r} (anchors: {sorted(anchors)})")
+                raw = anchors[a]
+            else:
+                raw = a
+            return _anchor_in_transformed(raw, flip_axis, scale_by, gw0, gh0)
+
+        piv = anchor_pt(b["pivot"]) if "pivot" in b else (gw0 * scale_by / 2.0,
+                                                          gh0 * scale_by / 2.0)
+
+        att = b.get("attach")
+        if att:
+            parent = att["to"]
+            if parent not in by_name:
+                raise SpecError(f"{where}: bone {name!r} attaches to unknown bone {parent!r}")
+            resolve(parent, stack | {name})
+            pa = world_anchors[parent]
+            if att["anchor"] not in pa:
+                raise SpecError(f"{where}: bone {parent!r} has no world anchor "
+                                f"{att['anchor']!r} (has: {sorted(pa)})")
+            at = list(pa[att["anchor"]])
+            if "shift" in att:
+                at = [at[0] + att["shift"][0], at[1] + att["shift"][1]]
+        else:
+            at = list(b.get("at", b.get("offset", [0, 0])))
+
+        rotate = b.get("rotate", 0)
+        skew = b.get("skew")
+        squash = b.get("squash")
+        matrix = raster.affine_matrix(rotate,
+                                      skew=tuple(skew) if skew else (0.0, 0.0),
+                                      scale=tuple(squash) if squash else (1.0, 1.0))
+        a_, b_, c_, d_ = matrix
+        wa = {}
+        for an, raw in anchors.items():
+            tx, ty = _anchor_in_transformed(raw, flip_axis, scale_by, gw0, gh0)
+            rx, ry = tx - piv[0], ty - piv[1]
+            wa[an] = [at[0] + a_ * rx + b_ * ry, at[1] + c_ * rx + d_ * ry]
+        world_anchors[name] = wa
+
+        layer = {"name": name, "shape": b["shape"],
+                 "pivot": [piv[0], piv[1]], "at": [at[0], at[1]], "rotate": rotate}
+        for k in ("skew", "squash", "flip", "scale", "recolor"):
+            if k in b:
+                layer[k] = b[k]
+        layers.append((order.index(name), layer))
+        done.add(name)
+
+    for name in order:
+        resolve(name, set())
+    layers.sort(key=lambda t: t[0])
+    return [layer for _, layer in layers]
+
+
 # --- Sprite resolution ------------------------------------------------------- #
 
 def resolve_sprite(path: str, bible: Bible | None = None) -> dict:
@@ -153,11 +271,24 @@ def resolve_sprite(path: str, bible: Bible | None = None) -> dict:
     motifs = dict(bible.motifs) if bible else {}
     motifs.update(data.get("motifs", {}))
 
-    # Normalise to a list of frames; a still sprite is a single frame.
+    # Normalise to a list of frames; a still sprite is a single frame. A frame
+    # (or the whole sprite) may declare a `skeleton` that expands into layers
+    # with parts attached at anchors — drawn beneath any explicit `layers`.
     if data.get("frames"):
-        frames = [dict(f) for f in data["frames"]]
+        raw_frames = [dict(f) for f in data["frames"]]
     else:
-        frames = [{"name": "frame0", "layers": data.get("layers", [])}]
+        raw_frames = [{"name": "frame0", "layers": data.get("layers", []),
+                       "skeleton": data.get("skeleton")}]
+    frames = []
+    for f in raw_frames:
+        nf = dict(f)
+        skel = nf.pop("skeleton", None)
+        layers = list(nf.get("layers", []))
+        if skel:
+            where = f"{path}: frame {nf.get('name', '?')} skeleton"
+            layers = resolve_skeleton(skel, motifs, where) + layers
+        nf["layers"] = layers
+        frames.append(nf)
 
     resolved = {
         "name": name,
@@ -169,6 +300,7 @@ def resolve_sprite(path: str, bible: Bible | None = None) -> dict:
         "legend": data.get("legend", {}),   # sprite-level default for pixels layers
         "motifs": motifs,
         "frames": frames,
+        "checks": data.get("checks", []),    # declarative art-direction predicates
     }
     _validate_sprite(resolved, path)
     return resolved
