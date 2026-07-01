@@ -6,10 +6,15 @@ cross-modal motif's face exists in every medium it claims. Content-specific
 assertions use the bundled ``emberhold`` world, which spans both media.
 """
 
+import json
 import os
+import shutil
+import tempfile
 import unittest
 
+import labs.__main__ as dispatcher
 from labkit import world as world_mod
+from labkit.registry import LABS
 from labkit.specbase import SpecError
 from labkit.world import check_spec_refs, check_world, discover_worlds, load_world
 
@@ -182,6 +187,66 @@ class TestLeafSpecRefs(unittest.TestCase):
         self.assertEqual(world_mod.fmt_refs(None, []), "")
         self.assertEqual(world_mod.fmt_refs("hope", ["the-keep"]),
                          "  [means hope; about the-keep]")
+
+
+class TestNewWorld(unittest.TestCase):
+    """`python -m labs new-world` scaffolds a coherent cross-modal starting point.
+
+    A world-scale project should start coherent: a world plus one group per Lab,
+    each pre-wired to `extends` it, validating out of the box (empty motifs — a
+    cross-modal motif is added once each medium has a face to bind).
+    """
+
+    def setUp(self):
+        self._old = os.getcwd()
+        self._tmp = tempfile.mkdtemp()
+        os.chdir(self._tmp)
+
+    def tearDown(self):
+        os.chdir(self._old)
+        shutil.rmtree(self._tmp, ignore_errors=True)
+
+    def test_scaffolds_world_and_wired_groups(self):
+        rc = dispatcher.main(["new-world", "testrealm", "--title", "Test Realm"])
+        self.assertEqual(rc, 0)
+        w = load_world(os.path.join("worlds", "testrealm", "world.json"))
+        self.assertEqual(w.name, "Test Realm")
+        self.assertIn("hero", w.meaning)
+        # A wired group bible per Lab, each `extends`-ing the world.
+        for lab in LABS:
+            bpath = os.path.join(lab.assets_dir, "testrealm", lab.bible_file)
+            self.assertTrue(os.path.isfile(bpath), bpath)
+            with open(bpath) as f:
+                self.assertIn("extends", json.load(f))
+        # Coherent from the start (no dangling faces — motifs is empty).
+        self.assertEqual(check_world(w), [])
+
+    def test_scaffolded_bibles_resolve_the_world(self):
+        dispatcher.main(["new-world", "testrealm"])
+        mb = vspec.load_bible(os.path.join("groups", "music", "testrealm",
+                                           "soundtrack.json"))
+        ab = pspec.load_bible(os.path.join("groups", "sprites", "testrealm",
+                                           "artbook.json"))
+        self.assertIsNotNone(mb.world)
+        self.assertIsNotNone(ab.world)
+        self.assertEqual(os.path.abspath(mb.world.path),
+                         os.path.abspath(ab.world.path))
+
+    def test_world_only_skips_groups(self):
+        rc = dispatcher.main(["new-world", "lonely", "--world-only"])
+        self.assertEqual(rc, 0)
+        self.assertTrue(os.path.isfile(os.path.join("worlds", "lonely", "world.json")))
+        self.assertFalse(os.path.isdir(os.path.join("groups", "music", "lonely")))
+
+    def test_media_flag_limits_scaffolded_labs(self):
+        rc = dispatcher.main(["new-world", "just-music", "--media", "vibetracks"])
+        self.assertEqual(rc, 0)
+        self.assertTrue(os.path.isdir(os.path.join("groups", "music", "just-music")))
+        self.assertFalse(os.path.isdir(os.path.join("groups", "sprites", "just-music")))
+
+    def test_refuses_to_clobber_without_force(self):
+        self.assertEqual(dispatcher.main(["new-world", "dup", "--world-only"]), 0)
+        self.assertEqual(dispatcher.main(["new-world", "dup", "--world-only"]), 1)
 
 
 if __name__ == "__main__":

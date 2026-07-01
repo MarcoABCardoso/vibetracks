@@ -35,6 +35,14 @@ A new game or character set is a **new group** — never overwrite a demo
 scaffolds `groups/sprites/<name>/` with a starter bible + a `main` sprite. If extending an
 existing set, work inside its group.
 
+**Is this part of a bigger world?** If the user wants art *and* music for one
+game, or a shared identity across media, start one level up with
+`python -m labs new-world <name>` — it scaffolds `worlds/<name>/world.json` plus a
+sprite group already wired to `extends` it, so the set inherits the world's
+meaning palette and entities. A single-medium sprite set needs no world; a group
+can also be *promoted* later by adding an `extends`. See the root `CLAUDE.md`
+("When to use a world").
+
 ## 1. Establish the bible (do this first, once)
 
 Edit `groups/sprites/<name>/artbook.json`. Interview briefly if needed: game & mood, the

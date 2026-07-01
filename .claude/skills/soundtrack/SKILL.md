@@ -25,6 +25,14 @@ or another existing bible. `python -m vibetracks new-group <name> --title "<Titl
 scaffolds `groups/music/<name>/` with a starter bible and a `main-theme` track. If the
 user is extending a soundtrack that already exists, work inside its group instead.
 
+**Is this part of a bigger world?** If the user wants music *and* art (sprites)
+for one game, or a shared identity across media, start one level up with
+`python -m labs new-world <name>` — it scaffolds `worlds/<name>/world.json` plus a
+music group already wired to `extends` it, so the score inherits the world's
+meaning palette and entities. A single-medium soundtrack needs no world; a group
+can also be *promoted* later by adding an `extends`. See the root `CLAUDE.md`
+("When to use a world").
+
 ## 1. Establish the bible (do this first, once)
 
 Edit the group's `groups/music/<name>/soundtrack.json`. If it doesn't reflect the game
