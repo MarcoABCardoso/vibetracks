@@ -1,0 +1,62 @@
+{
+  "name": "cleric-battle",
+  "extends": "../artbook.json",
+  "_comment": "Cleric battle stance: knight skeleton recoloured to a cream/gold healer with a robe_skirt for legs, a white coif + gold circlet, and a mace raised overhead to smite with a holy spark at the head. Facing right. Same rig as the whole party — class identity is colour + headgear + weapon.",
+  "size": [
+    30,
+    28
+  ],
+  "scale": 12,
+  "checks": [
+    { "rule": "connected" },
+    { "rule": "on_canvas", "margin": 0 },
+    { "rule": "top_above", "layer": "mace", "of": "chest" },
+    { "rule": "touches", "layer": "mace", "of": "mace-arm" },
+    { "rule": "touches", "layer": "robe" }
+  ],
+  "skeleton": [
+    {
+      "name": "robe",
+      "shape": "robe_skirt",
+      "pivot": "waist",
+      "attach": { "to": "chest", "anchor": "hips", "shift": [ 0, -1 ] },
+      "recolor": { "steel": "cloth", "steel_hi": "cloth_hi", "steel_sh": "cloth_sh" }
+    },
+    {
+      "name": "chest",
+      "shape": "knight_chest",
+      "pivot": "hips",
+      "at": [ 13, 18 ],
+      "skew": [ -0.08, 0.0 ],
+      "recolor": { "steel": "cloth", "steel_hi": "cloth_hi", "steel_sh": "cloth_sh", "cloak": "gold", "cloak_hi": "gold", "cloak_sh": "gold_sh" }
+    },
+    {
+      "name": "mace-arm",
+      "shape": "knight_arm",
+      "pivot": "shoulder",
+      "attach": { "to": "chest", "anchor": "shoulder_r" },
+      "rotate": 28,
+      "recolor": { "steel": "cloth", "steel_hi": "cloth_hi", "steel_sh": "cloth_sh" }
+    },
+    {
+      "name": "mace",
+      "shape": "mace",
+      "pivot": "grip",
+      "attach": { "to": "mace-arm", "anchor": "hand" },
+      "rotate": 14
+    },
+    {
+      "name": "spark",
+      "shape": "spark",
+      "pivot": [ 2, 2 ],
+      "attach": { "to": "mace", "anchor": "head" },
+      "recolor": { "magic": "gold", "magic_hi": "flash" }
+    },
+    {
+      "name": "head",
+      "shape": "cleric_head_3q",
+      "pivot": "neck",
+      "attach": { "to": "chest", "anchor": "neck" }
+    }
+  ]
+}

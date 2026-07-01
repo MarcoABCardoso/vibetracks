@@ -301,7 +301,12 @@ def resolve_sprite(path: str, bible: Bible | None = None) -> dict:
         "motifs": motifs,
         "frames": frames,
         "checks": data.get("checks", []),    # declarative art-direction predicates
+        "flip": data.get("flip"),            # mirror the whole composite ("h"/"v"/"hv")
     }
+    if resolved["flip"] is not None and (not isinstance(resolved["flip"], str)
+                                         or set(resolved["flip"]) - set("hv")
+                                         or not resolved["flip"]):
+        raise SpecError(f"{path}: sprite 'flip' must be 'h', 'v' or 'hv'")
     _validate_sprite(resolved, path)
     return resolved
 

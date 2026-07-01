@@ -1,0 +1,61 @@
+{
+  "name": "mage-battle",
+  "extends": "../artbook.json",
+  "_comment": "Mage battle stance: the SAME skeleton as the knight (chest root -> head/arm at anchors) but the legs are swapped for a robe_skirt at the hips and the steel body is recoloured to the arcane purple ramp. Class identity = pointed 3/4 hat + robe colour + a raised staff with a spark at the orb. Facing right.",
+  "size": [
+    30,
+    28
+  ],
+  "scale": 12,
+  "checks": [
+    { "rule": "connected" },
+    { "rule": "on_canvas", "margin": 0 },
+    { "rule": "top_above", "layer": "staff", "of": "chest" },
+    { "rule": "touches", "layer": "staff", "of": "staff-arm" },
+    { "rule": "touches", "layer": "robe" }
+  ],
+  "skeleton": [
+    {
+      "name": "robe",
+      "shape": "robe_skirt",
+      "pivot": "waist",
+      "attach": { "to": "chest", "anchor": "hips", "shift": [ 0, -1 ] },
+      "recolor": { "steel": "mage", "steel_hi": "mage_hi", "steel_sh": "mage_sh" }
+    },
+    {
+      "name": "chest",
+      "shape": "knight_chest",
+      "pivot": "hips",
+      "at": [ 13, 18 ],
+      "skew": [ -0.08, 0.0 ],
+      "recolor": { "steel": "mage", "steel_hi": "mage_hi", "steel_sh": "mage_sh", "cloak": "mage_sh", "cloak_hi": "mage", "cloak_sh": "mage_sh" }
+    },
+    {
+      "name": "staff-arm",
+      "shape": "knight_arm",
+      "pivot": "shoulder",
+      "attach": { "to": "chest", "anchor": "shoulder_r" },
+      "rotate": 38,
+      "recolor": { "steel": "mage", "steel_hi": "mage_hi", "steel_sh": "mage_sh" }
+    },
+    {
+      "name": "staff",
+      "shape": "staff",
+      "pivot": "grip",
+      "attach": { "to": "staff-arm", "anchor": "hand" },
+      "rotate": 12
+    },
+    {
+      "name": "spark",
+      "shape": "spark",
+      "pivot": [ 2, 2 ],
+      "attach": { "to": "staff", "anchor": "tip" }
+    },
+    {
+      "name": "head",
+      "shape": "mage_head_3q",
+      "pivot": "neck",
+      "attach": { "to": "chest", "anchor": "neck" }
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+{
+  "name": "ranger-battle",
+  "extends": "../artbook.json",
+  "_comment": "Ranger battle stance: knight skeleton recoloured to a green/leather ranger, wide-stance legs, a leaf hood, and a DRAWN BOW — lead arm extended forward holding the bow (flipped to face the shot), back arm drawing the string, an arrow nocked and pointing forward. Facing right.",
+  "size": [
+    32,
+    26
+  ],
+  "scale": 12,
+  "_checks_note": "No whole-figure 'connected' here: a drawn bow + nocked arrow are legitimately separate pieces from the body, so we assert the joints that DO matter instead.",
+  "checks": [
+    { "rule": "on_canvas", "margin": 0 },
+    { "rule": "right_of", "layer": "bow", "of": "chest" },
+    { "rule": "touches", "layer": "bow", "of": "bow-arm" },
+    { "rule": "touches", "layer": "back-leg" },
+    { "rule": "touches", "layer": "front-leg" }
+  ],
+  "skeleton": [
+    {
+      "name": "back-leg",
+      "shape": "knight_leg",
+      "pivot": "hip",
+      "attach": { "to": "chest", "anchor": "hip_l", "shift": [ -2, 0 ] },
+      "skew": [ -0.4, 0.0 ],
+      "recolor": { "steel": "leather", "steel_sh": "leather_sh" }
+    },
+    {
+      "name": "front-leg",
+      "shape": "knight_leg",
+      "pivot": "hip",
+      "attach": { "to": "chest", "anchor": "hip_r", "shift": [ 2, 0 ] },
+      "skew": [ 0.4, 0.0 ],
+      "recolor": { "steel": "leather", "steel_sh": "leather_sh" }
+    },
+    {
+      "name": "chest",
+      "shape": "knight_chest",
+      "pivot": "hips",
+      "at": [ 14, 17 ],
+      "skew": [ -0.1, 0.0 ],
+      "recolor": { "steel": "leaf", "steel_hi": "leaf_hi", "steel_sh": "leaf_sh", "cloak": "leather", "cloak_hi": "leather", "cloak_sh": "leather_sh" }
+    },
+    {
+      "name": "draw-arm",
+      "shape": "knight_arm",
+      "pivot": "shoulder",
+      "attach": { "to": "chest", "anchor": "shoulder_l" },
+      "rotate": 70,
+      "recolor": { "steel": "leaf", "steel_hi": "leaf_hi", "steel_sh": "leaf_sh" }
+    },
+    {
+      "name": "bow-arm",
+      "shape": "knight_arm",
+      "pivot": "shoulder",
+      "attach": { "to": "chest", "anchor": "shoulder_r" },
+      "rotate": 80,
+      "recolor": { "steel": "leaf", "steel_hi": "leaf_hi", "steel_sh": "leaf_sh" }
+    },
+    {
+      "name": "arrow",
+      "shape": "arrow",
+      "pivot": [ 4, 2 ],
+      "attach": { "to": "bow-arm", "anchor": "hand", "shift": [ -3, 1 ] }
+    },
+    {
+      "name": "bow",
+      "shape": "bow",
+      "pivot": "grip",
+      "attach": { "to": "bow-arm", "anchor": "hand" },
+      "flip": "h"
+    },
+    {
+      "name": "head",
+      "shape": "ranger_head_3q",
+      "pivot": "neck",
+      "attach": { "to": "chest", "anchor": "neck" }
+    }
+  ]
+}

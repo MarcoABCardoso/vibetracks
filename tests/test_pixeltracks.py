@@ -245,6 +245,22 @@ class TestSkeleton(unittest.TestCase):
         self.assertTrue(all(r["ok"] for r in inspect.run_checks(s, 0)))
 
 
+class TestCompositeFlip(unittest.TestCase):
+    def test_flip_h_mirrors_frame(self):
+        s = spec.resolve_sprite(os.path.join(EMBER, "sprites", "knight-battle.json"))
+        base = composite_frame(s, s["frames"][0])
+        mirrored = composite_frame(dict(s, flip="h"), s["frames"][0])
+        self.assertTrue(np.array_equal(mirrored, base[:, ::-1]))
+
+    def test_dark_knight_battle_faces_left(self):
+        # the boss is the hero's rig mirrored; its composite is the un-flipped
+        # frame reversed, so its weapon-side mass lands on the opposite half.
+        s = spec.resolve_sprite(os.path.join(EMBER, "sprites", "dark-knight-battle.json"))
+        self.assertEqual(s["flip"], "h")
+        from pixeltracks import inspect
+        self.assertTrue(all(r["ok"] for r in inspect.run_checks(s, 0)))
+
+
 class TestInspect(unittest.TestCase):
     def _knight(self):
         return spec.resolve_sprite(os.path.join(EMBER, "sprites", "knight.json"))
