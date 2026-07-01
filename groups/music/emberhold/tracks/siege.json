@@ -1,33 +1,57 @@
 {
   "name": "siege",
   "extends": "../soundtrack.json",
-  "_comment": "The world's `fallen` transform of the ember, in sound. The SAME ember_theme — but inverted (its rising hope turned to a falling line) and dropped an octave into a minor dirge. This is the audio twin of the sprite Lab's dark-knight palette-swap: darken the root motif once in the world, and both media fall together.",
-  "bpm": 78,
+  "_comment": "The world's `fallen` transform, in sound — and deliberately NOT a restatement. A creeps in on a twisted FRAGMENT of ember_theme (its head, inverted and dropped low) over a D pedal and chromatic C#dim/A7 menace; B is the reveal: the whole theme inverted AND augmented (stretch 2.0) into a slow dirge. Recognisably the hero hook, turned against itself — the audio twin of the dark-knight palette-swap.",
+  "bpm": 76,
 
   "sections": [
     {
       "name": "dread",
-      "bars": 4,
-      "_comment": "A low string drone and a tolling bell — the cold host at the gate.",
+      "bars": 2,
+      "_comment": "A low pedal drone and a tolling bell — the cold host massing at the gate.",
       "parts": {
-        "strings": { "instrument": "strings", "chords": ["Dm", "Dm", "Bbm", "A"], "chord_beats": 4, "octave": 2 },
-        "bass": { "instrument": "bass", "notes": [["D2", 4], ["D2", 4], ["Bb1", 4], ["A1", 4]] }
+        "strings": { "instrument": "strings", "chords": ["Dm", "Dm"], "chord_beats": 4, "octave": 2 },
+        "bell": { "instrument": "bell", "pan": -0.15, "gain": 0.4,
+                  "notes": [["D5", 1], [null, 3], ["A4", 1], [null, 3]] },
+        "bass": { "instrument": "bass",
+                  "notes": [["D2", 0.5], ["D2", 0.5], ["D2", 0.5], ["D2", 0.5], ["D2", 0.5], ["D2", 0.5], ["D2", 0.5], ["D2", 0.5],
+                            ["D2", 0.5], ["D2", 0.5], ["D2", 0.5], ["D2", 0.5], ["D2", 0.5], ["D2", 0.5], ["D2", 0.5], ["Db2", 0.5]] }
       }
     },
     {
-      "name": "assault",
-      "bars": 8,
+      "name": "grind",
+      "bars": 4,
       "loop": true,
-      "_comment": "The fallen theme: ember_theme inverted + an octave down on the brass, over a grinding wall and a war drum. Recognisably the hero hook, turned against itself.",
+      "_comment": "Menace over a D pedal: the theme's inverted HEAD creeps low on the brass while chords slide Dm–C#dim–Dm–A7. War drum, no harp — nothing here is warm.",
       "parts": {
-        "brass": { "instrument": "brass", "motif": "ember_theme", "invert": "D4",
-                   "transpose": -12, "repeat": 4, "gain": 0.6 },
-        "strings": { "instrument": "strings", "chords": ["Dm", "Bbm", "Dm", "A"], "chord_beats": 8, "octave": 2 },
+        "brass": { "instrument": "brass", "motif": "ember_theme", "slice": [0, 4],
+                   "invert": "D4", "transpose": -12, "repeat": 2, "gain": 0.55 },
+        "strings": { "instrument": "strings", "chords": ["Dm", "C#dim", "Dm", "A7"], "chord_beats": 4, "octave": 2 },
         "bass": { "instrument": "bass",
-                  "notes": [["D2", 2], ["D2", 2], ["Bb1", 2], ["Bb1", 2],
-                            ["D2", 2], ["D2", 2], ["A1", 2], ["A1", 2]] },
+                  "notes": [["D2", 0.5], ["D2", 0.5], ["D2", 1], ["D2", 0.5], ["D2", 0.5], ["D2", 1],
+                            ["D2", 0.5], ["D2", 0.5], ["D2", 1], ["D2", 0.5], ["D2", 0.5], ["E2", 1],
+                            ["D2", 0.5], ["D2", 0.5], ["D2", 1], ["D2", 0.5], ["D2", 0.5], ["D2", 1],
+                            ["A1", 0.5], ["A1", 0.5], ["A1", 1], ["A1", 0.5], ["E2", 0.5], ["A1", 1]] },
         "drums": { "instrument": "drums",
                    "drums": { "kick": "x.x.x.x.", "snare": "..x...x.", "hat": "........" } }
+      }
+    },
+    {
+      "name": "onslaught",
+      "bars": 4,
+      "loop": true,
+      "_comment": "The reveal: the whole ember_theme inverted and augmented (stretch 2.0) into a grand, grinding dirge — one slow statement filling the section — over Dm–Bb–Gm–A7 and a heavier drum.",
+      "parts": {
+        "brass": { "instrument": "brass", "motif": "ember_theme", "invert": "D4",
+                   "transpose": -12, "stretch": 2.0, "gain": 0.6 },
+        "strings": { "instrument": "strings", "chords": ["Dm", "Bb", "Gm", "A7"], "chord_beats": 4, "octave": 2 },
+        "bass": { "instrument": "bass",
+                  "notes": [["D2", 1], ["D2", 1], ["A1", 1], ["A1", 1],
+                            ["Bb1", 1], ["Bb1", 1], ["F2", 1], ["F2", 1],
+                            ["G1", 1], ["G1", 1], ["D2", 1], ["D2", 1],
+                            ["A1", 1], ["A1", 1], ["A1", 1], ["A1", 1]] },
+        "drums": { "instrument": "drums",
+                   "drums": { "kick": "x..x..x.", "snare": "....x...", "hat": "x.x.x.x." } }
       }
     }
   ]
