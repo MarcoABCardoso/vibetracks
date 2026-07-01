@@ -419,6 +419,40 @@
         ".p."
       ]
     },
+    "sword_long": {
+      "_comment": "Longer blade for the battle knight (a longsword), same 1px-wide steel edge as 'sword' so it reads as the same weapon family. Supersampled affine keeps the thin blade whole when rotated. Anchors: grip (hand) + guard.",
+      "legend": {
+        "a": "steel",
+        "h": "steel_hi",
+        "g": "gold",
+        "p": "gold_sh"
+      },
+      "anchors": {
+        "grip": [
+          1,
+          12
+        ],
+        "guard": [
+          1,
+          10
+        ]
+      },
+      "pixels": [
+        ".h.",
+        ".h.",
+        ".a.",
+        ".a.",
+        ".a.",
+        ".a.",
+        ".a.",
+        ".a.",
+        ".a.",
+        ".a.",
+        "ggg",
+        ".p.",
+        ".p."
+      ]
+    },
     "shield": {
       "legend": {
         "a": "steel",

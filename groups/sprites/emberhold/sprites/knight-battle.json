@@ -20,14 +20,15 @@
       "name": "back-leg",
       "shape": "knight_leg",
       "pivot": "hip",
-      "attach": { "to": "chest", "anchor": "hip_l" }
+      "attach": { "to": "chest", "anchor": "hip_l", "shift": [ -2, 0 ] },
+      "skew": [ -0.4, 0.0 ]
     },
     {
       "name": "front-leg",
       "shape": "knight_leg",
       "pivot": "hip",
-      "attach": { "to": "chest", "anchor": "hip_r" },
-      "skew": [ -0.22, 0.0 ]
+      "attach": { "to": "chest", "anchor": "hip_r", "shift": [ 2, 0 ] },
+      "skew": [ 0.4, 0.0 ]
     },
     {
       "name": "chest",
@@ -52,7 +53,7 @@
     },
     {
       "name": "sword",
-      "shape": "sword",
+      "shape": "sword_long",
       "pivot": "grip",
       "attach": { "to": "sword-arm", "anchor": "hand" },
       "rotate": 33
