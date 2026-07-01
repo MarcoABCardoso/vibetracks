@@ -23,7 +23,10 @@ Note: PixelTracks is early, exploratory work — the raster engine is still
 limited, so sprites come out rough. Set expectations accordingly.
 
 You can **see your output**: render a sprite, then read the PNG (it displays
-inline) and iterate, exactly as the music skill sends a WAV to the user.
+inline) and iterate, exactly as the music skill sends a WAV to the user. And so
+should the user — **send the rendered PNG with SendUserFile on every meaningful
+revision** (the sprite is the deliverable; they want to look at it, not just hear
+it's done).
 
 ## 0. Pick (or create) the group
 
@@ -72,8 +75,13 @@ motifs (a crest) you can reuse on other sprites.
    so connection is guaranteed, not tuned. See `pixeltracks/CLAUDE.md`.
 4. `python -m pixeltracks render <g>/<name>` — writes `out/<g>/<name>.png`.
 5. **Read the PNG** to judge *colour/shading/read* (what text can't tell you),
-   and/or send it to the user with SendUserFile. Translate feedback into spec
-   edits: "muddy" → widen the shadow/highlight spread; "unreadable" → simplify
+   and **always send it to the user with SendUserFile** — the sprite is the
+   deliverable, so the user wants to *see* every meaningful revision, not just
+   read that it's done. Send proactively after each render worth showing (a new
+   sprite, a pose change, a before/after); don't wait to be asked. A quick
+   before/after contact sheet is ideal when iterating on one sprite. Translate
+   feedback into spec edits: "muddy" → widen the shadow/highlight spread;
+   "unreadable" → simplify
    the silhouette; "doesn't fit" → pull colours back to the palette or reuse a
    shared motif.
 
