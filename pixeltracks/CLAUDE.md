@@ -18,12 +18,25 @@ the palette-swap leitmotif, animation).
 
 ```bash
 python -m pixeltracks validate                  # check every group's specs
+python -m pixeltracks describe [<group>]        # index of a group's motifs/sprites — see below
 python -m pixeltracks render <group>/<sprite>   # render one sprite to out/<group>/<sprite>.png
 python -m pixeltracks inspect <group>/<sprite>  # evaluate a sprite as TEXT (no PNG) — see below
 python -m pixeltracks render-all                # render every sprite in every group
 python -m pixeltracks new <sprite> --group <g>  # scaffold groups/sprites/<g>/sprites/<sprite>.json
 python -m pixeltracks new-group <name>          # scaffold a whole new group
 ```
+
+### `describe` — a table of contents for a bulky artbook
+
+A music bible fits in a screenful because a motif is a few notes; a sprite motif
+is a pixel grid, so a multi-character `artbook.json` (e.g. `emberhold`, ~750
+lines) is mostly ASCII-art rows. `describe` derives an index from data already in
+the specs — no new authoring field — so you can scan a group's shape before
+grepping pixel grids: per motif, its size, `anchors`, and which sprites reference
+it as a `shape` (including bones expanded from a `skeleton`); per sprite, its
+size, the motifs it uses, frame/check counts; and an `unused motifs` line (dead
+weight to prune). Bare `describe` lists every group; `describe <group>` limits
+to one.
 
 ### `inspect` — judge a sprite without looking at the PNG
 
@@ -166,6 +179,8 @@ is a layer name, a list of names, or `"all"`.
 - `pixeltracks/inspect.py` — the text/geometry evaluators behind `inspect`
   (ASCII dump, per-layer bbox + connectivity lint, `checks` runner). Add new
   check rules here.
+- `pixeltracks/describe.py` — the motif/sprite index behind `describe` (size,
+  anchors, `used_by` cross-reference, unused-motif detection).
 - `pixeltracks/compositor.py` — composites a resolved sprite's layers/frames into a
   sheet + atlas (≈ `sequencer.py`). Add new layer *kinds* here.
 - `pixeltracks/spec.py` — load/validate bible + sprites; `extends`; `Group`/

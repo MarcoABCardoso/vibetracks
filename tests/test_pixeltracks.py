@@ -118,6 +118,36 @@ class TestGroups(unittest.TestCase):
             spec.find_group("does-not-exist", ROOT)
 
 
+class TestDescribe(unittest.TestCase):
+    def test_index_covers_every_motif_and_sprite(self):
+        from pixeltracks import describe
+        g = spec.find_group("tiny-knight", ROOT)
+        info = describe.describe_group(g)
+        self.assertEqual({m["name"] for m in info["motifs"]}, set(g.load_bible().motifs))
+        self.assertEqual([s["name"] for s in info["sprites"]], g.sprite_names())
+
+    def test_used_by_matches_sprite_shape_layers(self):
+        from pixeltracks import describe
+        g = spec.find_group("tiny-knight", ROOT)
+        info = describe.describe_group(g)
+        by_name = {m["name"]: m for m in info["motifs"]}
+        self.assertIn("knight-attack", by_name["sword"]["used_by"])
+        self.assertIn("knight", by_name["knight"]["used_by"])
+
+    def test_unused_motif_detected(self):
+        from pixeltracks import describe
+        g = spec.find_group("emberhold", ROOT)
+        info = describe.describe_group(g)
+        self.assertIn("cape", info["unused_motifs"])
+
+    def test_format_report_is_a_string(self):
+        from pixeltracks import describe
+        g = spec.find_group("tiny-knight", ROOT)
+        report = describe.format_report(describe.describe_group(g))
+        self.assertIsInstance(report, str)
+        self.assertIn("knight", report)
+
+
 class TestRenderAndPng(unittest.TestCase):
     def test_outline_traces_silhouette(self):
         canvas = new_canvas(4, 4)
