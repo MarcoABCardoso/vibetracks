@@ -79,6 +79,50 @@ A loop that dumps everything in bar 1 fatigues fast. Build an arc:
 - Use dynamics: drop parts out and bring them back. **Silence and space are tools**
   (Undertale's quiet beats, Hollow Knight's restraint). Don't fear an empty bar.
 
+## How much repetition is too much? (count is the wrong question)
+
+"State the theme, then loop it 8×" is the fastest way a score turns generic — but
+the raw repeat count is *not* what fatigues the ear. Three things decide it:
+
+- **Unit length** — the longer the repeating chunk, the fewer verbatim repeats it
+  tolerates (roughly inversely). A 1-bar riff can run many times; an 8-beat melodic
+  phrase wants variation after one or two statements. Eight repeats of a 2-bar hook
+  isn't "too many repeats" — it's *too short a period looped too tightly*.
+- **Salience** — the ear tracks the loudest / highest / most-tuneful line for change
+  and treats everything else as a bed. So tolerance is *layered*, not global.
+- **Variance around it** — repetition with *any* evolving dimension (orchestration,
+  register, dynamics, a countermelody, the harmony underneath) sustains far longer
+  than literal repetition.
+
+The crux, in VibeTracks terms: a `motif` on the `lead` and an arpeggio on the `arp`
+can both `repeat` 8× in the *same bars* — the melody grates, the arp is invisible.
+**Same count, opposite verdict.** Put the high repeat-counts on the parts that can
+absorb them:
+
+| Part / role | Verbatim repeats before it fatigues | Move |
+|-------------|-------------------------------------|------|
+| Foreground melody (`lead` motif, 2+ bars) | ~1–2 (≈4 with variation) | State once per section, then fragment/transform or hand off |
+| Short hook / riff (1–2 bars) | 2–4 | Fine as an identity; still recontextualize eventually |
+| `arp`/`pluck` ostinato, harp arpeggio | 4–16+ (effectively unlimited) | Let *this* carry the big `repeat: N` load |
+| `drums` groove | whole section | Vary with a fill every 4–8 bars |
+| `bass` | wants motion | Walk it / octave-jump; a static root pedals *tension*, not groove |
+
+**Why ~3–4 is the turning point:** after two or three hearings the ear has learned
+the pattern and stops predicting it; with no new information, attention drifts. So
+state → restate → *depart* (the phrasing "rule of three": AAB, antecedent/consequent).
+
+**The one escape hatch:** heavy verbatim repetition survives if *one* dimension
+climbs monotonically. Ravel's *Boléro* repeats two themes ~9× each with zero melodic
+change, carried entirely by an orchestration crescendo; Pachelbel's 2-bar ground
+bass repeats 28× under ever-varying upper voices. If you must repeat a lot (a long
+loop, a build), make sure something — density, dynamics, a `filter` opening, parts
+layering in — is on a one-way climb.
+
+The rule to internalise: **don't count repeats — ask "what has the listener learned,
+and am I still giving them something?"** Push the theme to the foreground *once* per
+section (`repeat: 1`–`2`), let the ostinato and bass do the churning, and give each
+block an A→B frame so the learned material always returns recontextualised.
+
 ## Match the music to what the player is doing
 
 | Cue | Tempo | Density | Harmony | Theme treatment |
@@ -97,6 +141,8 @@ the theme. That's a feature, not a gap.
 - [ ] One motif library; the **full theme appears in only one track**.
 - [ ] Every other cue **transforms or fragments** the motif (stretch/invert/slice/
       transpose) rather than restating or ignoring it.
+- [ ] No **foreground** melody repeats verbatim more than ~2× without variation;
+      the big `repeat` counts live on the ostinato/bass/drums, not the lead.
 - [ ] The melody is singable: narrow range, clear rhythm, call-and-response.
 - [ ] Drive comes from a **moving bass + ostinato**, not a busier melody.
 - [ ] Harmony fits the cue's emotion; key family is shared, cadences differ.
