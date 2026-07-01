@@ -36,7 +36,7 @@ def extends_path(spec_path: str, data: dict) -> str | None:
     """Resolve a spec's ``extends`` to the file path it points at, or ``None``.
 
     Every Lab uses the same inheritance chain — a leaf spec ``extends`` its group
-    bible, and (Phase 2) a bible ``extends`` its world — and every link is a path
+    bible, and a bible ``extends`` its world — and every link is a path
     relative to the *extending* file's directory. Factored here so the one
     convention lives in one place instead of being re-derived per Lab.
     """

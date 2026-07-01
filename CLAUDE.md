@@ -1,8 +1,11 @@
 # VibeTracks — guide for Claude
 
-This repo is a **multi-Lab game-artifact workshop**. A *Lab* is a structured
-spec → validate → compile → iterate workshop for one artifact class. Every Lab is
-the same machine with a different theory (see `VISION.md`):
+This repo is a **coherence engine for solo game worlds** — a multi-Lab
+workshop that lets a solo dev (with an AI copilot) build a whole game's worth of
+assets that read as *one game*. A *Lab* is a structured spec → validate →
+compile → iterate workshop for one artifact class. Every Lab is the same machine
+with a different theory; `VISION.md` frames the product (who it's for, honest
+scope, roadmap).
 
 | Lab | Artifact | Author edits | Compiles to | Skill | Spec reference |
 |-----|----------|--------------|-------------|-------|----------------|

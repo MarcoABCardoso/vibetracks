@@ -42,7 +42,7 @@ def _print_labs() -> None:
           "(a cross-modal project spanning every Lab)")
 
 
-# A fresh world (VISION.md Phase 2): identity + a palette of MEANING + named
+# A fresh world (VISION.md, the world layer): identity + a palette of MEANING + named
 # entities, ready to edit. `motifs` starts EMPTY on purpose — a cross-modal motif
 # can only bind faces that already exist, so you add one once each medium has a
 # motif to name (see worlds/emberhold for a worked two-face motif + transform).
@@ -53,7 +53,7 @@ WORLD_TEMPLATE = {
     "tone": "",
     "era": "",
     "_comment": (
-        "The Root Spec (VISION.md Phase 2): one world, many Labs. Each medium's "
+        "The Root Spec (VISION.md — the world layer): one world, many Labs. Each medium's "
         "bible `extends` this file, so a single identity feeds every artifact. "
         "Fill in the identity, tune the `meaning` palette and `entities`, then — "
         "once each medium has a motif to bind — add a cross-modal entry under "

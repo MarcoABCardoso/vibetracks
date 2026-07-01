@@ -3,7 +3,7 @@
   "genre": "heroic dark fantasy",
   "tone": "besieged but defiant — a last warm light against the cold",
   "era": "the long night of the siege",
-  "_comment": "The Root Spec (VISION.md Phase 2). One world, two Labs: the music bible (groups/music/emberhold) and the art bible (groups/sprites/emberhold) both `extends` this file, so a single identity feeds both media. The payoff is the cross-modal `ember` motif below — one root with a face in each medium — and its `fallen` transform: darken the root in one place and BOTH the art (dark-knight palette-swap) and the music (siege, theme inverted to a dirge) move together.",
+  "_comment": "The Root Spec (VISION.md — the world layer). One world, two Labs: the music bible (groups/music/emberhold) and the art bible (groups/sprites/emberhold) both `extends` this file, so a single identity feeds both media. The payoff is the cross-modal `ember` motif below — one root with a face in each medium — and its `fallen` transform: darken the root in one place and BOTH the art (dark-knight palette-swap) and the music (siege, theme inverted to a dirge) move together.",
 
   "meaning": {
     "_comment": "The palette of MEANING — a shape/colour/voice language each Lab reads in its own medium. Round+warm+rising = the hold's hope; jagged+cold+falling = the shadow that besieges it.",

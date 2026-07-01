@@ -1,6 +1,6 @@
 """PixelTracks — the sprite/image Lab.
 
-The second VibeTracks Lab (VISION.md, Phase 1): model a sprite as JSON and
+The second VibeTracks Lab (see VISION.md): model a sprite as JSON and
 compile it to PNG with a procedural raster engine — no image generator. It
 mirrors the music Lab module-for-module: ``palette`` (colour "theory"),
 ``shapes`` (grid transforms), ``raster`` (low-level painters, ≈ synth),
