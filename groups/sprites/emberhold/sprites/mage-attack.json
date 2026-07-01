@@ -1,129 +1,96 @@
 {
   "name": "mage-attack",
   "extends": "../artbook.json",
-  "_comment": "4-frame spell cast. The mage charges the orb (a growing spark) and looses a magic bolt to the right; the body leans into the release. Pose-based: the body stays whole, the energy does the acting.",
+  "_comment": "7-frame spell cast, rigged on the mage-battle SKELETON (chest root, robe skirt, staff-arm + staff, mage 3/4 head) instead of a slid flat body. The staff is the caster's weapon: it draws back and gathers a growing orb on a slow held charge, then the body LUNGES forward and the staff whips down to point the orb at the target, loosing a bolt on the held impact key. The energy does the flashy acting but the body throws its weight — lean back to gather, drive forward to release, recoil to settle. Facing right.",
   "size": [
-    28,
-    22
+    42,
+    32
   ],
   "frames": [
     {
       "name": "ready",
-      "layers": [
-        {
-          "name": "body",
-          "shape": "mage",
-          "offset": [
-            3,
-            1
-          ]
-        },
-        {
-          "name": "staff",
-          "shape": "staff",
-          "offset": [
-            5,
-            7
-          ]
-        }
+      "hold": 2,
+      "skeleton": [
+        { "name": "robe", "shape": "robe_skirt", "pivot": "waist", "attach": { "to": "chest", "anchor": "hips", "shift": [ 0, -1 ] }, "recolor": { "steel": "mage", "steel_hi": "mage_hi", "steel_sh": "mage_sh" } },
+        { "name": "chest", "shape": "knight_chest", "pivot": "hips", "at": [ 14, 20 ], "skew": [ -0.08, 0.0 ], "recolor": { "steel": "mage", "steel_hi": "mage_hi", "steel_sh": "mage_sh", "cloak": "mage_sh", "cloak_hi": "mage", "cloak_sh": "mage_sh" } },
+        { "name": "staff-arm", "shape": "knight_arm", "pivot": "shoulder", "attach": { "to": "chest", "anchor": "shoulder_r" }, "rotate": 38, "recolor": { "steel": "mage", "steel_hi": "mage_hi", "steel_sh": "mage_sh" } },
+        { "name": "staff", "shape": "staff", "pivot": "grip", "attach": { "to": "staff-arm", "anchor": "hand" }, "rotate": 12 },
+        { "name": "spark", "shape": "spark", "pivot": [ 2, 2 ], "attach": { "to": "staff", "anchor": "tip" } },
+        { "name": "head", "shape": "mage_head_3q", "pivot": "neck", "attach": { "to": "chest", "anchor": "neck" } }
+      ]
+    },
+    {
+      "name": "gather",
+      "hold": 2,
+      "skeleton": [
+        { "name": "robe", "shape": "robe_skirt", "pivot": "waist", "attach": { "to": "chest", "anchor": "hips", "shift": [ 0, -1 ] }, "recolor": { "steel": "mage", "steel_hi": "mage_hi", "steel_sh": "mage_sh" } },
+        { "name": "chest", "shape": "knight_chest", "pivot": "hips", "at": [ 13, 20 ], "skew": [ 0.12, 0.0 ], "recolor": { "steel": "mage", "steel_hi": "mage_hi", "steel_sh": "mage_sh", "cloak": "mage_sh", "cloak_hi": "mage", "cloak_sh": "mage_sh" } },
+        { "name": "staff-arm", "shape": "knight_arm", "pivot": "shoulder", "attach": { "to": "chest", "anchor": "shoulder_r" }, "rotate": 22, "recolor": { "steel": "mage", "steel_hi": "mage_hi", "steel_sh": "mage_sh" } },
+        { "name": "staff", "shape": "staff", "pivot": "grip", "attach": { "to": "staff-arm", "anchor": "hand" }, "rotate": -8 },
+        { "name": "spark", "shape": "spark", "pivot": [ 2, 2 ], "attach": { "to": "staff", "anchor": "tip" } },
+        { "name": "head", "shape": "mage_head_3q", "pivot": "neck", "attach": { "to": "chest", "anchor": "neck" } }
       ]
     },
     {
       "name": "charge",
-      "layers": [
-        {
-          "name": "body",
-          "shape": "mage",
-          "offset": [
-            3,
-            1
-          ]
-        },
-        {
-          "name": "staff",
-          "shape": "staff",
-          "offset": [
-            5,
-            6
-          ]
-        },
-        {
-          "name": "glow",
-          "shape": "spark",
-          "offset": [
-            3,
-            4
-          ]
-        }
+      "hold": 3,
+      "skeleton": [
+        { "name": "robe", "shape": "robe_skirt", "pivot": "waist", "attach": { "to": "chest", "anchor": "hips", "shift": [ 0, -1 ] }, "recolor": { "steel": "mage", "steel_hi": "mage_hi", "steel_sh": "mage_sh" } },
+        { "name": "chest", "shape": "knight_chest", "pivot": "hips", "at": [ 13, 20 ], "skew": [ 0.16, 0.0 ], "recolor": { "steel": "mage", "steel_hi": "mage_hi", "steel_sh": "mage_sh", "cloak": "mage_sh", "cloak_hi": "mage", "cloak_sh": "mage_sh" } },
+        { "name": "staff-arm", "shape": "knight_arm", "pivot": "shoulder", "attach": { "to": "chest", "anchor": "shoulder_r" }, "rotate": 16, "recolor": { "steel": "mage", "steel_hi": "mage_hi", "steel_sh": "mage_sh" } },
+        { "name": "staff", "shape": "staff", "pivot": "grip", "attach": { "to": "staff-arm", "anchor": "hand" }, "rotate": -14 },
+        { "name": "spark", "shape": "spark", "scale": 2, "pivot": [ 2, 2 ], "attach": { "to": "staff", "anchor": "tip" } },
+        { "name": "head", "shape": "mage_head_3q", "pivot": "neck", "attach": { "to": "chest", "anchor": "neck" } }
+      ]
+    },
+    {
+      "name": "thrust",
+      "hold": 1,
+      "skeleton": [
+        { "name": "robe", "shape": "robe_skirt", "pivot": "waist", "attach": { "to": "chest", "anchor": "hips", "shift": [ 0, -1 ] }, "recolor": { "steel": "mage", "steel_hi": "mage_hi", "steel_sh": "mage_sh" } },
+        { "name": "chest", "shape": "knight_chest", "pivot": "hips", "at": [ 15, 20 ], "skew": [ -0.26, 0.0 ], "recolor": { "steel": "mage", "steel_hi": "mage_hi", "steel_sh": "mage_sh", "cloak": "mage_sh", "cloak_hi": "mage", "cloak_sh": "mage_sh" } },
+        { "name": "staff-arm", "shape": "knight_arm", "pivot": "shoulder", "attach": { "to": "chest", "anchor": "shoulder_r" }, "rotate": 62, "recolor": { "steel": "mage", "steel_hi": "mage_hi", "steel_sh": "mage_sh" } },
+        { "name": "staff", "shape": "staff", "pivot": "grip", "attach": { "to": "staff-arm", "anchor": "hand" }, "rotate": 74 },
+        { "name": "spark", "shape": "spark", "scale": 2, "pivot": [ 2, 2 ], "attach": { "to": "staff", "anchor": "tip" } },
+        { "name": "head", "shape": "mage_head_3q", "pivot": "neck", "attach": { "to": "chest", "anchor": "neck" } }
       ]
     },
     {
       "name": "cast",
-      "hold": 2,
-      "layers": [
-        {
-          "name": "body",
-          "shape": "mage",
-          "offset": [
-            4,
-            1
-          ]
-        },
-        {
-          "name": "staff",
-          "shape": "staff",
-          "offset": [
-            6,
-            6
-          ]
-        },
-        {
-          "name": "glow",
-          "shape": "spark",
-          "scale": 2,
-          "offset": [
-            2,
-            2
-          ]
-        },
-        {
-          "name": "bolt",
-          "shape": "spark",
-          "offset": [
-            18,
-            8
-          ]
-        }
+      "hold": 3,
+      "skeleton": [
+        { "name": "robe", "shape": "robe_skirt", "pivot": "waist", "attach": { "to": "chest", "anchor": "hips", "shift": [ 0, -1 ] }, "recolor": { "steel": "mage", "steel_hi": "mage_hi", "steel_sh": "mage_sh" } },
+        { "name": "chest", "shape": "knight_chest", "pivot": "hips", "at": [ 16, 20 ], "skew": [ -0.32, 0.0 ], "recolor": { "steel": "mage", "steel_hi": "mage_hi", "steel_sh": "mage_sh", "cloak": "mage_sh", "cloak_hi": "mage", "cloak_sh": "mage_sh" } },
+        { "name": "staff-arm", "shape": "knight_arm", "pivot": "shoulder", "attach": { "to": "chest", "anchor": "shoulder_r" }, "rotate": 78, "recolor": { "steel": "mage", "steel_hi": "mage_hi", "steel_sh": "mage_sh" } },
+        { "name": "staff", "shape": "staff", "pivot": "grip", "attach": { "to": "staff-arm", "anchor": "hand" }, "rotate": 86 },
+        { "name": "flash", "shape": "spark", "scale": 2, "recolor": { "magic": "magic_hi" }, "pivot": [ 2, 2 ], "attach": { "to": "staff", "anchor": "tip" } },
+        { "name": "bolt", "shape": "spark", "scale": 2, "pivot": [ 2, 2 ], "at": [ 30, 10 ] },
+        { "name": "head", "shape": "mage_head_3q", "pivot": "neck", "attach": { "to": "chest", "anchor": "neck" } }
+      ]
+    },
+    {
+      "name": "release",
+      "hold": 1,
+      "skeleton": [
+        { "name": "robe", "shape": "robe_skirt", "pivot": "waist", "attach": { "to": "chest", "anchor": "hips", "shift": [ 0, -1 ] }, "recolor": { "steel": "mage", "steel_hi": "mage_hi", "steel_sh": "mage_sh" } },
+        { "name": "chest", "shape": "knight_chest", "pivot": "hips", "at": [ 15, 20 ], "skew": [ -0.18, 0.0 ], "recolor": { "steel": "mage", "steel_hi": "mage_hi", "steel_sh": "mage_sh", "cloak": "mage_sh", "cloak_hi": "mage", "cloak_sh": "mage_sh" } },
+        { "name": "staff-arm", "shape": "knight_arm", "pivot": "shoulder", "attach": { "to": "chest", "anchor": "shoulder_r" }, "rotate": 58, "recolor": { "steel": "mage", "steel_hi": "mage_hi", "steel_sh": "mage_sh" } },
+        { "name": "staff", "shape": "staff", "pivot": "grip", "attach": { "to": "staff-arm", "anchor": "hand" }, "rotate": 66 },
+        { "name": "spark", "shape": "spark", "pivot": [ 2, 2 ], "attach": { "to": "staff", "anchor": "tip" } },
+        { "name": "bolt", "shape": "spark", "scale": 2, "pivot": [ 2, 2 ], "at": [ 36, 10 ] },
+        { "name": "head", "shape": "mage_head_3q", "pivot": "neck", "attach": { "to": "chest", "anchor": "neck" } }
       ]
     },
     {
       "name": "recover",
-      "layers": [
-        {
-          "name": "body",
-          "shape": "mage",
-          "offset": [
-            3,
-            1
-          ]
-        },
-        {
-          "name": "staff",
-          "shape": "staff",
-          "offset": [
-            5,
-            7
-          ]
-        },
-        {
-          "name": "bolt",
-          "shape": "spark",
-          "scale": 2,
-          "offset": [
-            20,
-            6
-          ]
-        }
+      "hold": 2,
+      "skeleton": [
+        { "name": "robe", "shape": "robe_skirt", "pivot": "waist", "attach": { "to": "chest", "anchor": "hips", "shift": [ 0, -1 ] }, "recolor": { "steel": "mage", "steel_hi": "mage_hi", "steel_sh": "mage_sh" } },
+        { "name": "chest", "shape": "knight_chest", "pivot": "hips", "at": [ 14, 20 ], "skew": [ -0.04, 0.0 ], "recolor": { "steel": "mage", "steel_hi": "mage_hi", "steel_sh": "mage_sh", "cloak": "mage_sh", "cloak_hi": "mage", "cloak_sh": "mage_sh" } },
+        { "name": "staff-arm", "shape": "knight_arm", "pivot": "shoulder", "attach": { "to": "chest", "anchor": "shoulder_r" }, "rotate": 42, "recolor": { "steel": "mage", "steel_hi": "mage_hi", "steel_sh": "mage_sh" } },
+        { "name": "staff", "shape": "staff", "pivot": "grip", "attach": { "to": "staff-arm", "anchor": "hand" }, "rotate": 16 },
+        { "name": "spark", "shape": "spark", "pivot": [ 2, 2 ], "attach": { "to": "staff", "anchor": "tip" } },
+        { "name": "head", "shape": "mage_head_3q", "pivot": "neck", "attach": { "to": "chest", "anchor": "neck" } }
       ]
     }
   ]

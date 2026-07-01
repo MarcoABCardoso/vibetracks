@@ -1,291 +1,104 @@
 {
   "name": "knight-attack",
   "extends": "../artbook.json",
-  "_comment": "6-frame sword swing built as an articulated RIG (not a slid stamp): the back leg plants while the front leg lunges, the torso leans into the blow, and the sword swings about the hand through a real arc (anticipation -> strike -> follow-through -> settle). The slash trails the blade on the action frames.",
+  "_comment": "7-frame overhead sword slash, rigged on the knight-battle SKELETON (chest root, 3/4 head, shield guard, longsword swung about the hand) rather than a slid flat torso. Blade direction is the sword bone's absolute rotate; the arm bone rotates only to travel the hand from raised-overhead to extended-forward, so the whole arm throws the cut. Spacing carries the weight: a slow coil back onto the rear leg (anticipate + a held windup-peak), then an EXPLOSIVE single-frame swing with a large angular delta so it blurs past, a held impact key (hold 3) with a trailing slash crescent, a one-frame overshoot, and a slow settle. The back leg plants while the front leg lunges and the chest leans into the blow.",
   "size": [
-    32,
-    26
+    38,
+    36
   ],
   "frames": [
     {
       "name": "ready",
-      "layers": [
-        {
-          "name": "leg",
-          "shape": "knight_leg",
-          "offset": [
-            12,
-            18
-          ]
-        },
-        {
-          "name": "leg",
-          "shape": "knight_leg",
-          "offset": [
-            16,
-            18
-          ]
-        },
-        {
-          "name": "torso",
-          "shape": "knight_torso",
-          "offset": [
-            6,
-            4
-          ]
-        },
-        {
-          "name": "sword",
-          "shape": "sword",
-          "pivot": [
-            1,
-            7
-          ],
-          "rotate": 16,
-          "at": [
-            22,
-            13
-          ]
-        }
+      "hold": 2,
+      "skeleton": [
+        { "name": "back-leg", "shape": "knight_leg", "pivot": "hip", "attach": { "to": "chest", "anchor": "hip_l", "shift": [ -2, 0 ] }, "skew": [ -0.4, 0.0 ] },
+        { "name": "front-leg", "shape": "knight_leg", "pivot": "hip", "attach": { "to": "chest", "anchor": "hip_r", "shift": [ 2, 0 ] }, "skew": [ 0.4, 0.0 ] },
+        { "name": "chest", "shape": "knight_chest", "pivot": "hips", "at": [ 16, 20 ], "skew": [ -0.1, 0.0 ] },
+        { "name": "shield", "shape": "shield", "pivot": "center", "attach": { "to": "chest", "anchor": "hips", "shift": [ -1, -1 ] }, "recolor": { "steel": "cloak", "steel_hi": "cloak_hi", "steel_sh": "cloak_sh" } },
+        { "name": "sword-arm", "shape": "knight_arm", "pivot": "shoulder", "attach": { "to": "chest", "anchor": "shoulder_r" }, "rotate": 145 },
+        { "name": "sword", "shape": "sword_long", "pivot": "grip", "attach": { "to": "sword-arm", "anchor": "hand" }, "rotate": 33 },
+        { "name": "head", "shape": "knight_head_3q", "pivot": "neck", "attach": { "to": "chest", "anchor": "neck" } }
       ]
     },
     {
-      "name": "windup",
-      "layers": [
-        {
-          "name": "leg",
-          "shape": "knight_leg",
-          "offset": [
-            12,
-            18
-          ]
-        },
-        {
-          "name": "leg",
-          "shape": "knight_leg",
-          "offset": [
-            15,
-            18
-          ]
-        },
-        {
-          "name": "torso",
-          "shape": "knight_torso",
-          "offset": [
-            5,
-            4
-          ]
-        },
-        {
-          "name": "sword",
-          "shape": "sword",
-          "pivot": [
-            1,
-            7
-          ],
-          "rotate": -38,
-          "at": [
-            21,
-            12
-          ]
-        }
+      "name": "anticipate",
+      "hold": 2,
+      "skeleton": [
+        { "name": "back-leg", "shape": "knight_leg", "pivot": "hip", "attach": { "to": "chest", "anchor": "hip_l", "shift": [ -3, 0 ] }, "skew": [ -0.5, 0.0 ] },
+        { "name": "front-leg", "shape": "knight_leg", "pivot": "hip", "attach": { "to": "chest", "anchor": "hip_r", "shift": [ 1, 0 ] }, "skew": [ 0.28, 0.0 ] },
+        { "name": "chest", "shape": "knight_chest", "pivot": "hips", "at": [ 15, 20 ], "skew": [ 0.1, 0.0 ] },
+        { "name": "shield", "shape": "shield", "pivot": "center", "attach": { "to": "chest", "anchor": "hips", "shift": [ -2, -1 ] }, "recolor": { "steel": "cloak", "steel_hi": "cloak_hi", "steel_sh": "cloak_sh" } },
+        { "name": "sword-arm", "shape": "knight_arm", "pivot": "shoulder", "attach": { "to": "chest", "anchor": "shoulder_r" }, "rotate": 128 },
+        { "name": "sword", "shape": "sword_long", "pivot": "grip", "attach": { "to": "sword-arm", "anchor": "hand" }, "rotate": 6 },
+        { "name": "head", "shape": "knight_head_3q", "pivot": "neck", "attach": { "to": "chest", "anchor": "neck" } }
+      ]
+    },
+    {
+      "name": "windup-peak",
+      "hold": 3,
+      "skeleton": [
+        { "name": "back-leg", "shape": "knight_leg", "pivot": "hip", "attach": { "to": "chest", "anchor": "hip_l", "shift": [ -3, 0 ] }, "skew": [ -0.55, 0.0 ] },
+        { "name": "front-leg", "shape": "knight_leg", "pivot": "hip", "attach": { "to": "chest", "anchor": "hip_r", "shift": [ 1, 0 ] }, "skew": [ 0.2, 0.0 ] },
+        { "name": "chest", "shape": "knight_chest", "pivot": "hips", "at": [ 15, 20 ], "skew": [ 0.16, 0.0 ] },
+        { "name": "shield", "shape": "shield", "pivot": "center", "attach": { "to": "chest", "anchor": "hips", "shift": [ -2, -1 ] }, "recolor": { "steel": "cloak", "steel_hi": "cloak_hi", "steel_sh": "cloak_sh" } },
+        { "name": "sword-arm", "shape": "knight_arm", "pivot": "shoulder", "attach": { "to": "chest", "anchor": "shoulder_r" }, "rotate": 116 },
+        { "name": "sword", "shape": "sword_long", "pivot": "grip", "attach": { "to": "sword-arm", "anchor": "hand" }, "rotate": -16 },
+        { "name": "head", "shape": "knight_head_3q", "pivot": "neck", "attach": { "to": "chest", "anchor": "neck" } }
       ]
     },
     {
       "name": "swing",
-      "layers": [
-        {
-          "name": "leg",
-          "shape": "knight_leg",
-          "offset": [
-            12,
-            18
-          ]
-        },
-        {
-          "name": "leg",
-          "shape": "knight_leg",
-          "offset": [
-            17,
-            18
-          ]
-        },
-        {
-          "name": "torso",
-          "shape": "knight_torso",
-          "offset": [
-            7,
-            4
-          ]
-        },
-        {
-          "name": "sword",
-          "shape": "sword",
-          "pivot": [
-            1,
-            7
-          ],
-          "rotate": 58,
-          "at": [
-            22,
-            12
-          ]
-        }
+      "hold": 1,
+      "skeleton": [
+        { "name": "back-leg", "shape": "knight_leg", "pivot": "hip", "attach": { "to": "chest", "anchor": "hip_l", "shift": [ -2, 0 ] }, "skew": [ -0.5, 0.0 ] },
+        { "name": "front-leg", "shape": "knight_leg", "pivot": "hip", "attach": { "to": "chest", "anchor": "hip_r", "shift": [ 3, 0 ] }, "skew": [ 0.5, 0.0 ] },
+        { "name": "chest", "shape": "knight_chest", "pivot": "hips", "at": [ 17, 20 ], "skew": [ -0.2, 0.0 ] },
+        { "name": "shield", "shape": "shield", "pivot": "center", "attach": { "to": "chest", "anchor": "hips", "shift": [ 0, -1 ] }, "recolor": { "steel": "cloak", "steel_hi": "cloak_hi", "steel_sh": "cloak_sh" } },
+        { "name": "sword-arm", "shape": "knight_arm", "pivot": "shoulder", "attach": { "to": "chest", "anchor": "shoulder_r" }, "rotate": 152 },
+        { "name": "sword", "shape": "sword_long", "pivot": "grip", "attach": { "to": "sword-arm", "anchor": "hand" }, "rotate": 52 },
+        { "name": "slash", "shape": "slash", "flip": "h", "pivot": [ 2, 3 ], "rotate": -20, "at": [ 30, 8 ] },
+        { "name": "head", "shape": "knight_head_3q", "pivot": "neck", "attach": { "to": "chest", "anchor": "neck" } }
       ]
     },
     {
       "name": "strike",
-      "hold": 2,
-      "layers": [
-        {
-          "name": "leg",
-          "shape": "knight_leg",
-          "offset": [
-            12,
-            18
-          ]
-        },
-        {
-          "name": "leg",
-          "shape": "knight_leg",
-          "offset": [
-            19,
-            18
-          ]
-        },
-        {
-          "name": "torso",
-          "shape": "knight_torso",
-          "offset": [
-            8,
-            4
-          ]
-        },
-        {
-          "name": "sword",
-          "shape": "sword",
-          "pivot": [
-            1,
-            7
-          ],
-          "rotate": 102,
-          "at": [
-            23,
-            14
-          ]
-        },
-        {
-          "name": "slash",
-          "shape": "slash",
-          "flip": "h",
-          "pivot": [
-            2,
-            3
-          ],
-          "rotate": 8,
-          "at": [
-            30,
-            10
-          ]
-        }
+      "hold": 3,
+      "skeleton": [
+        { "name": "back-leg", "shape": "knight_leg", "pivot": "hip", "attach": { "to": "chest", "anchor": "hip_l", "shift": [ -2, 0 ] }, "skew": [ -0.55, 0.0 ] },
+        { "name": "front-leg", "shape": "knight_leg", "pivot": "hip", "attach": { "to": "chest", "anchor": "hip_r", "shift": [ 5, 0 ] }, "skew": [ 0.68, 0.0 ] },
+        { "name": "chest", "shape": "knight_chest", "pivot": "hips", "at": [ 18, 21 ], "skew": [ -0.34, 0.0 ] },
+        { "name": "shield", "shape": "shield", "pivot": "center", "attach": { "to": "chest", "anchor": "hips", "shift": [ 1, -1 ] }, "recolor": { "steel": "cloak", "steel_hi": "cloak_hi", "steel_sh": "cloak_sh" } },
+        { "name": "sword-arm", "shape": "knight_arm", "pivot": "shoulder", "attach": { "to": "chest", "anchor": "shoulder_r" }, "rotate": 178 },
+        { "name": "sword", "shape": "sword_long", "pivot": "grip", "attach": { "to": "sword-arm", "anchor": "hand" }, "rotate": 110 },
+        { "name": "slash", "shape": "slash", "flip": "h", "pivot": [ 2, 3 ], "rotate": 12, "at": [ 32, 15 ] },
+        { "name": "head", "shape": "knight_head_3q", "pivot": "neck", "attach": { "to": "chest", "anchor": "neck" } }
       ]
     },
     {
       "name": "follow",
-      "layers": [
-        {
-          "name": "leg",
-          "shape": "knight_leg",
-          "offset": [
-            12,
-            18
-          ]
-        },
-        {
-          "name": "leg",
-          "shape": "knight_leg",
-          "offset": [
-            19,
-            18
-          ]
-        },
-        {
-          "name": "torso",
-          "shape": "knight_torso",
-          "offset": [
-            8,
-            5
-          ]
-        },
-        {
-          "name": "sword",
-          "shape": "sword",
-          "pivot": [
-            1,
-            7
-          ],
-          "rotate": 148,
-          "at": [
-            22,
-            17
-          ]
-        },
-        {
-          "name": "slash",
-          "shape": "slash",
-          "flip": "h",
-          "pivot": [
-            2,
-            3
-          ],
-          "rotate": 120,
-          "at": [
-            28,
-            23
-          ]
-        }
+      "hold": 1,
+      "skeleton": [
+        { "name": "back-leg", "shape": "knight_leg", "pivot": "hip", "attach": { "to": "chest", "anchor": "hip_l", "shift": [ -2, 0 ] }, "skew": [ -0.5, 0.0 ] },
+        { "name": "front-leg", "shape": "knight_leg", "pivot": "hip", "attach": { "to": "chest", "anchor": "hip_r", "shift": [ 5, 0 ] }, "skew": [ 0.62, 0.0 ] },
+        { "name": "chest", "shape": "knight_chest", "pivot": "hips", "at": [ 18, 22 ], "skew": [ -0.36, 0.0 ] },
+        { "name": "shield", "shape": "shield", "pivot": "center", "attach": { "to": "chest", "anchor": "hips", "shift": [ 1, -1 ] }, "recolor": { "steel": "cloak", "steel_hi": "cloak_hi", "steel_sh": "cloak_sh" } },
+        { "name": "sword-arm", "shape": "knight_arm", "pivot": "shoulder", "attach": { "to": "chest", "anchor": "shoulder_r" }, "rotate": 198 },
+        { "name": "sword", "shape": "sword_long", "pivot": "grip", "attach": { "to": "sword-arm", "anchor": "hand" }, "rotate": 150 },
+        { "name": "slash", "shape": "slash", "flip": "h", "pivot": [ 2, 3 ], "rotate": 118, "at": [ 27, 27 ] },
+        { "name": "head", "shape": "knight_head_3q", "pivot": "neck", "attach": { "to": "chest", "anchor": "neck" } }
       ]
     },
     {
       "name": "recover",
-      "layers": [
-        {
-          "name": "leg",
-          "shape": "knight_leg",
-          "offset": [
-            12,
-            18
-          ]
-        },
-        {
-          "name": "leg",
-          "shape": "knight_leg",
-          "offset": [
-            16,
-            18
-          ]
-        },
-        {
-          "name": "torso",
-          "shape": "knight_torso",
-          "offset": [
-            6,
-            4
-          ]
-        },
-        {
-          "name": "sword",
-          "shape": "sword",
-          "pivot": [
-            1,
-            7
-          ],
-          "rotate": 20,
-          "at": [
-            22,
-            13
-          ]
-        }
+      "hold": 2,
+      "skeleton": [
+        { "name": "back-leg", "shape": "knight_leg", "pivot": "hip", "attach": { "to": "chest", "anchor": "hip_l", "shift": [ -2, 0 ] }, "skew": [ -0.42, 0.0 ] },
+        { "name": "front-leg", "shape": "knight_leg", "pivot": "hip", "attach": { "to": "chest", "anchor": "hip_r", "shift": [ 2, 0 ] }, "skew": [ 0.45, 0.0 ] },
+        { "name": "chest", "shape": "knight_chest", "pivot": "hips", "at": [ 16, 20 ], "skew": [ -0.14, 0.0 ] },
+        { "name": "shield", "shape": "shield", "pivot": "center", "attach": { "to": "chest", "anchor": "hips", "shift": [ 0, -1 ] }, "recolor": { "steel": "cloak", "steel_hi": "cloak_hi", "steel_sh": "cloak_sh" } },
+        { "name": "sword-arm", "shape": "knight_arm", "pivot": "shoulder", "attach": { "to": "chest", "anchor": "shoulder_r" }, "rotate": 160 },
+        { "name": "sword", "shape": "sword_long", "pivot": "grip", "attach": { "to": "sword-arm", "anchor": "hand" }, "rotate": 68 },
+        { "name": "head", "shape": "knight_head_3q", "pivot": "neck", "attach": { "to": "chest", "anchor": "neck" } }
       ]
     }
   ]
