@@ -1,4 +1,4 @@
-"""The Root Spec — one world, many artifacts (VISION.md, Phase 2).
+"""The Root Spec — one world, many artifacts (VISION.md, the world layer).
 
 Every Lab already proves coherence *within* one medium: a bible plus reusable
 motifs keep a soundtrack or a sprite set from drifting. The **World Bible**
@@ -109,7 +109,7 @@ def _validate_face(lab: str, face, where: str) -> None:
         raise SpecError(f"{where}: must be {{'group': <name>, 'motif': <name>}}")
 
 
-# --- Leaf-spec references into the world (VISION.md Phase 2 finisher) --------- #
+# --- Leaf-spec references into the world (VISION.md, the world layer) --------- #
 #
 # Until now only a world's OWN motifs could name its meaning tags and entities.
 # These two helpers push that binding down to the leaf specs the AI edits day to

@@ -1,62 +1,123 @@
-# Vision — Structured, Coherent Game-Artifact Generation
+# Vision — a coherence engine for solo game worlds
 
-## The thesis
+## Who this is for
 
-Most "AI for game assets" today is a prompt box wrapped around a generator.
-You type, it returns a thing, you type again, it returns a *different* thing.
-Each output is plausible in isolation and **dissonant in aggregate** — the
-sprites don't share a palette, the music doesn't share a key, the writing
-doesn't share a voice. There is no source of truth, nothing is reusable, and a
-change to the world's identity means re-rolling everything and hoping.
+**A solo dev (or a game-jam team, or anyone prototyping) who needs a whole
+game's worth of assets that read as _one game_ — fast, and without an art team.**
 
-VibeTracks (this repo) demonstrates a different model for **one** asset class —
-game music. Its lessons generalize, and that generalization is the vision:
+You have a world in your head. You need music, sprites, and — soon — tiles, UI,
+item text, and enemy stats to match it. What you do *not* have is an artist, a
+composer, a writer, and three weeks. The job to be done:
 
-> **Author a structured spec; compile it deterministically; make the generator a
-> constrained primitive, never the pipeline. Coherence comes from a shared
-> bible and reusable motifs that are _transformed, not regenerated_.**
+> Get a coherent set of world assets on screen quickly, keep them consistent as
+> the game changes, and never hit the wall where "add one more asset" means
+> "re-roll everything and hope it still matches."
 
-The AI's job is to write and edit **specs** — small, diffable, reviewable
-documents — not to emit final pixels or samples. A deterministic engine turns
-specs into artifacts. Where genuine generative texture is needed, it is bolted
-in as an *engine* whose output is forced back through the project's shared
-constraints (palette, key, voice). The black box is on a leash, not at the
-wheel.
+That's the customer and that's the promise. Everything below serves it.
 
-## What VibeTracks already proves
+## The problem you actually have
 
-VibeTracks is **Lab 0** — the existence proof. It models a song as JSON and
-compiles it to WAV with a pure-Python synth. The pieces that matter are not
-musical; they are *architectural*, and every one of them ports:
+Today the options are a prompt box or an asset pack, and both fail the *aggregate*:
 
-| Mechanism | In VibeTracks | Why it generalizes |
-|-----------|---------------|--------------------|
-| **Spec, not output** | tracks are JSON; Claude edits JSON | reviewable, diffable, deterministic, version-controlled |
-| **Bible** | `soundtrack.json`: key, bpm, palette, motifs | one inherited identity → nothing drifts |
-| **Palette** | named instruments every track shares | the same "voices" everywhere |
-| **Motifs + transforms** | `transpose`/`invert`/`retrograde`/`stretch` | variants by transformation, not re-prompting |
-| **Deterministic engine** | oscillators/filters → samples | inspectable, reproducible, free |
-| **Optional generative engine** | `soundfont` (sample-based), conformed to the mix | generation as a *plug-in primitive* |
-| **Validator** | scales catch wrong notes before render | cheap correctness checks pre-compile |
-| **Groups** | self-contained scores | bounded, composable units |
-| **compile → preview → iterate** | `render` → listen → edit | the authoring loop |
+- **A prompt box** (image/music generators) returns a plausible thing, then a
+  *different* plausible thing. Ten prompts later your sprites don't share a
+  palette, your music doesn't share a key, and there is no source of truth to
+  fix. Change your game's identity and you re-roll all of it.
+- **Asset packs** are internally consistent but don't match *each other* or
+  *your* game — you end up with a patchwork that screams "assembled," not
+  "authored."
 
-A throwaway visual prototype ("pixeltracks") confirmed the port: from a ~200-line
-palette + spec + raster engine — **no image generator** — we compiled a coherent
-character sprite, produced a "dusk" variant by *palette swap* (the leitmotif
-move), and animated a knight's attack as the same parts re-posed on a frame
-grid. The structure, coherence, and controllability carried over directly. The
-expressive ceiling of pure procedural rendering is lower for images than audio —
-which is precisely the signal for *where* the constrained generative engine
-earns its place.
+Neither gives you the one thing a solo dev needs most: **a single source of truth
+for what your world looks and sounds like, from which everything else follows.**
 
-## The shape of every Lab
+## What this is (and isn't)
 
-A "Lab" is a structured spec → compile → iterate workshop for one artifact
-class. Every Lab is the same machine with a different theory:
+VibeTracks is a **coherence engine**, not a generator. You — with an AI copilot —
+author a small, structured **spec** describing your world; a deterministic engine
+compiles it into finished assets; and coherence is *guaranteed* because every
+asset descends from one world identity and is built by reusing shared motifs.
+
+> **Author a structured spec; compile it deterministically; keep the generator a
+> constrained primitive, never the pipeline. Coherence comes from a shared world
+> and reusable motifs that are _transformed, not regenerated_.**
+
+It is **not** trying to out-paint Midjourney or out-sing Suno. That's the wrong
+fight and a crowded one. This is the layer those tools don't have: the
+diffable, version-controlled **source of truth** and the orchestration that keeps
+a solo dev's entire world consistent — and lets an AI agent build and edit it
+*with* you, because specs are exactly what an agent is good at authoring. Where
+real generative texture is genuinely needed, it's bolted in as a leashed
+*engine*, its output forced back through your world's constraints (palette, key,
+voice) on the way out. The black box is on a leash, not at the wheel.
+
+## Why a solo dev should care
+
+- **Speed.** `python -m labs new-world <name>` scaffolds a coherent starter world
+  across every medium in one command. From there you iterate by editing tiny
+  specs (or asking the agent to), not by re-rolling a prompt and praying.
+- **Coherence by construction.** Everything `extends` one world bible, so nothing
+  drifts — and a validator *proves* it: `python -m labs validate` checks that
+  your art and music still resolve to the same world before you ship.
+- **Change once, everything moves.** Your world's motifs have a face in every
+  medium. Darken your kingdom's emblem and *both* the crest sprite and the theme
+  music fall in step — the thing no prompt-per-asset workflow can do.
+- **Free and reproducible where it counts.** The default engines are pure code:
+  no per-asset API bill, deterministic output, all of it in git, all of it
+  reviewable in a diff.
+
+## Honest scope — read this before you get excited
+
+The engine is not equally good everywhere, and pretending otherwise is how you
+end up disappointed. Choose the fight you can win:
+
+- **Where it's genuinely great — formal, discrete domains.** Music, tiles, UI,
+  systems/balance data, and flat/pixel art. Here structure *is* the medium, and
+  the deterministic engine reaches near the quality ceiling on its own. This is
+  the core, and it's real: **VibeTracks' synth output is legitimately good.**
+- **Where it's a boundary case — organic, illustrative work.** Painterly
+  portraits, photoreal scenes, richly rendered sprites. Pure procedural rendering
+  visibly falls short here, and no amount of structure fixes that. This is
+  exactly where the caged generative engine earns its place (below) — and until
+  it lands, set expectations accordingly.
+- **So: pick a style whose constraints are natural** — pixel art, flat vector,
+  low-poly, chiptune/synth. That's the visual equivalent of VibeTracks choosing a
+  synth-forward aesthetic. Fighting for photoreal-everything is the fast road
+  back to dissonance.
+
+The tool's honesty is a feature: it will show you a coherent *rough* sprite and a
+polished track, and it will tell you which is which.
+
+## What exists today
+
+- **VibeTracks (music) — the flagship.** A complete music Lab: a world/soundtrack
+  bible, reusable motifs with real transforms (`transpose`/`invert`/`retrograde`/
+  `stretch`), a pure-Python synth (numpy/scipy — no system audio tools), an
+  optional sample-based `soundfont` engine conformed to the same mix, a validator
+  that catches wrong notes before you render, and worked demo scores. This is the
+  existence proof that a deterministic engine can hit the quality bar.
+- **PixelTracks (sprites) — the honest boundary case.** The same machine in a
+  second medium: an art bible (palette, shape motifs, outline), JSON sprite/
+  animation specs, a procedural raster engine, a skeleton rig for connected poses,
+  and a text-based `inspect`/`describe` toolchain for judging a sprite without
+  squinting at a PNG. It proves the *architecture* ports cleanly — and it also
+  maps precisely where procedural *quality* runs out. That boundary is a finding,
+  not a failure: it's the map of where a leashed generator will go.
+- **The world layer — coherence made checkable.** `worlds/<name>/world.json` is
+  the root spec every medium's bible descends from: an identity, a *palette of
+  meaning* (shape/colour/voice tags), named entities, and **cross-modal motifs**
+  (one root, a face per medium, with transforms that move every face at once).
+  `python -m labs validate` runs a cross-Lab coherence pass, and leaf specs (a
+  track, a sprite) can declare what they `mean` and which `entities` they're
+  about — all checked, so the media provably cannot drift. `new-world` scaffolds a
+  wired, already-coherent starting point.
+
+## How the machine works
+
+A **Lab** is a spec → compile → iterate workshop for one artifact class. Every
+Lab is the same machine with a different theory:
 
 ```
-  bible (identity)  ─┐
+  world (identity)  ─┐
   asset specs       ─┼──►  validator  ──►  deterministic engine  ──►  artifact
   reusable motifs   ─┘                          ▲
                                                 │ (optional)
@@ -64,35 +125,17 @@ class. Every Lab is the same machine with a different theory:
                                                                   (palette / key / voice)
 ```
 
-- **Bible** — the identity every asset inherits (the coherence anchor).
-- **Specs** — declarative, composable, what the AI authors.
+- **World / bible** — the identity every asset inherits (the coherence anchor).
+- **Specs** — small, declarative, composable; what you and the agent author.
 - **Motifs + transforms** — reuse over regeneration; family resemblance is
-  structural.
-- **Deterministic engine** — the default renderer; reproducible and free.
-- **Generative engine** — optional, seeded, *and always conformed* to the
-  bible's constraints on the way out (the "master bus").
-- **Validator** — modality-specific "theory" checks before you spend a render.
+  structural, not lucky.
+- **Deterministic engine** — the default renderer: reproducible, free, in git.
+- **Generative engine** — optional, seeded, *always conformed* to the world's
+  constraints on output (the "master bus" for a black box).
+- **Validator** — cheap, domain-specific correctness checks before you spend a
+  render.
 
-## The Labs
-
-| Lab | Artifact | "Theory" (constraints) | Engine spectrum |
-|-----|----------|------------------------|-----------------|
-| **VibeTracks** *(exists)* | music / SFX | scales, harmony, rhythm | pure DSP → soundfont |
-| **PixelTracks** *(exists)* | sprites, items, animation, VFX | palette, silhouette, shape motifs, frame timing | procedural raster → (later) ControlNet/seeded diffusion, palette-conformed |
-| **TileTracks** | tilesets, autotiling, levels/maps | grid adjacency rules, Wang/blob tiles, connectivity | procedural → constrained gen |
-| **UITracks** | HUD, panels, icons, fonts | 9-slice, type scale, spacing grid, contrast | procedural (strongest fit) |
-| **LoreTracks** | dialogue, item text, quests, codex | character voice "palette", world facts, tone | templated → LLM-with-guardrails |
-| **SystemTracks** | enemy stats, loot tables, balance curves | math/data constraints, monotonicity, budgets | pure deterministic |
-| **MeshTracks** *(stretch)* | low-poly props, materials | shape language, topology budgets | procedural / parametric → gen |
-
-Each Lab ships, like VibeTracks, with a worked demo group and a craft guide
-(its `docs/composition.md` equivalent) so the AI authors *intentionally*, not
-just *validly*.
-
-## The Root Spec — one world, many artifacts
-
-The ambitious payoff is binding the Labs together with a single **World Bible**
-(`world.json`) — the root spec from which every Lab's bible descends.
+## The world — one identity, many artifacts
 
 ```
                          world.json  (the Root Spec)
@@ -101,94 +144,52 @@ The ambitious payoff is binding the Labs together with a single **World Bible**
    (VibeTracks)   (PixelTracks)      (TileTracks)    (LoreTracks)  (SystemTracks)
 ```
 
-The World Bible declares the things that are *true across modalities*:
+The world declares what's true *across* media: identity (name, genre, tone, era);
+a **palette of meaning** (*round + warm + rising = hope*; *jagged + cold +
+falling = threat*), read by each medium in its own way; **named entities**
+referenced by id from any Lab; and **cross-modal motifs** — the payoff. One
+motif, a face in every medium; transform the root and every face transforms in
+step. A world is optional: a single-medium set needs none, and any group can be
+*promoted* into a world later without a rewrite. You reach for a world exactly
+when something must cohere across media — which, for a game, is the whole point.
 
-- **Identity** — name, genre, tone, era.
-- **Palette of meaning** — a "shape/color/voice language": *round + warm +
-  gentle = safe*; *spiky + cold + terse = hostile*. Each Lab interprets it in
-  its own medium.
-- **Named entities** — places, factions, characters, items — referenced by *id*
-  from any Lab.
-- **Cross-modal motifs** — the single most important idea: one motif with
-  faces in every medium. The kingdom's **sun-crest** (a shape in PixelTracks),
-  its **sunrise theme** (a melody in VibeTracks), and its **"dawn" tonal note**
-  (a phrase in LoreTracks) are three projections of one root motif. Transform
-  the root — darken it for the fallen kingdom — and *every* medium's version
-  transforms in step.
+## Roadmap — depth first
 
-This is what no prompt-per-asset workflow can do: change the world's identity in
-one place and have the music, art, and writing all move together, provably
-coherent because they share a root.
+The core loop (author a world → compile coherent music + art → iterate) is
+**built and works**. The temptation now is breadth — seven Labs on a checklist.
+That's the wrong instinct: more Labs where structure already wins doesn't answer
+the hard questions (organic quality, does anyone *use* this), it just adds
+surface area. So the plan is depth first.
 
-## High-level plan
+1. **Prove the loop on one real, playable world.** Build a small game's actual
+   asset set end-to-end and make the authoring loop genuinely *fast* and *good* —
+   this is both the proof and the template. Sharpen what a solo dev touches: the
+   agent-driven authoring flow, the preview loop, and the moment-to-value of
+   `new-world`. **A real user's world is the forcing function; find one.**
+2. **Make assets actually ship.** Exporters into the tools a solo dev already
+   uses — Godot, Tiled, Aseprite — and a unified `build` that compiles a whole
+   world at once (the way `render-all` already indexes every track). Coherent
+   assets that can't leave the repo aren't a product.
+3. **Add the next Lab a real project needs — pulled, not pushed.** When an actual
+   world hits a wall, fill it. The cheapest, highest-certainty wins are
+   **SystemTracks** (enemy stats, loot, balance — pure deterministic data) and
+   **TileTracks** (levels, autotiling); **UITracks** and **LoreTracks** follow.
+   Each reuses the same machine and ships with a craft guide, but only when a
+   world asks for it.
+4. **Cage a generator for the media that need it.** Add the leashed generative
+   engine to sprites and lore — seeded, structurally conditioned by the
+   procedural spec (e.g. ControlNet from a procedural silhouette), and conformed
+   to the world on output (palette-quantize, voice-check). It may vary the
+   texture; it may not break the identity. This is what raises PixelTracks off its
+   boundary — and it comes *after* depth proves the loop is worth generating into.
 
-**Phase 0 — Proof (done).** VibeTracks ships a complete music Lab: bible,
-motifs, transforms, deterministic synth + optional soundfont engine, validator,
-groups, demo scores, craft guide.
+Future Labs, when their time comes: TileTracks, UITracks, LoreTracks,
+SystemTracks, and (stretch) MeshTracks for low-poly props — each the same
+spec→validate→compile machine with a different theory.
 
-**Phase 1 — A second Lab (PixelTracks). _(done)_** The visual prototype is now a
-real Lab mirroring VibeTracks' module layout: an art bible (`artbook.json`:
-palette, shape motifs, outline), JSON sprite/animation specs, a procedural raster
-engine (`pixeltracks/`), a validator (palette adherence, well-formed grids,
-empty-silhouette coverage check), and exporters (PNG sheet + atlas JSON). The
-shared machine was factored into `labkit/` (group discovery, the Lab registry)
-and a `python -m labs` dispatcher now unifies both Labs. **No generative model
-yet** — the structured core is proven first, exactly as the music Lab did before
-soundfont. Worked demos: the `mossy-hollow` group (a small critter set — a
-palette-swap variant and a re-posed hop animation included) and the bigger
-`emberhold` JRPG party (skeleton-rigged attack poses).
+## North star
 
-**Phase 2 — The Root Spec. _(done)_** `world.json` exists: a Root Spec declaring
-identity, a *palette of meaning* (shape/colour/voice tags), named entities, and
-**cross-modal motifs** — one root motif with a *face* in every medium. Both Labs'
-bibles `extends` it (the shared `extends`/`world` resolution now lives in
-`labkit`, so it is genuinely one mechanism, not a per-Lab copy). The bundled
-`emberhold` world spans **both media**: its music bible (`groups/music/emberhold`)
-and art bible (`groups/sprites/emberhold`) descend from one `worlds/emberhold/
-world.json`. Its cross-modal `ember` motif has two faces — the gold **sun-crest**
-you see (the `crest` sprite motif, flown on the `banner`) and the rising
-**ember_theme** you hear — and one **`fallen` transform** that darkens the root in
-both media at once: the `dark-knight` palette-swap *and* the `siege` dirge (the
-theme inverted into minor). `python -m labs validate` now runs a cross-Lab
-coherence pass: every motif face and every transform target must resolve to a
-real motif/spec in the named Lab, so the media provably cannot drift apart. The
-*palette of meaning* and named entities now reach the **leaf specs** too: a track
-or sprite may declare what it `means` (a meaning tag) and which `entities` it is
-about, checked against the world at validate time with the same "cannot drift"
-guarantee the motif faces get — one shared `check_spec_refs` in `labkit`, so it is
-one mechanism, not a per-Lab copy. (In `emberhold`: the `siege` track and the
-`dark-knight` sprite both declare `hostile` / `the-shadow`; the vanguard party and
-`main-theme` declare `resolve`/`hope` and their keep.)
-
-**Phase 3 — Breadth.** Add Labs where deterministic theory is strongest and
-payoff is high: TileTracks (levels), UITracks (HUD/icons), SystemTracks
-(balance data). Each follows the same template; each adds its craft guide.
-
-**Phase 4 — Constrained generation.** Add the optional generative engine to the
-Labs that need it (PixelTracks, LoreTracks), strictly as a primitive: seeded and
-reproducible, structurally conditioned by the procedural spec (e.g. ControlNet
-from a procedural silhouette), and **conformed** to the bible on output (palette
-quantize, voice-check). Generation may vary the texture; it may not break the
-identity.
-
-**Phase 5 — Integration & packaging.** Exporters into real engines (Godot,
-Unity, Tiled, Aseprite, glTF), a unified `build` that compiles a whole world,
-and a manifest the way `render-all` already indexes every track — so a game's
-entire artifact set rebuilds, coherently, from specs.
-
-## Honest scope
-
-- **Where this shines:** anything with discrete, formalizable structure — music,
-  pixel/flat art, tiles, UI, systems data, animation timing. Here the
-  deterministic engine reaches near the quality ceiling on its own.
-- **Where the generative engine is required:** organic texture and
-  illustration — painterly portraits, photoreal scenes. The analogy doesn't
-  remove the black box there; it *cages* it (seed-locked, structure-conditioned,
-  palette-conformed) so it can't drift off-world.
-- **Style matters:** choose styles where constraints are natural (pixel art,
-  flat vector, low-poly, chiptune/synth) — the visual equivalent of VibeTracks
-  choosing a synth-forward aesthetic. Fighting for photoreal everything is the
-  fast path back to dissonance.
-
-The north star is simple: **a game whose music, art, and writing are coherent by
-construction, because they are compiled from one world.**
+**A solo dev builds a whole game world that looks and sounds like one game —
+coherent by construction, fast to change, shippable into their engine — without
+an art team and without the asset-pack patchwork.** That's the win. Everything in
+this repo is in service of making that loop fast, honest, and coherent.

@@ -1,4 +1,4 @@
-"""Tests for the Root Spec (VISION.md Phase 2) — one world, many artifacts.
+"""Tests for the Root Spec (VISION.md, the world layer) — one world, many artifacts.
 
 These cover the mechanism that binds the Labs: a ``world.json`` both a music
 bible and an art bible ``extends``, and the *cross-Lab* coherence check that a
