@@ -255,9 +255,16 @@ Each layer is composited in order and is **exactly one** of:
 - **`pixels`** — `[rows]` of legend chars (`.`/space = transparent) + a `legend`
   (or the sprite-level default). The workhorse; ASCII-art-legible in a diff.
 - **`shape`** — name of a bible/sprite motif (the coherence mechanism). Supports
-  the leitmotif transforms: `flip` (`"h"`/`"v"`/`"hv"`), `rotate` (0/90/180/270),
-  `scale` (positive int = augment), `recolor` (`{colorName: colorName}` swap for
-  this placement only). Applied flip→rotate→scale.
+  the leitmotif transforms: `flip` (`"h"`/`"v"`/`"hv"`), `rotate` (any angle in
+  degrees; a multiple of 90 without a `pivot` is a lossless grid turn, anything
+  else rotates in pixel space about `pivot` pinned to canvas `at`), `scale`
+  (positive int = augment), `recolor` (`{colorName: colorName}` swap for this
+  placement only). Plus two **affine** transforms for turning/leaning a part in
+  space (they route through the `pivot`/`at` path): `skew` `[kx, ky]` shear
+  (kx = the sideways "lean" with depth) and `squash` `[sx, sy]` non-uniform
+  fractional scale (sx < 1 foreshortens width — a turned torso). Grid transforms
+  apply flip→rotate→scale; the articulated matrix is rotate∘shear∘squash about
+  the pivot.
 - **`rect`** / **`ellipse`** — `{"at": [x,y], "size": [w,h], "color": <name>, "fill": bool}`.
 - **`line`** — `{"from": [x,y], "to": [x,y], "color": <name>}`.
 
@@ -326,6 +333,40 @@ Practical things that bite when authoring a multi-character animated set (see th
   sheet PNG — `Read` it to view all frames at once. For stills, tile them into one
   contact-sheet PNG (composite each `frame0`, `upscale`, paste onto a backdrop)
   rather than reading a dozen files.
+
+### Posing for life (why a sprite reads as "plastered on a wall" — and what fixes it)
+
+A dead-front, bilaterally symmetric, perfectly vertical figure reads as a paper
+doll. The fixes come straight from classical drawing/animation, and they told us
+what the *engine* was missing:
+
+- **Line of action.** Build the pose on one sweeping C- or S-curve (sword tip →
+  leaning spine → planted foot). A straight vertical spine is the stiffest line
+  there is.
+- **Contrapposto / weight shift.** Put the weight on one leg and let the hips and
+  shoulders tilt in *opposite* directions. A horizontal shoulder line is robotic;
+  a diagonal one is alive. Draw the turned body's shoulders on a slant.
+- **Break the frontal plane (the 3/4 turn).** Facing dead-front is the flattest
+  view. Turning the body needs a genuine *redraw* of the head/torso (a `body_3q`
+  motif: features clustered to one side, a nose bump on the leading contour, the
+  far shoulder smaller) — affine transforms can't rotate a flat face into a
+  profile. But they *can* finish the illusion: a small `skew` leans the torso and
+  a `squash` (sx≈0.85–0.9) foreshortens it, so it sits in depth without redrawing
+  per angle. This is exactly why the engine grew `skew`/`squash` — the art demand
+  drove the feature. Rotation alone keeps everything feeling head-on.
+- **Total asymmetry + overlap.** Nothing mirrored: sword arm cocked back-high,
+  off-hand forward as a guard, legs at different bends. Let the near limbs cross
+  *in front of* the torso — overlap is the cheapest depth cue (and a contrasting
+  material like a steel gauntlet keeps the crossing arm from reading as a blob
+  against a same-colour tunic).
+- **Streaming cloth.** A scarf/cape given a `skew` streams with the motion and
+  breaks the silhouette's symmetry — an easy, high-value "this figure is moving"
+  signal.
+
+The general lesson for the engine: 2D **affine** transforms (rotate + shear +
+non-uniform scale about a joint) buy a lot of the "in-space" feel cheaply, but a
+true change of *view* is still a redraw — so the roadmap is motif **view-sets**
+(front / three-quarter / side) rather than trying to fake a turn with math alone.
 
 ---
 

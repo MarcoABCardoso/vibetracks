@@ -54,18 +54,46 @@ def draw_grid(canvas, rows, legend_rgba, ox=0, oy=0) -> None:
                 paint(canvas, ox + i, oy + j, rgba)
 
 
-def draw_grid_rotated(canvas, rows, legend_rgba, degrees, pivot, at) -> None:
-    """Paint a char grid rotated by an arbitrary angle about a ``pivot``.
+def affine_matrix(degrees=0.0, skew=(0.0, 0.0), scale=(1.0, 1.0)):
+    """Build the 2x2 forward matrix ``rotate ∘ shear ∘ scale`` (applied in that
+    order to a source vector). ``skew`` is ``(kx, ky)`` shear factors (kx slants
+    columns sideways with depth — the "lean"; ky slants rows). ``scale`` is
+    ``(sx, sy)`` non-uniform *fractional* scale (sx<1 foreshortens width — the
+    horizontal squash that sells a turned body). Rotation is clockwise degrees.
 
-    Unlike :func:`shapes.rotate` (a lossless 90°-step grid turn), this is a
-    *pixel-space* rotation by any angle, so a sword can trace a real swing arc
-    instead of snapping to a quarter-turn. ``degrees`` is clockwise; ``pivot``
-    ``[px, py]`` is the centre of rotation in the grid's own pixel coordinates,
-    and that pivot is placed at canvas point ``at`` ``[ax, ay]`` — i.e. the grid
-    rotates *about its hand/joint* and that joint is pinned to the body.
+    These are the transforms that break a flat frontal plane: pure rotation keeps
+    a sprite feeling head-on, whereas a small shear + horizontal squash reads as a
+    body turning/leaning in space — without redrawing the part at a new angle.
+    """
+    th = math.radians(degrees)
+    c, s = math.cos(th), math.sin(th)
+    kx, ky = skew
+    sx, sy = scale
+    # shear · scale
+    a, b = sx, kx * sy
+    cc, d = ky * sx, sy
+    # rotate · (shear · scale)
+    return (c * a - s * cc, c * b - s * d,
+            s * a + c * cc, s * b + c * d)
 
-    Inverse-mapped + nearest-neighbour so the result stays hole-free and crisp,
-    the way pixel art should look. Out-of-palette/transparent cells are skipped.
+
+def _invert2x2(m):
+    a, b, c, d = m
+    det = a * d - b * c
+    if abs(det) < 1e-9:
+        det = 1e-9
+    inv = 1.0 / det
+    return (d * inv, -b * inv, -c * inv, a * inv)
+
+
+def draw_grid_affine(canvas, rows, legend_rgba, matrix, pivot, at, ox0=0, oy0=0) -> None:
+    """Paint a char grid under an arbitrary 2x2 affine about a ``pivot``.
+
+    ``matrix`` is the forward ``(a, b, c, d)`` from :func:`affine_matrix`; the
+    ``pivot`` (grid pixel coords) is pinned to canvas point ``at``. Inverse-mapped
+    + nearest-neighbour so the result stays hole-free and crisp. This is the
+    general engine behind rotation, shear and squash — a sword swing and a torso
+    lean are the same operation with a different matrix.
     """
     gh, gw = len(rows), len(rows[0])
     tile = np.zeros((gh, gw, 4), dtype=np.uint8)
@@ -77,30 +105,39 @@ def draw_grid_rotated(canvas, rows, legend_rgba, degrees, pivot, at) -> None:
             if rgba is not None:
                 tile[j, i] = rgba
 
-    th = math.radians(degrees)
-    c, s = math.cos(th), math.sin(th)
+    a, b, c, d = matrix
+    ia, ib, ic, id_ = _invert2x2(matrix)
     px, py = pivot
     ax, ay = at
 
-    # Output bounding box: forward-rotate the grid's corners about the pivot.
+    # Output bounding box: forward-map the grid's corners about the pivot.
     xs, ys = [], []
     for gx, gy in ((0, 0), (gw, 0), (0, gh), (gw, gh)):
         rx, ry = gx - px, gy - py
-        xs.append(c * rx - s * ry)
-        ys.append(s * rx + c * ry)
+        xs.append(a * rx + b * ry)
+        ys.append(c * rx + d * ry)
     minx, maxx = math.floor(min(xs)), math.ceil(max(xs))
     miny, maxy = math.floor(min(ys)), math.ceil(max(ys))
 
     # Inverse map each output pixel back to a source cell (no gaps).
     for oy in range(miny, maxy + 1):
         for ox in range(minx, maxx + 1):
-            sx = int(round(px + c * ox + s * oy))
-            sy = int(round(py - s * ox + c * oy))
+            sx = int(round(px + ia * ox + ib * oy))
+            sy = int(round(py + ic * ox + id_ * oy))
             if 0 <= sx < gw and 0 <= sy < gh:
                 rgba = tile[sy, sx]
                 if rgba[3] > 0:
-                    paint(canvas, int(round(ax)) + ox, int(round(ay)) + oy,
+                    paint(canvas, int(round(ax)) + ox + ox0, int(round(ay)) + oy + oy0,
                           (int(rgba[0]), int(rgba[1]), int(rgba[2]), int(rgba[3])))
+
+
+def draw_grid_rotated(canvas, rows, legend_rgba, degrees, pivot, at) -> None:
+    """Rotate-only convenience wrapper over :func:`draw_grid_affine` (back-compat).
+
+    ``degrees`` clockwise, about ``pivot`` pinned to canvas ``at``; the general
+    shear/squash live in :func:`draw_grid_affine` via :func:`affine_matrix`.
+    """
+    draw_grid_affine(canvas, rows, legend_rgba, affine_matrix(degrees), pivot, at)
 
 
 def draw_rect(canvas, x, y, w, h, rgba, fill=True) -> None:

@@ -163,6 +163,41 @@ class TestRenderAndPng(unittest.TestCase):
         names = set(bible.resolved_palette())
         spec._validate_layer(layer, sprite, names, where="t")  # should not raise
 
+    def test_skew_leans_a_vertical_bar(self):
+        from pixeltracks.raster import affine_matrix, draw_grid_affine
+        rows, legend = ["x", "x", "x"], {"x": (255, 255, 255, 255)}
+        # No skew: a vertical bar stays directly above its pinned base.
+        c0 = new_canvas(9, 9)
+        draw_grid_affine(c0, rows, legend, affine_matrix(0), pivot=[0, 2], at=[4, 6])
+        self.assertEqual(c0[6, 4, 3], 255)   # base pinned
+        self.assertEqual(c0[4, 4, 3], 255)   # top directly above
+        # Positive horizontal skew leans the top off to the side (the "lean").
+        c1 = new_canvas(9, 9)
+        draw_grid_affine(c1, rows, legend, affine_matrix(0, skew=(1.0, 0.0)),
+                         pivot=[0, 2], at=[4, 6])
+        self.assertEqual(c1[6, 4, 3], 255)   # base still pinned
+        self.assertEqual(c1[4, 4, 3], 0)     # top no longer directly above
+        self.assertEqual(c1[4, 2, 3], 255)   # it moved sideways with depth
+
+    def test_squash_narrows_width(self):
+        from pixeltracks.raster import affine_matrix, draw_grid_affine
+        rows, legend = ["xxxx"], {"x": (255, 255, 255, 255)}
+        c = new_canvas(12, 6)
+        draw_grid_affine(c, rows, legend, affine_matrix(0, scale=(0.5, 1.0)),
+                         pivot=[0, 0], at=[2, 3])
+        self.assertLessEqual(int((c[..., 3] > 0).sum()), 3)  # 4px foreshortened to ~2
+
+    def test_skew_and_squash_validate(self):
+        bible = spec.load_bible(BIBLE)
+        sprite = {"motifs": bible.motifs}
+        names = set(bible.resolved_palette())
+        ok = {"shape": "sword", "skew": [-0.2, 0], "squash": [0.9, 1.0],
+              "pivot": [1, 8], "at": [5, 5]}
+        spec._validate_layer(ok, sprite, names, where="t")   # should not raise
+        with self.assertRaises(spec.SpecError):
+            spec._validate_layer({"shape": "sword", "squash": [0, 1.0]},
+                                 sprite, names, where="t")
+
     def test_png_has_signature_and_upscale(self):
         canvas = new_canvas(2, 2)
         canvas[0, 0] = (10, 20, 30, 255)
