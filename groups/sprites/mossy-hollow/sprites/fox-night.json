@@ -1,0 +1,15 @@
+{
+  "name": "fox-night",
+  "extends": "../artbook.json",
+  "_comment": "THE LEITMOTIF MOVE. Identical layers to fox.json — same pose, same leaf charm — but the palette is swapped to moonlit colours: silvery fur, glowing eyes. Change the identity in one place, the whole sprite moves with it. Nothing else differs.",
+  "palette": {
+    "fur": "#6b7a94",
+    "fur_hi": "#aebfd6",
+    "fur_sh": "#3f4a5e",
+    "eye": "#bfe8c0"
+  },
+  "layers": [
+    { "name": "body", "shape": "fox" },
+    { "name": "charm", "shape": "leaf", "offset": [6, 11] }
+  ]
+}

@@ -16,7 +16,7 @@ from pixeltracks.pngio import encode_png
 from pixeltracks.raster import add_outline, new_canvas, upscale
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-DEMO = os.path.join(ROOT, "groups", "sprites", "tiny-knight")
+DEMO = os.path.join(ROOT, "groups", "sprites", "mossy-hollow")
 BIBLE = os.path.join(DEMO, "artbook.json")
 SPRITES = sorted(glob.glob(os.path.join(DEMO, "sprites", "*.json")))
 
@@ -71,8 +71,8 @@ class TestSpecs(unittest.TestCase):
     def test_bible_loads(self):
         bible = spec.load_bible(BIBLE)
         self.assertTrue(bible.sprites)
-        self.assertIn("knight", bible.motifs)
-        self.assertIn("crest", bible.motifs)
+        self.assertIn("fox", bible.motifs)
+        self.assertIn("leaf", bible.motifs)
 
     def test_all_sprites_resolve(self):
         bible = spec.load_bible(BIBLE)
@@ -84,18 +84,18 @@ class TestSpecs(unittest.TestCase):
 
     def test_palette_swap_only_changes_colours(self):
         bible = spec.load_bible(BIBLE)
-        knight = spec.resolve_sprite(os.path.join(DEMO, "sprites", "knight.json"), bible)
-        dusk = spec.resolve_sprite(os.path.join(DEMO, "sprites", "knight-dusk.json"), bible)
-        # Same layers/pose, different steel colour — the leitmotif move.
-        self.assertEqual(knight["frames"], dusk["frames"])
-        self.assertNotEqual(knight["palette"]["steel"], dusk["palette"]["steel"])
+        fox = spec.resolve_sprite(os.path.join(DEMO, "sprites", "fox.json"), bible)
+        night = spec.resolve_sprite(os.path.join(DEMO, "sprites", "fox-night.json"), bible)
+        # Same layers/pose, different fur colour — the leitmotif move.
+        self.assertEqual(fox["frames"], night["frames"])
+        self.assertNotEqual(fox["palette"]["fur"], night["palette"]["fur"])
 
     def test_off_palette_colour_rejected(self):
         bible = spec.load_bible(BIBLE)
         with self.assertRaises(spec.SpecError):
             spec._validate_layer({"rect": {"at": [0, 0], "size": [2, 2], "color": "no_such"}},
-                                 {"palette": {"steel": (0, 0, 0, 255)}, "motifs": {}},
-                                 {"steel"}, where="x")
+                                 {"palette": {"fur": (0, 0, 0, 255)}, "motifs": {}},
+                                 {"fur"}, where="x")
 
     def test_two_primitives_in_a_layer_rejected(self):
         with self.assertRaises(spec.SpecError):
@@ -106,12 +106,12 @@ class TestSpecs(unittest.TestCase):
 class TestGroups(unittest.TestCase):
     def test_discover_finds_demo(self):
         groups = spec.discover_groups(ROOT)
-        self.assertIn("tiny-knight", [g.name for g in groups])
+        self.assertIn("mossy-hollow", [g.name for g in groups])
 
     def test_sprite_names_follow_bible_order(self):
-        g = spec.find_group("tiny-knight", ROOT)
-        self.assertEqual(g.sprite_names()[0], "knight")
-        self.assertTrue(os.path.isfile(g.sprite_path("slime")))
+        g = spec.find_group("mossy-hollow", ROOT)
+        self.assertEqual(g.sprite_names()[0], "fox")
+        self.assertTrue(os.path.isfile(g.sprite_path("owl")))
 
     def test_unknown_group_raises(self):
         with self.assertRaises(spec.SpecError):
@@ -121,18 +121,18 @@ class TestGroups(unittest.TestCase):
 class TestDescribe(unittest.TestCase):
     def test_index_covers_every_motif_and_sprite(self):
         from pixeltracks import describe
-        g = spec.find_group("tiny-knight", ROOT)
+        g = spec.find_group("mossy-hollow", ROOT)
         info = describe.describe_group(g)
         self.assertEqual({m["name"] for m in info["motifs"]}, set(g.load_bible().motifs))
         self.assertEqual([s["name"] for s in info["sprites"]], g.sprite_names())
 
     def test_used_by_matches_sprite_shape_layers(self):
         from pixeltracks import describe
-        g = spec.find_group("tiny-knight", ROOT)
+        g = spec.find_group("mossy-hollow", ROOT)
         info = describe.describe_group(g)
         by_name = {m["name"]: m for m in info["motifs"]}
-        self.assertIn("knight-attack", by_name["sword"]["used_by"])
-        self.assertIn("knight", by_name["knight"]["used_by"])
+        self.assertIn("fox-hop", by_name["leaf"]["used_by"])
+        self.assertIn("fox", by_name["fox"]["used_by"])
 
     def test_unused_motif_detected(self):
         from pixeltracks import describe
@@ -142,10 +142,10 @@ class TestDescribe(unittest.TestCase):
 
     def test_format_report_is_a_string(self):
         from pixeltracks import describe
-        g = spec.find_group("tiny-knight", ROOT)
+        g = spec.find_group("mossy-hollow", ROOT)
         report = describe.format_report(describe.describe_group(g))
         self.assertIsInstance(report, str)
-        self.assertIn("knight", report)
+        self.assertIn("fox", report)
 
 
 class TestRenderAndPng(unittest.TestCase):
@@ -159,20 +159,20 @@ class TestRenderAndPng(unittest.TestCase):
 
     def test_sprite_renders_non_empty(self):
         bible = spec.load_bible(BIBLE)
-        s = spec.resolve_sprite(os.path.join(DEMO, "sprites", "knight.json"), bible)
+        s = spec.resolve_sprite(os.path.join(DEMO, "sprites", "fox.json"), bible)
         frame = composite_frame(s, s["frames"][0])
-        self.assertEqual(frame.shape, (16, 16, 4))
+        self.assertEqual(frame.shape, (20, 20, 4))
         self.assertGreater(coverage(frame), 0.1)   # not empty
         self.assertEqual(frame.dtype, np.uint8)
 
     def test_animation_sheet_and_atlas(self):
         bible = spec.load_bible(BIBLE)
-        s = spec.resolve_sprite(os.path.join(DEMO, "sprites", "knight-attack.json"), bible)
+        s = spec.resolve_sprite(os.path.join(DEMO, "sprites", "fox-hop.json"), bible)
         out = render_sprite(s)
-        # Six posed frames of the articulated swing on a 28x24 canvas.
-        self.assertEqual(out["atlas"]["frame_count"], 6)
+        # Four posed frames of the hop on a 20x29 canvas.
+        self.assertEqual(out["atlas"]["frame_count"], 4)
         self.assertTrue(out["atlas"]["loop"])
-        self.assertEqual(out["sheet"].shape, (24, 28 * 6, 4))
+        self.assertEqual(out["sheet"].shape, (29, 20 * 4, 4))
 
     def test_pivoted_rotation_swings_about_a_joint(self):
         from pixeltracks.raster import draw_grid_rotated
@@ -188,7 +188,7 @@ class TestRenderAndPng(unittest.TestCase):
 
     def test_arbitrary_rotation_validates(self):
         bible = spec.load_bible(BIBLE)
-        layer = {"shape": "sword", "rotate": 37, "pivot": [1, 8], "at": [10, 10]}
+        layer = {"shape": "leaf", "rotate": 37, "pivot": [2, 4], "at": [10, 10]}
         sprite = {"motifs": bible.motifs}
         names = set(bible.resolved_palette())
         spec._validate_layer(layer, sprite, names, where="t")  # should not raise
@@ -221,11 +221,11 @@ class TestRenderAndPng(unittest.TestCase):
         bible = spec.load_bible(BIBLE)
         sprite = {"motifs": bible.motifs}
         names = set(bible.resolved_palette())
-        ok = {"shape": "sword", "skew": [-0.2, 0], "squash": [0.9, 1.0],
-              "pivot": [1, 8], "at": [5, 5]}
+        ok = {"shape": "leaf", "skew": [-0.2, 0], "squash": [0.9, 1.0],
+              "pivot": [2, 4], "at": [5, 5]}
         spec._validate_layer(ok, sprite, names, where="t")   # should not raise
         with self.assertRaises(spec.SpecError):
-            spec._validate_layer({"shape": "sword", "squash": [0, 1.0]},
+            spec._validate_layer({"shape": "leaf", "squash": [0, 1.0]},
                                  sprite, names, where="t")
 
     def test_png_has_signature_and_upscale(self):

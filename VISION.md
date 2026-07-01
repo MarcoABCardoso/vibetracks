@@ -134,8 +134,9 @@ empty-silhouette coverage check), and exporters (PNG sheet + atlas JSON). The
 shared machine was factored into `labkit/` (group discovery, the Lab registry)
 and a `python -m labs` dispatcher now unifies both Labs. **No generative model
 yet** — the structured core is proven first, exactly as the music Lab did before
-soundfont. Worked demo: the `tiny-knight` group (a palette-swap variant and a
-re-posed attack animation included).
+soundfont. Worked demos: the `mossy-hollow` group (a small critter set — a
+palette-swap variant and a re-posed hop animation included) and the bigger
+`emberhold` JRPG party (skeleton-rigged attack poses).
 
 **Phase 2 — The Root Spec.** Introduce `world.json` and refactor both Labs'
 bibles to `extend` it. Add cross-Lab references by entity id and the first

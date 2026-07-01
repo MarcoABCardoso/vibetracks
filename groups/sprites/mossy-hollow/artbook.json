@@ -1,0 +1,75 @@
+{
+  "title": "Mossy Hollow",
+  "aesthetic": "20x20 cozy woodland critters, warm autumn palette, no armour in sight",
+  "_comment": "A second sprite demo, deliberately NOT a re-skin of an armoured hero: round animal silhouettes instead of a humanoid rig, a soft brown outline instead of near-black, an autumn palette instead of steel-and-gold. Same bible mechanics (palette + reusable motifs), a totally different world — proving the artbook, not the engine, is what makes a set feel like a place. The leitmotif move is still a palette swap (fox-night); the reused-shape move is the 'leaf' charm, worn on the fox and enlarged on the signpost. Canvas bumped from 14x14 to 20x20 (matching emberhold's resolution) for more room to draw paws, whiskers, and shading detail than the original demo size allowed.",
+  "size": [20, 20],
+  "scale": 13,
+
+  "palette": {
+    "outline": "#3a2418",
+    "fur": "#d97b3f",
+    "fur_hi": "#f2c08a",
+    "fur_sh": "#a85a2a",
+    "cream": "#f7e8c9",
+    "ear_in": "#e8a7a0",
+    "eye": "#2a1a12",
+    "beak": "#e8a24a",
+    "owl_body": "#8a7a63",
+    "owl_wing": "#5f5344",
+    "leaf": "#5a9c4a",
+    "leaf_dark": "#2f5c28"
+  },
+
+  "background": null,
+  "outline": { "color": "outline" },
+
+  "ramps": {
+    "fur": ["fur_sh", "fur", "fur_hi"],
+    "leaf": ["leaf_dark", "leaf"]
+  },
+
+  "motifs": {
+    "fox": {
+      "_comment": "The hero's pose, stated in full once (like a soundtrack's main theme): a sitting fox, round ears with pink insides, whiskers, a glint in each eye, a cream chest and paws, and a raised tail with a lighter tip. Drawn without the outer outline — the engine's auto-outline traces the silhouette.",
+      "legend": { "b": "fur", "d": "fur_sh", "h": "fur_hi", "c": "cream", "p": "ear_in", "e": "eye", "n": "eye", "g": "cream", "m": "cream", "t": "cream", "w": "fur_sh" },
+      "pixels": [
+        "....................",
+        "....bb........bb....",
+        "...bbbb......bbbb...",
+        "...bbpb......bpbb...",
+        "...bppbbbbbbbbppb...",
+        "....bpbbbbbbbbpb....",
+        ".....bbgbbbbgbb.....",
+        ".....beebhhbeeb.....",
+        ".....bbbhhhhbbbbtt..",
+        ".....wbhcmnchbwbttt.",
+        "......dccnnccb.bttb.",
+        ".....dccccccccbbbb..",
+        "....dbccccccccbbbbb.",
+        "....dbccccccccbbbbb.",
+        "....dbbccccccbbbbb..",
+        "....dbbbccccbdddbb..",
+        "....dbbbbbbbbdddd...",
+        ".....dbbbbbbbdddb...",
+        ".....ccccdbcccc.....",
+        "......cc....cc......"
+      ]
+    },
+
+    "leaf": {
+      "_comment": "A small leaf charm — the repeated SHAPE motif. Worn on the fox's chest and reappearing, enlarged, on the signpost: the same shape with two faces, the way a leitmotif recurs across cues.",
+      "legend": { "g": "leaf", "v": "leaf_dark" },
+      "pixels": [
+        "...g...",
+        "..ggg..",
+        ".ggggg.",
+        "gggvggg",
+        ".ggvgg.",
+        "..gvg..",
+        "...v..."
+      ]
+    }
+  },
+
+  "sprites": ["fox", "fox-night", "signpost", "owl", "fox-hop"]
+}

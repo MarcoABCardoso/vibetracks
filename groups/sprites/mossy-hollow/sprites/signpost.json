@@ -1,0 +1,12 @@
+{
+  "name": "signpost",
+  "extends": "../artbook.json",
+  "_comment": "The leaf motif recurs here on a carved trail sign — one shape with two faces (chest charm + signpost carving), the leitmotif reappearing in a new setting. Also shows the procedural primitives (rect/line) that stand in for music's chord symbols: higher-level shapes rather than per-pixel grids.",
+  "layers": [
+    { "name": "post",     "rect": { "at": [8, 9], "size": [3, 10], "color": "fur_sh" } },
+    { "name": "board",    "rect": { "at": [1, 1], "size": [18, 8], "color": "cream" } },
+    { "name": "trim_top", "line": { "from": [1, 1], "to": [18, 1], "color": "leaf_dark" } },
+    { "name": "trim_bot", "line": { "from": [1, 8], "to": [18, 8], "color": "leaf_dark" } },
+    { "name": "carving",  "shape": "leaf", "offset": [6, 1] }
+  ]
+}
