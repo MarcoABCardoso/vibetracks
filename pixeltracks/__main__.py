@@ -2,15 +2,15 @@
 
 Sprites are organized into **groups** — each ``groups/sprites/<name>/`` is a
 self-contained sprite set with its own ``artbook.json`` bible and ``sprites/``.
-The repo ships a demo group (``tiny-knight``); spin up your own with
-``new-group``.
+The repo ships two demo groups (``mossy-hollow``, ``emberhold``); spin up your
+own with ``new-group``.
 
 Note: PixelTracks is early, exploratory work — the procedural raster engine is
 still limited, so rendered sprites are rough compared with the music Lab.
 
     python -m pixeltracks validate                    # check every group's specs
     python -m pixeltracks describe <group>            # index: motifs/sprites, no pixel grids
-    python -m pixeltracks render tiny-knight/knight   # render one sprite to out/
+    python -m pixeltracks render mossy-hollow/fox     # render one sprite to out/
     python -m pixeltracks render-all                  # render every sprite in every group
     python -m pixeltracks new <sprite> --group <g>    # scaffold a sprite spec
     python -m pixeltracks new-group <name>            # scaffold a whole new group

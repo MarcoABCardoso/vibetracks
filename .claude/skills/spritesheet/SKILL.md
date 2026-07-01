@@ -30,8 +30,8 @@ it's done).
 
 ## 0. Pick (or create) the group
 
-A new game or character set is a **new group** — never overwrite the demo
-(`tiny-knight`). `python -m pixeltracks new-group <name> --title "<Title>"`
+A new game or character set is a **new group** — never overwrite a demo
+(`mossy-hollow`, `emberhold`). `python -m pixeltracks new-group <name> --title "<Title>"`
 scaffolds `groups/sprites/<name>/` with a starter bible + a `main` sprite. If extending an
 existing set, work inside its group.
 
@@ -92,13 +92,13 @@ Make new sprites feel like the same set without repeating the hero everywhere:
   leitmotif move: a provably-identical sprite in night/faction/status colours.
 - **Transform the shape** — `flip` (face the other way), `rotate`, `scale`
   (enlarge), `recolor` (remap names for one placement). Same DNA, new pose.
-- **Reuse an emblem** elsewhere (crest on the chest, then enlarged on a banner).
+- **Reuse an emblem** elsewhere (a charm on the hero, then enlarged on a prop).
 - **Companions** (enemies/items) share only the palette + outline and carry their
   own shape — they belong without echoing the hero.
 
-How the demo does it: `knight` states the pose + crest; `knight-dusk` is a pure
-palette swap; `banner` reuses the crest; `slime` shares only the palette;
-`knight-attack` re-poses the knight across 4 frames.
+How the `mossy-hollow` demo does it: `fox` states the pose + `leaf` charm;
+`fox-night` is a pure palette swap; `signpost` reuses the leaf enlarged; `owl`
+shares only the palette; `fox-hop` re-poses the fox across 4 frames.
 
 ## 5. Animate by re-posing (optional)
 

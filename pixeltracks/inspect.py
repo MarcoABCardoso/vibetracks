@@ -36,20 +36,24 @@ SPECK = 3  # components smaller than this (px) are rotation crumbs, not detached
 # --- per-layer rasterisation ------------------------------------------------ #
 
 def _shift_layer(layer: dict, dx: int, dy: int) -> dict:
-    """Copy a layer with every canvas anchor (``offset``/``at``) shifted."""
+    """Copy a layer with its canvas anchor(s) shifted by ``(dx, dy)``.
+
+    Must mirror ``compositor._draw_layer``'s own resolution exactly, or the
+    padded-canvas trick below misreads a shift as off-canvas clipping:
+
+    * ``pixels`` and the ``shape`` fast path place at ``offset`` alone (default
+      ``[0, 0]``) — shifting it is enough, whether or not the key was present.
+    * the ``shape`` affine path (pivot/skew/squash) places at ``at``, falling
+      back to ``offset`` only when ``at`` is absent — so ``offset`` must still
+      shift for that fallback, and an *explicit* ``at`` must shift too.
+    * ``rect``/``ellipse``/``line`` sum their own anchor *and* ``offset`` — so
+      only one of the two may be shifted here, or the shift doubles.
+    """
     out = copy.deepcopy(layer)
-    if "offset" in out:
-        out["offset"] = [out["offset"][0] + dx, out["offset"][1] + dy]
-    if "at" in out:
+    ox, oy = out.get("offset", [0, 0])
+    out["offset"] = [ox + dx, oy + dy]
+    if "shape" in out and "at" in out:
         out["at"] = [out["at"][0] + dx, out["at"][1] + dy]
-    # rect/ellipse/line carry their own 'at' inside the primitive dict.
-    for kind in ("rect", "ellipse"):
-        if kind in out and "at" in out[kind]:
-            out[kind]["at"] = [out[kind]["at"][0] + dx, out[kind]["at"][1] + dy]
-    if "line" in out:
-        for end in ("from", "to"):
-            if end in out["line"]:
-                out["line"][end] = [out["line"][end][0] + dx, out["line"][end][1] + dy]
     return out
 
 

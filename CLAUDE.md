@@ -51,7 +51,7 @@ medium:
 
 ```
 groups/music/<g>/soundtrack.json + tracks/*.json     # VibeTracks groups (demo: neon-frontier)
-groups/sprites/<g>/artbook.json  + sprites/*.json    # PixelTracks groups (demo: tiny-knight)
+groups/sprites/<g>/artbook.json  + sprites/*.json    # PixelTracks groups (demo: mossy-hollow)
 out/<group>/                                          # rendered artifacts (gitignored)
 ```
 

@@ -64,9 +64,12 @@ plus a top-level index; an animated sprite also gets a `<sprite>.atlas.json`.
 
 ### Group — `groups/sprites/<name>/`
 One self-contained sprite set: its own bible (`groups/sprites/<name>/artbook.json`)
-plus `groups/sprites/<name>/sprites/*.json`. The repo ships a demo group
-(`tiny-knight`). Sprite groups live under `groups/sprites/` alongside the music
-groups under `groups/music/` — one `groups/` tree, one subdirectory per medium.
+plus `groups/sprites/<name>/sprites/*.json`. The repo ships two demo groups:
+`mossy-hollow` (a small five-sprite demo — woodland critters) and `emberhold`
+(a bigger 4-class JRPG party). The two share no shape language or even outline
+colour — proof that the artbook, not the engine, is what shapes a set's world.
+Sprite groups live under `groups/sprites/` alongside the music groups under
+`groups/music/` — one `groups/` tree, one subdirectory per medium.
 
 ### Bible — `groups/sprites/<name>/artbook.json`
 

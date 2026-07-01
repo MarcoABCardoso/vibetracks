@@ -32,7 +32,7 @@ python -m vibetracks render neon-frontier/battle
 
 # the sprite Lab
 python -m pixeltracks render-all             # -> out/<group>/*.png
-python -m pixeltracks render tiny-knight/knight
+python -m pixeltracks render mossy-hollow/fox
 ```
 
 Each Lab has the same CLI verbs (`validate` / `render` / `render-all` / `new` /
@@ -51,7 +51,7 @@ vibetracks/       # the music Lab (theory, synth, instruments, sequencer, wavio,
 groups/music/<g>/soundtrack.json + tracks/*.json     # music groups (demo: neon-frontier)
 
 pixeltracks/      # the sprite Lab (palette, shapes, raster, compositor, pngio, CLI)
-groups/sprites/<g>/artbook.json + sprites/*.json     # sprite groups (demo: tiny-knight)
+groups/sprites/<g>/artbook.json + sprites/*.json     # sprite groups (demo: mossy-hollow)
 
 docs/composition.md   # music craft guide      docs/pixelcraft.md   # sprite craft guide
 .claude/skills/soundtrack                       .claude/skills/spritesheet
@@ -105,17 +105,22 @@ module-for-module. A sprite set stays coherent because every sprite shares one
 **artbook**: a colour `palette` and reusable shape **motifs**. The leitmotif move
 is a **palette swap** — change the bible's colours and a sprite recolours in step.
 
-### The included demo: *Tiny Knight*
+### The included demo: *Mossy Hollow*
 
-A five-sprite 16×16 set on a shared cool-steel-plus-gold palette:
+A five-sprite 14×14 set of woodland critters on a warm autumn palette —
+deliberately not a re-skin of an armoured hero, to show that swapping the
+artbook reshapes the whole world, not just the colours:
 
 | Sprite | What it shows |
 |--------|---------------|
-| `knight` | The anchor: states the hero shape in full and wears the `crest` emblem |
-| `knight-dusk` | **Palette swap** — identical layers, night colours (the headline move) |
-| `banner` | The `crest` motif recurring elsewhere, plus `rect`/`line`/`ellipse` primitives |
-| `slime` | Coherence ≠ repetition — shares only the palette, carries its own shape |
-| `knight-attack` | A 4-frame animation re-posing the knight → sprite sheet + `.atlas.json` |
+| `fox` | The anchor: states the hero shape in full and wears the `leaf` charm |
+| `fox-night` | **Palette swap** — identical layers, moonlit colours (the headline move) |
+| `signpost` | The `leaf` motif recurring elsewhere, plus `rect`/`line` primitives |
+| `owl` | Coherence ≠ repetition — shares only the palette, carries its own shape |
+| `fox-hop` | A 4-frame animation re-posing the fox → sprite sheet + `.atlas.json` |
+
+A second, bigger group (`emberhold`) shows the same mechanics scaled up to a
+4-class JRPG party with battle poses and skeleton-rigged attacks.
 
 A **layer** is exactly one of `pixels` (a char grid + legend), `shape` (a motif
 with transforms — `flip`/`rotate`/`scale`/`recolor`), `rect`, `ellipse`, or

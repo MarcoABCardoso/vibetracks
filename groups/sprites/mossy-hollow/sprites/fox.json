@@ -1,0 +1,9 @@
+{
+  "name": "fox",
+  "extends": "../artbook.json",
+  "_comment": "The anchor sprite: states the fox pose in full, wearing a leaf charm at the chest. Every other sprite is a transformation of, or a companion to, this one.",
+  "layers": [
+    { "name": "body", "shape": "fox" },
+    { "name": "charm", "shape": "leaf", "offset": [5, 8] }
+  ]
+}
