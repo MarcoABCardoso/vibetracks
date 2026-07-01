@@ -17,6 +17,8 @@
     "gold": "#f2c14e",
     "gold_sh": "#b8862f",
     "cloak": "#c8443a",
+    "cloak_hi": "#e87b5c",
+    "cloak_sh": "#8f2b30",
     "mage": "#6b4fb0",
     "mage_hi": "#a98fe0",
     "mage_sh": "#3f2c75",
@@ -51,6 +53,11 @@
     "gold": [
       "gold_sh",
       "gold"
+    ],
+    "cloak": [
+      "cloak_sh",
+      "cloak",
+      "cloak_hi"
     ],
     "mage": [
       "mage_sh",
@@ -146,6 +153,85 @@
         "aaa",
         "daa",
         "ddd"
+      ]
+    },
+    "knight_chest": {
+      "_comment": "Headless torso (gorget -> belt), cropped from knight_torso so the head can TURN independently of the body. Skew/squash this to lean the chest into a pose; place knight_head_3q on top.",
+      "legend": {
+        "a": "steel",
+        "h": "steel_hi",
+        "d": "steel_sh",
+        "c": "cloak",
+        "C": "cloak_hi",
+        "s": "cloak_sh",
+        "g": "gold"
+      },
+      "pixels": [
+        "..gaaaag..",
+        "daaaaaaaad",
+        "haaCccaaad",
+        "aaaCccsaaa",
+        "daaCcssaad",
+        "gggggggggg"
+      ]
+    },
+    "knight_head_3q": {
+      "_comment": "Three-quarter helmeted head facing RIGHT (a genuine redraw, not an affine turn): features clustered to the leading side, a nose bump on the right contour, the far side of the helm smaller, a red plume streaming back. Turning a flat frontal face needs a redraw, not math.",
+      "legend": {
+        "a": "steel",
+        "h": "steel_hi",
+        "d": "steel_sh",
+        "k": "skin",
+        "e": "outline",
+        "c": "cloak",
+        "C": "cloak_hi",
+        "g": "gold"
+      },
+      "pixels": [
+        "..Caaa..",
+        ".cCaahh.",
+        "ccaaahhk",
+        ".caghkkk",
+        ".aaekkkk",
+        ".aakkkkk",
+        ".aadkkk.",
+        "..aaad.."
+      ]
+    },
+    "knight_arm": {
+      "_comment": "Armoured limb (gauntlet at the top row) for a raised sword arm; rotate it about the shoulder so it reaches up to the hilt. Steel highlight stripe keeps it from reading as a blob when it crosses the surcoat.",
+      "legend": {
+        "a": "steel",
+        "h": "steel_hi",
+        "d": "steel_sh"
+      },
+      "pixels": [
+        "hha",
+        "aah",
+        "dah",
+        "dah",
+        "daa",
+        "da."
+      ]
+    },
+    "cape": {
+      "_comment": "Streaming cloak that hangs off the shoulders; skew it so it flows with the motion and breaks the silhouette's symmetry (an easy 'this figure is moving' cue). Interior shading only.",
+      "legend": {
+        "c": "cloak",
+        "C": "cloak_hi",
+        "s": "cloak_sh"
+      },
+      "pixels": [
+        "..Cc...",
+        ".Cccs..",
+        ".Cccs..",
+        ".ccccs.",
+        ".cccss.",
+        "ccccss.",
+        "cccsss.",
+        "cccss..",
+        ".csss..",
+        "..ss..."
       ]
     },
     "mage": {
@@ -401,6 +487,7 @@
   },
   "sprites": [
     "knight",
+    "knight-battle",
     "mage",
     "ranger",
     "cleric",
