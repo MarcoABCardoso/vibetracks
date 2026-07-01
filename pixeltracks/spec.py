@@ -252,6 +252,17 @@ def _check_transforms(layer, where) -> None:
     sc = layer.get("scale", 1)
     if not (isinstance(sc, int) and sc >= 1):
         raise SpecError(f"{where}: 'scale' must be a positive int, got {sc!r}")
+    # skew (shear) and squash (non-uniform fractional scale) drive the affine
+    # placement — the "turn/lean" transforms. Both are [x, y] number pairs.
+    skew = layer.get("skew")
+    if skew is not None and not _is_point(skew):
+        raise SpecError(f"{where}: 'skew' must be [kx, ky] numbers, got {skew!r}")
+    squash = layer.get("squash")
+    if squash is not None:
+        if not _is_point(squash):
+            raise SpecError(f"{where}: 'squash' must be [sx, sy] numbers, got {squash!r}")
+        if any(v <= 0 for v in squash):
+            raise SpecError(f"{where}: 'squash' factors must be > 0, got {squash!r}")
 
 
 # --- Groups ------------------------------------------------------------------ #

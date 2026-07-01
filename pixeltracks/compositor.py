@@ -37,7 +37,9 @@ def _draw_layer(canvas, layer, sprite) -> None:
         legend_rgba = _legend_to_rgba(legend, pal)
         rotate = layer.get("rotate", 0)
         pivot = layer.get("pivot")
-        if pivot is None and rotate in (0, 90, 180, 270):
+        skew = layer.get("skew")
+        squash = layer.get("squash")
+        if pivot is None and rotate in (0, 90, 180, 270) and not skew and not squash:
             # Plain placement: lossless grid transforms, original fast path.
             rows = shapes.transform_grid(motif["pixels"],
                                          flip_axis=layer.get("flip"),
@@ -45,17 +47,22 @@ def _draw_layer(canvas, layer, sprite) -> None:
                                          scale_by=layer.get("scale", 1))
             raster.draw_grid(canvas, rows, legend_rgba, ox, oy)
         else:
-            # Articulated placement: arbitrary-angle rotation about a joint. flip
-            # and scale still happen in grid space; the pivot is in that grid's
-            # coordinates and is pinned to canvas point `at` (default: offset).
+            # Articulated placement: a full affine (rotate ∘ shear ∘ squash) about
+            # a joint. flip and integer `scale` still happen in grid space; the
+            # pivot is in that grid's coordinates and is pinned to canvas `at`
+            # (default: offset). Shear/squash are what let a part turn/lean in
+            # space instead of only spinning flat.
             rows = shapes.transform_grid(motif["pixels"],
                                          flip_axis=layer.get("flip"),
                                          rotate_deg=0,
                                          scale_by=layer.get("scale", 1))
             gw, gh = len(rows[0]), len(rows)
             piv = pivot if pivot is not None else [gw / 2.0, gh / 2.0]
-            raster.draw_grid_rotated(canvas, rows, legend_rgba, rotate, piv,
-                                     layer.get("at", layer.get("offset", [0, 0])))
+            matrix = raster.affine_matrix(rotate,
+                                          skew=tuple(skew) if skew else (0.0, 0.0),
+                                          scale=tuple(squash) if squash else (1.0, 1.0))
+            at = layer.get("at", layer.get("offset", [0, 0]))
+            raster.draw_grid_affine(canvas, rows, legend_rgba, matrix, piv, at)
     elif "rect" in layer:
         r = layer["rect"]
         x, y = r.get("at", [0, 0])
