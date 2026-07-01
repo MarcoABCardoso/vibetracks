@@ -25,7 +25,8 @@ from dataclasses import dataclass, field
 
 from labkit.groups import Group as _GroupBase
 from labkit.groups import discover_group_dirs
-from labkit.specbase import SpecError, load_json  # shared across Labs
+from labkit.specbase import SpecError, extends_path, load_json  # shared across Labs
+from labkit.world import World, load_world
 
 from . import palette, raster, shapes
 
@@ -53,6 +54,7 @@ class Bible:
     background: object = None                        # palette name or None
     outline: object = None                           # {"color": name} or None
     sprites: list = field(default_factory=list)
+    world: World | None = None   # the Root Spec this bible extends, if any
 
     def resolved_palette(self) -> dict:
         """The bible palette as ``{name: (r, g, b, a)}``."""
@@ -75,6 +77,12 @@ def load_bible(path: str) -> Bible:
         outline=data.get("outline"),
         sprites=data.get("sprites", []),
     )
+    # A bible may `extends` a world (the Root Spec) to inherit the shared identity
+    # and enrol in the world's cross-modal motifs; a broken world link fails
+    # validation here, before any pixels are drawn.
+    world_path = extends_path(path, data)
+    if world_path:
+        bible.world = load_world(world_path)
     _validate_bible(bible)
     return bible
 
@@ -274,8 +282,10 @@ def resolve_sprite(path: str, bible: Bible | None = None, _stack=frozenset()) ->
     data = load_json(path)
     name = data.get("name", os.path.splitext(os.path.basename(path))[0])
 
-    if bible is None and data.get("extends"):
-        bible = load_bible(os.path.join(os.path.dirname(path), data["extends"]))
+    if bible is None:
+        bible_path = extends_path(path, data)
+        if bible_path:
+            bible = load_bible(bible_path)
 
     colours = dict(bible.palette) if bible else {}
     colours.update(data.get("palette", {}))          # per-sprite palette override

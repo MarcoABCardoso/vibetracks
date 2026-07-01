@@ -12,6 +12,7 @@ describes a song or a sprite. They live here so the error class is genuinely
 from __future__ import annotations
 
 import json
+import os
 
 
 class SpecError(ValueError):
@@ -29,3 +30,17 @@ def load_json(path: str) -> dict:
             return json.load(f)
         except json.JSONDecodeError as e:
             raise SpecError(f"{path}: invalid JSON: {e}") from e
+
+
+def extends_path(spec_path: str, data: dict) -> str | None:
+    """Resolve a spec's ``extends`` to the file path it points at, or ``None``.
+
+    Every Lab uses the same inheritance chain — a leaf spec ``extends`` its group
+    bible, and (Phase 2) a bible ``extends`` its world — and every link is a path
+    relative to the *extending* file's directory. Factored here so the one
+    convention lives in one place instead of being re-derived per Lab.
+    """
+    ext = data.get("extends")
+    if not ext:
+        return None
+    return os.path.join(os.path.dirname(spec_path), ext)

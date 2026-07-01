@@ -1,0 +1,43 @@
+{
+  "name": "Emberhold",
+  "genre": "heroic dark fantasy",
+  "tone": "besieged but defiant — a last warm light against the cold",
+  "era": "the long night of the siege",
+  "_comment": "The Root Spec (VISION.md Phase 2). One world, two Labs: the music bible (groups/music/emberhold) and the art bible (groups/sprites/emberhold) both `extends` this file, so a single identity feeds both media. The payoff is the cross-modal `ember` motif below — one root with a face in each medium — and its `fallen` transform: darken the root in one place and BOTH the art (dark-knight palette-swap) and the music (siege, theme inverted to a dirge) move together.",
+
+  "meaning": {
+    "_comment": "The palette of MEANING — a shape/colour/voice language each Lab reads in its own medium. Round+warm+rising = the hold's hope; jagged+cold+falling = the shadow that besieges it.",
+    "hope":    { "shape": "radiant, symmetrical", "color": "warm gold",         "voice": "consonant, rising" },
+    "resolve": { "shape": "upright, solid",       "color": "steel blue",        "voice": "steady, march-like" },
+    "hostile": { "shape": "jagged, asymmetrical", "color": "cold shadow-violet","voice": "dissonant, minor, falling" }
+  },
+
+  "entities": {
+    "the-keep":      { "kind": "place",     "name": "Emberhold",     "meaning": "hope",
+                       "about": "The last walled keep, kept alight by the sacred ember." },
+    "the-vanguard":  { "kind": "faction",   "name": "The Vanguard",  "meaning": "resolve",
+                       "about": "The four who hold the wall.",
+                       "members": ["knight", "mage", "ranger", "cleric"] },
+    "the-shadow":    { "kind": "faction",   "name": "The Shadow",    "meaning": "hostile",
+                       "about": "The cold host at the gate; its captain is a fallen knight." }
+  },
+
+  "motifs": {
+    "ember": {
+      "_comment": "THE cross-modal motif: the hold's sacred flame. One root, a face in every medium — the gold sun-crest you SEE and the rising theme you HEAR are two projections of the same idea. `transforms.fallen` is the leitmotif move across media at once: the crest recoloured into the dark-knight, and the theme inverted into the siege dirge.",
+      "meaning": "hope",
+      "entities": ["the-keep"],
+      "faces": {
+        "pixeltracks": { "group": "emberhold", "motif": "crest",       "role": "the gold sun-crest on banner and cleric" },
+        "vibetracks":  { "group": "emberhold", "motif": "ember_theme", "role": "the rising hero hook" }
+      },
+      "transforms": {
+        "fallen": {
+          "_comment": "Darken the ember for the invaded keep — one intent, both media obey it.",
+          "pixeltracks": { "sprite": "dark-knight", "how": "palette-swap gold/steel -> shadow-violet" },
+          "vibetracks":  { "track": "siege",        "how": "theme inverted, dropped an octave into a minor dirge" }
+        }
+      }
+    }
+  }
+}

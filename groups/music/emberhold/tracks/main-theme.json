@@ -1,0 +1,41 @@
+{
+  "name": "main-theme",
+  "extends": "../soundtrack.json",
+  "_comment": "The hold's theme, stated in full: brass sings ember_theme over a firm string wall, harp arpeggios flicker like the ember, a bell glints above. This is the HOPE face of the world's cross-modal motif — hear it here, then see its twin as the gold crest in the sprite Lab.",
+  "bpm": 96,
+
+  "sections": [
+    {
+      "name": "intro",
+      "bars": 4,
+      "_comment": "Strings swell in, bell glints — the keep at dusk, no melody yet.",
+      "parts": {
+        "strings": { "instrument": "strings", "chords": ["Dm", "Bb", "F", "C"], "chord_beats": 4 },
+        "bell": { "instrument": "bell", "pan": 0.2,
+                  "notes": [["D5", 1.5], [null, 2.5], ["A5", 1.5], [null, 2.5],
+                            ["F5", 1.5], [null, 2.5], ["D5", 1], [null, 3]] }
+      }
+    },
+    {
+      "name": "A",
+      "bars": 8,
+      "loop": true,
+      "_comment": "Full theme on the brass; harp arpeggiates; strings + bass hold the wall; martial drums.",
+      "parts": {
+        "brass": { "instrument": "brass", "motif": "ember_theme", "repeat": 4, "gain": 0.62 },
+        "harp": { "instrument": "harp", "pan": -0.25, "gain": 0.55,
+                  "notes": [
+                    ["D3", 1], ["F3", 1], ["A3", 1], ["D4", 1],
+                    ["Bb2", 1], ["D3", 1], ["F3", 1], ["Bb3", 1],
+                    ["F3", 1], ["A3", 1], ["C4", 1], ["F4", 1],
+                    ["C3", 1], ["E3", 1], ["G3", 1], ["C4", 1]
+                  ] },
+        "strings": { "instrument": "strings", "chords": ["Dm", "Bb", "F", "C"], "chord_beats": 8 },
+        "bass": { "instrument": "bass",
+                  "notes": [["D2", 4], ["Bb1", 4], ["F2", 4], ["C2", 4]] },
+        "drums": { "instrument": "drums",
+                   "drums": { "kick": "x...x...", "snare": "....x...", "hat": "x.x.x.x." } }
+      }
+    }
+  ]
+}

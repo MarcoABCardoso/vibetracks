@@ -1,0 +1,40 @@
+{
+  "name": "victory",
+  "extends": "../soundtrack.json",
+  "_comment": "The ember restored. A short fanfare: the vanguard call answered by the ember_theme in full, bright harp and bell over a triumphant cadence that lifts to a major close (a picardy third — the long night broken).",
+  "bpm": 104,
+
+  "sections": [
+    {
+      "name": "fanfare",
+      "bars": 2,
+      "_comment": "The vanguard's rising call, doubled brass and bell.",
+      "parts": {
+        "brass": { "instrument": "brass", "motif": "vanguard", "repeat": 2, "gain": 0.66 },
+        "bell": { "instrument": "bell", "pan": 0.2,
+                  "notes": [["A5", 0.5], ["D6", 0.5], ["F5", 1], [null, 2],
+                            ["A5", 0.5], ["D6", 0.5], ["A5", 1], [null, 2]] }
+      }
+    },
+    {
+      "name": "hymn",
+      "bars": 4,
+      "repeat": 2,
+      "_comment": "Ember_theme sung in full, harp rolling beneath, cadence lifting to D major.",
+      "parts": {
+        "brass": { "instrument": "brass", "motif": "ember_theme", "gain": 0.64 },
+        "harp": { "instrument": "harp", "gain": 0.55, "pan": -0.2,
+                  "notes": [
+                    ["D3", 1], ["F3", 1], ["A3", 1], ["D4", 1],
+                    ["Bb2", 1], ["F3", 1], ["D4", 1], ["Bb3", 1],
+                    ["C3", 1], ["G3", 1], ["E4", 1], ["C4", 1],
+                    ["D3", 1], ["A3", 1], ["D4", 1], ["F#4", 1]
+                  ] },
+        "strings": { "instrument": "strings", "chords": ["Dm", "Bb", "C", "D"], "chord_beats": 4 },
+        "bass": { "instrument": "bass", "notes": [["D2", 4], ["Bb1", 4], ["C2", 4], ["D2", 4]] },
+        "drums": { "instrument": "drums",
+                   "drums": { "kick": "x..x..x.", "snare": "....x...", "hat": "x.x.x.x." } }
+      }
+    }
+  ]
+}
