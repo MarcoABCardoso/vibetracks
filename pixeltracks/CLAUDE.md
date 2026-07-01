@@ -19,10 +19,29 @@ the palette-swap leitmotif, animation).
 ```bash
 python -m pixeltracks validate                  # check every group's specs
 python -m pixeltracks render <group>/<sprite>   # render one sprite to out/<group>/<sprite>.png
+python -m pixeltracks inspect <group>/<sprite>  # evaluate a sprite as TEXT (no PNG) — see below
 python -m pixeltracks render-all                # render every sprite in every group
 python -m pixeltracks new <sprite> --group <g>  # scaffold groups/sprites/<g>/sprites/<sprite>.json
 python -m pixeltracks new-group <name>          # scaffold a whole new group
 ```
+
+### `inspect` — judge a sprite without looking at the PNG
+
+An upscaled PNG is unreliable to evaluate by eye (is the belt on the hips? is the
+blade clipped?). `inspect` renders the composited frame back to **text** so those
+questions are read as characters and numbers, not pixels. Prefer it over
+"render then squint" — it is the fastest way to hit a pose target in few iterations.
+
+- **ASCII dump** — the composite as a grid of palette-role chars (`#`=outline,
+  the same alphabet you author in) + a legend. You see exactly what landed.
+- **geometry** — each layer's bounding box, plus lint: `FLOATING` layers (touch
+  nothing), off-canvas `clipped`, and how many disconnected pieces the silhouette
+  is in (real parts vs `<3px` rotation specks). These are the "horseshoe" and
+  "stubby clipped sword" bugs, caught before you render.
+- **checks** — a sprite's declared `checks` evaluated to PASS/FAIL (see below).
+
+Flags: `--frame N` / `--all-frames`, `--no-ascii|--no-geometry|--no-checks`,
+`--strict` (non-zero exit on any warning/fail — good for a pre-commit gate).
 
 Same addressing as VibeTracks: `<group>/<sprite>`, a bare `<sprite>` (with
 `--group`), or a path to its JSON. `render-all` writes `out/<group>/manifest.json`
@@ -60,7 +79,9 @@ groups under `groups/music/` — one `groups/` tree, one subdirectory per medium
 | `legend` | Optional sprite-level default `char → colorName` for `pixels` layers. |
 | `motifs` | Optional per-sprite extra shapes. |
 | `layers` | List of layers composited in z-order (later paints over earlier). |
-| `frames` | Optional list of `{name?, hold?, layers}` for animation; absent ⇒ one frame from `layers`. |
+| `skeleton` | Optional list of **bones** — parts attached at named anchors so they connect by construction (see below). Expands into `layers` (drawn beneath any explicit `layers`). |
+| `checks` | Optional list of declarative art-direction predicates, run by `inspect` (see below). |
+| `frames` | Optional list of `{name?, hold?, layers?/skeleton?}` for animation; absent ⇒ one frame from `layers`/`skeleton`. |
 
 ### Layers (= music's parts)
 Each layer is composited in order and is **exactly one** of:
@@ -83,12 +104,67 @@ Each layer is composited in order and is **exactly one** of:
 
 Optional per-layer `offset` `[dx, dy]` shifts the layer on the canvas.
 
+### Skeleton — connect parts by construction (not by luck)
+
+Hand-placing many `offset`/`at` stamps and hoping they meet is the #1 source of
+mangled poses (a leaning torso drifts off the hips → a gap → a "horseshoe").
+A **skeleton** removes the guesswork. A motif declares named **`anchors`**
+(`{name: [x, y]}` in its own grid coords — `neck`, `shoulder_r`, `hips`, `hand`,
+`foot`). A sprite's `skeleton` is a list of **bones**, each an affine `shape`
+placement whose pivot is pinned either to an absolute point or, via `attach`, to a
+**parent bone's world anchor** — so the parts meet no matter how the parent is
+rotated/leaned:
+
+```jsonc
+"skeleton": [
+  { "name": "chest", "shape": "knight_chest", "pivot": "hips",
+    "at": [13, 17], "skew": [-0.1, 0] },                         // root
+  { "name": "head",  "shape": "knight_head_3q", "pivot": "neck",
+    "attach": { "to": "chest", "anchor": "neck" } },             // neck meets neck
+  { "name": "back-leg", "shape": "knight_leg", "pivot": "hip",
+    "attach": { "to": "chest", "anchor": "hip_l" } },
+  { "name": "sword", "shape": "sword", "pivot": "grip", "rotate": 56,
+    "attach": { "to": "sword-arm", "anchor": "hand" } }
+]
+```
+
+A bone takes the same transforms as a `shape` layer (`rotate`/`skew`/`squash`/
+`flip`/`scale`/`recolor`); `pivot` may be an anchor name or `[x, y]`; `attach`
+supports an optional `shift: [dx, dy]`. Bone order is z-order; attach order is
+resolved automatically. `sprites/knight-battle.json` is the worked example. See
+`emberhold` motifs for anchor placement.
+
+### Checks — art direction as pass/fail predicates
+
+Encode the target as predicates so iterating is "fix the failures", not "guess
+from the picture". `inspect` evaluates them. Rules: `connected` (one solid
+piece); `on_canvas` (`layer?`, `margin?` — nothing clipped); `centered_x`
+(`layer`, `in`, `tol?`); `left_of`/`right_of`/`above`/`below` (`layer`, `of`,
+`slack?`, whole-bbox ordering); `top_above` (`layer`, `of`, `by?` — the layer's
+*highest* point sits above the other's, e.g. a blade rising past the shoulders
+even while the grip is low); `touches` (`layer`, `of?`); `min_coverage`
+(`value`). A target region
+is a layer name, a list of names, or `"all"`.
+
+```jsonc
+"checks": [
+  { "rule": "connected" },
+  { "rule": "centered_x", "layer": "shield", "in": ["chest","back-leg","front-leg"], "tol": 1 },
+  { "rule": "above", "layer": "sword", "of": "chest" },
+  { "rule": "left_of", "layer": "cape", "of": "chest", "slack": 1 }
+]
+```
+
 ## How compilation works (where to edit)
 
 - `pixeltracks/palette.py` — hex↔RGBA, named palettes, `shade` (≈ `theory.py`).
 - `pixeltracks/shapes.py` — grids + transforms `flip`/`rotate`/`scale`/`recolor`.
-- `pixeltracks/raster.py` — canvas, pixel/rect/ellipse/line painters, auto-outline,
-  upscale (≈ `synth.py`: the low-level renderers/effects).
+- `pixeltracks/raster.py` — canvas, pixel/rect/ellipse/line painters, the affine
+  grid draw (rotate/shear/squash, **sub-pixel supersampled so thin rotated parts
+  don't break into gaps**), auto-outline, upscale (≈ `synth.py`).
+- `pixeltracks/inspect.py` — the text/geometry evaluators behind `inspect`
+  (ASCII dump, per-layer bbox + connectivity lint, `checks` runner). Add new
+  check rules here.
 - `pixeltracks/compositor.py` — composites a resolved sprite's layers/frames into a
   sheet + atlas (≈ `sequencer.py`). Add new layer *kinds* here.
 - `pixeltracks/spec.py` — load/validate bible + sprites; `extends`; `Group`/

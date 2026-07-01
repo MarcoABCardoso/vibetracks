@@ -1,0 +1,68 @@
+{
+  "name": "knight-battle",
+  "extends": "../artbook.json",
+  "_comment": "Battle-ready LOW-GUARD still, built as a SKELETON: the chest is the root (its 'hips' pinned to the canvas) and every other part attaches at a named anchor (head.neck -> chest.neck, legs' hip -> chest.hip_l/hip_r, arm.shoulder -> chest.shoulder_r, sword.grip -> arm.hand, shield.center -> chest torso). The sword ARM hangs down while the blade points up (a hanging/low guard). The shield is recoloured to the red surcoat ramp so it reads against the blue steel instead of vanishing into it. Parts meet by construction, so leaning the chest can't open a gap. The 'checks' encode the art direction as pass/fail predicates.",
+  "size": [
+    30,
+    26
+  ],
+  "scale": 12,
+  "checks": [
+    { "rule": "connected" },
+    { "rule": "on_canvas", "margin": 0 },
+    { "rule": "centered_x", "layer": "shield", "in": ["chest", "back-leg", "front-leg"], "tol": 1 },
+    { "rule": "top_above", "layer": "sword", "of": "chest" },
+    { "rule": "touches", "layer": "front-leg" },
+    { "rule": "touches", "layer": "sword", "of": "sword-arm" }
+  ],
+  "skeleton": [
+    {
+      "name": "back-leg",
+      "shape": "knight_leg",
+      "pivot": "hip",
+      "attach": { "to": "chest", "anchor": "hip_l", "shift": [ -2, 0 ] },
+      "skew": [ -0.4, 0.0 ]
+    },
+    {
+      "name": "front-leg",
+      "shape": "knight_leg",
+      "pivot": "hip",
+      "attach": { "to": "chest", "anchor": "hip_r", "shift": [ 2, 0 ] },
+      "skew": [ 0.4, 0.0 ]
+    },
+    {
+      "name": "chest",
+      "shape": "knight_chest",
+      "pivot": "hips",
+      "at": [ 13, 17 ],
+      "skew": [ -0.1, 0.0 ]
+    },
+    {
+      "name": "shield",
+      "shape": "shield",
+      "pivot": "center",
+      "attach": { "to": "chest", "anchor": "hips", "shift": [ -1, -1 ] },
+      "recolor": { "steel": "cloak", "steel_hi": "cloak_hi", "steel_sh": "cloak_sh" }
+    },
+    {
+      "name": "sword-arm",
+      "shape": "knight_arm",
+      "pivot": "shoulder",
+      "attach": { "to": "chest", "anchor": "shoulder_r" },
+      "rotate": 145
+    },
+    {
+      "name": "sword",
+      "shape": "sword_long",
+      "pivot": "grip",
+      "attach": { "to": "sword-arm", "anchor": "hand" },
+      "rotate": 33
+    },
+    {
+      "name": "head",
+      "shape": "knight_head_3q",
+      "pivot": "neck",
+      "attach": { "to": "chest", "anchor": "neck" }
+    }
+  ]
+}

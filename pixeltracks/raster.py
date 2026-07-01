@@ -116,19 +116,28 @@ def draw_grid_affine(canvas, rows, legend_rgba, matrix, pivot, at, ox0=0, oy0=0)
         rx, ry = gx - px, gy - py
         xs.append(a * rx + b * ry)
         ys.append(c * rx + d * ry)
-    minx, maxx = math.floor(min(xs)), math.ceil(max(xs))
-    miny, maxy = math.floor(min(ys)), math.ceil(max(ys))
+    minx, maxx = math.floor(min(xs)) - 1, math.ceil(max(xs)) + 1
+    miny, maxy = math.floor(min(ys)) - 1, math.ceil(max(ys)) + 1
 
-    # Inverse map each output pixel back to a source cell (no gaps).
+    # Inverse map each output pixel back to a source cell. A single centre sample
+    # under-samples thin features (a 1px blade rotated off-axis breaks into
+    # disconnected pixels — the classic "mangled thin part"); sampling a few
+    # sub-pixel offsets and taking the first opaque hit closes those hairline
+    # gaps while staying nearest-neighbour crisp (the centre is tried first, so
+    # colour is stable). This is what keeps a rotated sword or spear whole.
+    offsets = ((0.0, 0.0), (0.34, 0.0), (-0.34, 0.0), (0.0, 0.34), (0.0, -0.34))
     for oy in range(miny, maxy + 1):
         for ox in range(minx, maxx + 1):
-            sx = int(round(px + ia * ox + ib * oy))
-            sy = int(round(py + ic * ox + id_ * oy))
-            if 0 <= sx < gw and 0 <= sy < gh:
-                rgba = tile[sy, sx]
-                if rgba[3] > 0:
-                    paint(canvas, int(round(ax)) + ox + ox0, int(round(ay)) + oy + oy0,
-                          (int(rgba[0]), int(rgba[1]), int(rgba[2]), int(rgba[3])))
+            hit = None
+            for fx, fy in offsets:
+                sx = int(round(px + ia * (ox + fx) + ib * (oy + fy)))
+                sy = int(round(py + ic * (ox + fx) + id_ * (oy + fy)))
+                if 0 <= sx < gw and 0 <= sy < gh and tile[sy, sx, 3] > 0:
+                    hit = tile[sy, sx]
+                    break
+            if hit is not None:
+                paint(canvas, int(round(ax)) + ox + ox0, int(round(ay)) + oy + oy0,
+                      (int(hit[0]), int(hit[1]), int(hit[2]), int(hit[3])))
 
 
 def draw_grid_rotated(canvas, rows, legend_rgba, degrees, pivot, at) -> None:
