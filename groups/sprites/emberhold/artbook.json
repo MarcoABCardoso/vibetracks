@@ -724,6 +724,7 @@
       ]
     },
     "knight_bust": {
+      "_comment": "Bust base for the knight portrait: blocky build (heavy brow ridge, broad square jaw), plumed helm, gorget, pauldrons, surcoat.",
       "legend": {
         "a": "steel",
         "h": "steel_hi",
@@ -749,7 +750,7 @@
         "........gggggggggggggggg........",
         "........FFDkkkkkkkkkkDFF........",
         "........FDkkkkkkkkkkkkDF........",
-        "........FDkkkkkkkkkkkkDF........",
+        "........FDkksssssssskkDF........",
         "........FDkkkkkkkkkkkkDF........",
         "........FDkkkkkkkkkkkkDF........",
         "........FDkkkkkkkkkkkkDF........",
@@ -773,10 +774,10 @@
         "xccccccccccccccGGccccccccccccccx",
         "xccccccccccccccGGccccccccccccccx",
         "xxxxxxxxxxxxxxxGGxxxxxxxxxxxxxxx"
-      ],
-      "_comment": "Bust base for the knight dialogue portrait (32x34): plumed open-faced helm, gold gorget, steel pauldrons, red surcoat. Rows 8-19 are the shared face core so the pface_* overlays land identically across the party."
+      ]
     },
     "mage_bust": {
+      "_comment": "Bust base for the mage portrait: an OLD wizard -- grey chin-curtain beard, bushy grey brows, gaunt cheeks, long nose; pointed hat, robe with a lit collar + amulet and folds.",
       "legend": {
         "m": "mage",
         "M": "mage_hi",
@@ -786,7 +787,9 @@
         "k": "skin",
         "s": "skin_sh",
         "F": "mage",
-        "D": "mage_sh"
+        "D": "mage_sh",
+        "W": "bone",
+        "w": "bone_sh"
       },
       "pixels": [
         "...............mm...............",
@@ -798,35 +801,35 @@
         ".........mmmmmmMMmmmmmm.........",
         "........gggggggggggggggg........",
         "........FFDkkkkkkkkkkDFF........",
+        "........FDkksssssssskkDF........",
+        "........FDkWWkkkkkkWWkDF........",
         "........FDkkkkkkkkkkkkDF........",
-        "........FDkkkkkkkkkkkkDF........",
-        "........FDkkkkkkkkkkkkDF........",
-        "........FDkkkkkkkkkkkkDF........",
-        "........FDkkkkkkkkkkkkDF........",
-        "........FDkkkkksskkkkkDF........",
-        "........FDkkkkksskkkkkDF........",
-        "........FDkkkkkkkkkkkkDF........",
-        "........FDkkkkkkkkkkkkDF........",
-        "........FDkkkkkkkkkkkkDF........",
-        "........FDksssssssssskDF........",
-        "........DDsskkkkkkkkssDD........",
-        "........GFFFFFkkkkFFFFFG........",
-        "........GFFFFFFFFFFFFFFG........",
+        "........FDskkkkkkkkkksDF........",
+        "........FDskkkkkkkkkksDF........",
+        "........FDsskkksskkkssDF........",
+        "........FDsskkksskkkssDF........",
+        "........FDskkkkkkkkkksDF........",
+        "........FDWWkkkkkkkkWWDF........",
+        "........FDWWkkkkkkkkWWDF........",
+        "........FDWWWkkkkkkWWWDF........",
+        "........DDwWWWWWWWWWWwDD........",
+        "........DDDwWWWWWWWWwDDD........",
+        "........DDDDwWWWWWWwDDDD........",
         "....DFFFFFFFFFFggFFFFFFFFFFD....",
         "...DFFFFFFFFFFFggFFFFFFFFFFFD...",
         "..DFFFFFFFFFFFFggFFFFFFFFFFFFD..",
-        "..DFFFFFFFFFFFFggFFFFFFFFFFFFD..",
-        "..DFFFFFFFFFFFFggFFFFFFFFFFFFD..",
-        "..DFFFFFFFFFFFFggFFFFFFFFFFFFD..",
-        ".DFFFFFFFFFFFFFggFFFFFFFFFFFFFD.",
-        ".DFFFFFFFFFFFFFggFFFFFFFFFFFFFD.",
-        "DFFFFFFFFFFFFFFggFFFFFFFFFFFFFFD",
-        "DFFFFFFFFFFFFFFggFFFFFFFFFFFFFFD",
+        "..DFFFFFFFFDFFFggFFFDFFFFFFFFD..",
+        "..DFFFFFFFFDFFFggFFFDFFFFFFFFD..",
+        "..DFFFFFFFFDFFFggFFFDFFFFFFFFD..",
+        ".DFFFFFFFFFDFFFggFFFDFFFFFFFFFD.",
+        ".DFFFFFFFFFDFFFggFFFDFFFFFFFFFD.",
+        "DFFFFFFFFFFDFFFggFFFDFFFFFFFFFFD",
+        "DFFFFFFFFFFDFFFggFFFDFFFFFFFFFFD",
         "DDDDDDDDDDDDDDDGGDDDDDDDDDDDDDDD"
-      ],
-      "_comment": "Bust base for the mage portrait: pointed hat + gold band, purple robe with a gold stole. Shares the face core with the rest of the party."
+      ]
     },
     "ranger_bust": {
+      "_comment": "Bust base for the ranger portrait: a lean build (hollow cheeks, tapered jaw); leaf hood, green shoulder mantle over a leather jerkin with a gold clasp and a diagonal baldric.",
       "legend": {
         "l": "leaf",
         "L": "leaf_hi",
@@ -850,35 +853,35 @@
         "........llzLLLLLLLLLLzll........",
         "........llzzzzzzzzzzzzll........",
         "........FFDkkkkkkkkkkDFF........",
-        "........FDkkkkkkkkkkkkDF........",
-        "........FDkkkkkkkkkkkkDF........",
-        "........FDkkkkkkkkkkkkDF........",
-        "........FDkkkkkkkkkkkkDF........",
-        "........FDkkkkkkkkkkkkDF........",
-        "........FDkkkkksskkkkkDF........",
-        "........FDkkkkksskkkkkDF........",
-        "........FDkkkkkkkkkkkkDF........",
-        "........FDkkkkkkkkkkkkDF........",
-        "........FDkkkkkkkkkkkkDF........",
-        "........FDksssssssssskDF........",
+        "........FDskkkkkkkkkksDF........",
+        "........FDskkkkkkkkkksDF........",
+        "........FDskkkkkkkkkksDF........",
+        "........FDskkkkkkkkkksDF........",
+        "........FDskkkkkkkkkksDF........",
+        "........FDskkkksskkkksDF........",
+        "........FDskkkksskkkksDF........",
+        "........FDskkkkkkkkkksDF........",
+        "........FDskkkkkkkkkksDF........",
+        "........FDsskkkkkkkkssDF........",
+        "........FDskssssssssksDF........",
         "........DDsskkkkkkkkssDD........",
         "........bbbbbbkkkkbbbbbb........",
         "........bbbbbbbggbbbbbbb........",
-        "....llbbbbbbbbbbbbbbbbbbbbll....",
-        "...BbbbbbbbbbbbbbbbbbbbbbbbbB...",
-        "..BbbbbbbbbbbbbbbbbbbbbbbbbbbB..",
-        "..BbbbbbbbbbbbbbbbbbbbbbbbbbbB..",
-        "..BbbbbbbbbbbbbbbbbbbbbbbbbbbB..",
-        "..BbbbbbbbbbbbbbbbbbbbbbbbbbbB..",
-        ".BbbbbbbbbbbbbbbbbbbbbbbbbbbbbB.",
-        ".BbbbbbbbbbbbbbbbbbbbbbbbbbbbbB.",
-        "BbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbB",
+        "....llllblbbbbbbbbbbbbbbllll....",
+        "...lllBbbblbbbbbbbbbbbbbbBlll...",
+        "..BbbbbbbbblbbbbbbbbbbbbbbbbbB..",
+        "..BbbbbbbbbblbbbbbbbbbbbbbbbbB..",
+        "..BbbbbbbbbbblbbbbbbbbbbbbbbbB..",
+        "..BbbbbbbbbbbblbbbbbbbbbbbbbbB..",
+        ".BbbbbbbbbbbbbblbbbbbbbbbbbbbbB.",
+        ".BbbbbbbbbbbbbbblbbbbbbbbbbbbbB.",
+        "BbbbbbbbbbbbbbbbblbbbbbbbbbbbbbB",
         "BbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbB",
         "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
-      ],
-      "_comment": "Bust base for the ranger portrait: leaf hood, leather mantle, gold clasp. Shares the face core."
+      ]
     },
     "cleric_bust": {
+      "_comment": "Bust base for the cleric portrait: a stern face (heavy brow + hooded lids, nasolabial lines, firm jaw); white coif + circlet, robe with a gold yoke and the ember crest medallion.",
       "legend": {
         "w": "cloth",
         "W": "cloth_hi",
@@ -901,34 +904,34 @@
         "........gggggggggggggggg........",
         "........FFDkkkkkkkkkkDFF........",
         "........FDkkkkkkkkkkkkDF........",
+        "........FDkksssssssskkDF........",
         "........FDkkkkkkkkkkkkDF........",
-        "........FDkkkkkkkkkkkkDF........",
-        "........FDkkkkkkkkkkkkDF........",
+        "........FDkksssssssskkDF........",
         "........FDkkkkkkkkkkkkDF........",
         "........FDkkkkksskkkkkDF........",
-        "........FDkkkkksskkkkkDF........",
-        "........FDkkkkkkkkkkkkDF........",
+        "........FDkkskksskkskkDF........",
+        "........FDkkskkkkkkskkDF........",
         "........FDkkkkkkkkkkkkDF........",
         "........FDkkkkkkkkkkkkDF........",
         "........FDksssssssssskDF........",
         "........DDsskkkkkkkkssDD........",
-        "........GFFFFFkkkkFFFFFG........",
-        "........GFFFFFFFFFFFFFFG........",
-        "....DFFFFFFFFFFggFFFFFFFFFFD....",
-        "...DFFFFFFFFFFFggFFFFFFFFFFFD...",
-        "..DFFFFFFFFFFFFggFFFFFFFFFFFFD..",
-        "..DFFFFFFFFFFFFggFFFFFFFFFFFFD..",
-        "..DFFFFFFFFFFFFggFFFFFFFFFFFFD..",
-        "..DFFFFFFFFFFFFggFFFFFFFFFFFFD..",
-        ".DFFFFFFFFFFFFFggFFFFFFFFFFFFFD.",
-        ".DFFFFFFFFFFFFFggFFFFFFFFFFFFFD.",
-        "DFFFFFFFFFFFFFFggFFFFFFFFFFFFFFD",
-        "DFFFFFFFFFFFFFFggFFFFFFFFFFFFFFD",
-        "DDDDDDDDDDDDDDDGGDDDDDDDDDDDDDDD"
-      ],
-      "_comment": "Bust base for the cleric portrait: white coif + gold circlet, white robe with a gold stole. Shares the face core."
+        "........vwGGGGGGGGGGGGwv........",
+        "........vwwGGGGGGGGGGwwv........",
+        "....vwwwwwwwwwwwwwwwwwwwwwwv....",
+        "...vwwwwwwwwwwwgwwwwwwwwwwwwv...",
+        "..vwwwwwwwwwwwgGgwwwwwwwwwwwwv..",
+        "..vwwwwwwwwwwgGGGgwwwwwwwwwwwv..",
+        "..vwwwwwwwwwwwgGgwwwwwwwwwwwwv..",
+        "..vwwwwwwwwwwwwgwwwwwwwwwwwwwv..",
+        ".vwwwwwwwwwwwwwwwwwwwwwwwwwwwwv.",
+        ".vwwwwwwwwwwwwwwwwwwwwwwwwwwwwv.",
+        "vwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwv",
+        "vwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwv",
+        "vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv"
+      ]
     },
     "pface_neutral": {
+      "_comment": "Shared expression overlay: level brows, calm mouth. Lands on any *_bust face core.",
       "legend": {
         "e": "outline",
         "w": "bone"
@@ -968,10 +971,10 @@
         "................................",
         "................................",
         "................................"
-      ],
-      "_comment": "Shared portrait expression overlay: level brows, calm mouth. Drops onto any *_bust face core."
+      ]
     },
     "pface_grin": {
+      "_comment": "Shared expression overlay: raised brows, open toothy grin.",
       "legend": {
         "e": "outline",
         "w": "bone"
@@ -1011,10 +1014,10 @@
         "................................",
         "................................",
         "................................"
-      ],
-      "_comment": "Shared portrait expression overlay: raised brows, open toothy grin."
+      ]
     },
     "pface_angry": {
+      "_comment": "Shared expression overlay: furrowed V brows, downturned scowl.",
       "legend": {
         "e": "outline",
         "w": "bone"
@@ -1054,8 +1057,7 @@
         "................................",
         "................................",
         "................................"
-      ],
-      "_comment": "Shared portrait expression overlay: furrowed V brows, downturned scowl."
+      ]
     }
   },
   "sprites": [
