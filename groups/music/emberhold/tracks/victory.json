@@ -1,0 +1,66 @@
+{
+  "name": "victory",
+  "extends": "../soundtrack.json",
+  "_comment": "A short, through-composed fanfare (no loop — a stinger, not a groove). The vanguard call, ONE bright statement of ember_theme an octave up, and a plagal G→D cadence that lifts to D major (a picardy third — the long night broken). Leans on the secondary `vanguard` motif so it doesn't just replay the hook.",
+  "bpm": 108,
+
+  "sections": [
+    {
+      "name": "fanfare",
+      "bars": 2,
+      "_comment": "The vanguard's rising call, doubled by a bright bell.",
+      "parts": {
+        "brass": { "instrument": "brass", "motif": "vanguard", "repeat": 2, "gain": 0.66 },
+        "bell": { "instrument": "bell", "pan": 0.2,
+                  "notes": [["A5", 0.5], ["D6", 0.5], ["F5", 1], [null, 2],
+                            ["A5", 0.5], ["D6", 0.5], ["A5", 1], [null, 2]] },
+        "bass": { "instrument": "bass",
+                  "notes": [["D2", 1], ["A2", 1], ["D3", 1], ["A2", 1],
+                            ["D2", 1], ["A2", 1], ["D3", 2]] }
+      }
+    },
+    {
+      "name": "hymn",
+      "bars": 2,
+      "_comment": "Ember_theme once, an octave up (bright), a rolling harp beneath — the single triumphant statement.",
+      "parts": {
+        "brass": { "instrument": "brass", "motif": "ember_theme", "transpose": 12, "gain": 0.64 },
+        "harp": { "instrument": "harp", "gain": 0.55, "pan": -0.2,
+                  "notes": [
+                    ["Bb2", 0.5], ["F3", 0.5], ["Bb3", 0.5], ["D4", 0.5], ["F4", 0.5], ["D4", 0.5], ["Bb3", 0.5], ["F3", 0.5],
+                    ["C3", 0.5], ["G3", 0.5], ["C4", 0.5], ["E4", 0.5], ["G4", 0.5], ["E4", 0.5], ["C4", 0.5], ["G3", 0.5]
+                  ] },
+        "strings": { "instrument": "strings", "chords": ["Bb", "C"], "chord_beats": 4 },
+        "bass": { "instrument": "bass",
+                  "notes": [["Bb1", 1], ["F2", 1], ["Bb2", 1], ["F2", 1],
+                            ["C2", 1], ["G2", 1], ["C3", 1], ["G2", 1]] }
+      }
+    },
+    {
+      "name": "resolve",
+      "bars": 4,
+      "_comment": "Plagal cadence G→D lifting to D major (picardy). Harp rolls up, bell rings out, brass holds the tonic — the ember restored.",
+      "parts": {
+        "brass": { "instrument": "brass",
+                   "notes": [["G4", 2], ["F#4", 2], ["A4", 4],
+                             ["D4", 4], ["D4", 4]] },
+        "strings": { "instrument": "strings", "chords": ["G", "D", "D", "D"], "chord_beats": 4 },
+        "harp": { "instrument": "harp", "gain": 0.5, "pan": -0.15,
+                  "notes": [
+                    ["G3", 0.5], ["B3", 0.5], ["D4", 0.5], ["G4", 0.5], ["B4", 0.5], ["D5", 0.5], ["B4", 0.5], ["G4", 0.5],
+                    ["D3", 0.5], ["A3", 0.5], ["D4", 0.5], ["F#4", 0.5], ["A4", 0.5], ["D5", 0.5], ["A4", 0.5], ["F#4", 0.5],
+                    ["D3", 0.5], ["A3", 0.5], ["D4", 0.5], ["F#4", 0.5], ["A4", 1], ["D5", 1],
+                    ["D4", 4]
+                  ] },
+        "bell": { "instrument": "bell", "pan": 0.2,
+                  "notes": [["D6", 4], [null, 4], ["A5", 2], ["D6", 6]] },
+        "bass": { "instrument": "bass",
+                  "notes": [["G1", 1], ["D2", 1], ["G2", 1], ["D2", 1],
+                            ["D2", 1], ["A2", 1], ["D3", 1], ["A2", 1],
+                            ["D2", 2], ["A2", 2], ["D2", 4]] },
+        "drums": { "instrument": "drums",
+                   "drums": { "kick": "x..x..x.", "snare": "....x...", "hat": "x.x.x.x." } }
+      }
+    }
+  ]
+}

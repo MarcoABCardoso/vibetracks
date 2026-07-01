@@ -14,6 +14,8 @@ from __future__ import annotations
 import sys
 
 from labkit.registry import LABS, find_lab
+from labkit.specbase import SpecError
+from labkit.world import check_world, discover_worlds, load_world
 
 
 def _print_labs() -> None:
@@ -30,11 +32,47 @@ def _print_labs() -> None:
     print("All at once: python -m labs validate")
 
 
+def _validate_worlds() -> int:
+    """Validate every world (the Root Spec) and check coherence ACROSS Labs.
+
+    This is the cross-modal guarantee: a world's cross-modal motif is only real if
+    every medium's *face* (the melody it names in the music bible, the shape it
+    names in the art bible) actually exists. No prompt-per-asset workflow can make
+    that promise — coherence here is checked, not hoped for.
+    """
+    worlds = discover_worlds()
+    if not worlds:
+        return 0
+    print("=== worlds ===")
+    rc = 0
+    for name, path in worlds:
+        try:
+            world = load_world(path)
+        except SpecError as e:
+            print(f"  ERR  {e}")
+            rc = 1
+            continue
+        errs = check_world(world)
+        print(f"  world {name!r}: {world.name}  "
+              f"({len(world.entities)} entities, {len(world.motifs)} cross-modal motif(s))")
+        for mid, motif in world.motifs.items():
+            faces = ", ".join(f"{lab}:{f['group']}/{f['motif']}"
+                              for lab, f in motif.get("faces", {}).items())
+            print(f"    motif {mid!r} -> {faces}")
+        for e in errs:
+            print(f"  ERR  {e}")
+        if errs:
+            rc = 1
+    print("  ok  worlds coherent." if rc == 0 else "  worlds INCOHERENT.")
+    return rc
+
+
 def _validate_all() -> int:
     rc = 0
     for lab in LABS:
         print(f"=== {lab.name} ===")
         rc |= lab.main(["validate"]) or 0
+    rc |= _validate_worlds()
     return rc
 
 

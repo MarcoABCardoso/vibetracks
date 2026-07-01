@@ -138,10 +138,22 @@ soundfont. Worked demos: the `mossy-hollow` group (a small critter set — a
 palette-swap variant and a re-posed hop animation included) and the bigger
 `emberhold` JRPG party (skeleton-rigged attack poses).
 
-**Phase 2 — The Root Spec.** Introduce `world.json` and refactor both Labs'
-bibles to `extend` it. Add cross-Lab references by entity id and the first
-cross-modal motif (the sun-crest ⇄ sunrise theme). Validate coherence *across*
-Labs (does every entity referenced exist? do shared motifs stay in sync?).
+**Phase 2 — The Root Spec. _(done)_** `world.json` exists: a Root Spec declaring
+identity, a *palette of meaning* (shape/colour/voice tags), named entities, and
+**cross-modal motifs** — one root motif with a *face* in every medium. Both Labs'
+bibles `extends` it (the shared `extends`/`world` resolution now lives in
+`labkit`, so it is genuinely one mechanism, not a per-Lab copy). The bundled
+`emberhold` world spans **both media**: its music bible (`groups/music/emberhold`)
+and art bible (`groups/sprites/emberhold`) descend from one `worlds/emberhold/
+world.json`. Its cross-modal `ember` motif has two faces — the gold **sun-crest**
+you see (the `crest` sprite motif, flown on the `banner`) and the rising
+**ember_theme** you hear — and one **`fallen` transform** that darkens the root in
+both media at once: the `dark-knight` palette-swap *and* the `siege` dirge (the
+theme inverted into minor). `python -m labs validate` now runs a cross-Lab
+coherence pass: every motif face and every transform target must resolve to a
+real motif/spec in the named Lab, so the media provably cannot drift apart.
+Still ahead here: inheriting the meaning palette into per-Lab authoring, and
+entity-id references *from* the leaf specs (not just the world).
 
 **Phase 3 — Breadth.** Add Labs where deterministic theory is strongest and
 payoff is high: TileTracks (levels), UITracks (HUD/icons), SystemTracks

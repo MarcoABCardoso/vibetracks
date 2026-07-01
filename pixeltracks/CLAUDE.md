@@ -77,6 +77,7 @@ Sprite groups live under `groups/sprites/` alongside the music groups under
 | Field | Meaning |
 |-------|---------|
 | `title`, `aesthetic` | Labels (informational). |
+| `extends` | Optional path to a **world** (`worlds/<w>/world.json`) — the Root Spec this artbook descends from. Omit for a standalone set. A motif named as a world's cross-modal *face* (e.g. `emberhold`'s `crest`) must exist here — `python -m labs validate` enforces it. |
 | `size` | Default canvas `[width, height]` in pixels (e.g. `[16, 16]`). |
 | `scale` | Integer export upscale (nearest-neighbour); `16` → a 256px PNG. |
 | `palette` | Map of **role name → `#hex`**. The coherence anchor; sprites reference names, never raw hex. `#rgb`/`#rrggbb`/`#rrggbbaa` and `"transparent"` accepted. |

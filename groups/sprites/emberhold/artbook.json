@@ -1,7 +1,8 @@
 {
   "title": "Emberhold Vanguard",
+  "extends": "../../../worlds/emberhold/world.json",
   "aesthetic": "20x20 classic-JRPG party \u2014 four heroes (knight, mage, ranger, cleric) and their foes, sharing one cool-fantasy palette with a warm gold accent",
-  "_comment": "The art bible for a 4-class RPG party. Coherence: every hero shares the same humanoid proportions, the gold accent, and the auto-outline; class identity comes from headgear, robe colour, and weapon. The PALETTE-SWAP leitmotif move is sprites/dark-knight.json (the knight recoloured into a boss). Monsters (slime/bat/skeleton) share only the palette + outline, not the hero shape.",
+  "_comment": "The ART bible for the Emberhold world. It `extends` the Root Spec (worlds/emberhold/world.json) \u2014 the same world the music bible (groups/music/emberhold) extends \u2014 so both media share one identity. The `crest` motif is this Lab's FACE of the world's cross-modal `ember` motif (its melodic twin is ember_theme in the music Lab); the `banner` sprite flies it. The PALETTE-SWAP leitmotif move, sprites/dark-knight.json, is the world's `fallen` transform of the ember made visible \u2014 the same darkening the music does in `siege`. Every hero shares the humanoid proportions, the gold accent, and the auto-outline; class identity comes from headgear, robe colour, and weapon. Monsters (slime/bat/skeleton) share only the palette + outline, not the hero shape.",
   "size": [
     20,
     20
@@ -740,6 +741,7 @@
     "knight-attack",
     "mage-attack",
     "ranger-attack",
-    "cleric-attack"
+    "cleric-attack",
+    "banner"
   ]
 }

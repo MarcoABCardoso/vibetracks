@@ -46,10 +46,11 @@ Global identity inherited by every track in its group.
 | Field | Meaning |
 |-------|---------|
 | `title`, `aesthetic` | Labels (informational). |
+| `extends` | Optional path to a **world** (`worlds/<w>/world.json`) — the Root Spec this soundtrack descends from. Omit for a standalone score. |
 | `key` | e.g. `"A minor"`. Used for validation + `scale`/`chord` helpers. |
 | `bpm` | Default tempo; tracks may override. |
 | `palette` | Map of instrument name → patch overrides (merged onto the defaults in `vibetracks/instruments.py`). |
-| `motifs` | Named melodies, each `{"notes": [[pitch, beats, vel?], ...]}`. The cohesion mechanism. |
+| `motifs` | Named melodies, each `{"notes": [[pitch, beats, vel?], ...]}`. The cohesion mechanism. A motif named as a world's cross-modal *face* (e.g. `emberhold`'s `ember_theme`) must exist here — `python -m labs validate` enforces it. |
 | `tracks` | Ordered track names that `render-all` builds. |
 
 ### Track — `groups/music/<name>/tracks/<track>.json`

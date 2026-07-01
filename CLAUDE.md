@@ -50,15 +50,37 @@ with `--group`, or a path). All assets live under one **`groups/`** tree, split 
 medium:
 
 ```
+worlds/<w>/world.json                                # Root Specs (the cross-medium bible; demo: emberhold)
 groups/music/<g>/soundtrack.json + tracks/*.json     # VibeTracks groups (demo: neon-frontier)
 groups/sprites/<g>/artbook.json  + sprites/*.json    # PixelTracks groups (demo: mossy-hollow)
 out/<group>/                                          # rendered artifacts (gitignored)
 ```
 
+## The Root Spec — one world, many artifacts
+
+A **world** (`worlds/<name>/world.json`) is the coherence anchor *above* the
+Labs: the single identity from which each medium's bible descends. A group bible
+`extends` a world exactly as a track/sprite `extends` its bible. A world declares
+what is true *across* modalities — identity, a **palette of meaning** (shape/
+colour/voice tags), named **entities**, and **cross-modal motifs**: one root
+motif with a *face* in every medium, plus **transforms** that move every face
+together (darken the root once → both the art and the music fall in step).
+
+`python -m labs validate` validates each world and runs a **cross-Lab coherence
+pass**: every motif face and transform target must resolve to a real motif/spec
+in the named Lab, so the media provably cannot drift apart. The bundled
+`emberhold` world spans both media (`groups/music/emberhold` +
+`groups/sprites/emberhold`); its `ember` motif is the gold sun-crest you *see* and
+the `ember_theme` you *hear*, with a `fallen` transform (the `dark-knight`
+palette-swap ⇄ the `siege` dirge). Not every group needs a world — a bible with
+no `extends` is a standalone identity, exactly as before.
+
 ## The shared core & adding a Lab
 
-- `labkit/` — `SpecError` + `load_json` (`specbase.py`), generic group discovery
-  (`groups.py`), and the `Lab` registry (`registry.py`). Both Labs build on it.
+- `labkit/` — `SpecError` + `load_json` + the shared `extends_path` inheritance
+  helper (`specbase.py`), generic group discovery (`groups.py`), the `Lab`
+  registry (`registry.py`), and the Root Spec: `World` + `load_world` +
+  cross-Lab `check_world` coherence (`world.py`). Both Labs build on it.
 - `labs/__main__.py` — the dispatcher (`python -m labs`).
 - To add a Lab: create a package mirroring the existing layout (model + validator +
   deterministic engine + CLI with the same verbs) and append a `Lab(...)` entry to
