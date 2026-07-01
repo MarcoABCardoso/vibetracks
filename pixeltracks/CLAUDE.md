@@ -76,6 +76,7 @@ groups under `groups/music/` — one `groups/` tree, one subdirectory per medium
 | `name` | Output filename stem. |
 | `extends` | Path to the bible, e.g. `"../artbook.json"`. |
 | `size`, `scale`, `palette`, `background`, `outline` | Optional overrides. A `palette` override is the **palette-swap leitmotif**. |
+| `flip` | Optional `"h"`/`"v"`/`"hv"` — mirror the whole finished composite. Face a sprite the other way (an enemy mirroring the hero) without re-rigging: `dark-knight-battle` is `knight-battle`'s rig + dark palette + `flip:"h"`. |
 | `legend` | Optional sprite-level default `char → colorName` for `pixels` layers. |
 | `motifs` | Optional per-sprite extra shapes. |
 | `layers` | List of layers composited in z-order (later paints over earlier). |

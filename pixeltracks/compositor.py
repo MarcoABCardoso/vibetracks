@@ -92,6 +92,15 @@ def composite_frame(sprite: dict, frame: dict) -> np.ndarray:
     outline = sprite.get("outline")
     if outline is not None:
         raster.add_outline(canvas, sprite["palette"][outline["color"]])
+    # A composite-level flip mirrors the whole finished frame — the cheap way to
+    # face a sprite the other direction (an enemy mirroring the hero) without
+    # re-rigging every bone. Applied after the outline so it stays symmetric.
+    flip = frame.get("flip", sprite.get("flip"))
+    if flip:
+        if "h" in flip:
+            canvas = canvas[:, ::-1]
+        if "v" in flip:
+            canvas = canvas[::-1, :]
     return canvas
 
 

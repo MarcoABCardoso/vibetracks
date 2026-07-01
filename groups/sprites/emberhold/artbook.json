@@ -483,6 +483,16 @@
         "o": "magic",
         "O": "magic_hi"
       },
+      "anchors": {
+        "grip": [
+          1,
+          7
+        ],
+        "tip": [
+          1,
+          1
+        ]
+      },
       "pixels": [
         ".o.",
         "oOo",
@@ -502,6 +512,12 @@
         "b": "leather",
         "B": "leather_sh",
         "t": "cloth"
+      },
+      "anchors": {
+        "grip": [
+          2,
+          5
+        ]
       },
       "pixels": [
         "..bb.",
@@ -523,6 +539,16 @@
         "B": "leather_sh",
         "g": "gold",
         "G": "gold_sh"
+      },
+      "anchors": {
+        "grip": [
+          1,
+          7
+        ],
+        "head": [
+          1,
+          1
+        ]
       },
       "pixels": [
         ".g.",
@@ -591,18 +617,126 @@
         ".f...",
         "f...."
       ]
+    },
+    "robe_skirt": {
+      "_comment": "Flared robe bottom for casters (mage/cleric), replacing the two armoured legs. Uses steel-ramp legend so one recolor map covers chest+skirt. Anchor 'waist' pins to chest.hips.",
+      "legend": {
+        "a": "steel",
+        "d": "steel_sh",
+        "h": "steel_hi"
+      },
+      "anchors": {
+        "waist": [
+          4,
+          0
+        ]
+      },
+      "pixels": [
+        "...aaaa...",
+        "..aahhaa..",
+        "..aaaaaa..",
+        ".aaaaaaaa.",
+        ".aaaaaaaa.",
+        "aaaaaaaaaa",
+        "aadaaaadaa",
+        "aa.daad.aa"
+      ]
+    },
+    "mage_head_3q": {
+      "_comment": "Three-quarter mage: pointed hat leaning back-left, face clustered right.",
+      "legend": {
+        "m": "mage",
+        "M": "mage_hi",
+        "n": "mage_sh",
+        "k": "skin",
+        "e": "outline",
+        "g": "gold"
+      },
+      "anchors": {
+        "neck": [
+          4,
+          7
+        ]
+      },
+      "pixels": [
+        "...mm...",
+        "..mmm...",
+        "..mMmm..",
+        ".mmmmm..",
+        "mmmmmm..",
+        "..kkkk..",
+        "..ekkk..",
+        "..kkkk.."
+      ]
+    },
+    "ranger_head_3q": {
+      "_comment": "Three-quarter ranger: leaf hood with the face in shadow, 3/4 right.",
+      "legend": {
+        "l": "leaf",
+        "L": "leaf_hi",
+        "s": "leaf_sh",
+        "k": "skin",
+        "e": "outline"
+      },
+      "anchors": {
+        "neck": [
+          4,
+          7
+        ]
+      },
+      "pixels": [
+        "..llll..",
+        ".llllll.",
+        ".lLLlll.",
+        ".llkkkl.",
+        ".lekkkl.",
+        ".llkkkl.",
+        "..lkkl..",
+        "...ss..."
+      ]
+    },
+    "cleric_head_3q": {
+      "_comment": "Three-quarter cleric: white coif with a gold circlet, 3/4 right.",
+      "legend": {
+        "w": "cloth",
+        "W": "cloth_hi",
+        "v": "cloth_sh",
+        "k": "skin",
+        "e": "outline",
+        "g": "gold"
+      },
+      "anchors": {
+        "neck": [
+          4,
+          7
+        ]
+      },
+      "pixels": [
+        "..wwww..",
+        ".wwwwww.",
+        ".wggggw.",
+        ".wwkkkw.",
+        ".wekkkw.",
+        ".wwkkkw.",
+        "..wkkw..",
+        "...ww..."
+      ]
     }
   },
   "sprites": [
     "knight",
     "knight-battle",
     "mage",
+    "mage-battle",
     "ranger",
+    "ranger-battle",
     "cleric",
+    "cleric-battle",
     "slime",
     "bat",
     "skeleton",
     "dark-knight",
+    "dark-knight-battle",
     "knight-attack",
     "mage-attack",
     "ranger-attack",

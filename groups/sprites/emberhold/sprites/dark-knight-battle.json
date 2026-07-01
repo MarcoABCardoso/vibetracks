@@ -1,0 +1,80 @@
+{
+  "name": "dark-knight-battle",
+  "extends": "../artbook.json",
+  "_comment": "The boss: knight-battle's exact SKELETON, palette-swapped into shadow steel and bone gold, and mirrored with a composite-level 'flip':'h' so he FACES LEFT toward the party (an enemy squaring off against the hero). Same rig, provably — the only diffs are the colour table and the mirror. Shield recoloured to the (dark) cloak ramp so it reads against the armour.",
+  "size": [
+    30,
+    26
+  ],
+  "scale": 12,
+  "flip": "h",
+  "palette": {
+    "steel": "#4a3d66",
+    "steel_hi": "#7d6ba6",
+    "steel_sh": "#2a2140",
+    "cloak": "#7a2f6a",
+    "cloak_hi": "#a8508f",
+    "cloak_sh": "#4f1f47",
+    "gold": "#b9c0a0",
+    "gold_sh": "#7d8466",
+    "skin": "#9a8fb5"
+  },
+  "checks": [
+    { "rule": "connected" },
+    { "rule": "on_canvas", "margin": 0 },
+    { "rule": "centered_x", "layer": "shield", "in": ["chest", "back-leg", "front-leg"], "tol": 1 },
+    { "rule": "top_above", "layer": "sword", "of": "chest" },
+    { "rule": "touches", "layer": "front-leg" },
+    { "rule": "touches", "layer": "sword", "of": "sword-arm" }
+  ],
+  "skeleton": [
+    {
+      "name": "back-leg",
+      "shape": "knight_leg",
+      "pivot": "hip",
+      "attach": { "to": "chest", "anchor": "hip_l", "shift": [ -2, 0 ] },
+      "skew": [ -0.4, 0.0 ]
+    },
+    {
+      "name": "front-leg",
+      "shape": "knight_leg",
+      "pivot": "hip",
+      "attach": { "to": "chest", "anchor": "hip_r", "shift": [ 2, 0 ] },
+      "skew": [ 0.4, 0.0 ]
+    },
+    {
+      "name": "chest",
+      "shape": "knight_chest",
+      "pivot": "hips",
+      "at": [ 13, 17 ],
+      "skew": [ -0.1, 0.0 ]
+    },
+    {
+      "name": "shield",
+      "shape": "shield",
+      "pivot": "center",
+      "attach": { "to": "chest", "anchor": "hips", "shift": [ -1, -1 ] },
+      "recolor": { "steel": "cloak", "steel_hi": "cloak_hi", "steel_sh": "cloak_sh" }
+    },
+    {
+      "name": "sword-arm",
+      "shape": "knight_arm",
+      "pivot": "shoulder",
+      "attach": { "to": "chest", "anchor": "shoulder_r" },
+      "rotate": 145
+    },
+    {
+      "name": "sword",
+      "shape": "sword_long",
+      "pivot": "grip",
+      "attach": { "to": "sword-arm", "anchor": "hand" },
+      "rotate": 33
+    },
+    {
+      "name": "head",
+      "shape": "knight_head_3q",
+      "pivot": "neck",
+      "attach": { "to": "chest", "anchor": "neck" }
+    }
+  ]
+}
