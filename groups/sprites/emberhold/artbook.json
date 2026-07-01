@@ -829,7 +829,7 @@
       ]
     },
     "ranger_bust": {
-      "_comment": "Bust base for the ranger portrait: a lean build (hollow cheeks, tapered jaw); leaf hood, green shoulder mantle over a leather jerkin with a gold clasp and a diagonal baldric.",
+      "_comment": "Bust base for the ranger portrait: a lean build (hollow cheeks, tapered jaw); leaf hood, a green shoulder cape draped over a leather jerkin with a gold throat clasp and a laced front placket.",
       "legend": {
         "l": "leaf",
         "L": "leaf_hi",
@@ -867,15 +867,15 @@
         "........DDsskkkkkkkkssDD........",
         "........bbbbbbkkkkbbbbbb........",
         "........bbbbbbbggbbbbbbb........",
-        "....llllblbbbbbbbbbbbbbbllll....",
-        "...lllBbbblbbbbbbbbbbbbbbBlll...",
-        "..BbbbbbbbblbbbbbbbbbbbbbbbbbB..",
-        "..BbbbbbbbbblbbbbbbbbbbbbbbbbB..",
-        "..BbbbbbbbbbblbbbbbbbbbbbbbbbB..",
-        "..BbbbbbbbbbbblbbbbbbbbbbbbbbB..",
-        ".BbbbbbbbbbbbbblbbbbbbbbbbbbbbB.",
-        ".BbbbbbbbbbbbbbblbbbbbbbbbbbbbB.",
-        "BbbbbbbbbbbbbbbbblbbbbbbbbbbbbbB",
+        "....llllllbbbbbbbbbbbbllllll....",
+        "...lllllBbbbbbbbbbbbbbbBlllll...",
+        "..llBbbbbbbbbbBBBBbbbbbbbbbBll..",
+        "..BbbbbbbbbbbbbbbbbbbbbbbbbbbB..",
+        "..BbbbbbbbbbbbBBBBbbbbbbbbbbbB..",
+        "..BbbbbbbbbbbbbbbbbbbbbbbbbbbB..",
+        ".BbbbbbbbbbbbbBBBBbbbbbbbbbbbbB.",
+        ".BbbbbbbbbbbbbbbbbbbbbbbbbbbbbB.",
+        "BbbbbbbbbbbbbbBBBBbbbbbbbbbbbbbB",
         "BbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbB",
         "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
       ]
