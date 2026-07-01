@@ -1,131 +1,107 @@
 {
   "name": "ranger-attack",
   "extends": "../artbook.json",
-  "_comment": "4-frame bow shot: nock, draw back (held), loose, recover. The arrow is a separate motif that snaps to the string then flies off to the right.",
+  "_comment": "7-frame bow shot, rigged on the ranger-battle SKELETON (chest root, wide-brace legs, bow-arm holding the flipped bow forward, draw-arm pulling the string, nocked arrow, leaf-hood 3/4 head) instead of a slid flat body. The bow arm stays braced on the target while the DRAW arm hauls the string back on a slow held aim (the tension), then the string snaps forward on a single fast frame and the arrow leaves. Weight reads through the draw (lean back onto the rear leg) and the release recoil (drive forward). The loosed arrow crosses the frame in wide jumps so it reads as fast. Facing right.",
   "size": [
-    32,
-    22
+    42,
+    28
   ],
   "frames": [
     {
-      "name": "ready",
-      "layers": [
-        {
-          "name": "body",
-          "shape": "ranger",
-          "offset": [
-            2,
-            1
-          ]
-        },
-        {
-          "name": "bow",
-          "shape": "bow",
-          "flip": "h",
-          "offset": [
-            13,
-            7
-          ]
-        },
-        {
-          "name": "arrow",
-          "shape": "arrow",
-          "offset": [
-            9,
-            10
-          ]
-        }
+      "name": "nock",
+      "hold": 2,
+      "skeleton": [
+        { "name": "back-leg", "shape": "knight_leg", "pivot": "hip", "attach": { "to": "chest", "anchor": "hip_l", "shift": [ -2, 0 ] }, "skew": [ -0.4, 0.0 ], "recolor": { "steel": "leather", "steel_sh": "leather_sh" } },
+        { "name": "front-leg", "shape": "knight_leg", "pivot": "hip", "attach": { "to": "chest", "anchor": "hip_r", "shift": [ 2, 0 ] }, "skew": [ 0.4, 0.0 ], "recolor": { "steel": "leather", "steel_sh": "leather_sh" } },
+        { "name": "chest", "shape": "knight_chest", "pivot": "hips", "at": [ 15, 18 ], "skew": [ -0.06, 0.0 ], "recolor": { "steel": "leaf", "steel_hi": "leaf_hi", "steel_sh": "leaf_sh", "cloak": "leather", "cloak_hi": "leather", "cloak_sh": "leather_sh" } },
+        { "name": "draw-arm", "shape": "knight_arm", "pivot": "shoulder", "attach": { "to": "chest", "anchor": "shoulder_l" }, "rotate": 50, "recolor": { "steel": "leaf", "steel_hi": "leaf_hi", "steel_sh": "leaf_sh" } },
+        { "name": "bow-arm", "shape": "knight_arm", "pivot": "shoulder", "attach": { "to": "chest", "anchor": "shoulder_r" }, "rotate": 80, "recolor": { "steel": "leaf", "steel_hi": "leaf_hi", "steel_sh": "leaf_sh" } },
+        { "name": "arrow", "shape": "arrow", "pivot": [ 4, 2 ], "at": [ 26, 14 ] },
+        { "name": "bow", "shape": "bow", "pivot": "grip", "attach": { "to": "bow-arm", "anchor": "hand" }, "flip": "h" },
+        { "name": "head", "shape": "ranger_head_3q", "pivot": "neck", "attach": { "to": "chest", "anchor": "neck" } }
       ]
     },
     {
       "name": "draw",
       "hold": 2,
-      "layers": [
-        {
-          "name": "body",
-          "shape": "ranger",
-          "offset": [
-            2,
-            1
-          ]
-        },
-        {
-          "name": "bow",
-          "shape": "bow",
-          "flip": "h",
-          "offset": [
-            13,
-            7
-          ]
-        },
-        {
-          "name": "arrow",
-          "shape": "arrow",
-          "offset": [
-            6,
-            10
-          ]
-        }
+      "skeleton": [
+        { "name": "back-leg", "shape": "knight_leg", "pivot": "hip", "attach": { "to": "chest", "anchor": "hip_l", "shift": [ -3, 0 ] }, "skew": [ -0.48, 0.0 ], "recolor": { "steel": "leather", "steel_sh": "leather_sh" } },
+        { "name": "front-leg", "shape": "knight_leg", "pivot": "hip", "attach": { "to": "chest", "anchor": "hip_r", "shift": [ 2, 0 ] }, "skew": [ 0.36, 0.0 ], "recolor": { "steel": "leather", "steel_sh": "leather_sh" } },
+        { "name": "chest", "shape": "knight_chest", "pivot": "hips", "at": [ 14, 18 ], "skew": [ 0.06, 0.0 ], "recolor": { "steel": "leaf", "steel_hi": "leaf_hi", "steel_sh": "leaf_sh", "cloak": "leather", "cloak_hi": "leather", "cloak_sh": "leather_sh" } },
+        { "name": "draw-arm", "shape": "knight_arm", "pivot": "shoulder", "attach": { "to": "chest", "anchor": "shoulder_l" }, "rotate": 66, "recolor": { "steel": "leaf", "steel_hi": "leaf_hi", "steel_sh": "leaf_sh" } },
+        { "name": "bow-arm", "shape": "knight_arm", "pivot": "shoulder", "attach": { "to": "chest", "anchor": "shoulder_r" }, "rotate": 80, "recolor": { "steel": "leaf", "steel_hi": "leaf_hi", "steel_sh": "leaf_sh" } },
+        { "name": "arrow", "shape": "arrow", "pivot": [ 4, 2 ], "at": [ 21, 14 ] },
+        { "name": "bow", "shape": "bow", "pivot": "grip", "attach": { "to": "bow-arm", "anchor": "hand" }, "flip": "h" },
+        { "name": "head", "shape": "ranger_head_3q", "pivot": "neck", "attach": { "to": "chest", "anchor": "neck" } }
+      ]
+    },
+    {
+      "name": "aim",
+      "hold": 3,
+      "skeleton": [
+        { "name": "back-leg", "shape": "knight_leg", "pivot": "hip", "attach": { "to": "chest", "anchor": "hip_l", "shift": [ -3, 0 ] }, "skew": [ -0.5, 0.0 ], "recolor": { "steel": "leather", "steel_sh": "leather_sh" } },
+        { "name": "front-leg", "shape": "knight_leg", "pivot": "hip", "attach": { "to": "chest", "anchor": "hip_r", "shift": [ 2, 0 ] }, "skew": [ 0.34, 0.0 ], "recolor": { "steel": "leather", "steel_sh": "leather_sh" } },
+        { "name": "chest", "shape": "knight_chest", "pivot": "hips", "at": [ 14, 18 ], "skew": [ 0.1, 0.0 ], "recolor": { "steel": "leaf", "steel_hi": "leaf_hi", "steel_sh": "leaf_sh", "cloak": "leather", "cloak_hi": "leather", "cloak_sh": "leather_sh" } },
+        { "name": "draw-arm", "shape": "knight_arm", "pivot": "shoulder", "attach": { "to": "chest", "anchor": "shoulder_l" }, "rotate": 74, "recolor": { "steel": "leaf", "steel_hi": "leaf_hi", "steel_sh": "leaf_sh" } },
+        { "name": "bow-arm", "shape": "knight_arm", "pivot": "shoulder", "attach": { "to": "chest", "anchor": "shoulder_r" }, "rotate": 82, "recolor": { "steel": "leaf", "steel_hi": "leaf_hi", "steel_sh": "leaf_sh" } },
+        { "name": "arrow", "shape": "arrow", "pivot": [ 4, 2 ], "at": [ 18, 14 ] },
+        { "name": "bow", "shape": "bow", "pivot": "grip", "attach": { "to": "bow-arm", "anchor": "hand" }, "flip": "h" },
+        { "name": "head", "shape": "ranger_head_3q", "pivot": "neck", "attach": { "to": "chest", "anchor": "neck" } }
       ]
     },
     {
       "name": "loose",
-      "layers": [
-        {
-          "name": "body",
-          "shape": "ranger",
-          "offset": [
-            2,
-            1
-          ]
-        },
-        {
-          "name": "bow",
-          "shape": "bow",
-          "flip": "h",
-          "offset": [
-            13,
-            7
-          ]
-        },
-        {
-          "name": "arrow",
-          "shape": "arrow",
-          "offset": [
-            18,
-            10
-          ]
-        }
+      "hold": 1,
+      "skeleton": [
+        { "name": "back-leg", "shape": "knight_leg", "pivot": "hip", "attach": { "to": "chest", "anchor": "hip_l", "shift": [ -2, 0 ] }, "skew": [ -0.42, 0.0 ], "recolor": { "steel": "leather", "steel_sh": "leather_sh" } },
+        { "name": "front-leg", "shape": "knight_leg", "pivot": "hip", "attach": { "to": "chest", "anchor": "hip_r", "shift": [ 3, 0 ] }, "skew": [ 0.5, 0.0 ], "recolor": { "steel": "leather", "steel_sh": "leather_sh" } },
+        { "name": "chest", "shape": "knight_chest", "pivot": "hips", "at": [ 16, 18 ], "skew": [ -0.18, 0.0 ], "recolor": { "steel": "leaf", "steel_hi": "leaf_hi", "steel_sh": "leaf_sh", "cloak": "leather", "cloak_hi": "leather", "cloak_sh": "leather_sh" } },
+        { "name": "draw-arm", "shape": "knight_arm", "pivot": "shoulder", "attach": { "to": "chest", "anchor": "shoulder_l" }, "rotate": 50, "recolor": { "steel": "leaf", "steel_hi": "leaf_hi", "steel_sh": "leaf_sh" } },
+        { "name": "bow-arm", "shape": "knight_arm", "pivot": "shoulder", "attach": { "to": "chest", "anchor": "shoulder_r" }, "rotate": 78, "recolor": { "steel": "leaf", "steel_hi": "leaf_hi", "steel_sh": "leaf_sh" } },
+        { "name": "arrow", "shape": "arrow", "pivot": [ 4, 2 ], "at": [ 28, 14 ] },
+        { "name": "bow", "shape": "bow", "pivot": "grip", "attach": { "to": "bow-arm", "anchor": "hand" }, "flip": "h" },
+        { "name": "head", "shape": "ranger_head_3q", "pivot": "neck", "attach": { "to": "chest", "anchor": "neck" } }
+      ]
+    },
+    {
+      "name": "fly",
+      "hold": 1,
+      "skeleton": [
+        { "name": "back-leg", "shape": "knight_leg", "pivot": "hip", "attach": { "to": "chest", "anchor": "hip_l", "shift": [ -2, 0 ] }, "skew": [ -0.4, 0.0 ], "recolor": { "steel": "leather", "steel_sh": "leather_sh" } },
+        { "name": "front-leg", "shape": "knight_leg", "pivot": "hip", "attach": { "to": "chest", "anchor": "hip_r", "shift": [ 3, 0 ] }, "skew": [ 0.46, 0.0 ], "recolor": { "steel": "leather", "steel_sh": "leather_sh" } },
+        { "name": "chest", "shape": "knight_chest", "pivot": "hips", "at": [ 16, 18 ], "skew": [ -0.14, 0.0 ], "recolor": { "steel": "leaf", "steel_hi": "leaf_hi", "steel_sh": "leaf_sh", "cloak": "leather", "cloak_hi": "leather", "cloak_sh": "leather_sh" } },
+        { "name": "draw-arm", "shape": "knight_arm", "pivot": "shoulder", "attach": { "to": "chest", "anchor": "shoulder_l" }, "rotate": 46, "recolor": { "steel": "leaf", "steel_hi": "leaf_hi", "steel_sh": "leaf_sh" } },
+        { "name": "bow-arm", "shape": "knight_arm", "pivot": "shoulder", "attach": { "to": "chest", "anchor": "shoulder_r" }, "rotate": 80, "recolor": { "steel": "leaf", "steel_hi": "leaf_hi", "steel_sh": "leaf_sh" } },
+        { "name": "arrow", "shape": "arrow", "pivot": [ 4, 2 ], "at": [ 35, 14 ] },
+        { "name": "bow", "shape": "bow", "pivot": "grip", "attach": { "to": "bow-arm", "anchor": "hand" }, "flip": "h" },
+        { "name": "head", "shape": "ranger_head_3q", "pivot": "neck", "attach": { "to": "chest", "anchor": "neck" } }
+      ]
+    },
+    {
+      "name": "speed",
+      "hold": 2,
+      "skeleton": [
+        { "name": "back-leg", "shape": "knight_leg", "pivot": "hip", "attach": { "to": "chest", "anchor": "hip_l", "shift": [ -2, 0 ] }, "skew": [ -0.4, 0.0 ], "recolor": { "steel": "leather", "steel_sh": "leather_sh" } },
+        { "name": "front-leg", "shape": "knight_leg", "pivot": "hip", "attach": { "to": "chest", "anchor": "hip_r", "shift": [ 2, 0 ] }, "skew": [ 0.42, 0.0 ], "recolor": { "steel": "leather", "steel_sh": "leather_sh" } },
+        { "name": "chest", "shape": "knight_chest", "pivot": "hips", "at": [ 15, 18 ], "skew": [ -0.1, 0.0 ], "recolor": { "steel": "leaf", "steel_hi": "leaf_hi", "steel_sh": "leaf_sh", "cloak": "leather", "cloak_hi": "leather", "cloak_sh": "leather_sh" } },
+        { "name": "draw-arm", "shape": "knight_arm", "pivot": "shoulder", "attach": { "to": "chest", "anchor": "shoulder_l" }, "rotate": 52, "recolor": { "steel": "leaf", "steel_hi": "leaf_hi", "steel_sh": "leaf_sh" } },
+        { "name": "bow-arm", "shape": "knight_arm", "pivot": "shoulder", "attach": { "to": "chest", "anchor": "shoulder_r" }, "rotate": 80, "recolor": { "steel": "leaf", "steel_hi": "leaf_hi", "steel_sh": "leaf_sh" } },
+        { "name": "arrow", "shape": "arrow", "pivot": [ 4, 2 ], "at": [ 41, 14 ] },
+        { "name": "bow", "shape": "bow", "pivot": "grip", "attach": { "to": "bow-arm", "anchor": "hand" }, "flip": "h" },
+        { "name": "head", "shape": "ranger_head_3q", "pivot": "neck", "attach": { "to": "chest", "anchor": "neck" } }
       ]
     },
     {
       "name": "recover",
-      "layers": [
-        {
-          "name": "body",
-          "shape": "ranger",
-          "offset": [
-            2,
-            1
-          ]
-        },
-        {
-          "name": "bow",
-          "shape": "bow",
-          "flip": "h",
-          "offset": [
-            13,
-            7
-          ]
-        },
-        {
-          "name": "arrow",
-          "shape": "arrow",
-          "offset": [
-            27,
-            10
-          ]
-        }
+      "hold": 2,
+      "skeleton": [
+        { "name": "back-leg", "shape": "knight_leg", "pivot": "hip", "attach": { "to": "chest", "anchor": "hip_l", "shift": [ -2, 0 ] }, "skew": [ -0.4, 0.0 ], "recolor": { "steel": "leather", "steel_sh": "leather_sh" } },
+        { "name": "front-leg", "shape": "knight_leg", "pivot": "hip", "attach": { "to": "chest", "anchor": "hip_r", "shift": [ 2, 0 ] }, "skew": [ 0.4, 0.0 ], "recolor": { "steel": "leather", "steel_sh": "leather_sh" } },
+        { "name": "chest", "shape": "knight_chest", "pivot": "hips", "at": [ 15, 18 ], "skew": [ -0.06, 0.0 ], "recolor": { "steel": "leaf", "steel_hi": "leaf_hi", "steel_sh": "leaf_sh", "cloak": "leather", "cloak_hi": "leather", "cloak_sh": "leather_sh" } },
+        { "name": "draw-arm", "shape": "knight_arm", "pivot": "shoulder", "attach": { "to": "chest", "anchor": "shoulder_l" }, "rotate": 56, "recolor": { "steel": "leaf", "steel_hi": "leaf_hi", "steel_sh": "leaf_sh" } },
+        { "name": "bow-arm", "shape": "knight_arm", "pivot": "shoulder", "attach": { "to": "chest", "anchor": "shoulder_r" }, "rotate": 80, "recolor": { "steel": "leaf", "steel_hi": "leaf_hi", "steel_sh": "leaf_sh" } },
+        { "name": "bow", "shape": "bow", "pivot": "grip", "attach": { "to": "bow-arm", "anchor": "hand" }, "flip": "h" },
+        { "name": "head", "shape": "ranger_head_3q", "pivot": "neck", "attach": { "to": "chest", "anchor": "neck" } }
       ]
     }
   ]

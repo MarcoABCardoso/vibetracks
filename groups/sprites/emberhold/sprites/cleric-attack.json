@@ -1,128 +1,94 @@
 {
   "name": "cleric-attack",
   "extends": "../artbook.json",
-  "_comment": "4-frame holy smite: raise the mace overhead (held), bring it down, a gold flash bursts on impact, then settle. The mace swings about the grip through an arc.",
+  "_comment": "7-frame holy smite, rigged on the cleric-battle SKELETON (chest root, robe skirt, mace-arm + mace, coif 3/4 head) instead of a slid flat body. The mace lifts overhead on a slow held anticipation while a gold holy glow gathers on its head (the spark scales up), then an EXPLOSIVE single-frame swing brings it down, a held impact key (hold 3) bursts the glow to a bright gold flash as the body lunges into the blow, a one-frame overshoot, and a slow settle. No separate legs (robe skirt), so the weight reads through a hard torso lean that sways the whole robe. Facing right.",
   "size": [
-    26,
-    26
+    40,
+    34
   ],
   "frames": [
     {
       "name": "ready",
-      "layers": [
-        {
-          "name": "body",
-          "shape": "cleric",
-          "offset": [
-            3,
-            4
-          ]
-        },
-        {
-          "name": "mace",
-          "shape": "mace",
-          "pivot": [
-            1,
-            8
-          ],
-          "rotate": 8,
-          "at": [
-            19,
-            12
-          ]
-        }
+      "hold": 2,
+      "skeleton": [
+        { "name": "robe", "shape": "robe_skirt", "pivot": "waist", "attach": { "to": "chest", "anchor": "hips", "shift": [ 0, -1 ] }, "recolor": { "steel": "cloth", "steel_hi": "cloth_hi", "steel_sh": "cloth_sh" } },
+        { "name": "chest", "shape": "knight_chest", "pivot": "hips", "at": [ 15, 22 ], "skew": [ -0.08, 0.0 ], "recolor": { "steel": "cloth", "steel_hi": "cloth_hi", "steel_sh": "cloth_sh", "cloak": "gold", "cloak_hi": "gold", "cloak_sh": "gold_sh" } },
+        { "name": "mace-arm", "shape": "knight_arm", "pivot": "shoulder", "attach": { "to": "chest", "anchor": "shoulder_r" }, "rotate": 28, "recolor": { "steel": "cloth", "steel_hi": "cloth_hi", "steel_sh": "cloth_sh" } },
+        { "name": "mace", "shape": "mace", "pivot": "grip", "attach": { "to": "mace-arm", "anchor": "hand" }, "rotate": 14 },
+        { "name": "spark", "shape": "spark", "pivot": [ 2, 2 ], "attach": { "to": "mace", "anchor": "head" }, "recolor": { "magic": "gold", "magic_hi": "flash" } },
+        { "name": "head", "shape": "cleric_head_3q", "pivot": "neck", "attach": { "to": "chest", "anchor": "neck" } }
+      ]
+    },
+    {
+      "name": "lift",
+      "hold": 2,
+      "skeleton": [
+        { "name": "robe", "shape": "robe_skirt", "pivot": "waist", "attach": { "to": "chest", "anchor": "hips", "shift": [ 0, -1 ] }, "recolor": { "steel": "cloth", "steel_hi": "cloth_hi", "steel_sh": "cloth_sh" } },
+        { "name": "chest", "shape": "knight_chest", "pivot": "hips", "at": [ 14, 22 ], "skew": [ 0.1, 0.0 ], "recolor": { "steel": "cloth", "steel_hi": "cloth_hi", "steel_sh": "cloth_sh", "cloak": "gold", "cloak_hi": "gold", "cloak_sh": "gold_sh" } },
+        { "name": "mace-arm", "shape": "knight_arm", "pivot": "shoulder", "attach": { "to": "chest", "anchor": "shoulder_r" }, "rotate": 15, "recolor": { "steel": "cloth", "steel_hi": "cloth_hi", "steel_sh": "cloth_sh" } },
+        { "name": "mace", "shape": "mace", "pivot": "grip", "attach": { "to": "mace-arm", "anchor": "hand" }, "rotate": -10 },
+        { "name": "spark", "shape": "spark", "pivot": [ 2, 2 ], "attach": { "to": "mace", "anchor": "head" }, "recolor": { "magic": "gold", "magic_hi": "flash" } },
+        { "name": "head", "shape": "cleric_head_3q", "pivot": "neck", "attach": { "to": "chest", "anchor": "neck" } }
       ]
     },
     {
       "name": "raise",
-      "hold": 2,
-      "layers": [
-        {
-          "name": "body",
-          "shape": "cleric",
-          "offset": [
-            3,
-            4
-          ]
-        },
-        {
-          "name": "mace",
-          "shape": "mace",
-          "pivot": [
-            1,
-            8
-          ],
-          "rotate": -42,
-          "at": [
-            19,
-            11
-          ]
-        }
+      "hold": 3,
+      "skeleton": [
+        { "name": "robe", "shape": "robe_skirt", "pivot": "waist", "attach": { "to": "chest", "anchor": "hips", "shift": [ 0, -1 ] }, "recolor": { "steel": "cloth", "steel_hi": "cloth_hi", "steel_sh": "cloth_sh" } },
+        { "name": "chest", "shape": "knight_chest", "pivot": "hips", "at": [ 14, 22 ], "skew": [ 0.16, 0.0 ], "recolor": { "steel": "cloth", "steel_hi": "cloth_hi", "steel_sh": "cloth_sh", "cloak": "gold", "cloak_hi": "gold", "cloak_sh": "gold_sh" } },
+        { "name": "mace-arm", "shape": "knight_arm", "pivot": "shoulder", "attach": { "to": "chest", "anchor": "shoulder_r" }, "rotate": 6, "recolor": { "steel": "cloth", "steel_hi": "cloth_hi", "steel_sh": "cloth_sh" } },
+        { "name": "mace", "shape": "mace", "pivot": "grip", "attach": { "to": "mace-arm", "anchor": "hand" }, "rotate": -24 },
+        { "name": "spark", "shape": "spark", "scale": 2, "pivot": [ 2, 2 ], "attach": { "to": "mace", "anchor": "head" }, "recolor": { "magic": "gold", "magic_hi": "flash" } },
+        { "name": "head", "shape": "cleric_head_3q", "pivot": "neck", "attach": { "to": "chest", "anchor": "neck" } }
+      ]
+    },
+    {
+      "name": "swing",
+      "hold": 1,
+      "skeleton": [
+        { "name": "robe", "shape": "robe_skirt", "pivot": "waist", "attach": { "to": "chest", "anchor": "hips", "shift": [ 0, -1 ] }, "recolor": { "steel": "cloth", "steel_hi": "cloth_hi", "steel_sh": "cloth_sh" } },
+        { "name": "chest", "shape": "knight_chest", "pivot": "hips", "at": [ 16, 22 ], "skew": [ -0.18, 0.0 ], "recolor": { "steel": "cloth", "steel_hi": "cloth_hi", "steel_sh": "cloth_sh", "cloak": "gold", "cloak_hi": "gold", "cloak_sh": "gold_sh" } },
+        { "name": "mace-arm", "shape": "knight_arm", "pivot": "shoulder", "attach": { "to": "chest", "anchor": "shoulder_r" }, "rotate": 55, "recolor": { "steel": "cloth", "steel_hi": "cloth_hi", "steel_sh": "cloth_sh" } },
+        { "name": "mace", "shape": "mace", "pivot": "grip", "attach": { "to": "mace-arm", "anchor": "hand" }, "rotate": 56 },
+        { "name": "spark", "shape": "spark", "pivot": [ 2, 2 ], "attach": { "to": "mace", "anchor": "head" }, "recolor": { "magic": "gold", "magic_hi": "flash" } },
+        { "name": "head", "shape": "cleric_head_3q", "pivot": "neck", "attach": { "to": "chest", "anchor": "neck" } }
       ]
     },
     {
       "name": "smite",
-      "layers": [
-        {
-          "name": "body",
-          "shape": "cleric",
-          "offset": [
-            3,
-            5
-          ]
-        },
-        {
-          "name": "mace",
-          "shape": "mace",
-          "pivot": [
-            1,
-            8
-          ],
-          "rotate": 70,
-          "at": [
-            20,
-            13
-          ]
-        },
-        {
-          "name": "flash",
-          "shape": "spark",
-          "scale": 2,
-          "recolor": {
-            "magic_hi": "gold",
-            "magic": "gold_sh"
-          },
-          "offset": [
-            18,
-            12
-          ]
-        }
+      "hold": 3,
+      "skeleton": [
+        { "name": "robe", "shape": "robe_skirt", "pivot": "waist", "attach": { "to": "chest", "anchor": "hips", "shift": [ 0, -1 ] }, "recolor": { "steel": "cloth", "steel_hi": "cloth_hi", "steel_sh": "cloth_sh" } },
+        { "name": "chest", "shape": "knight_chest", "pivot": "hips", "at": [ 17, 23 ], "skew": [ -0.34, 0.0 ], "recolor": { "steel": "cloth", "steel_hi": "cloth_hi", "steel_sh": "cloth_sh", "cloak": "gold", "cloak_hi": "gold", "cloak_sh": "gold_sh" } },
+        { "name": "mace-arm", "shape": "knight_arm", "pivot": "shoulder", "attach": { "to": "chest", "anchor": "shoulder_r" }, "rotate": 96, "recolor": { "steel": "cloth", "steel_hi": "cloth_hi", "steel_sh": "cloth_sh" } },
+        { "name": "mace", "shape": "mace", "pivot": "grip", "attach": { "to": "mace-arm", "anchor": "hand" }, "rotate": 104 },
+        { "name": "flash", "shape": "spark", "scale": 3, "pivot": [ 2, 2 ], "attach": { "to": "mace", "anchor": "head" }, "recolor": { "magic": "gold", "magic_hi": "flash" } },
+        { "name": "head", "shape": "cleric_head_3q", "pivot": "neck", "attach": { "to": "chest", "anchor": "neck" } }
+      ]
+    },
+    {
+      "name": "follow",
+      "hold": 1,
+      "skeleton": [
+        { "name": "robe", "shape": "robe_skirt", "pivot": "waist", "attach": { "to": "chest", "anchor": "hips", "shift": [ 0, -1 ] }, "recolor": { "steel": "cloth", "steel_hi": "cloth_hi", "steel_sh": "cloth_sh" } },
+        { "name": "chest", "shape": "knight_chest", "pivot": "hips", "at": [ 17, 24 ], "skew": [ -0.36, 0.0 ], "recolor": { "steel": "cloth", "steel_hi": "cloth_hi", "steel_sh": "cloth_sh", "cloak": "gold", "cloak_hi": "gold", "cloak_sh": "gold_sh" } },
+        { "name": "mace-arm", "shape": "knight_arm", "pivot": "shoulder", "attach": { "to": "chest", "anchor": "shoulder_r" }, "rotate": 116, "recolor": { "steel": "cloth", "steel_hi": "cloth_hi", "steel_sh": "cloth_sh" } },
+        { "name": "mace", "shape": "mace", "pivot": "grip", "attach": { "to": "mace-arm", "anchor": "hand" }, "rotate": 140 },
+        { "name": "flash", "shape": "spark", "scale": 2, "pivot": [ 2, 2 ], "attach": { "to": "mace", "anchor": "head" }, "recolor": { "magic": "gold_sh", "magic_hi": "gold" } },
+        { "name": "head", "shape": "cleric_head_3q", "pivot": "neck", "attach": { "to": "chest", "anchor": "neck" } }
       ]
     },
     {
       "name": "recover",
-      "layers": [
-        {
-          "name": "body",
-          "shape": "cleric",
-          "offset": [
-            3,
-            4
-          ]
-        },
-        {
-          "name": "mace",
-          "shape": "mace",
-          "pivot": [
-            1,
-            8
-          ],
-          "rotate": 8,
-          "at": [
-            19,
-            12
-          ]
-        }
+      "hold": 2,
+      "skeleton": [
+        { "name": "robe", "shape": "robe_skirt", "pivot": "waist", "attach": { "to": "chest", "anchor": "hips", "shift": [ 0, -1 ] }, "recolor": { "steel": "cloth", "steel_hi": "cloth_hi", "steel_sh": "cloth_sh" } },
+        { "name": "chest", "shape": "knight_chest", "pivot": "hips", "at": [ 15, 22 ], "skew": [ -0.06, 0.0 ], "recolor": { "steel": "cloth", "steel_hi": "cloth_hi", "steel_sh": "cloth_sh", "cloak": "gold", "cloak_hi": "gold", "cloak_sh": "gold_sh" } },
+        { "name": "mace-arm", "shape": "knight_arm", "pivot": "shoulder", "attach": { "to": "chest", "anchor": "shoulder_r" }, "rotate": 40, "recolor": { "steel": "cloth", "steel_hi": "cloth_hi", "steel_sh": "cloth_sh" } },
+        { "name": "mace", "shape": "mace", "pivot": "grip", "attach": { "to": "mace-arm", "anchor": "hand" }, "rotate": 22 },
+        { "name": "spark", "shape": "spark", "pivot": [ 2, 2 ], "attach": { "to": "mace", "anchor": "head" }, "recolor": { "magic": "gold", "magic_hi": "flash" } },
+        { "name": "head", "shape": "cleric_head_3q", "pivot": "neck", "attach": { "to": "chest", "anchor": "neck" } }
       ]
     }
   ]
