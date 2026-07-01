@@ -727,6 +727,7 @@
   "sprites": [
     "knight",
     "knight-battle",
+    "knight-portrait",
     "mage",
     "mage-battle",
     "ranger",
