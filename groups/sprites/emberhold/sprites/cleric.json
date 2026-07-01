@@ -1,6 +1,8 @@
 {
   "name": "cleric",
   "extends": "../artbook.json",
+  "meaning": "resolve",
+  "entity": "the-vanguard",
   "layers": [
     {
       "name": "body",

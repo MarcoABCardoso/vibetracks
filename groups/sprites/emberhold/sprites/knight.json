@@ -1,6 +1,8 @@
 {
   "name": "knight",
   "extends": "../artbook.json",
+  "meaning": "resolve",
+  "entity": "the-vanguard",
   "_comment": "Anchor sprite: knight body, sword held up on the right, shield held in FRONT of the chest (drawn over the body so it reads as a raised guard, not a slab behind the arm).",
   "layers": [
     {

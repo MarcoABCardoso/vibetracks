@@ -22,6 +22,8 @@ import json
 import os
 import sys
 
+from labkit import world as world_mod
+
 from . import spec
 from .sequencer import render_track
 from .wavio import write_wav
@@ -105,7 +107,8 @@ def cmd_validate(args) -> int:
             try:
                 t = spec.resolve_track(path, bible)
                 secs = ", ".join(s.get("name", "?") for s in t["sections"])
-                print(f"  ok  {path}  ({t['bpm']:g} bpm, sections: {secs})")
+                tags = world_mod.fmt_refs(t.get("meaning"), t.get("entities"))
+                print(f"  ok  {path}  ({t['bpm']:g} bpm, sections: {secs}){tags}")
             except (spec.SpecError, FileNotFoundError) as e:
                 print(f"  ERR  {e}")
                 ok = False

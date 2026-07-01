@@ -26,7 +26,7 @@ from dataclasses import dataclass, field
 from labkit.groups import Group as _GroupBase
 from labkit.groups import discover_group_dirs
 from labkit.specbase import SpecError, extends_path, load_json  # shared across Labs
-from labkit.world import World, load_world
+from labkit.world import World, check_spec_refs, load_world
 
 from . import palette, raster, shapes
 
@@ -311,6 +311,12 @@ def resolve_sprite(path: str, bible: Bible | None = None, _stack=frozenset()) ->
         nf["layers"] = layers
         frames.append(nf)
 
+    # A sprite may claim a world `meaning` tag and reference world `entities` —
+    # the Root Spec's palette of meaning inherited down to the leaf spec. Checked
+    # against the bible's world, so a stray tag/id fails like an off-palette colour.
+    world = bible.world if bible else None
+    meaning, entities = check_spec_refs(data, world, path)
+
     resolved = {
         "name": name,
         "size": tuple(data.get("size", bible.size if bible else (16, 16))),
@@ -324,6 +330,8 @@ def resolve_sprite(path: str, bible: Bible | None = None, _stack=frozenset()) ->
         "checks": data.get("checks", []),    # declarative art-direction predicates
         "flip": data.get("flip"),            # mirror the whole composite ("h"/"v"/"hv")
         "scene": bool(data.get("scene", False)),  # a multi-object composite, not one figure
+        "meaning": meaning,          # world meaning tag (or None)
+        "entities": entities,        # world entity ids this sprite is about
     }
     if not isinstance(data.get("scene", False), bool):
         raise SpecError(f"{path}: 'scene' must be true/false")

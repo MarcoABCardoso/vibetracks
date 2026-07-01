@@ -59,6 +59,8 @@ Global identity inherited by every track in its group.
 |-------|---------|
 | `name` | Output filename stem. |
 | `extends` | Path to the bible, e.g. `"../soundtrack.json"`. |
+| `meaning` | Optional world *meaning* tag (e.g. `"hope"`, `"hostile"`). Must be one declared in the bible's world; `python -m labs validate` enforces it. Requires the bible to `extends` a world. |
+| `entity` / `entities` | Optional world entity id, or list of ids, this track is *about* (e.g. `"the-shadow"`). Must resolve to a world entity. |
 | `key`, `bpm`, `time_signature` | Optional overrides (`time_signature` default `[4,4]`). |
 | `palette` | Optional per-track patch overrides. |
 | `loops` | Default repeat count for `"loop": true` sections (CLI `--loops` overrides). |

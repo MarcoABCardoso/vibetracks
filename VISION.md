@@ -151,9 +151,14 @@ you see (the `crest` sprite motif, flown on the `banner`) and the rising
 both media at once: the `dark-knight` palette-swap *and* the `siege` dirge (the
 theme inverted into minor). `python -m labs validate` now runs a cross-Lab
 coherence pass: every motif face and every transform target must resolve to a
-real motif/spec in the named Lab, so the media provably cannot drift apart.
-Still ahead here: inheriting the meaning palette into per-Lab authoring, and
-entity-id references *from* the leaf specs (not just the world).
+real motif/spec in the named Lab, so the media provably cannot drift apart. The
+*palette of meaning* and named entities now reach the **leaf specs** too: a track
+or sprite may declare what it `means` (a meaning tag) and which `entities` it is
+about, checked against the world at validate time with the same "cannot drift"
+guarantee the motif faces get — one shared `check_spec_refs` in `labkit`, so it is
+one mechanism, not a per-Lab copy. (In `emberhold`: the `siege` track and the
+`dark-knight` sprite both declare `hostile` / `the-shadow`; the vanguard party and
+`main-theme` declare `resolve`/`hope` and their keep.)
 
 **Phase 3 — Breadth.** Add Labs where deterministic theory is strongest and
 payoff is high: TileTracks (levels), UITracks (HUD/icons), SystemTracks

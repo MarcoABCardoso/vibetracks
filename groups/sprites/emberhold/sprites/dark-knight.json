@@ -1,6 +1,8 @@
 {
   "name": "dark-knight",
   "extends": "../artbook.json",
+  "meaning": "hostile",
+  "entity": "the-shadow",
   "_comment": "PALETTE SWAP of the knight \u2014 provably the same layers, only the colour table changes. The leitmotif move: a corrupted boss in shadow steel and bone gold.",
   "palette": {
     "steel": "#4a3d66",

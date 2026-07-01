@@ -3,6 +3,8 @@
   "extends": "../soundtrack.json",
   "_comment": "The anchor — the ONE track that states ember_theme in full (the hope face of the world's cross-modal motif). A→B form so the loop breathes: A sings the theme over a moving harp ostinato and a walking bass; B thins to just the theme's HEAD high on the bell over a rising progression, then hands back to A. Drive is in the accompaniment, not in restating the tune.",
   "bpm": 92,
+  "meaning": "hope",
+  "entity": "the-keep",
 
   "sections": [
     {

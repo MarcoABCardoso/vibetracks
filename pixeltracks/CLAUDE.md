@@ -93,6 +93,8 @@ Sprite groups live under `groups/sprites/` alongside the music groups under
 |-------|---------|
 | `name` | Output filename stem. |
 | `extends` | Path to the bible, e.g. `"../artbook.json"`. |
+| `meaning` | Optional world *meaning* tag (e.g. `"hope"`, `"hostile"`). Must be one declared in the bible's world; `python -m labs validate` enforces it. Requires the bible to `extends` a world. |
+| `entity` / `entities` | Optional world entity id, or list of ids, this sprite *is* (e.g. `"the-vanguard"`). Must resolve to a world entity. |
 | `size`, `scale`, `palette`, `background`, `outline` | Optional overrides. A `palette` override is the **palette-swap leitmotif**. |
 | `flip` | Optional `"h"`/`"v"`/`"hv"` — mirror the whole finished composite. Face a sprite the other way (an enemy mirroring the hero) without re-rigging: `dark-knight-battle` is `knight-battle`'s rig + dark palette + `flip:"h"`. |
 | `legend` | Optional sprite-level default `char → colorName` for `pixels` layers. |

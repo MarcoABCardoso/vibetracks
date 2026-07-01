@@ -20,6 +20,11 @@ module loads and validates a world and, crucially, checks **coherence across
 Labs**: does every motif face point at a motif that actually exists in the named
 Lab's bible? That check is what no prompt-per-asset workflow can offer — the
 guarantee that music and art moved together because they share a root.
+
+The world declares a *palette of meaning* and named *entities*; :func:`check_spec_refs`
+pushes those one level down, letting the **leaf specs** the AI actually authors —
+a track, a sprite — claim a meaning tag or reference an entity by id, validated
+against the world with the same "cannot drift" guarantee the motif faces get.
 """
 
 from __future__ import annotations
@@ -102,6 +107,65 @@ def _validate_face(lab: str, face, where: str) -> None:
         raise SpecError(f"{where}: unknown lab {lab!r} (labs: {sorted(BY_NAME)})")
     if not isinstance(face, dict) or "group" not in face or "motif" not in face:
         raise SpecError(f"{where}: must be {{'group': <name>, 'motif': <name>}}")
+
+
+# --- Leaf-spec references into the world (VISION.md Phase 2 finisher) --------- #
+#
+# Until now only a world's OWN motifs could name its meaning tags and entities.
+# These two helpers push that binding down to the leaf specs the AI edits day to
+# day — a track, a sprite — so a spec can declare what it *means* and *who it is
+# about*, checked against the world exactly as a wrong note is checked against the
+# key. Both Labs call the same function, so it is one mechanism, not a per-Lab copy.
+
+def check_spec_refs(data: dict, world: "World | None", where: str) -> tuple:
+    """Validate a leaf spec's optional references into its world.
+
+    Recognised fields on ``data``:
+
+    * ``meaning`` — a tag that must be one of the world's ``meaning`` keys (the
+      *palette of meaning* each Lab reads in its own medium);
+    * ``entity`` / ``entities`` — an id, or list of ids, into the world's
+      ``entities`` (``entities`` wins if both are present).
+
+    Returns ``(meaning, entities)`` — the tag or ``None``, and a list of ids — so
+    the caller can stash them on the resolved spec for tooling to surface. A spec
+    that references nothing is unaffected; a *standalone* spec (no world) that
+    names a meaning/entity is a clear error, not a silent no-op — you cannot point
+    at a world you do not descend from.
+    """
+    meaning = data.get("meaning")
+    entities = data.get("entities")
+    if entities is None:
+        entities = [data["entity"]] if "entity" in data else []
+    elif not isinstance(entities, list):
+        raise SpecError(f"{where}: 'entities' must be a list of entity ids, got {entities!r}")
+
+    if meaning is None and not entities:
+        return None, []
+    if world is None:
+        raise SpecError(f"{where}: references the world ('meaning'/'entity') but this "
+                        f"spec extends no world")
+    # `_`-prefixed keys are documentation (a world's `_comment`), not selectable tags.
+    valid_meanings = {k for k in world.meaning if not k.startswith("_")}
+    valid_entities = {k for k in world.entities if not k.startswith("_")}
+    if meaning is not None and meaning not in valid_meanings:
+        raise SpecError(f"{where}: meaning {meaning!r} is not in the world's palette of "
+                        f"meaning (have: {sorted(valid_meanings)})")
+    for eid in entities:
+        if eid not in valid_entities:
+            raise SpecError(f"{where}: unknown entity {eid!r} "
+                            f"(world declares: {sorted(valid_entities)})")
+    return meaning, entities
+
+
+def fmt_refs(meaning, entities) -> str:
+    """A short ``  [means X; about a, b]`` suffix for CLI listings (empty if none)."""
+    bits = []
+    if meaning:
+        bits.append(f"means {meaning}")
+    if entities:
+        bits.append("about " + ", ".join(entities))
+    return f"  [{'; '.join(bits)}]" if bits else ""
 
 
 def discover_worlds(root: str = ".") -> list:

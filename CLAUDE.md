@@ -72,8 +72,11 @@ in the named Lab, so the media provably cannot drift apart. The bundled
 `emberhold` world spans both media (`groups/music/emberhold` +
 `groups/sprites/emberhold`); its `ember` motif is the gold sun-crest you *see* and
 the `ember_theme` you *hear*, with a `fallen` transform (the `dark-knight`
-palette-swap ⇄ the `siege` dirge). Not every group needs a world — a bible with
-no `extends` is a standalone identity, exactly as before.
+palette-swap ⇄ the `siege` dirge). The meaning palette and entities reach the
+**leaf specs** too: a track or sprite may declare what it `means` (a meaning tag)
+and which `entities` it is about, checked against the world at validate time
+(shared `check_spec_refs` in `labkit`). Not every group needs a world — a bible
+with no `extends` is a standalone identity, exactly as before.
 
 ## The shared core & adding a Lab
 
