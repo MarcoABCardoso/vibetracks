@@ -19,8 +19,10 @@ Read `pixeltracks/CLAUDE.md` for the full spec reference, and
 motifs, the palette-swap leitmotif, animation timing, coherence ≠ repetition.
 The loop below is the procedure; the craft guide is what makes the output good.
 
-Note: PixelTracks is early, exploratory work — the raster engine is still
-limited, so sprites come out rough. Set expectations accordingly.
+Note: PixelTracks is a capable, deterministic pixel-art engine — it's genuinely
+good at pixel art and flat/stylised work (coherent sets, rigged poses, animation,
+higher-detail portraits) and doesn't aim at photoreal or painterly illustration.
+Author within that lane and it delivers.
 
 You can **see your output**: render a sprite, then read the PNG (it displays
 inline) and iterate, exactly as the music skill sends a WAV to the user. And so

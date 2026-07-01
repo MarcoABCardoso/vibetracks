@@ -1,0 +1,63 @@
+{
+  "name": "ranger-portrait",
+  "extends": "../artbook.json",
+  "meaning": "resolve",
+  "entity": "the-vanguard",
+  "_comment": "Bust-up RPG dialogue portrait: the party ranger. Built from the shared 'ranger_bust' base plus one pface_* expression overlay per frame, so the three faces (neutral / grin / angry) differ by expression alone and stay on-model with the rest of the Vanguard portraits. 32x34, renders to a 3-cell expression sheet + atlas.",
+  "size": [
+    32,
+    34
+  ],
+  "scale": 8,
+  "checks": [
+    {
+      "rule": "connected",
+      "layer": "bust"
+    },
+    {
+      "rule": "on_canvas",
+      "margin": 0
+    }
+  ],
+  "frames": [
+    {
+      "name": "neutral",
+      "layers": [
+        {
+          "name": "bust",
+          "shape": "ranger_bust"
+        },
+        {
+          "name": "face",
+          "shape": "pface_neutral"
+        }
+      ]
+    },
+    {
+      "name": "grin",
+      "layers": [
+        {
+          "name": "bust",
+          "shape": "ranger_bust"
+        },
+        {
+          "name": "face",
+          "shape": "pface_grin"
+        }
+      ]
+    },
+    {
+      "name": "angry",
+      "layers": [
+        {
+          "name": "bust",
+          "shape": "ranger_bust"
+        },
+        {
+          "name": "face",
+          "shape": "pface_angry"
+        }
+      ]
+    }
+  ]
+}
