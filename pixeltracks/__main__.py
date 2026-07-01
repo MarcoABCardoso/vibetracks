@@ -9,6 +9,7 @@ Note: PixelTracks is early, exploratory work — the procedural raster engine is
 still limited, so rendered sprites are rough compared with the music Lab.
 
     python -m pixeltracks validate                    # check every group's specs
+    python -m pixeltracks describe <group>            # index: motifs/sprites, no pixel grids
     python -m pixeltracks render tiny-knight/knight   # render one sprite to out/
     python -m pixeltracks render-all                  # render every sprite in every group
     python -m pixeltracks new <sprite> --group <g>    # scaffold a sprite spec
@@ -110,6 +111,21 @@ def cmd_validate(args) -> int:
                 ok = False
     print("\nAll specs valid." if ok else "\nValidation failed.")
     return 0 if ok else 1
+
+
+def cmd_describe(args) -> int:
+    from . import describe as _describe
+    groups = spec.discover_groups()
+    if not groups:
+        print(f"no sprite groups found (expected {ART_DIR}/<name>/{spec.BIBLE_FILE})",
+              file=sys.stderr)
+        return 1
+    targets = [_resolve_group(args.group, groups)] if args.group else groups
+    for i, g in enumerate(targets):
+        if i:
+            print()
+        print(_describe.format_report(_describe.describe_group(g)))
+    return 0
 
 
 def _render_one(sprite_path, bible, group_name, out_root) -> dict:
@@ -301,6 +317,9 @@ def main(argv=None) -> int:
     pv = sub.add_parser("validate", help="validate every group's specs")
     pv.add_argument("--group", help="limit to one group")
 
+    pd = sub.add_parser("describe", help="print a searchable index of a group's motifs/sprites")
+    pd.add_argument("group", nargs="?", help="limit to one group (default: every group)")
+
     pr = sub.add_parser("render", help="render one sprite to PNG")
     pr.add_argument("sprite", help="<group>/<sprite>, a sprite name, or a path to JSON")
     pr.add_argument("--group", help="group to look up a bare sprite name in")
@@ -335,6 +354,7 @@ def main(argv=None) -> int:
     args = p.parse_args(argv)
     return {
         "validate": cmd_validate,
+        "describe": cmd_describe,
         "render": cmd_render,
         "inspect": cmd_inspect,
         "render-all": cmd_render_all,
