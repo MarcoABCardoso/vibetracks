@@ -11,11 +11,17 @@
   "palette": {
     "outline": "#181420",
     "skin": "#e8b07a",
+    "skin_hi": "#f6d2a4",
     "skin_sh": "#bd7d4f",
+    "skin_dk": "#8a4f30",
+    "eye_white": "#dfe6f2",
+    "eye_dk": "#2a3350",
     "steel": "#6b8fc4",
     "steel_hi": "#b7d4f0",
     "steel_sh": "#3d5a86",
+    "steel_dk": "#26375a",
     "gold": "#f2c14e",
+    "gold_hi": "#ffe6a0",
     "gold_sh": "#b8862f",
     "cloak": "#c8443a",
     "cloak_hi": "#e87b5c",
@@ -39,6 +45,11 @@
     "shadow_hi": "#8a6bb0",
     "slime": "#6cc06c",
     "slime_hi": "#aee6a6",
+    "slime_sh": "#3f8f4a",
+    "bone_hi": "#f4f0dd",
+    "shadow_dk": "#3a2a52",
+    "rim_cool": "#cfe4ff",
+    "rim_warm": "#ffdca0",
     "flash": "#fff4d0"
   },
   "background": null,
@@ -46,14 +57,30 @@
     "color": "outline"
   },
   "ramps": {
+    "skin": [
+      "skin_dk",
+      "skin_sh",
+      "skin",
+      "skin_hi"
+    ],
     "steel": [
+      "steel_dk",
       "steel_sh",
       "steel",
       "steel_hi"
     ],
     "gold": [
       "gold_sh",
-      "gold"
+      "gold",
+      "gold_hi"
+    ],
+    "eye": [
+      "eye_dk",
+      "eye_white"
+    ],
+    "rim": [
+      "rim_warm",
+      "rim_cool"
     ],
     "cloak": [
       "cloak_sh",
@@ -81,314 +108,157 @@
     ]
   },
   "motifs": {
-    "knight": {
-      "_comment": "Anchor hero. Steel plate, red surcoat, gold gorget+belt. Drawn without weapons so the same body rigs the attack animation; sword/shield are separate motifs.",
-      "legend": {
-        "a": "steel",
-        "h": "steel_hi",
-        "d": "steel_sh",
-        "c": "cloak",
-        "g": "gold",
-        "k": "skin",
-        "e": "outline"
-      },
-      "pixels": [
-        "....................",
-        ".........cc.........",
-        "........cc..........",
-        ".......aaaaaa.......",
-        "......ahhhhhha......",
-        "......akkkkkka......",
-        "......aekkkkea......",
-        "......akkkkkka......",
-        ".......gaaaag.......",
-        ".....daaaaaaaad.....",
-        ".....aaaaccaaaa.....",
-        ".....aaaaccaaaa.....",
-        ".....daaaccaaad.....",
-        ".....gggggggggg.....",
-        "......daaaaaad......",
-        "......aaa..aaa......",
-        "......aaa..aaa......",
-        "......daa..aad......",
-        ".....dddd..dddd.....",
-        "...................."
-      ]
-    },
-    "knight_torso": {
-      "_comment": "Knight from the belt up \u2014 split from the legs so the torso can lean while the feet plant/lunge in the attack rig.",
-      "legend": {
-        "a": "steel",
-        "h": "steel_hi",
-        "d": "steel_sh",
-        "c": "cloak",
-        "g": "gold",
-        "k": "skin",
-        "e": "outline"
-      },
-      "pixels": [
-        "....................",
-        ".........cc.........",
-        "........cc..........",
-        ".......aaaaaa.......",
-        "......ahhhhhha......",
-        "......akkkkkka......",
-        "......aekkkkea......",
-        "......akkkkkka......",
-        ".......gaaaag.......",
-        ".....daaaaaaaad.....",
-        ".....aaaaccaaaa.....",
-        ".....aaaaccaaaa.....",
-        ".....daaaccaaad.....",
-        ".....gggggggggg....."
-      ]
-    },
     "knight_leg": {
+      "_comment": "Armoured leg 5x8 (thigh -> knee -> shin -> boot) with a steel_hi front stripe and steel_dk knee. Placed twice with opposing skew for a planted/striding stance. hip anchor pins to a chest hip_l/hip_r.",
       "legend": {
         "a": "steel",
+        "h": "steel_hi",
+        "H": "steel_dk",
         "d": "steel_sh"
       },
       "anchors": {
         "hip": [
-          1,
+          2,
           0
         ],
         "foot": [
-          1,
-          4
-        ]
-      },
-      "pixels": [
-        "aaa",
-        "aaa",
-        "aaa",
-        "daa",
-        "ddd"
-      ]
-    },
-    "knight_chest": {
-      "_comment": "Headless torso (gorget -> belt), cropped from knight_torso so the head can TURN independently of the body. Skew/squash this to lean the chest into a pose; place knight_head_3q on top.",
-      "legend": {
-        "a": "steel",
-        "h": "steel_hi",
-        "d": "steel_sh",
-        "c": "cloak",
-        "C": "cloak_hi",
-        "s": "cloak_sh",
-        "g": "gold"
-      },
-      "anchors": {
-        "neck": [
-          5,
-          0
-        ],
-        "shoulder_l": [
-          1,
-          1
-        ],
-        "shoulder_r": [
-          8,
-          1
-        ],
-        "hip_l": [
-          3,
-          5
-        ],
-        "hip_r": [
-          6,
-          5
-        ],
-        "hips": [
-          5,
-          5
-        ]
-      },
-      "pixels": [
-        "..gaaaag..",
-        "daaaaaaaad",
-        "haaCccaaad",
-        "aaaCccsaaa",
-        "daaCcssaad",
-        "gggggggggg"
-      ]
-    },
-    "knight_head_3q": {
-      "_comment": "Three-quarter helmeted head facing RIGHT (a genuine redraw, not an affine turn): features clustered to the leading side, a nose bump on the right contour, the far side of the helm smaller, a red plume streaming back. Turning a flat frontal face needs a redraw, not math.",
-      "legend": {
-        "a": "steel",
-        "h": "steel_hi",
-        "d": "steel_sh",
-        "k": "skin",
-        "e": "outline",
-        "c": "cloak",
-        "C": "cloak_hi",
-        "g": "gold"
-      },
-      "anchors": {
-        "neck": [
-          4,
+          2,
           7
         ]
       },
       "pixels": [
-        "..Caaa..",
-        ".cCaahh.",
-        "ccaaahhk",
-        ".caghkkk",
-        ".aaekkkk",
-        ".aakkkkk",
-        ".aadkkk.",
-        "..aaad.."
+        "aaaaa",
+        "haaad",
+        "haaad",
+        "aHaad",
+        ".aaad",
+        ".haad",
+        ".aadd",
+        ".ddd."
       ]
     },
-    "knight_arm": {
-      "_comment": "Armoured limb (gauntlet at the top row) for a raised sword arm; rotate it about the shoulder so it reaches up to the hilt. Steel highlight stripe keeps it from reading as a blob when it crosses the surcoat.",
+    "knight_chest": {
+      "_comment": "Headless torso (gorget -> belt), 15x10, cropped so the head can TURN independently of the body. Steel breastplate with a steel_dk crease and rounded pauldrons, a red surcoat panel with cloak_sh folds down the centre, gold gorget collar + gold belt. Skew/squash to lean the chest into a pose; place knight_head_3q on top. Recolor the steel ramp for casters (mage/cloth).",
       "legend": {
         "a": "steel",
         "h": "steel_hi",
+        "H": "steel_dk",
+        "d": "steel_sh",
+        "c": "cloak",
+        "C": "cloak_hi",
+        "x": "cloak_sh",
+        "g": "gold",
+        "G": "gold_hi"
+      },
+      "anchors": {
+        "neck": [
+          7,
+          0
+        ],
+        "shoulder_l": [
+          1,
+          2
+        ],
+        "shoulder_r": [
+          13,
+          2
+        ],
+        "hip_l": [
+          4,
+          9
+        ],
+        "hip_r": [
+          10,
+          9
+        ],
+        "hips": [
+          7,
+          9
+        ]
+      },
+      "pixels": [
+        "......ggg......",
+        "..haaaaaaaaaah.",
+        "haaadgggggdaaah",
+        "haahCccccxcaaah",
+        "haadcCcccxcdaah",
+        "haadcccccxxdaah",
+        "aaadccCccxxdaaa",
+        "aaHdcccxxxxdHaa",
+        "aggggggggggggga",
+        "..aadaaaaadaa.."
+      ]
+    },
+    "knight_head_3q": {
+      "_comment": "Three-quarter helmeted head facing RIGHT (a genuine redraw, not an affine turn), 13x14 with real eyes (white sclera + dark pupil under a gold visor brow), skin_hi/skin_sh face modelling, a steel_dk-shaded helm dome and a red plume streaming back-left. Bigger head = the prominent chibi head the party now uses everywhere. neck anchor pins to knight_chest.neck.",
+      "legend": {
+        "a": "steel",
+        "h": "steel_hi",
+        "H": "steel_dk",
+        "d": "steel_sh",
+        "k": "skin",
+        "K": "skin_hi",
+        "s": "skin_sh",
+        "S": "skin_dk",
+        "w": "eye_white",
+        "p": "eye_dk",
+        "c": "cloak",
+        "C": "cloak_hi",
+        "x": "cloak_sh",
+        "g": "gold",
+        "G": "gold_hi"
+      },
+      "anchors": {
+        "neck": [
+          6,
+          13
+        ]
+      },
+      "pixels": [
+        "....aaaaa....",
+        "..c.aahhha...",
+        ".ccaahhhhaa..",
+        ".ccaahhhhhaa.",
+        ".cxaahhhhhaaa",
+        "..xaddggggda.",
+        "..aaKkkkkksd.",
+        "..aakkkkkkkd.",
+        "..aakpkkwpkd.",
+        "..aKkkkkkKsd.",
+        "..adkKksKksd.",
+        "...akksskd...",
+        "...aKssKd....",
+        "....aHd......"
+      ]
+    },
+    "knight_arm": {
+      "_comment": "Armoured limb 4x9 (gauntlet at the hand end) for a raised sword arm; rotate it about the shoulder so it reaches up to the hilt. Steel_hi stripe + steel_dk elbow keep it from reading as a blob when it crosses the surcoat.",
+      "legend": {
+        "a": "steel",
+        "h": "steel_hi",
+        "H": "steel_dk",
         "d": "steel_sh"
       },
       "anchors": {
         "shoulder": [
           1,
-          5
+          8
         ],
         "hand": [
-          1,
+          2,
           0
         ]
       },
       "pixels": [
-        "hha",
-        "aah",
-        "dah",
-        "dah",
-        "daa",
-        "da."
-      ]
-    },
-    "cape": {
-      "_comment": "Streaming cloak that hangs off the shoulders; skew it so it flows with the motion and breaks the silhouette's symmetry (an easy 'this figure is moving' cue). Interior shading only.",
-      "legend": {
-        "c": "cloak",
-        "C": "cloak_hi",
-        "s": "cloak_sh"
-      },
-      "anchors": {
-        "collar": [
-          5,
-          0
-        ]
-      },
-      "pixels": [
-        "..Cc...",
-        ".Cccs..",
-        ".Cccs..",
-        ".ccccs.",
-        ".cccss.",
-        "ccccss.",
-        "cccsss.",
-        "cccss..",
-        ".csss..",
-        "..ss..."
-      ]
-    },
-    "mage": {
-      "legend": {
-        "m": "mage",
-        "M": "mage_hi",
-        "n": "mage_sh",
-        "k": "skin",
-        "e": "outline",
-        "g": "gold"
-      },
-      "pixels": [
-        ".........m..........",
-        ".........mm.........",
-        "........mmm.........",
-        "........mMmm........",
-        ".......mmMMm........",
-        ".......mmMMmm.......",
-        "......mmmmmmmm......",
-        ".....mmmgggmmmm.....",
-        ".......kkkkkk.......",
-        ".......kekkek.......",
-        ".......kkkkkk.......",
-        "......mmmmmmmm......",
-        ".....mmMMMMMMmm.....",
-        ".....mnMMMMMMnm.....",
-        ".....mnMMMMMMnm.....",
-        "....mmnMMMMMMnmm....",
-        "....mmnnMMMMnnmm....",
-        "....mmmmmmmmmmmm....",
-        "....mmmm....mmmm....",
-        "...................."
-      ]
-    },
-    "ranger": {
-      "legend": {
-        "l": "leaf",
-        "L": "leaf_hi",
-        "s": "leaf_sh",
-        "b": "leather",
-        "B": "leather_sh",
-        "k": "skin",
-        "e": "outline"
-      },
-      "pixels": [
-        "....................",
-        "........llll........",
-        ".......llllll.......",
-        "......llLLLLll......",
-        "......llkkkkll......",
-        "......lekkkkel......",
-        "......llkkkkll......",
-        ".......lkkkkl.......",
-        "......bbbbbbbb......",
-        ".....bbBlllBbbb.....",
-        ".....bbbllllbbb.....",
-        ".....bsbbbbbbsb.....",
-        ".....bbbbbbbbbb.....",
-        "......bbbbbbbb......",
-        "......bbb..bbb......",
-        "......bbb..bbb......",
-        "......sbb..bbs......",
-        "......sss..sss......",
-        ".....ssss..ssss.....",
-        "...................."
-      ]
-    },
-    "cleric": {
-      "legend": {
-        "w": "cloth",
-        "W": "cloth_hi",
-        "v": "cloth_sh",
-        "k": "skin",
-        "e": "outline",
-        "g": "gold",
-        "G": "gold_sh"
-      },
-      "pixels": [
-        "....................",
-        ".......wwwwww.......",
-        "......wwwwwwww......",
-        "......wggggggw......",
-        "......wwkkkkww......",
-        "......wekkkkew......",
-        "......wwkkkkww......",
-        ".......wkkkkw.......",
-        "......wwwwwwww......",
-        ".....wwWggggWww.....",
-        ".....wwWgGGgWww.....",
-        ".....wwWWggWWww.....",
-        ".....wvWWWWWWvw.....",
-        "....wwvWWWWWWvww....",
-        "....wwvWWWWWWvww....",
-        "....wwWWWWWWWWww....",
-        "....wwvvWWWWvvww....",
-        "....wwwwwwwwwwww....",
-        "....wwww....wwww....",
-        "...................."
+        ".hh.",
+        "hhaa",
+        "haad",
+        "haad",
+        "haad",
+        "aHad",
+        "aaad",
+        "haad",
+        "hha."
       ]
     },
     "sword": {
@@ -421,60 +291,72 @@
       ]
     },
     "sword_long": {
-      "_comment": "Longer blade for the battle knight (a longsword), same 1px-wide steel edge as 'sword' so it reads as the same weapon family. Supersampled affine keeps the thin blade whole when rotated. Anchors: grip (hand) + guard.",
+      "_comment": "Longsword 4x18 for the battle knight, scaled up to match the bigger body: a 2px steel blade with a steel_hi lit edge, a gold crossguard (gold_hi glint) and a gold_sh grip + pommel. Supersampled affine keeps the thin blade whole when rotated. Anchors: grip (hand) + guard.",
       "legend": {
         "a": "steel",
         "h": "steel_hi",
+        "H": "steel_dk",
         "g": "gold",
+        "G": "gold_hi",
         "p": "gold_sh"
       },
       "anchors": {
         "grip": [
           1,
-          12
+          16
         ],
         "guard": [
           1,
-          10
+          12
         ]
       },
       "pixels": [
-        ".h.",
-        ".h.",
-        ".a.",
-        ".a.",
-        ".a.",
-        ".a.",
-        ".a.",
-        ".a.",
-        ".a.",
-        ".a.",
-        "ggg",
-        ".p.",
-        ".p."
+        ".h..",
+        ".ha.",
+        ".ha.",
+        ".ha.",
+        ".ha.",
+        ".ha.",
+        ".ha.",
+        ".ha.",
+        ".ha.",
+        ".ha.",
+        ".ha.",
+        ".ha.",
+        "gGgg",
+        ".Gp.",
+        ".p..",
+        ".p..",
+        ".p..",
+        ".H.."
       ]
     },
     "shield": {
+      "_comment": "Heater shield 8x9 with a gold boss + sun disc, steel_hi rim and steel_sh underside. In knight-battle the steel ramp is recoloured to the red surcoat (cloak) so it reads against the blue armour; the gold boss stays gold.",
       "legend": {
         "a": "steel",
         "h": "steel_hi",
+        "H": "steel_dk",
         "d": "steel_sh",
-        "g": "gold"
+        "g": "gold",
+        "G": "gold_hi"
       },
       "anchors": {
         "center": [
-          2,
-          3
+          4,
+          4
         ]
       },
       "pixels": [
-        "haaah",
-        "aaaaa",
-        "aagaa",
-        "aggga",
-        "aagaa",
-        "daaad",
-        ".ddd."
+        "hhaaaah.",
+        "haaaaaah",
+        "haagGgaa",
+        "aagGGGaa",
+        "aaGGGGGa",
+        "aagGGgaa",
+        "daagggad",
+        ".daaaad.",
+        "..daad.."
       ]
     },
     "staff": {
@@ -675,107 +557,146 @@
       ]
     },
     "robe_skirt": {
-      "_comment": "Flared robe bottom for casters (mage/cleric), replacing the two armoured legs. Uses steel-ramp legend so one recolor map covers chest+skirt. Anchor 'waist' pins to chest.hips.",
+      "_comment": "Flared robe bottom 15x12 for casters (mage/cleric), replacing the two armoured legs and matching the 15px chest. Uses the steel-ramp legend (a/h/H/d) so one recolor map covers chest+skirt; steel_hi crest + steel_dk fold shadows give it drape. Anchor 'waist' pins to chest.hips.",
       "legend": {
         "a": "steel",
-        "d": "steel_sh",
-        "h": "steel_hi"
+        "h": "steel_hi",
+        "H": "steel_dk",
+        "d": "steel_sh"
       },
       "anchors": {
         "waist": [
-          4,
+          7,
           0
         ]
       },
       "pixels": [
-        "...aaaa...",
-        "..aahhaa..",
-        "..aaaaaa..",
-        ".aaaaaaaa.",
-        ".aaaaaaaa.",
-        "aaaaaaaaaa",
-        "aadaaaadaa",
-        "aa.daad.aa"
+        ".....aaaaa.....",
+        "....ahhhha.....",
+        "...aaaaaaaa....",
+        "..aaaaaaaaaa...",
+        "..aahaaaahaa...",
+        ".aaahaaaahaaa..",
+        ".aadaaaaaadaa..",
+        "aaadaaaaaadaaa.",
+        "aadaaaaaaaadaa.",
+        "aadaaHaaHaadaa.",
+        "aHddaaHaaHddHaa",
+        "aHd.dHa.aHd.dHa"
       ]
     },
     "mage_head_3q": {
-      "_comment": "Three-quarter mage: pointed hat leaning back-left, face clustered right.",
+      "_comment": "Three-quarter mage 13x14: a pointed wizard hat leaning back with a gold brim band, an old-wizard face (real eyes, long nose, short grey beard). Same 13x14 frame + neck[6,13] as the other party heads so it swaps onto knight_chest.",
       "legend": {
         "m": "mage",
         "M": "mage_hi",
         "n": "mage_sh",
         "k": "skin",
-        "e": "outline",
-        "g": "gold"
+        "K": "skin_hi",
+        "s": "skin_sh",
+        "S": "skin_dk",
+        "w": "eye_white",
+        "p": "eye_dk",
+        "g": "gold",
+        "G": "gold_hi",
+        "W": "bone",
+        "v": "bone_sh"
       },
       "anchors": {
         "neck": [
-          4,
-          7
+          6,
+          13
         ]
       },
       "pixels": [
-        "...mm...",
-        "..mmm...",
-        "..mMmm..",
-        ".mmmmm..",
-        "mmmmmm..",
-        "..kkkk..",
-        "..ekkk..",
-        "..kkkk.."
+        "..m..........",
+        "..mm.........",
+        ".mMm.........",
+        ".mMmm........",
+        "mmMMm........",
+        "mmMMmmm......",
+        ".nggggggggn..",
+        "...kkkkkksS..",
+        "...kpkkwpks..",
+        "...KkkkkkKs..",
+        "..WkksKksW...",
+        "..WWkssWWW...",
+        "...WWvWW.....",
+        "....WvW......"
       ]
     },
     "ranger_head_3q": {
-      "_comment": "Three-quarter ranger: leaf hood with the face in shadow, 3/4 right.",
+      "_comment": "Three-quarter ranger 13x14: a leaf hood framing the face, real eyes, lean jaw. Same 13x14 frame + neck[6,13] as the other party heads so it swaps onto knight_chest.",
       "legend": {
         "l": "leaf",
         "L": "leaf_hi",
-        "s": "leaf_sh",
+        "z": "leaf_sh",
         "k": "skin",
-        "e": "outline"
+        "K": "skin_hi",
+        "s": "skin_sh",
+        "S": "skin_dk",
+        "w": "eye_white",
+        "p": "eye_dk"
       },
       "anchors": {
         "neck": [
-          4,
-          7
+          6,
+          13
         ]
       },
       "pixels": [
-        "..llll..",
-        ".llllll.",
-        ".lLLlll.",
-        ".llkkkl.",
-        ".lekkkl.",
-        ".llkkkl.",
-        "..lkkl..",
-        "...ss..."
+        "....llll.....",
+        "...llllll....",
+        "..llLLLLll...",
+        ".llLLLLLLll..",
+        ".llLLLLLLll..",
+        ".lzLLLLLLzl..",
+        ".lzkkkkkkszl.",
+        ".lzkkkkkkkzl.",
+        ".lzkpkkwpkzl.",
+        ".lzKkkkkkKzl.",
+        ".lzskKksKkzl.",
+        "..zkkssksz...",
+        "..zzksskzz...",
+        "...zkksz....."
       ]
     },
     "cleric_head_3q": {
-      "_comment": "Three-quarter cleric: white coif with a gold circlet, 3/4 right.",
+      "_comment": "Three-quarter cleric 13x14: a white coif under a gold circlet, real eyes, calm jaw. Same 13x14 frame + neck[6,13] as the other party heads so it swaps onto knight_chest.",
       "legend": {
         "w": "cloth",
-        "W": "cloth_hi",
+        "H": "cloth_hi",
         "v": "cloth_sh",
         "k": "skin",
-        "e": "outline",
-        "g": "gold"
+        "K": "skin_hi",
+        "s": "skin_sh",
+        "S": "skin_dk",
+        "y": "eye_white",
+        "p": "eye_dk",
+        "g": "gold",
+        "G": "gold_hi"
       },
       "anchors": {
         "neck": [
-          4,
-          7
+          6,
+          13
         ]
       },
       "pixels": [
-        "..wwww..",
-        ".wwwwww.",
-        ".wggggw.",
-        ".wwkkkw.",
-        ".wekkkw.",
-        ".wwkkkw.",
-        "..wkkw..",
-        "...ww..."
+        "....wwww.....",
+        "...wwHHww....",
+        "..wwHHHHww...",
+        ".wwHHHHHHww..",
+        ".wHHHHHHHHw..",
+        ".wggggggggw..",
+        ".wvkkkkkksvw.",
+        ".wvkkkkkkksw.",
+        ".wvkpkkypksw.",
+        ".wvKkkkkkKsw.",
+        ".wvskKksKksw.",
+        "..vkkssksv...",
+        "..wvksskvw...",
+        "...wv..vw...."
       ]
     },
     "knight_bust": {
@@ -792,7 +713,8 @@
         "k": "skin",
         "s": "skin_sh",
         "F": "steel",
-        "D": "steel_sh"
+        "D": "steel_sh",
+        "K": "skin_hi"
       },
       "pixels": [
         "...............cc...............",
@@ -804,14 +726,14 @@
         ".........haaaaahhaaaaad.........",
         "........gggggggggggggggg........",
         "........FFDkkkkkkkkkkDFF........",
-        "........FDkkkkkkkkkkkkDF........",
+        "........FDkkkKKKKKKkkkDF........",
         "........FDkksssssssskkDF........",
         "........FDkkkkkkkkkkkkDF........",
-        "........FDkkkkkkkkkkkkDF........",
-        "........FDkkkkkkkkkkkkDF........",
+        "........FDkkkkkKkkkkkkDF........",
+        "........FDkkkkkKkkkkkkDF........",
         "........FDkkkkksskkkkkDF........",
         "........FDkkkkksskkkkkDF........",
-        "........FDkkkkkkkkkkkkDF........",
+        "........FDkKkkkkkkkkKkDF........",
         "........FDkkkkkkkkkkkkDF........",
         "........FDkkkkkkkkkkkkDF........",
         "........FDksssssssssskDF........",
@@ -844,7 +766,8 @@
         "F": "mage",
         "D": "mage_sh",
         "W": "bone",
-        "w": "bone_sh"
+        "w": "bone_sh",
+        "K": "skin_hi"
       },
       "pixels": [
         "...............mm...............",
@@ -859,11 +782,11 @@
         "........FDkksssssssskkDF........",
         "........FDkWWkkkkkkWWkDF........",
         "........FDkkkkkkkkkkkkDF........",
-        "........FDskkkkkkkkkksDF........",
-        "........FDskkkkkkkkkksDF........",
+        "........FDskkkkKkkkkksDF........",
+        "........FDskkkkKkkkkksDF........",
         "........FDsskkksskkkssDF........",
         "........FDsskkksskkkssDF........",
-        "........FDskkkkkkkkkksDF........",
+        "........FDsKkkkkkkkkKsDF........",
         "........FDWWkkkkkkkkWWDF........",
         "........FDWWkkkkkkkkWWDF........",
         "........FDWWWkkkkkkWWWDF........",
@@ -896,7 +819,8 @@
         "k": "skin",
         "s": "skin_sh",
         "F": "leaf",
-        "D": "leaf_sh"
+        "D": "leaf_sh",
+        "K": "skin_hi"
       },
       "pixels": [
         "..............llll..............",
@@ -908,14 +832,14 @@
         "........llzLLLLLLLLLLzll........",
         "........llzzzzzzzzzzzzll........",
         "........FFDkkkkkkkkkkDFF........",
+        "........FDskkKKKKKKkksDF........",
         "........FDskkkkkkkkkksDF........",
         "........FDskkkkkkkkkksDF........",
-        "........FDskkkkkkkkkksDF........",
-        "........FDskkkkkkkkkksDF........",
-        "........FDskkkkkkkkkksDF........",
+        "........FDskkkkKkkkkksDF........",
+        "........FDskkkkKkkkkksDF........",
         "........FDskkkksskkkksDF........",
         "........FDskkkksskkkksDF........",
-        "........FDskkkkkkkkkksDF........",
+        "........FDsKkkkkkkkkKsDF........",
         "........FDskkkkkkkkkksDF........",
         "........FDsskkkkkkkkssDF........",
         "........FDskssssssssksDF........",
@@ -946,7 +870,8 @@
         "k": "skin",
         "s": "skin_sh",
         "F": "cloth",
-        "D": "cloth_sh"
+        "D": "cloth_sh",
+        "K": "skin_hi"
       },
       "pixels": [
         "..............wwww..............",
@@ -958,14 +883,14 @@
         "........wwwwwwwwwwwwwwww........",
         "........gggggggggggggggg........",
         "........FFDkkkkkkkkkkDFF........",
-        "........FDkkkkkkkkkkkkDF........",
+        "........FDkkkKKKKKKkkkDF........",
         "........FDkksssssssskkDF........",
         "........FDkkkkkkkkkkkkDF........",
         "........FDkksssssssskkDF........",
-        "........FDkkkkkkkkkkkkDF........",
+        "........FDkkkkkKkkkkkkDF........",
         "........FDkkkkksskkkkkDF........",
         "........FDkkskksskkskkDF........",
-        "........FDkkskkkkkkskkDF........",
+        "........FDkKskkkkkksKkDF........",
         "........FDkkkkkkkkkkkkDF........",
         "........FDkkkkkkkkkkkkDF........",
         "........FDksssssssssskDF........",
@@ -986,10 +911,11 @@
       ]
     },
     "pface_neutral": {
-      "_comment": "Shared expression overlay: level brows, calm mouth. Lands on any *_bust face core.",
+      "_comment": "Shared expression overlay: open eyes with real whites+pupils framed by level lids, calm mouth. Lands on any *_bust face core (eyes at cols 12-13 / 18-19, rows 11-13).",
       "legend": {
         "e": "outline",
-        "w": "bone"
+        "w": "eye_white",
+        "p": "eye_dk"
       },
       "pixels": [
         "................................",
@@ -1004,7 +930,7 @@
         "................................",
         "................................",
         "............ee....ee............",
-        "................................",
+        "............wp....pw............",
         "............ee....ee............",
         "................................",
         "................................",
@@ -1029,10 +955,12 @@
       ]
     },
     "pface_grin": {
-      "_comment": "Shared expression overlay: raised brows, open toothy grin.",
+      "_comment": "Shared expression overlay: raised brows, bright eyes, open toothy grin.",
       "legend": {
         "e": "outline",
-        "w": "bone"
+        "w": "eye_white",
+        "p": "eye_dk",
+        "t": "bone"
       },
       "pixels": [
         "................................",
@@ -1044,15 +972,15 @@
         "................................",
         "................................",
         "................................",
+        "...........ee......ee...........",
         "................................",
         "............ee....ee............",
-        "................................",
-        "................................",
+        "............wp....pw............",
         "............ee....ee............",
         "................................",
         "................................",
         ".............eeeeee.............",
-        ".............ewwwwe.............",
+        ".............etttte.............",
         "..............eeee..............",
         "................................",
         "................................",
@@ -1072,13 +1000,13 @@
       ]
     },
     "pface_angry": {
-      "_comment": "Shared expression overlay: furrowed V brows, downturned scowl.",
+      "_comment": "Shared expression overlay: furrowed V brows over hooded eyes, downturned scowl.",
       "legend": {
         "e": "outline",
-        "w": "bone"
+        "w": "eye_white",
+        "p": "eye_dk"
       },
       "pixels": [
-        "................................",
         "................................",
         "................................",
         "................................",
@@ -1091,12 +1019,13 @@
         "...........e........e...........",
         "............e......e............",
         ".............e....e.............",
+        "................................",
+        "............wp....pw............",
         "............ee....ee............",
         "................................",
         "................................",
-        "................................",
+        "..............e..e..............",
         "..............eeee..............",
-        ".............e....e.............",
         "................................",
         "................................",
         "................................",

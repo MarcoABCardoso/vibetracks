@@ -3,18 +3,52 @@
   "extends": "../artbook.json",
   "meaning": "resolve",
   "entity": "the-vanguard",
-  "layers": [
+  "_comment": "Field cleric as a 32x34 three-quarter idle on the shared rig: recoloured knight_chest (cream/gold) + robe_skirt, white-coif 3/4 head, one arm holding a mace upright at the side. Same build as the rest of the party.",
+  "size": [
+    32,
+    34
+  ],
+  "scale": 8,
+  "checks": [
+    { "rule": "connected" },
+    { "rule": "on_canvas", "margin": 0 }
+  ],
+  "skeleton": [
     {
-      "name": "body",
-      "shape": "cleric"
+      "name": "robe",
+      "shape": "robe_skirt",
+      "pivot": "waist",
+      "attach": { "to": "chest", "anchor": "hips", "shift": [ 0, -1 ] },
+      "recolor": { "steel": "cloth", "steel_hi": "cloth_hi", "steel_sh": "cloth_sh", "steel_dk": "cloth_sh" }
+    },
+    {
+      "name": "chest",
+      "shape": "knight_chest",
+      "pivot": "hips",
+      "at": [ 16, 22 ],
+      "skew": [ -0.05, 0.0 ],
+      "recolor": { "steel": "cloth", "steel_hi": "cloth_hi", "steel_sh": "cloth_sh", "steel_dk": "cloth_sh", "cloak": "gold", "cloak_hi": "gold", "cloak_sh": "gold_sh" }
+    },
+    {
+      "name": "mace-arm",
+      "shape": "knight_arm",
+      "pivot": "shoulder",
+      "attach": { "to": "chest", "anchor": "shoulder_r" },
+      "rotate": 174,
+      "recolor": { "steel": "cloth", "steel_hi": "cloth_hi", "steel_sh": "cloth_sh", "steel_dk": "cloth_sh" }
     },
     {
       "name": "mace",
       "shape": "mace",
-      "offset": [
-        15,
-        7
-      ]
+      "pivot": "grip",
+      "attach": { "to": "mace-arm", "anchor": "hand" },
+      "rotate": 2
+    },
+    {
+      "name": "head",
+      "shape": "cleric_head_3q",
+      "pivot": "neck",
+      "attach": { "to": "chest", "anchor": "neck" }
     }
   ]
 }

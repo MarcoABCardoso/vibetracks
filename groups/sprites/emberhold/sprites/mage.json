@@ -3,18 +3,58 @@
   "extends": "../artbook.json",
   "meaning": "resolve",
   "entity": "the-vanguard",
-  "layers": [
+  "_comment": "Field mage as a 32x34 three-quarter idle on the shared rig: recoloured knight_chest + robe_skirt, pointed-hat 3/4 head, one arm holding a staff upright at the side with a small spark at the orb. Same build as the rest of the party.",
+  "size": [
+    32,
+    34
+  ],
+  "scale": 8,
+  "checks": [
+    { "rule": "connected" },
+    { "rule": "on_canvas", "margin": 0 }
+  ],
+  "skeleton": [
     {
-      "name": "body",
-      "shape": "mage"
+      "name": "robe",
+      "shape": "robe_skirt",
+      "pivot": "waist",
+      "attach": { "to": "chest", "anchor": "hips", "shift": [ 0, -1 ] },
+      "recolor": { "steel": "mage", "steel_hi": "mage_hi", "steel_sh": "mage_sh", "steel_dk": "mage_sh" }
+    },
+    {
+      "name": "chest",
+      "shape": "knight_chest",
+      "pivot": "hips",
+      "at": [ 16, 22 ],
+      "skew": [ -0.05, 0.0 ],
+      "recolor": { "steel": "mage", "steel_hi": "mage_hi", "steel_sh": "mage_sh", "steel_dk": "mage_sh", "cloak": "mage_sh", "cloak_hi": "mage", "cloak_sh": "mage_sh" }
+    },
+    {
+      "name": "staff-arm",
+      "shape": "knight_arm",
+      "pivot": "shoulder",
+      "attach": { "to": "chest", "anchor": "shoulder_r" },
+      "rotate": 172,
+      "recolor": { "steel": "mage", "steel_hi": "mage_hi", "steel_sh": "mage_sh", "steel_dk": "mage_sh" }
     },
     {
       "name": "staff",
       "shape": "staff",
-      "offset": [
-        3,
-        6
-      ]
+      "pivot": "grip",
+      "attach": { "to": "staff-arm", "anchor": "hand" },
+      "rotate": 2
+    },
+    {
+      "name": "spark",
+      "shape": "spark",
+      "pivot": [ 2, 2 ],
+      "attach": { "to": "staff", "anchor": "tip" }
+    },
+    {
+      "name": "head",
+      "shape": "mage_head_3q",
+      "pivot": "neck",
+      "attach": { "to": "chest", "anchor": "neck" }
     }
   ]
 }

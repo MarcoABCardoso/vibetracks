@@ -3,27 +3,121 @@
   "extends": "../artbook.json",
   "meaning": "resolve",
   "entity": "the-vanguard",
-  "_comment": "Anchor sprite: knight body, sword held up on the right, shield held in FRONT of the chest (drawn over the body so it reads as a raised guard, not a slab behind the arm).",
-  "layers": [
+  "_comment": "Anchor sprite: the Vanguard knight as a 32x34 three-quarter idle, built from the shared rig (chest + two legs + 3/4 helmed head + sword arm + shield) rather than a flat front-on body. Calm standing weight-shift: chest nearly upright, feet planted, sword held vertical in a salute, shield forward. Same rig the battle/attack sprites use, so the whole party reads as one build.",
+  "size": [
+    32,
+    34
+  ],
+  "scale": 8,
+  "checks": [
     {
-      "name": "body",
-      "shape": "knight"
+      "rule": "connected"
     },
     {
-      "name": "sword",
-      "shape": "sword",
-      "offset": [
+      "rule": "on_canvas",
+      "margin": 0
+    },
+    {
+      "rule": "top_above",
+      "layer": "sword",
+      "of": "chest"
+    }
+  ],
+  "skeleton": [
+    {
+      "name": "back-leg",
+      "shape": "knight_leg",
+      "pivot": "hip",
+      "attach": {
+        "to": "chest",
+        "anchor": "hip_l",
+        "shift": [
+          0,
+          0
+        ]
+      },
+      "skew": [
+        -0.1,
+        0.0
+      ]
+    },
+    {
+      "name": "front-leg",
+      "shape": "knight_leg",
+      "pivot": "hip",
+      "attach": {
+        "to": "chest",
+        "anchor": "hip_r",
+        "shift": [
+          1,
+          0
+        ]
+      },
+      "skew": [
+        0.1,
+        0.0
+      ]
+    },
+    {
+      "name": "chest",
+      "shape": "knight_chest",
+      "pivot": "hips",
+      "at": [
         15,
-        5
+        24
+      ],
+      "skew": [
+        -0.05,
+        0.0
       ]
     },
     {
       "name": "shield",
       "shape": "shield",
-      "offset": [
-        5,
-        9
-      ]
+      "pivot": "center",
+      "attach": {
+        "to": "chest",
+        "anchor": "hips",
+        "shift": [
+          -3,
+          -1
+        ]
+      },
+      "recolor": {
+        "steel": "cloak",
+        "steel_hi": "cloak_hi",
+        "steel_sh": "cloak_sh",
+        "steel_dk": "cloak_sh"
+      }
+    },
+    {
+      "name": "sword-arm",
+      "shape": "knight_arm",
+      "pivot": "shoulder",
+      "attach": {
+        "to": "chest",
+        "anchor": "shoulder_r"
+      },
+      "rotate": 147
+    },
+    {
+      "name": "sword",
+      "shape": "sword_long",
+      "pivot": "grip",
+      "attach": {
+        "to": "sword-arm",
+        "anchor": "hand"
+      },
+      "rotate": 16
+    },
+    {
+      "name": "head",
+      "shape": "knight_head_3q",
+      "pivot": "neck",
+      "attach": {
+        "to": "chest",
+        "anchor": "neck"
+      }
     }
   ]
 }

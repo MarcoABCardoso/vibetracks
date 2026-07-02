@@ -3,18 +3,61 @@
   "extends": "../artbook.json",
   "meaning": "resolve",
   "entity": "the-vanguard",
-  "layers": [
+  "_comment": "Field ranger as a 32x34 three-quarter idle on the shared rig: recoloured knight_chest (leaf/leather) + leather legs, leaf-hood 3/4 head, one arm holding the bow upright at the side (undrawn). Same build as the rest of the party.",
+  "size": [
+    32,
+    34
+  ],
+  "scale": 8,
+  "checks": [
+    { "rule": "on_canvas", "margin": 0 },
+    { "rule": "touches", "layer": "back-leg" },
+    { "rule": "touches", "layer": "front-leg" }
+  ],
+  "skeleton": [
     {
-      "name": "body",
-      "shape": "ranger"
+      "name": "back-leg",
+      "shape": "knight_leg",
+      "pivot": "hip",
+      "attach": { "to": "chest", "anchor": "hip_l", "shift": [ 0, 0 ] },
+      "skew": [ -0.1, 0.0 ],
+      "recolor": { "steel": "leather", "steel_hi": "leather", "steel_sh": "leather_sh", "steel_dk": "leather_sh" }
+    },
+    {
+      "name": "front-leg",
+      "shape": "knight_leg",
+      "pivot": "hip",
+      "attach": { "to": "chest", "anchor": "hip_r", "shift": [ 1, 0 ] },
+      "skew": [ 0.1, 0.0 ],
+      "recolor": { "steel": "leather", "steel_hi": "leather", "steel_sh": "leather_sh", "steel_dk": "leather_sh" }
+    },
+    {
+      "name": "chest",
+      "shape": "knight_chest",
+      "pivot": "hips",
+      "at": [ 15, 23 ],
+      "skew": [ -0.05, 0.0 ],
+      "recolor": { "steel": "leaf", "steel_hi": "leaf_hi", "steel_sh": "leaf_sh", "steel_dk": "leaf_sh", "cloak": "leather", "cloak_hi": "leather", "cloak_sh": "leather_sh" }
+    },
+    {
+      "name": "bow-arm",
+      "shape": "knight_arm",
+      "pivot": "shoulder",
+      "attach": { "to": "chest", "anchor": "shoulder_r" },
+      "rotate": 168,
+      "recolor": { "steel": "leaf", "steel_hi": "leaf_hi", "steel_sh": "leaf_sh", "steel_dk": "leaf_sh" }
     },
     {
       "name": "bow",
       "shape": "bow",
-      "offset": [
-        2,
-        6
-      ]
+      "pivot": "grip",
+      "attach": { "to": "bow-arm", "anchor": "hand" }
+    },
+    {
+      "name": "head",
+      "shape": "ranger_head_3q",
+      "pivot": "neck",
+      "attach": { "to": "chest", "anchor": "neck" }
     }
   ]
 }
