@@ -34,7 +34,7 @@ ART_DIR = os.path.join("groups", "sprites")   # where sprite groups live
 BIBLE_FILE = "artbook.json"
 SPRITES_SUBDIR = "sprites"
 
-PRIMITIVES = ("pixels", "shape", "rect", "ellipse", "line", "sprite")
+PRIMITIVES = ("pixels", "shape", "rect", "ellipse", "line", "sprite", "tile")
 TRANSPARENT_CHARS = set(". ")
 
 __all__ = ["SpecError", "load_json", "Bible", "load_bible", "resolve_sprite",
@@ -437,6 +437,34 @@ def _validate_layer(layer, sprite, names, where) -> None:
         if child is not None and frame >= len(child["frames"]):
             raise SpecError(f"{where}: sprite {layer['sprite']!r} has no frame {frame} "
                             f"(it has {len(child['frames'])})")
+    elif kind == "tile":
+        # Fill a rectangular region by repeating a motif grid (a floor/wall
+        # texture). Same content vocabulary as a `shape`/`pixels` layer, plus the
+        # `at`/`size` region it repeats across.
+        t = layer["tile"]
+        if not isinstance(t, dict):
+            raise SpecError(f"{where}: 'tile' must be an object")
+        for key in ("at", "size"):
+            v = t.get(key)
+            if not (isinstance(v, (list, tuple)) and len(v) == 2
+                    and all(isinstance(n, int) for n in v)):
+                raise SpecError(f"{where}: tile '{key}' must be [x, y] integers")
+        if "shape" in t:
+            if t["shape"] not in sprite["motifs"]:
+                raise SpecError(f"{where}: unknown tile shape {t['shape']!r} "
+                                f"(motifs: {sorted(sprite['motifs'])})")
+            for src, dst in (t.get("recolor") or {}).items():
+                if dst not in names:
+                    raise SpecError(f"{where}: recolor target {dst!r} is not a palette colour")
+        elif "pixels" in t:
+            try:
+                shapes.normalize_grid(t["pixels"])
+            except ValueError as e:
+                raise SpecError(f"{where}: {e}") from e
+            legend = t.get("legend", sprite.get("legend", {}))
+            _check_legend(legend, t["pixels"], names, where)
+        else:
+            raise SpecError(f"{where}: tile needs a 'shape' or 'pixels' grid")
     else:  # rect / ellipse / line
         spec = layer[kind]
         if not isinstance(spec, dict) or spec.get("color") not in names:

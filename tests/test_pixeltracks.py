@@ -174,6 +174,27 @@ class TestRenderAndPng(unittest.TestCase):
         self.assertTrue(out["atlas"]["loop"])
         self.assertEqual(out["sheet"].shape, (29, 20 * 4, 4))
 
+    def test_tile_fills_region_and_clips(self):
+        # A `tile` layer repeats a 2x2 motif across [2,2]+[4,4] on a 8x8 canvas:
+        # the region fills exactly, and nothing paints outside it.
+        s = {
+            "name": "t", "size": [8, 8], "scale": 1, "background": None, "outline": None,
+            "palette": {"a": (255, 0, 0, 255)},
+            "motifs": {"blk": {"legend": {"a": "a"}, "pixels": ["aa", "aa"]}},
+            "frames": [{"layers": [{"tile": {"shape": "blk", "at": [2, 2], "size": [4, 4]}}]}],
+        }
+        frame = composite_frame(s, s["frames"][0])
+        self.assertEqual(int((frame[:, :, 3] > 0).sum()), 16)          # 4x4 region filled
+        self.assertTrue((frame[2:6, 2:6, 3] == 255).all())             # exactly the region
+        self.assertEqual(frame[:2, :, 3].sum(), 0)                     # nothing above it
+        self.assertEqual(frame[:, :2, 3].sum(), 0)                     # nothing left of it
+
+    def test_tile_needs_a_shape_or_pixels(self):
+        with self.assertRaises(spec.SpecError):
+            spec._validate_layer({"tile": {"at": [0, 0], "size": [4, 4]}},
+                                 {"palette": {"a": (0, 0, 0, 255)}, "motifs": {}},
+                                 {"a"}, where="x")
+
     def test_pivoted_rotation_swings_about_a_joint(self):
         from pixeltracks.raster import draw_grid_rotated
         # A 1x3 horizontal bar; pivot at its left end. A 90 turn should swing the
