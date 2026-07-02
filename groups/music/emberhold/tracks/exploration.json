@@ -1,0 +1,65 @@
+{
+  "name": "exploration",
+  "extends": "../soundtrack.json",
+  "_comment": "\"The Long Watch\" — the keep at rest between assaults, the ambient/exploration cue. Patient and sparse: this is the ONE track that never states the hook in full. `watch` is space (a slow string pad and lone bell glints); `vigil` lets the secondary `vanguard` march sound once, distant and low, over a rolling harp; `ember` teases only the HEAD of ember_theme high on the bell (the sacred flame flickering, never the whole hope) before the loop folds back to the vigil. Drive is deliberately absent — the calm that the siege and boss break.",
+  "bpm": 80,
+  "meaning": "hope",
+  "entity": "the-keep",
+
+  "sections": [
+    {
+      "name": "watch",
+      "bars": 4,
+      "_comment": "The keep after dark — a low string swell and scattered bell glints, no melody. Space before the vigil.",
+      "parts": {
+        "strings": { "instrument": "strings", "chords": ["Dm", "Bb", "F", "C"], "chord_beats": 4, "octave": 2, "gain": 0.42 },
+        "bell": { "instrument": "bell", "pan": 0.2, "gain": 0.34,
+                  "notes": [["D5", 1.5], [null, 2.5], ["A4", 1.5], [null, 2.5],
+                            ["F5", 1.5], [null, 2.5], ["D5", 1], [null, 3]] },
+        "bass": { "instrument": "bass", "gain": 0.7,
+                  "notes": [["D2", 4], ["Bb1", 4], ["F2", 4], ["C2", 4]] }
+      }
+    },
+    {
+      "name": "vigil",
+      "bars": 4,
+      "loop": true,
+      "_comment": "The watch keeps its post: the `vanguard` march sounds ONCE at the top, distant and an octave down on the brass, then yields to a rolling harp arpeggio and the low pad — resolve held quietly, not proclaimed.",
+      "parts": {
+        "brass": { "instrument": "brass", "motif": "vanguard", "transpose": -12, "gain": 0.34 },
+        "harp": { "instrument": "harp", "pan": -0.2, "gain": 0.46,
+                  "notes": [
+                    ["D3", 0.5], ["A3", 0.5], ["D4", 0.5], ["F4", 0.5], ["A3", 0.5], ["F4", 0.5], ["D4", 0.5], ["A3", 0.5],
+                    ["Bb2", 0.5], ["F3", 0.5], ["Bb3", 0.5], ["D4", 0.5], ["F3", 0.5], ["D4", 0.5], ["Bb3", 0.5], ["F3", 0.5],
+                    ["F3", 0.5], ["C4", 0.5], ["F4", 0.5], ["A4", 0.5], ["C4", 0.5], ["A4", 0.5], ["F4", 0.5], ["C4", 0.5],
+                    ["C3", 0.5], ["G3", 0.5], ["C4", 0.5], ["E4", 0.5], ["G3", 0.5], ["E4", 0.5], ["C4", 0.5], ["G3", 0.5]
+                  ] },
+        "strings": { "instrument": "strings", "chords": ["Dm", "Bb", "F", "C"], "chord_beats": 4, "octave": 2, "gain": 0.4 },
+        "bass": { "instrument": "bass", "gain": 0.72,
+                  "notes": [["D2", 2], ["A2", 2], ["Bb1", 2], ["F2", 2],
+                            ["F2", 2], ["C2", 2], ["C2", 2], ["G2", 2]] }
+      }
+    },
+    {
+      "name": "ember",
+      "bars": 4,
+      "loop": true,
+      "_comment": "The flame flickers: the bell lifts just the HEAD of ember_theme an octave up (a tease, never the whole hook), over a rising Bb–C–Dm–A climb and a lighter harp. Half-lit, then back to the vigil.",
+      "parts": {
+        "bell": { "instrument": "bell", "motif": "ember_theme", "slice": [0, 4], "transpose": 12,
+                  "repeat": 2, "pan": 0.15, "gain": 0.4 },
+        "harp": { "instrument": "harp", "pan": -0.15, "gain": 0.4,
+                  "notes": [
+                    ["Bb2", 0.5], ["F3", 0.5], ["Bb3", 0.5], ["D4", 0.5], ["F3", 0.5], ["Bb3", 0.5], ["D4", 0.5], ["F4", 0.5],
+                    ["C3", 0.5], ["G3", 0.5], ["C4", 0.5], ["E4", 0.5], ["G3", 0.5], ["C4", 0.5], ["E4", 0.5], ["G4", 0.5],
+                    ["D3", 0.5], ["A3", 0.5], ["D4", 0.5], ["F4", 0.5], ["A3", 0.5], ["D4", 0.5], ["F4", 0.5], ["A4", 0.5],
+                    ["A2", 0.5], ["E3", 0.5], ["A3", 0.5], ["C#4", 0.5], ["E3", 0.5], ["A3", 0.5], ["C#4", 0.5], ["E4", 0.5]
+                  ] },
+        "strings": { "instrument": "strings", "chords": ["Bb", "C", "Dm", "A"], "chord_beats": 4, "octave": 2, "gain": 0.4 },
+        "bass": { "instrument": "bass", "gain": 0.7,
+                  "notes": [["Bb1", 2], ["Bb1", 2], ["C2", 2], ["C2", 2],
+                            ["D2", 2], ["D2", 2], ["A1", 2], ["A2", 2]] }
+      }
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "name": "shadow-banner",
+  "extends": "../artbook.json",
+  "meaning": "hostile",
+  "entity": "the-shadow",
+  "_comment": "The Shadow's standard — the world's cross-modal `shadow` motif made visible, and the deliberate dark mirror of the party `banner`. Same construction (a pole, a cloth, an emblem stamped at scale 2), but the cloth is dark shadow-violet (mage_sh) and it flies the shattered `shadow_sigil` (this Lab's face of the shadow, lightened to shadow_hi so it reads on the dark cloth) where the party banner flies the gold `crest`. Built by REUSE, not redraw.",
+  "size": [20, 20],
+  "layers": [
+    { "line": { "from": [4, 2], "to": [4, 18], "color": "leather" } },
+    { "rect": { "at": [5, 2], "size": [11, 12], "color": "mage_sh", "fill": true } },
+    { "rect": { "at": [5, 13], "size": [3, 3], "color": "mage_sh", "fill": true } },
+    { "rect": { "at": [10, 13], "size": [3, 3], "color": "mage_sh", "fill": true } },
+    { "shape": "shadow_sigil", "scale": 2, "offset": [5, 3],
+      "recolor": { "shadow": "shadow_hi", "shadow_hi": "flash" } }
+  ],
+  "checks": [ { "rule": "on_canvas" }, { "rule": "connected" } ]
+}

@@ -1,0 +1,33 @@
+{
+  "name": "potion",
+  "extends": "../artbook.json",
+  "_comment": "A heal-flask pickup — a round glass phial of magic-blue draught with a leather cork and a bright shine, drawn from the shared `magic`/`cloth`/`leather` palette so it belongs on the same shelf as the party's kit. A generic item, so it carries no world meaning/entity tag (not everything is about the keep or the shadow).",
+  "size": [20, 20],
+  "legend": { "b": "leather", "c": "cloth", "o": "magic", "O": "magic_hi" },
+  "layers": [
+    { "name": "flask",
+      "pixels": [
+        "....................",
+        "....................",
+        "........bb..........",
+        "........bb..........",
+        "........cc..........",
+        "........cc..........",
+        ".......cocc.........",
+        "......coooOc........",
+        ".....cooooOOc.......",
+        ".....coooooOc.......",
+        "....cooooooOc.......",
+        "....coooooooc.......",
+        "....coooooooc.......",
+        "....coooooooc.......",
+        ".....cooooooc.......",
+        ".....cooooooc.......",
+        "......coooooc.......",
+        ".......ccccc........",
+        "....................",
+        "...................."
+      ] }
+  ],
+  "checks": [ { "rule": "on_canvas" }, { "rule": "connected" } ]
+}

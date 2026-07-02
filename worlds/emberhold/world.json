@@ -38,6 +38,15 @@
           "vibetracks":  { "track": "siege",        "how": "theme inverted, driven at battle tempo — a call to arms" }
         }
       }
+    },
+    "shadow": {
+      "_comment": "The antagonist's OWN cross-modal motif — the dark inverse of `ember`, the shadow at the gate given a face in each medium. Where `ember` is the keep's radiant hope, `shadow` is the fallen captain's menace: the shattered shadow-violet `shadow_sigil` you SEE on the enemy standard, and the falling, chromatic `shadow_theme` you HEAR stated in full in the `boss` duel. Unlike `ember` it has no `transform` — it IS a root of its own, not a darkening of the hope, so the two motifs can sound against each other when the captain is faced.",
+      "meaning": "hostile",
+      "entities": ["the-shadow"],
+      "faces": {
+        "pixeltracks": { "group": "emberhold", "motif": "shadow_sigil",  "role": "the shattered shadow-violet crest on the enemy standard" },
+        "vibetracks":  { "group": "emberhold", "motif": "shadow_theme",  "role": "the fallen captain's falling menace" }
+      }
     }
   }
 }

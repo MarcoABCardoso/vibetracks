@@ -1,0 +1,34 @@
+{
+  "name": "flagstone",
+  "extends": "../artbook.json",
+  "entity": "the-keep",
+  "_comment": "A tileable flagstone floor for the keep's halls — warm sandstone (the `bone` ramp) to sit apart from the cold steel of keep-wall, so a scene reads floor-vs-rampart at a glance. Running-bond courses with bone_sh mortar. `outline` off so it tiles seamlessly.",
+  "size": [20, 20],
+  "outline": null,
+  "legend": { "a": "bone", "d": "bone_sh" },
+  "layers": [
+    { "name": "floor",
+      "pixels": [
+        "aaaaaaaaaaaaaaaaaaaa",
+        "aaaadaaaaaaaaaadaaaa",
+        "aaaadaaaaaaaaaadaaaa",
+        "aaaadaaaaaaaaaadaaaa",
+        "aaaadaaaaaaaaaadaaaa",
+        "dddddddddddddddddddd",
+        "aaaaaaaaadaaaaaaaaaa",
+        "aaaaaaaaadaaaaaaaaaa",
+        "aaaaaaaaadaaaaaaaaaa",
+        "aaaaaaaaadaaaaaaaaaa",
+        "dddddddddddddddddddd",
+        "aaaadaaaaaaaaaadaaaa",
+        "aaaadaaaaaaaaaadaaaa",
+        "aaaadaaaaaaaaaadaaaa",
+        "aaaadaaaaaaaaaadaaaa",
+        "dddddddddddddddddddd",
+        "aaaaaaaaadaaaaaaaaaa",
+        "aaaaaaaaadaaaaaaaaaa",
+        "aaaaaaaaadaaaaaaaaaa",
+        "aaaaaaaaadaaaaaaaaaa"
+      ] }
+  ]
+}
