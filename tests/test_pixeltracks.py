@@ -10,7 +10,7 @@ import unittest
 
 import numpy as np
 
-from pixeltracks import palette, shapes, spec
+from pixeltracks import forms, palette, shapes, spec
 from pixeltracks.compositor import composite_frame, coverage, render_sprite
 from pixeltracks.pngio import encode_png
 from pixeltracks.raster import add_outline, new_canvas, upscale
@@ -432,6 +432,186 @@ class TestSceneComposition(unittest.TestCase):
                  "_resolved": {"frames": [{"layers": []}]}}
         with self.assertRaises(spec.SpecError):
             spec._validate_layer(layer, sprite, names, where="t")
+
+
+FORGE = os.path.join(ROOT, "groups", "sprites", "forge-knights")
+
+
+class TestFormModel(unittest.TestCase):
+    """The `form` layer kind: solids shaded from a material ramp + light."""
+
+    def setUp(self):
+        self.sprite = spec.resolve_sprite(os.path.join(FORGE, "sprites", "knight-forms.json"))
+        self.canvas = composite_frame(self.sprite, self.sprite["frames"][0])
+
+    def test_forms_render_only_palette_colours(self):
+        """Every pixel a form emits is a palette entry — the on-palette invariant."""
+        allowed = {tuple(int(c) for c in v) for v in self.sprite["palette"].values()}
+        allowed.add((0, 0, 0, 0))
+        opaque = self.canvas.reshape(-1, 4)
+        used = {tuple(int(c) for c in px) for px in opaque[opaque[:, 3] > 0].tolist()}
+        self.assertTrue(used <= allowed, f"off-palette pixels: {used - allowed}")
+
+    def test_ramp_actually_shades(self):
+        """A shaded form uses more than one step of its ramp (shadow AND highlight),
+        i.e. the engine derived form — not a flat fill."""
+        pal = self.sprite["palette"]
+        for step in ("steel_sh", "steel", "steel_hi"):
+            colour = tuple(int(c) for c in pal[step])
+            hits = int(np.count_nonzero(np.all(self.canvas.reshape(-1, 4) == colour, axis=1)))
+            self.assertGreater(hits, 0, f"steel ramp step {step!r} unused — form not shaded")
+
+    def test_flat_material_is_single_colour(self):
+        """A material that names a bare palette colour (no ramp) fills flat."""
+        ramp = forms.ramp_rgba("outline", self.sprite)   # 'outline' is a colour, not a ramp
+        self.assertEqual(len(ramp), 1)
+        tile = forms.shade_form("sphere", 8, 8, ramp, "up_left")
+        colours = {tuple(int(c) for c in px) for px in tile.reshape(-1, 4) if px[3] > 0}
+        self.assertEqual(len(colours), 1)
+
+    def test_shadow_map_steps_down_the_ramp(self):
+        """The contact-shadow map sends each ramp colour to the step below it."""
+        pal = self.sprite["palette"]
+        smap = forms.shadow_map(self.sprite)
+        steel = tuple(int(c) for c in pal["steel"])
+        steel_sh = tuple(int(c) for c in pal["steel_sh"])
+        steel_hi = tuple(int(c) for c in pal["steel_hi"])
+        self.assertEqual(smap[steel], steel_sh)      # mid -> shadow
+        self.assertEqual(smap[steel_hi], steel)      # highlight -> mid
+        self.assertNotIn(steel_sh, smap)             # bottom step has nowhere to go
+
+    def test_contact_shadow_darkens_behind_on_light_away_side(self):
+        """A nearer form ramp-shifts opaque, farther geometry in its light-away band,
+        and leaves the far side and distant pixels untouched."""
+        pal = self.sprite["palette"]
+        steel = tuple(int(c) for c in pal["steel"])
+        steel_sh = tuple(int(c) for c in pal["steel_sh"])
+        canvas = np.zeros((8, 8, 4), dtype=np.uint8)
+        canvas[:, :] = steel                          # a flat steel wall behind
+        zbuf = np.zeros((8, 8))                        # all behind (depth 0)
+        mask = np.zeros((8, 8), dtype=bool)
+        mask[0:4, 0:4] = True                         # a near form in the upper-left
+        forms.cast_contact_shadow(canvas, mask, z=5, zbuf=zbuf, light="up_left",
+                                  smap=forms.shadow_map(self.sprite))
+        self.assertEqual(tuple(canvas[4, 3]), steel_sh)   # just down-right of the form
+        self.assertEqual(tuple(canvas[7, 7]), steel)      # far away: untouched
+        self.assertEqual(tuple(canvas[2, 2]), steel)      # under the form itself: untouched
+
+    def test_contact_shadow_respects_depth(self):
+        """A form does not cast onto geometry that is nearer than it (zbuf >= z)."""
+        pal = self.sprite["palette"]
+        steel = tuple(int(c) for c in pal["steel"])
+        canvas = np.zeros((8, 8, 4), dtype=np.uint8)
+        canvas[:, :] = steel
+        zbuf = np.full((8, 8), 9.0)                   # everything is in FRONT of the caster
+        mask = np.zeros((8, 8), dtype=bool)
+        mask[0:4, 0:4] = True
+        forms.cast_contact_shadow(canvas, mask, z=5, zbuf=zbuf, light="up_left",
+                                  smap=forms.shadow_map(self.sprite))
+        self.assertEqual(tuple(canvas[4, 3]), steel)      # nothing darkened
+
+    def test_articulated_form_relights_world_fixed(self):
+        """A rotated form is *relit*, not spun: its highlight stays on the world
+        light side (up-left) regardless of the form's own rotation. A disc keeps
+        the same silhouette under rotation, so only the shading can move — and it
+        must not."""
+        pal = {"steel_sh": (61, 90, 134, 255), "steel": (107, 143, 196, 255),
+               "steel_hi": (191, 218, 244, 255)}
+        sprite = {"palette": pal, "ramps": {"steel": ["steel_sh", "steel", "steel_hi"]},
+                  "light": "up_left"}
+
+        def highlight_offset(rotate):
+            # Pin the disc centre to (12,12) via pivot/at so both rotations place
+            # identically — only the shading can differ.
+            canvas = new_canvas(24, 24)
+            forms.draw_form(canvas, {"form": "disc", "material": "steel",
+                                     "at": [12, 12], "pivot": [8, 8],
+                                     "size": [16, 16], "rotate": rotate},
+                            sprite, None, 0)
+            hi = np.all(canvas == pal["steel_hi"], axis=2)
+            ys, xs = np.where(hi)
+            self.assertGreater(len(xs), 0, "no highlight rendered")
+            return xs.mean() - 12.0, ys.mean() - 12.0   # offset from centre
+
+        dx0, dy0 = highlight_offset(0)
+        dx90, dy90 = highlight_offset(90)
+        self.assertLess(dx0, 0); self.assertLess(dy0, 0)       # rot 0: highlight up-left
+        self.assertLess(dx90, 0); self.assertLess(dy90, 0)     # rot 90: STILL up-left
+        self.assertLess(abs(dx0 - dx90), 2.5)                  # invariant to rotation
+        self.assertLess(abs(dy0 - dy90), 2.5)
+
+    def test_articulated_form_renders(self):
+        """The posed hero sprite (rotate/skew/squash forms) resolves and rasterises."""
+        s = spec.resolve_sprite(os.path.join(FORGE, "sprites", "knight-forms-hero.json"))
+        c = composite_frame(s, s["frames"][0])
+        self.assertGreater(coverage(c), 0.3)
+
+    def test_form_demo_sprites_pass_declared_checks(self):
+        """Every form demo satisfies its own art-direction checks (connected /
+        on_canvas). This is how a figure is validated — as geometry, not by eye."""
+        from pixeltracks import inspect as pt_inspect
+        for name in ("knight-forms", "knight-forms-mono", "knight-forms-hero"):
+            s = spec.resolve_sprite(os.path.join(FORGE, "sprites", name + ".json"))
+            failed = [r for r in pt_inspect.run_checks(s) if not r["ok"]]
+            self.assertEqual(failed, [], f"{name} failed checks: {failed}")
+
+    def test_posed_hero_is_one_clean_piece(self):
+        """The articulated hero must be a single connected, on-canvas silhouette —
+        no floating limbs, no clipping (the defects a PNG glance misses)."""
+        from pixeltracks import inspect as pt_inspect
+        s = spec.resolve_sprite(os.path.join(FORGE, "sprites", "knight-forms-hero.json"))
+        warns = pt_inspect.geometry(s)["warnings"]
+        self.assertEqual(warns, [], f"hero geometry warnings: {warns}")
+
+    def test_form_bone_attaches_at_anchor(self):
+        """A form skeleton bone pins its pivot to a parent's world anchor, so the
+        child's `at` is *derived* (connection by construction, not luck)."""
+        bones = [
+            {"name": "chest", "form": "box", "material": "steel", "size": [12, 12],
+             "pivot": [6, 11], "at": [15, 24],
+             "anchors": {"neck": [6, 1], "hip_l": [3, 11]}, "skew": [-0.1, 0]},
+            {"name": "head", "form": "sphere", "material": "skin", "size": [9, 9],
+             "anchors": {"crown": [4, 1]}, "pivot": [4, 8],
+             "attach": {"to": "chest", "anchor": "neck"}},
+        ]
+        layers = spec.resolve_skeleton(bones, {}, "t")
+        head = next(l for l in layers if l["name"] == "head")
+        self.assertEqual(head["form"], "sphere")
+        self.assertNotEqual(list(head["at"]), [0, 0])      # derived, not defaulted
+        # the chest's leaning neck anchor is where the head lands
+        self.assertAlmostEqual(head["at"][0], 16.0, delta=0.5)
+        self.assertAlmostEqual(head["at"][1], 14.0, delta=0.5)
+
+    def test_form_bone_needs_size_and_material(self):
+        with self.assertRaises(spec.SpecError):
+            spec.resolve_skeleton([{"name": "x", "form": "sphere"}], {}, "t")
+
+    def test_form_rig_sprite_is_one_clean_piece(self):
+        """The skeleton-posed knight resolves, passes its checks, and has no
+        geometry warnings — a steep pose that stays connected by construction."""
+        from pixeltracks import inspect as pt_inspect
+        s = spec.resolve_sprite(os.path.join(FORGE, "sprites", "knight-forms-rig.json"))
+        self.assertEqual([r for r in pt_inspect.run_checks(s) if not r["ok"]], [])
+        self.assertEqual(pt_inspect.geometry(s)["warnings"], [])
+
+    def test_bad_squash_rejected(self):
+        names = set(self.sprite["palette"])
+        layer = {"form": "capsule", "material": "steel", "at": [0, 0], "size": [4, 8],
+                 "squash": [0.0, 1.0]}
+        with self.assertRaises(spec.SpecError):
+            spec._validate_layer(layer, self.sprite, names, where="t")
+
+    def test_bad_form_kind_rejected(self):
+        names = set(self.sprite["palette"])
+        layer = {"form": "pyramid", "material": "steel", "at": [0, 0], "size": [4, 4]}
+        with self.assertRaises(spec.SpecError):
+            spec._validate_layer(layer, self.sprite, names, where="t")
+
+    def test_unknown_material_rejected(self):
+        names = set(self.sprite["palette"])
+        layer = {"form": "sphere", "material": "plasma", "at": [0, 0], "size": [4, 4]}
+        with self.assertRaises(spec.SpecError):
+            spec._validate_layer(layer, self.sprite, names, where="t")
 
 
 if __name__ == "__main__":

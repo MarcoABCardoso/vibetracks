@@ -15,7 +15,7 @@ from __future__ import annotations
 
 import numpy as np
 
-from . import raster, shapes
+from . import forms, raster, shapes
 
 
 def _legend_to_rgba(legend: dict, sprite_palette: dict) -> dict:
@@ -24,7 +24,7 @@ def _legend_to_rgba(legend: dict, sprite_palette: dict) -> dict:
             if name in sprite_palette}
 
 
-def _draw_layer(canvas, layer, sprite) -> None:
+def _draw_layer(canvas, layer, sprite, zbuf=None, z=0) -> None:
     pal = sprite["palette"]
     ox, oy = layer.get("offset", [0, 0])
 
@@ -63,6 +63,12 @@ def _draw_layer(canvas, layer, sprite) -> None:
                                           scale=tuple(squash) if squash else (1.0, 1.0))
             at = layer.get("at", layer.get("offset", [0, 0]))
             raster.draw_grid_affine(canvas, rows, legend_rgba, matrix, piv, at)
+    elif "form" in layer:
+        # A shaded solid primitive: the engine derives every pixel and its shade
+        # from a material ramp + light, instead of the author hand-placing them.
+        # This is the sprite Lab's "synth" — see forms.py. The z-buffer (Phase 2)
+        # lets a nearer form cast a contact shadow onto farther geometry.
+        forms.draw_form(canvas, layer, sprite, zbuf, z)
     elif "rect" in layer:
         r = layer["rect"]
         x, y = r.get("at", [0, 0])
@@ -140,8 +146,17 @@ def composite_frame(sprite: dict, frame: dict) -> np.ndarray:
     bg = sprite.get("background")
     if bg is not None:
         canvas[:, :] = sprite["palette"][bg]
-    for layer in frame.get("layers", []):
-        _draw_layer(canvas, layer, sprite)
+    # A depth buffer so `form` layers can cast contact shadows onto the geometry
+    # behind them (Phase 2). Depth defaults to draw order (later = nearer), which
+    # a form may override with an explicit `z`. Every layer stamps the pixels it
+    # newly paints, so forms cast onto pixels/shapes as well as other forms.
+    zbuf = np.full((h, w), -1e9, dtype=np.float64)
+    for i, layer in enumerate(frame.get("layers", [])):
+        z = layer.get("z", i) if isinstance(layer, dict) else i
+        before = canvas[:, :, 3] > 0
+        _draw_layer(canvas, layer, sprite, zbuf, z)
+        newly = (canvas[:, :, 3] > 0) & ~before
+        zbuf[newly] = z
     outline = sprite.get("outline")
     if outline is not None:
         raster.add_outline(canvas, sprite["palette"][outline["color"]])

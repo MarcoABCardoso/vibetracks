@@ -28,13 +28,13 @@ from labkit.groups import discover_group_dirs
 from labkit.specbase import SpecError, extends_path, load_json  # shared across Labs
 from labkit.world import World, check_spec_refs, load_world
 
-from . import palette, raster, shapes
+from . import forms, palette, raster, shapes
 
 ART_DIR = os.path.join("groups", "sprites")   # where sprite groups live
 BIBLE_FILE = "artbook.json"
 SPRITES_SUBDIR = "sprites"
 
-PRIMITIVES = ("pixels", "shape", "rect", "ellipse", "line", "sprite", "tile")
+PRIMITIVES = ("pixels", "shape", "form", "rect", "ellipse", "line", "sprite", "tile")
 TRANSPARENT_CHARS = set(". ")
 
 __all__ = ["SpecError", "load_json", "Bible", "load_bible", "resolve_sprite",
@@ -53,6 +53,7 @@ class Bible:
     motifs: dict = field(default_factory=dict)       # name -> {legend, pixels}
     background: object = None                        # palette name or None
     outline: object = None                           # {"color": name} or None
+    light: object = forms.DEFAULT_LIGHT              # default light for `form` layers
     fps: int = 10                                    # default animation playback rate
     sprites: list = field(default_factory=list)
     world: World | None = None   # the Root Spec this bible extends, if any
@@ -76,6 +77,7 @@ def load_bible(path: str) -> Bible:
         motifs=data.get("motifs", {}),
         background=data.get("background"),
         outline=data.get("outline"),
+        light=data.get("light", forms.DEFAULT_LIGHT),
         fps=int(data.get("fps", 10)),
         sprites=data.get("sprites", []),
     )
@@ -139,6 +141,7 @@ def _validate_bible(b: Bible) -> None:
     if b.background is not None and b.background not in names:
         raise SpecError(f"{b.path}: background {b.background!r} is not a palette colour")
     _check_outline(b.outline, names, b.path)
+    _check_light(b.light, b.path)
     for cname, ramp in b.ramps.items():
         bad = [c for c in ramp if c not in names]
         if bad:
@@ -154,6 +157,17 @@ def _check_outline(outline, names, where) -> None:
         raise SpecError(f"{where}: outline must be {{'color': <palette name>}}")
     if outline["color"] not in names:
         raise SpecError(f"{where}: outline colour {outline['color']!r} is not in the palette")
+
+
+def _check_light(light, where) -> None:
+    """A light is a named preset or an explicit ``[x, y, z]`` direction."""
+    if isinstance(light, str):
+        if light not in forms.LIGHTS:
+            raise SpecError(f"{where}: light {light!r} is not a known preset "
+                            f"(presets: {sorted(forms.LIGHTS)})")
+    elif not (isinstance(light, (list, tuple)) and len(light) == 3
+              and all(_is_num(v) for v in light)):
+        raise SpecError(f"{where}: light must be a preset name or [x, y, z] numbers, got {light!r}")
 
 
 # --- Skeleton resolution ----------------------------------------------------- #
@@ -180,17 +194,21 @@ def _anchor_in_transformed(pt, flip_axis, scale_by, gw0, gh0):
 
 
 def resolve_skeleton(bones, motifs, where="skeleton") -> list:
-    """Expand a list of skeleton bones into plain affine ``shape`` layers.
+    """Expand a list of skeleton bones into plain affine ``shape``/``form`` layers.
 
-    Each bone is drawn like a normal shape layer but its ``at`` (where its pivot
-    lands on the canvas) may be *derived* from a parent bone's world anchor via
-    ``attach: {to, anchor}``. Returns the layers in bone order (z-order).
+    Each bone is drawn like a normal shape (or shaded **form**) layer, but its
+    ``at`` (where its pivot lands on the canvas) may be *derived* from a parent
+    bone's world anchor via ``attach: {to, anchor}`` — so the parts meet no matter
+    how the parent leans. A **form bone** carries a `form`/`size`/`material` and
+    declares its own `anchors` inline (its solid is parametric, so there is no
+    motif grid to read them from); a **shape bone** reads anchors off its motif.
+    Returns the layers in bone order (z-order).
     """
     by_name, order = {}, []
     for b in bones:
-        if not isinstance(b, dict) or "shape" not in b:
-            raise SpecError(f"{where}: each bone needs a 'shape'")
-        name = b.get("name", b["shape"])
+        if not isinstance(b, dict) or ("shape" not in b and "form" not in b):
+            raise SpecError(f"{where}: each bone needs a 'shape' or a 'form'")
+        name = b.get("name", b.get("shape", b.get("form")))
         by_name[name] = b
         order.append(name)
 
@@ -203,18 +221,27 @@ def resolve_skeleton(bones, motifs, where="skeleton") -> list:
         if name in stack:
             raise SpecError(f"{where}: attach cycle through {name!r}")
         b = by_name[name]
-        motif = motifs.get(b["shape"])
-        if motif is None:
-            raise SpecError(f"{where}: bone {name!r} unknown shape {b['shape']!r}")
-        anchors = motif.get("anchors", {})
-        gw0, gh0 = shapes.grid_size(motif["pixels"])
+        is_form = "form" in b
+        if is_form:
+            if "size" not in b or "material" not in b:
+                raise SpecError(f"{where}: form bone {name!r} needs a 'size' and 'material'")
+            anchors = b.get("anchors", {})
+            gw0, gh0 = b["size"]
+            scale_by = 1                     # a form sizes itself; no grid scale
+        else:
+            motif = motifs.get(b["shape"])
+            if motif is None:
+                raise SpecError(f"{where}: bone {name!r} unknown shape {b['shape']!r}")
+            anchors = motif.get("anchors", {})
+            gw0, gh0 = shapes.grid_size(motif["pixels"])
+            scale_by = b.get("scale", 1)
         flip_axis = b.get("flip")
-        scale_by = b.get("scale", 1)
 
         def anchor_pt(a):
             if isinstance(a, str):
                 if a not in anchors:
-                    raise SpecError(f"{where}: bone {name!r} shape {b['shape']!r} "
+                    kind = b.get("form", b.get("shape"))
+                    raise SpecError(f"{where}: bone {name!r} ({kind!r}) "
                                     f"has no anchor {a!r} (anchors: {sorted(anchors)})")
                 raw = anchors[a]
             else:
@@ -254,11 +281,20 @@ def resolve_skeleton(bones, motifs, where="skeleton") -> list:
             wa[an] = [at[0] + a_ * rx + b_ * ry, at[1] + c_ * rx + d_ * ry]
         world_anchors[name] = wa
 
-        layer = {"name": name, "shape": b["shape"],
+        layer = {"name": name,
                  "pivot": [piv[0], piv[1]], "at": [at[0], at[1]], "rotate": rotate}
-        for k in ("skew", "squash", "flip", "scale", "recolor"):
-            if k in b:
-                layer[k] = b[k]
+        if is_form:
+            layer["form"] = b["form"]
+            layer["size"] = list(b["size"])
+            layer["material"] = b["material"]
+            for k in ("skew", "squash", "flip", "round", "light", "z", "cast"):
+                if k in b:
+                    layer[k] = b[k]
+        else:
+            layer["shape"] = b["shape"]
+            for k in ("skew", "squash", "flip", "scale", "recolor"):
+                if k in b:
+                    layer[k] = b[k]
         layers.append((order.index(name), layer))
         done.add(name)
 
@@ -295,6 +331,8 @@ def resolve_sprite(path: str, bible: Bible | None = None, _stack=frozenset()) ->
     colours.update(data.get("palette", {}))          # per-sprite palette override
     motifs = dict(bible.motifs) if bible else {}
     motifs.update(data.get("motifs", {}))
+    ramps = dict(bible.ramps) if bible else {}
+    ramps.update(data.get("ramps", {}))              # per-sprite ramp override
 
     # Normalise to a list of frames; a still sprite is a single frame. A frame
     # (or the whole sprite) may declare a `skeleton` that expands into layers
@@ -330,6 +368,8 @@ def resolve_sprite(path: str, bible: Bible | None = None, _stack=frozenset()) ->
         "outline": data.get("outline", bible.outline if bible else None),
         "legend": data.get("legend", {}),   # sprite-level default for pixels layers
         "motifs": motifs,
+        "ramps": ramps,                      # material ramps for `form` layers
+        "light": data.get("light", bible.light if bible else forms.DEFAULT_LIGHT),
         "frames": frames,
         "checks": data.get("checks", []),    # declarative art-direction predicates
         "flip": data.get("flip"),            # mirror the whole composite ("h"/"v"/"hv")
@@ -379,6 +419,11 @@ def _validate_sprite(s: dict, path: str) -> None:
     if s["background"] is not None and s["background"] not in names:
         raise SpecError(f"{path}: background {s['background']!r} is not a palette colour")
     _check_outline(s["outline"], names, path)
+    _check_light(s["light"], path)
+    for cname, ramp in s.get("ramps", {}).items():
+        bad = [c for c in ramp if c not in names]
+        if bad:
+            raise SpecError(f"{path}: ramp {cname!r} references unknown colours {bad}")
     if not (isinstance(s["fps"], int) and s["fps"] >= 1):
         raise SpecError(f"{path}: fps must be a positive int")
     if not s["frames"]:
@@ -420,6 +465,41 @@ def _validate_layer(layer, sprite, names, where) -> None:
         for src, dst in (layer.get("recolor") or {}).items():
             if dst not in names:
                 raise SpecError(f"{where}: recolor target {dst!r} is not a palette colour")
+    elif kind == "form":
+        # A shaded solid primitive: the engine derives every pixel from a material
+        # ramp + light (see forms.py), so validation is about the *decisions* —
+        # a real form kind, a real material, a sane box.
+        if layer["form"] not in forms.FORM_KINDS:
+            raise SpecError(f"{where}: unknown form {layer['form']!r} "
+                            f"(forms: {list(forms.FORM_KINDS)})")
+        size = layer.get("size")
+        if not (isinstance(size, (list, tuple)) and len(size) == 2
+                and all(isinstance(v, int) and v > 0 for v in size)):
+            raise SpecError(f"{where}: form 'size' must be [w, h] positive ints, got {size!r}")
+        at = layer.get("at", layer.get("offset", [0, 0]))
+        # `at` accepts numbers (a skeleton bone pins a form's pivot to a parent's
+        # world anchor, which is fractional); the renderer rounds to a pixel.
+        if not _is_point(at):
+            raise SpecError(f"{where}: form 'at' must be [x, y] numbers, got {at!r}")
+        material = layer.get("material")
+        if material not in sprite.get("ramps", {}) and material not in names:
+            raise SpecError(f"{where}: form 'material' {material!r} must name a ramp or a "
+                            f"palette colour (ramps: {sorted(sprite.get('ramps', {}))}, "
+                            f"palette: {sorted(names)})")
+        rnd = layer.get("round", 0)
+        if not (isinstance(rnd, int) and rnd >= 0):
+            raise SpecError(f"{where}: form 'round' must be a non-negative int, got {rnd!r}")
+        if "z" in layer and not isinstance(layer["z"], int):
+            raise SpecError(f"{where}: form 'z' (depth for contact shadow) must be an int, got {layer['z']!r}")
+        if "cast" in layer and not isinstance(layer["cast"], bool):
+            raise SpecError(f"{where}: form 'cast' must be true/false, got {layer['cast']!r}")
+        if "light" in layer:
+            _check_light(layer["light"], where)
+        _check_pose_transforms(layer, where)
+        flip_axis = layer.get("flip")
+        if flip_axis is not None and (not isinstance(flip_axis, str)
+                                      or set(flip_axis) - set("hv") or not flip_axis):
+            raise SpecError(f"{where}: form 'flip' must be 'h', 'v' or 'hv', got {flip_axis!r}")
     elif kind == "sprite":
         # A scene layer that stamps another sprite. Existence/cycles were checked
         # at resolution (which attached `_resolved`); here we vet the placement.
@@ -478,6 +558,29 @@ def _is_num(v) -> bool:
 
 def _is_point(v) -> bool:
     return isinstance(v, (list, tuple)) and len(v) == 2 and all(_is_num(c) for c in v)
+
+
+def _check_pose_transforms(layer, where) -> None:
+    """Validate a `form`'s articulation (Phase 3): rotate/skew/squash about a pivot.
+
+    A form poses through the same affine as a `shape` layer, but sizes itself with
+    `size` rather than an integer `scale`, so `scale` is not a form transform.
+    """
+    rot = layer.get("rotate", 0)
+    if not _is_num(rot):
+        raise SpecError(f"{where}: form 'rotate' must be a number (degrees), got {rot!r}")
+    pivot = layer.get("pivot")
+    if pivot is not None and not _is_point(pivot):
+        raise SpecError(f"{where}: form 'pivot' must be [px, py] numbers, got {pivot!r}")
+    skew = layer.get("skew")
+    if skew is not None and not _is_point(skew):
+        raise SpecError(f"{where}: form 'skew' must be [kx, ky] numbers, got {skew!r}")
+    squash = layer.get("squash")
+    if squash is not None:
+        if not _is_point(squash):
+            raise SpecError(f"{where}: form 'squash' must be [sx, sy] numbers, got {squash!r}")
+        if any(v <= 0 for v in squash):
+            raise SpecError(f"{where}: form 'squash' factors must be > 0, got {squash!r}")
 
 
 def _check_transforms(layer, where) -> None:

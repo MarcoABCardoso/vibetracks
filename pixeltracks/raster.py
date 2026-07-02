@@ -104,7 +104,18 @@ def draw_grid_affine(canvas, rows, legend_rgba, matrix, pivot, at, ox0=0, oy0=0)
             rgba = legend_rgba.get(ch)
             if rgba is not None:
                 tile[j, i] = rgba
+    blit_affine(canvas, tile, matrix, pivot, at, ox0, oy0)
 
+
+def blit_affine(canvas, tile, matrix, pivot, at, ox0=0, oy0=0) -> None:
+    """Alpha-over a pre-rendered RGBA ``tile`` under an affine ``matrix`` about ``pivot``.
+
+    The RGBA-tile counterpart of :func:`draw_grid_affine` (which now builds its
+    tile and calls straight through here). A shaded **form** and a char-grid
+    **shape** thus turn/lean through the *same* sub-pixel sampler — so an
+    articulated capsule limb stays hole-free exactly as a rotated blade does.
+    """
+    gh, gw = tile.shape[:2]
     a, b, c, d = matrix
     ia, ib, ic, id_ = _invert2x2(matrix)
     px, py = pivot
