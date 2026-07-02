@@ -3,8 +3,8 @@
   "extends": "../artbook.json",
   "_comment": "Form-rig sword-swing animation (regenerate with build_swing.py in this dir). One skeleton of form bones per frame; only the sword arm + gold blade and a little counter-motion change. Anticipation (windup) -> strike (held) -> follow-through -> recover. Every frame stays connected by construction and is gated by the checks below via `inspect --all-frames`.",
   "size": [
-    40,
-    54
+    48,
+    60
   ],
   "fps": 8,
   "checks": [
@@ -133,11 +133,11 @@
           },
           "pivot": "hip_l",
           "at": [
-            17,
-            43
+            18,
+            45
           ],
           "skew": [
-            -0.1,
+            -0.08,
             0
           ]
         },
@@ -297,7 +297,7 @@
             "to": "chest",
             "anchor": "shoulder_r"
           },
-          "rotate": 205
+          "rotate": 210
         },
         {
           "name": "sword",
@@ -318,7 +318,7 @@
             "to": "arm-sword",
             "anchor": "hand"
           },
-          "rotate": 25
+          "rotate": 20
         }
       ]
     },
@@ -438,11 +438,11 @@
           },
           "pivot": "hip_l",
           "at": [
-            17,
-            43
+            18,
+            45
           ],
           "skew": [
-            -0.14,
+            -0.13,
             0
           ]
         },
@@ -602,7 +602,7 @@
             "to": "chest",
             "anchor": "shoulder_r"
           },
-          "rotate": 222
+          "rotate": 190
         },
         {
           "name": "sword",
@@ -623,7 +623,7 @@
             "to": "arm-sword",
             "anchor": "hand"
           },
-          "rotate": 5
+          "rotate": 0
         }
       ]
     },
@@ -743,8 +743,8 @@
           },
           "pivot": "hip_l",
           "at": [
-            17,
-            43
+            18,
+            45
           ],
           "skew": [
             0.06,
@@ -907,7 +907,7 @@
             "to": "chest",
             "anchor": "shoulder_r"
           },
-          "rotate": 150
+          "rotate": 310
         },
         {
           "name": "sword",
@@ -928,7 +928,7 @@
             "to": "arm-sword",
             "anchor": "hand"
           },
-          "rotate": 120
+          "rotate": 150
         }
       ]
     },
@@ -1048,8 +1048,8 @@
           },
           "pivot": "hip_l",
           "at": [
-            17,
-            43
+            18,
+            45
           ],
           "skew": [
             0.1,
@@ -1212,7 +1212,7 @@
             "to": "chest",
             "anchor": "shoulder_r"
           },
-          "rotate": 128
+          "rotate": 340
         },
         {
           "name": "sword",
@@ -1233,7 +1233,7 @@
             "to": "arm-sword",
             "anchor": "hand"
           },
-          "rotate": 100
+          "rotate": 170
         }
       ]
     },
@@ -1353,11 +1353,11 @@
           },
           "pivot": "hip_l",
           "at": [
-            17,
-            43
+            18,
+            45
           ],
           "skew": [
-            -0.1,
+            -0.08,
             0
           ]
         },
@@ -1517,7 +1517,7 @@
             "to": "chest",
             "anchor": "shoulder_r"
           },
-          "rotate": 205
+          "rotate": 210
         },
         {
           "name": "sword",
@@ -1538,7 +1538,7 @@
             "to": "arm-sword",
             "anchor": "hand"
           },
-          "rotate": 25
+          "rotate": 20
         }
       ]
     }

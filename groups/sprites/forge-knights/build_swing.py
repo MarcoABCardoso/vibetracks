@@ -9,8 +9,8 @@ helm) and the arm is genuinely raised so the blade rises into empty space.
 """
 import json, sys
 
-CANVAS = [40, 54]
-HIP = [17, 43]   # where the chest's hip pivot lands
+CANVAS = [48, 60]
+HIP = [18, 45]   # where the chest's hip pivot lands
 
 
 def rig(arm_deg, sword_deg, lean, step):
@@ -65,13 +65,19 @@ def frame(name, hold, arm, sword, lean, step):
     return {"name": name, "hold": hold, "skeleton": rig(arm, sword, lean, step)}
 
 
-# Swing arc: ready -> wind up high -> strike down -> follow through -> recover.
+# Swing arc. Both the arm and the blade must rotate the SAME way (clockwise here)
+# and the hand must actually travel DOWN — the earlier version kept the hand up and
+# turned the arm and blade in opposite directions, which read as "rotating the wrong
+# way". Arm hand offset from the shoulder is (-10 sin a, 10 cos a); the blade tip
+# offset from the grip is (16 sin s, -16 cos s), so:
+#   a=190 -> hand up (cocked);  a=310/340 -> hand down-right/down (the chop).
+#   s=0   -> blade straight up; s=150/170 -> blade leading down.
 FRAMES = [
-    frame("ready",   2, 205,  25, -0.10, 0),
-    frame("windup",  2, 222,   5, -0.14, 0),
-    frame("strike",  3, 150, 120,  0.06, 2),
-    frame("follow",  1, 128, 100,  0.10, 2),
-    frame("recover", 2, 205,  25, -0.10, 0),
+    frame("ready",   2, 210,  20, -0.08, 0),
+    frame("windup",  2, 190,   0, -0.13, 0),
+    frame("strike",  3, 310, 150,  0.06, 2),
+    frame("follow",  1, 340, 170,  0.10, 2),
+    frame("recover", 2, 210,  20, -0.08, 0),
 ]
 
 sprite = {
