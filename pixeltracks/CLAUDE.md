@@ -152,10 +152,15 @@ Each layer is composited in order and is **exactly one** of:
   `anchors`) instead of a motif `shape`, so form limbs **attach at anchors and meet
   by construction** — the sword arm can cock high and the torso lean without the
   parts drifting apart (`knight-forms-rig` is the dynamic proof; `knight-forms-hero`
-  is the hand-placed version that had to stay timid). Still, gate every posed sprite
-  with `connected`/`on_canvas` `checks` and judge it in `inspect` (ASCII + geometry),
-  never by glancing at the upscaled PNG. *Still ahead:* `light` view-preset sugar,
-  and frame-animating a form rig.
+  is the hand-placed version that had to stay timid). A form rig **animates** like
+  any skeleton — one `skeleton` per frame, sweeping the animated bones' angles:
+  `knight-forms-swing` is a 5-frame sword swing (ready→windup→strike→follow→recover,
+  built by `groups/sprites/forge-knights/build_swing.py`). Still, gate every posed/
+  animated sprite with `connected`/`on_canvas` `checks` and judge it in `inspect`
+  (ASCII + geometry, `--all-frames`), never by glancing at the upscaled PNG — the
+  checks catch assembly, and a raised blade in a *contrasting* material (the swing's
+  gold sword) avoids reading as a "pipe" into same-colour armour. *Still ahead:*
+  `light` view-preset sugar.
 - **`rect`** / **`ellipse`** — `{"at": [x,y], "size": [w,h], "color": <name>, "fill": bool}`.
 - **`line`** — `{"from": [x,y], "to": [x,y], "color": <name>}`.
 - **`sprite`** — name of **another sprite in the same group** (a sibling
