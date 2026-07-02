@@ -130,6 +130,13 @@ Each layer is composited in order and is **exactly one** of:
   Supports `flip` (`"h"`/`"v"`/`"hv"`), integer `scale`, and `frame` (which frame
   of the referenced sprite to stamp, default 0). The child keeps its own outline
   but its background is dropped so it composites cleanly.
+- **`tile`** — fill a rectangular region by **repeating a motif grid** (the
+  "texture a floor/wall" verb for scenes): `{"shape": <motif>, "at": [x,y],
+  "size": [w,h]}` (or an inline `"pixels"`+`"legend"`), plus optional `recolor`.
+  The motif is authored **seamless and outline-less** (like a floor/wall tile) so
+  copies abut with no seams; partial tiles clip to the region and never bleed past
+  `size`. This is what lets a scene fill its frame with texture instead of a flat
+  `background` colour.
 
 Optional per-layer `offset` `[dx, dy]` shifts the layer on the canvas.
 
@@ -150,6 +157,16 @@ backdrop. Notes:
 - Set the scene's **`outline: null`** so the auto-outline doesn't trace one
   silhouette around every object; each stamped sprite carries its own outline.
 - References must be siblings in the same group; cycles are rejected at load.
+- **¾ dungeon look (Zelda LttP), no empty space.** Don't leave the backdrop a flat
+  colour — give the scene a *floor*. Recipe (back-to-front): `tile` a `wall_stone`
+  band across the top; draw a **lip** (a lit `line` + a dark `outline` `rect` seam)
+  where wall meets floor so the boundary reads; `tile` a `floor_stone` over the
+  rest so the ground plane fills the frame; scatter a few `floor_crack` `shape`
+  stamps for wear; frame the sides with `pillar` sprites and mount `sconce`
+  torches on the wall; then place the figures, ordering lower-on-canvas *later*
+  (so nearer things overlap farther ones — the cheap depth cue). `emberhold`'s
+  `vigil` is the worked example. Keep floor/wall tiles **outline-less** so they
+  don't seam.
 
 ### Large sprites (48/64px+) — compose, don't hand-pixel
 

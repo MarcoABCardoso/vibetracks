@@ -591,6 +591,47 @@
         "..s.s"
       ]
     },
+    "floor_stone": {
+      "_comment": "Seamless floor texture for `tile` layers (the LttP dungeon floor). Warm bone sandstone in horizontal ashlar courses (bone_sh grout every 5 rows) with a sparse speckle — outline-less so tiles abut with no seams. Tiles cleanly at 10px in both axes.",
+      "legend": { "a": "bone", "d": "bone_sh" },
+      "pixels": [
+        "dddddddddd",
+        "aaaaaaaaaa",
+        "aaadaaaaaa",
+        "aaaaaaaaaa",
+        "aaaaaaadaa",
+        "dddddddddd",
+        "aaaaaaaaaa",
+        "aadaaaaaaa",
+        "aaaaaaaaaa",
+        "aaaaaadaaa"
+      ]
+    },
+    "wall_stone": {
+      "_comment": "Seamless wall texture for `tile` layers (the dungeon rampart band). Cool steel brick in running bond (steel_sh grout), the darker/cooler counterpart to the warm floor so floor-vs-wall reads at a glance. Outline-less; tiles at 10x8.",
+      "legend": { "a": "steel", "d": "steel_sh" },
+      "pixels": [
+        "aaaaaaaaad",
+        "aaaaaaaaad",
+        "aaaaaaaaad",
+        "dddddddddd",
+        "aaaadaaaaa",
+        "aaaadaaaaa",
+        "aaaadaaaaa",
+        "dddddddddd"
+      ]
+    },
+    "floor_crack": {
+      "_comment": "A small decal stamped (as a `shape`) on the dungeon floor for wear/richness — a jagged fracture in bone_sh + outline. Not tiled; scattered a few times per scene.",
+      "legend": { "d": "bone_sh", "e": "outline" },
+      "pixels": [
+        "..e....",
+        ".edd...",
+        "e..edd.",
+        "....e.d",
+        ".....e."
+      ]
+    },
     "spark": {
       "legend": {
         "f": "flash",
@@ -1102,6 +1143,9 @@
     "flagstone",
     "ember-shard",
     "potion",
-    "shadow-banner"
+    "shadow-banner",
+    "sconce",
+    "pillar",
+    "vigil"
   ]
 }

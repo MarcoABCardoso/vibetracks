@@ -1,0 +1,46 @@
+{
+  "name": "vigil",
+  "extends": "../artbook.json",
+  "meaning": "hope",
+  "entity": "the-keep",
+  "_comment": "The last stand at the ember, staged like a Zelda: A Link to the Past dungeon hall. Now the Vanguard is in BATTLE POSE and formed into a defensive RING around the sacred brazier, every hero's BACK to the fire and weapons turned OUTWARD: casters behind (mage upper-left, cleric upper-right), fighters in front (knight lower-left with his guard up, ranger lower-right loosing an arrow), the fire they protect at the centre. The Shadow's monsters close from beyond the ring. All four use the same knight skeleton (default facing right), so the left-hand heroes are flipped to face out. A flat top-down `floor_stone` fills the frame, a `wall_stone` band + lit lip caps the top, pillars frame the sides and sconces light the wall — no empty space, and the y-axis gives the ring real depth.",
+  "size": [176, 104],
+  "scale": 4,
+  "background": "mage_sh",
+  "outline": null,
+  "scene": true,
+  "layers": [
+    { "name": "wall",  "tile": { "shape": "wall_stone",  "at": [0, 0],  "size": [176, 24] } },
+    { "name": "wall_lip", "line": { "from": [0, 23], "to": [175, 23], "color": "steel_hi" } },
+    { "name": "seam",  "rect": { "at": [0, 24], "size": [176, 2], "color": "outline" } },
+    { "name": "floor", "tile": { "shape": "floor_stone", "at": [0, 26], "size": [176, 78] } },
+
+    { "name": "crack_l", "shape": "floor_crack", "offset": [44, 84] },
+    { "name": "crack_c", "shape": "floor_crack", "offset": [88, 94] },
+    { "name": "crack_r", "shape": "floor_crack", "offset": [128, 80] },
+
+    { "name": "pillar_l", "sprite": "pillar", "offset": [4, 8] },
+    { "name": "pillar_r", "sprite": "pillar", "offset": [156, 8] },
+
+    { "name": "sconce_l", "sprite": "sconce", "frame": 0, "offset": [40, 3] },
+    { "name": "sconce_r", "sprite": "sconce", "frame": 0, "flip": "h", "offset": [124, 3] },
+
+    { "name": "bat_l", "sprite": "bat", "offset": [56, 14] },
+    { "name": "bat_r", "sprite": "bat", "flip": "h", "offset": [118, 20] },
+
+    { "name": "mage",   "sprite": "mage-battle",   "flip": "h", "offset": [46, 30] },
+    { "name": "cleric", "sprite": "cleric-battle", "offset": [92, 30] },
+
+    { "name": "glow", "ellipse": { "at": [76, 62], "size": [26, 8], "color": "gold_sh" } },
+    { "name": "brazier", "sprite": "brazier", "frame": 0, "offset": [78, 46] },
+
+    { "name": "knight", "sprite": "knight-battle", "flip": "h", "offset": [36, 54] },
+    { "name": "ranger", "sprite": "ranger-battle", "offset": [100, 54] },
+
+    { "name": "slime",    "sprite": "slime",    "offset": [4, 70] },
+    { "name": "skeleton", "sprite": "skeleton", "flip": "h", "offset": [142, 64] }
+  ],
+  "checks": [
+    { "rule": "on_canvas", "layer": "brazier" }
+  ]
+}

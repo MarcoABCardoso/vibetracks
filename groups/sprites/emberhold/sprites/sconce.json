@@ -1,0 +1,83 @@
+{
+  "name": "sconce",
+  "extends": "../artbook.json",
+  "meaning": "hope",
+  "entity": "the-keep",
+  "_comment": "A wall-torch — the keep's light carried onto the ramparts. Same build as the brazier (a static steel bracket motif + a per-frame gold flame), a 2-frame flicker at fps 6. Mounted on the dungeon wall band in the `vigil` scene (stamped at frame 0); animates on its own when rendered standalone.",
+  "size": [12, 14],
+  "fps": 6,
+  "motifs": {
+    "sconce_bracket": {
+      "_comment": "Iron bowl on a short stem + a wall plate — unchanging under the flame.",
+      "legend": { "b": "steel", "d": "steel_sh" },
+      "pixels": [
+        "............",
+        "............",
+        "............",
+        "............",
+        "............",
+        "............",
+        "..bbbbbbbb..",
+        "..bddddddb..",
+        "...bddddb...",
+        "....bddb....",
+        "....bddb....",
+        "...dbbbbd...",
+        "....d..d....",
+        "............"
+      ]
+    }
+  },
+  "frames": [
+    {
+      "name": "flare",
+      "hold": 1,
+      "layers": [
+        { "name": "bracket", "shape": "sconce_bracket" },
+        { "name": "flame",
+          "legend": { "g": "gold", "G": "gold_sh", "f": "flash" },
+          "pixels": [
+            "............",
+            ".....f......",
+            "....fgf.....",
+            "....fgf.....",
+            "...fggGf....",
+            "...ggGgg....",
+            "..fggGggf...",
+            "............",
+            "............",
+            "............",
+            "............",
+            "............",
+            "............",
+            "............"
+          ] }
+      ]
+    },
+    {
+      "name": "settle",
+      "hold": 1,
+      "layers": [
+        { "name": "bracket", "shape": "sconce_bracket" },
+        { "name": "flame",
+          "legend": { "g": "gold", "G": "gold_sh", "f": "flash" },
+          "pixels": [
+            "............",
+            "............",
+            ".....f......",
+            "....fgf.....",
+            "...fgGgf....",
+            "..fggGggf...",
+            "..ggGGggg...",
+            "............",
+            "............",
+            "............",
+            "............",
+            "............",
+            "............",
+            "............"
+          ] }
+      ]
+    }
+  ]
+}

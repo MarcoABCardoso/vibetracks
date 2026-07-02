@@ -95,6 +95,31 @@ def _draw_layer(canvas, layer, sprite) -> None:
         if sc and sc > 1:
             tile = raster.upscale(tile, sc)
         raster.blit(canvas, tile, ox, oy)
+    elif "tile" in layer:
+        # Fill a rectangular region by repeating a motif grid — the "texture a
+        # floor/wall" verb for scenes. The motif is authored seamless + outline-less
+        # (like flagstone/keep-wall); stamping onto a canvas VIEW clips partial edge
+        # tiles to the region so they never bleed past `size`.
+        t = layer["tile"]
+        if "shape" in t:
+            motif = sprite["motifs"][t["shape"]]
+            legend = shapes.recolor_legend(motif.get("legend", {}), t.get("recolor") or {})
+            rows = motif["pixels"]
+        else:
+            legend = t.get("legend", sprite.get("legend", {}))
+            rows = t["pixels"]
+        legend_rgba = _legend_to_rgba(legend, pal)
+        rx, ry = t.get("at", [0, 0])
+        rw, rh = t.get("size", [1, 1])
+        rx, ry = rx + ox, ry + oy
+        y0, y1 = max(0, ry), min(canvas.shape[0], ry + rh)
+        x0, x1 = max(0, rx), min(canvas.shape[1], rx + rw)
+        if y1 > y0 and x1 > x0:
+            sub = canvas[y0:y1, x0:x1]
+            gh, gw = len(rows), len(rows[0])
+            for ty in range(0, sub.shape[0], gh):
+                for tx in range(0, sub.shape[1], gw):
+                    raster.draw_grid(sub, rows, legend_rgba, tx, ty)
 
 
 def _child_tile(child: dict, frame_index: int) -> np.ndarray:
