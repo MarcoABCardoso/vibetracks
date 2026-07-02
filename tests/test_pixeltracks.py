@@ -469,6 +469,47 @@ class TestFormModel(unittest.TestCase):
         colours = {tuple(int(c) for c in px) for px in tile.reshape(-1, 4) if px[3] > 0}
         self.assertEqual(len(colours), 1)
 
+    def test_shadow_map_steps_down_the_ramp(self):
+        """The contact-shadow map sends each ramp colour to the step below it."""
+        pal = self.sprite["palette"]
+        smap = forms.shadow_map(self.sprite)
+        steel = tuple(int(c) for c in pal["steel"])
+        steel_sh = tuple(int(c) for c in pal["steel_sh"])
+        steel_hi = tuple(int(c) for c in pal["steel_hi"])
+        self.assertEqual(smap[steel], steel_sh)      # mid -> shadow
+        self.assertEqual(smap[steel_hi], steel)      # highlight -> mid
+        self.assertNotIn(steel_sh, smap)             # bottom step has nowhere to go
+
+    def test_contact_shadow_darkens_behind_on_light_away_side(self):
+        """A nearer form ramp-shifts opaque, farther geometry in its light-away band,
+        and leaves the far side and distant pixels untouched."""
+        pal = self.sprite["palette"]
+        steel = tuple(int(c) for c in pal["steel"])
+        steel_sh = tuple(int(c) for c in pal["steel_sh"])
+        canvas = np.zeros((8, 8, 4), dtype=np.uint8)
+        canvas[:, :] = steel                          # a flat steel wall behind
+        zbuf = np.zeros((8, 8))                        # all behind (depth 0)
+        mask = np.zeros((8, 8), dtype=bool)
+        mask[0:4, 0:4] = True                         # a near form in the upper-left
+        forms.cast_contact_shadow(canvas, mask, z=5, zbuf=zbuf, light="up_left",
+                                  smap=forms.shadow_map(self.sprite))
+        self.assertEqual(tuple(canvas[4, 3]), steel_sh)   # just down-right of the form
+        self.assertEqual(tuple(canvas[7, 7]), steel)      # far away: untouched
+        self.assertEqual(tuple(canvas[2, 2]), steel)      # under the form itself: untouched
+
+    def test_contact_shadow_respects_depth(self):
+        """A form does not cast onto geometry that is nearer than it (zbuf >= z)."""
+        pal = self.sprite["palette"]
+        steel = tuple(int(c) for c in pal["steel"])
+        canvas = np.zeros((8, 8, 4), dtype=np.uint8)
+        canvas[:, :] = steel
+        zbuf = np.full((8, 8), 9.0)                   # everything is in FRONT of the caster
+        mask = np.zeros((8, 8), dtype=bool)
+        mask[0:4, 0:4] = True
+        forms.cast_contact_shadow(canvas, mask, z=5, zbuf=zbuf, light="up_left",
+                                  smap=forms.shadow_map(self.sprite))
+        self.assertEqual(tuple(canvas[4, 3]), steel)      # nothing darkened
+
     def test_bad_form_kind_rejected(self):
         names = set(self.sprite["palette"])
         layer = {"form": "pyramid", "material": "steel", "at": [0, 0], "size": [4, 4]}

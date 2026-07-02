@@ -134,9 +134,13 @@ Each layer is composited in order and is **exactly one** of:
   A whole character is ~10 forms (see the `forge-knights` demo: `knight-forms` is
   the figure in a dozen solids, `knight-pixels` is the *same* figure hand-pixelled —
   the leverage contrast, and the rationale, are in `docs/proposals/form-model.md`).
-  *Phase-1 note:* same-material forms merge (no seam between them); separate masses
-  by material, or wait for per-form depth/occlusion (Phase 2). Affine posing of a
-  form (`rotate`/`skew`/`squash`) is Phase 3 — for now forms are axis-aligned.
+  **Depth (Phase 2):** forms composite back-to-front (later = nearer); a nearer form
+  automatically casts a **contact shadow** onto the geometry behind it (the covered
+  ramp is pushed one step darker — provably on-palette), so *same-material* forms
+  read as distinct masses without any hand shading (`knight-forms-mono` is the
+  all-steel proof). Optional per-form `"z"` (int) overrides the shadow depth order;
+  `"cast": false` opts a form out of casting. *Still Phase 3:* affine posing of a
+  form (`rotate`/`skew`/`squash`) — for now forms are axis-aligned.
 - **`rect`** / **`ellipse`** — `{"at": [x,y], "size": [w,h], "color": <name>, "fill": bool}`.
 - **`line`** — `{"from": [x,y], "to": [x,y], "color": <name>}`.
 - **`sprite`** — name of **another sprite in the same group** (a sibling

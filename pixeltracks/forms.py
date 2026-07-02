@@ -174,8 +174,86 @@ def shade_form(kind: str, w: int, h: int, ramp: list, light, round_px: int = 0) 
     return tile
 
 
-def draw_form(canvas: np.ndarray, layer: dict, sprite: dict) -> None:
-    """Composite a ``form`` layer onto the canvas (the compositor's entry point)."""
+def shadow_map(sprite: dict) -> dict:
+    """A ``rgba -> darker rgba`` map: each ramp colour to the step below it.
+
+    This is what keeps the contact shadow on-palette. A soft drop shadow would
+    need arbitrary darkened colours; instead a shadowed pixel is snapped **one
+    step down its own material ramp** — provably still a palette member, and it
+    reads as the same material in shade. Colours at the bottom of a ramp (or not
+    in any ramp) have no darker step and are left untouched.
+    """
+    pal = sprite["palette"]
+    out = {}
+    for seq in sprite.get("ramps", {}).values():
+        rgbas = [tuple(int(c) for c in pal[n]) for n in seq if n in pal]
+        for i in range(1, len(rgbas)):
+            out.setdefault(rgbas[i], rgbas[i - 1])
+    return out
+
+
+def _shift_mask(mask: np.ndarray, dx: int, dy: int) -> np.ndarray:
+    """A copy of ``mask`` translated by ``(dx, dy)``, zero-filled at the edges."""
+    out = np.zeros_like(mask)
+    h, w = mask.shape
+    ys0, ys1 = max(0, dy), min(h, h + dy)
+    xs0, xs1 = max(0, dx), min(w, w + dx)
+    if ys1 <= ys0 or xs1 <= xs0:
+        return out
+    out[ys0:ys1, xs0:xs1] = mask[max(0, -dy):max(0, -dy) + (ys1 - ys0),
+                                 max(0, -dx):max(0, -dx) + (xs1 - xs0)]
+    return out
+
+
+def cast_contact_shadow(canvas, mask, z, zbuf, light, smap, depth: int = 2) -> None:
+    """Darken a band of pixels *behind* this form, offset away from the light.
+
+    The cheap depth cue the craft guide teaches authors to place by hand: a near
+    form drops a soft shade onto the farther form it overlaps. Here it is derived —
+    pixels in a ``depth``-px band just outside the form silhouette on the
+    light-away side, that are already opaque and sit *behind* this form
+    (``zbuf < z``), get ramp-shifted one step darker via ``smap`` (staying on
+    palette). This is what lets same-material forms read as distinct masses.
+    """
+    if not smap:
+        return
+    lx, ly, _ = light_vector(light)
+    dx = -1 if lx > 0.15 else (1 if lx < -0.15 else 0)
+    dy = -1 if ly > 0.15 else (1 if ly < -0.15 else 0)
+    if dx == 0 and dy == 0:
+        dy = 1
+    band = np.zeros_like(mask)
+    for d in range(1, depth + 1):
+        band |= _shift_mask(mask, dx * d, dy * d)
+    band &= ~mask
+    target = band & (canvas[:, :, 3] > 0) & (zbuf < z)
+    for y, x in zip(*np.where(target)):
+        rep = smap.get((int(canvas[y, x, 0]), int(canvas[y, x, 1]),
+                        int(canvas[y, x, 2]), int(canvas[y, x, 3])))
+        if rep is not None:
+            canvas[y, x] = rep
+
+
+def _placed_mask(shape, tile: np.ndarray, x: int, y: int) -> np.ndarray:
+    """Where an opaque ``tile`` blitted at ``(x, y)`` would land on the canvas."""
+    mask = np.zeros(shape, dtype=bool)
+    th, tw = tile.shape[:2]
+    y0, y1 = max(0, y), min(shape[0], y + th)
+    x0, x1 = max(0, x), min(shape[1], x + tw)
+    if y1 <= y0 or x1 <= x0:
+        return mask
+    mask[y0:y1, x0:x1] = tile[y0 - y:y1 - y, x0 - x:x1 - x, 3] > 0
+    return mask
+
+
+def draw_form(canvas: np.ndarray, layer: dict, sprite: dict,
+              zbuf: np.ndarray | None = None, z: int = 0) -> None:
+    """Composite a ``form`` layer onto the canvas (the compositor's entry point).
+
+    When a ``zbuf`` is supplied (Phase 2), the form first casts a contact shadow
+    onto the geometry already behind it, then paints — so nearer forms visibly
+    sit in front of farther ones even in the same material.
+    """
     kind = layer["form"]
     w, h = layer["size"]
     ax, ay = layer.get("at", layer.get("offset", [0, 0]))
@@ -190,4 +268,8 @@ def draw_form(canvas: np.ndarray, layer: dict, sprite: dict) -> None:
             tile = tile[:, ::-1]
         if "v" in flip:
             tile = tile[::-1, :]
-    raster.blit(canvas, tile, int(ax) + int(ox), int(ay) + int(oy))
+    x, y = int(ax) + int(ox), int(ay) + int(oy)
+    if zbuf is not None and layer.get("cast", True):
+        mask = _placed_mask(canvas.shape[:2], tile, x, y)
+        cast_contact_shadow(canvas, mask, z, zbuf, light, shadow_map(sprite))
+    raster.blit(canvas, tile, x, y)

@@ -1,10 +1,11 @@
 # Proposal: the Form model — give sprites the abstraction gap that makes music work
 
-> Status: **Phase 1 landed.** The `form` layer kind, the `forms.py` lighting
-> model, and the `forge-knights` parity demo (`knight-forms` vs `knight-pixels`)
-> are implemented and tested; the rest (depth/occlusion, pose relighting, view
-> presets) remains proposed. This is the design case for why PixelTracks felt
-> "limited" next to VibeTracks and the change that closes the gap.
+> Status: **Phases 1–2 landed.** The `form` layer kind + `forms.py` lighting
+> model (Phase 1) and per-form depth with automatic contact shadow (Phase 2) are
+> implemented and tested, with the `forge-knights` demo (`knight-forms`,
+> `knight-forms-mono`, `knight-pixels`) as the proof; pose relighting and view
+> presets (Phase 3) remain proposed. This is the design case for why PixelTracks
+> felt "limited" next to VibeTracks and the change that closes the gap.
 
 ## The observation
 
@@ -159,8 +160,12 @@ stops being true once the primitive is a solid with a surface normal.
    group ships the proof: `knight-forms` is the figure in a dozen shaded solids,
    `knight-pixels` the same figure hand-pixelled at the same size; the forms output
    is verified on-palette and genuinely multi-step-shaded (`tests/test_pixeltracks.py`).
-2. **Phase 2 — depth / occlusion + auto contact shadow** via per-form `z`. Retire
-   the hand-faked shadow guidance.
+2. **Phase 2 — depth / occlusion + auto contact shadow. ✅ DONE.** `composite_frame`
+   keeps a z-buffer (depth = draw order, override with a form's `z`); a nearer form
+   ramp-shifts the geometry behind it one step darker (`cast_contact_shadow`), so
+   overlapping *same-material* forms read as distinct masses with the shadow still
+   provably on-palette. `knight-forms-mono` (all steel + a skin face) is the proof
+   — in Phase 1 it fused into one blob. Retires the hand-faked shadow guidance.
 3. **Phase 3 — pose relighting + view presets** (`light: front | three_quarter |
    side` sugar) so the documented ¾-turn is a parameter — killing the
    "view-set redraw" roadmap item.

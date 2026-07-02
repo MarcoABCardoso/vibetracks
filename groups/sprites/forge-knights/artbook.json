@@ -1,7 +1,10 @@
 {
   "title": "Forge Knights (form-model demo)",
-  "aesthetic": "A parity demo for the `form` layer kind: the same knight authored two ways — as ~10 shaded solid forms (knight-forms) and as a hand-placed pixel grid (knight-pixels). Both share this palette and its ramps; the only difference is who does the shading. See docs/proposals/form-model.md.",
-  "size": [24, 34],
+  "aesthetic": "A parity demo for the `form` layer kind: the same knight authored two ways \u2014 as ~10 shaded solid forms (knight-forms) and as a hand-placed pixel grid (knight-pixels). Both share this palette and its ramps; the only difference is who does the shading. See docs/proposals/form-model.md.",
+  "size": [
+    24,
+    34
+  ],
   "scale": 8,
   "palette": {
     "outline": "#14121c",
@@ -22,15 +25,41 @@
     "cloak_hi": "#e8785a"
   },
   "background": null,
-  "outline": { "color": "outline" },
+  "outline": {
+    "color": "outline"
+  },
   "light": "up_left",
   "ramps": {
-    "skin": ["skin_sh", "skin", "skin_hi"],
-    "steel": ["steel_sh", "steel", "steel_hi"],
-    "iron": ["iron_sh", "iron", "iron_hi"],
-    "gold": ["gold_sh", "gold", "gold_hi"],
-    "cloak": ["cloak_sh", "cloak", "cloak_hi"]
+    "skin": [
+      "skin_sh",
+      "skin",
+      "skin_hi"
+    ],
+    "steel": [
+      "steel_sh",
+      "steel",
+      "steel_hi"
+    ],
+    "iron": [
+      "iron_sh",
+      "iron",
+      "iron_hi"
+    ],
+    "gold": [
+      "gold_sh",
+      "gold",
+      "gold_hi"
+    ],
+    "cloak": [
+      "cloak_sh",
+      "cloak",
+      "cloak_hi"
+    ]
   },
   "motifs": {},
-  "sprites": ["knight-forms", "knight-pixels"]
+  "sprites": [
+    "knight-forms",
+    "knight-forms-mono",
+    "knight-pixels"
+  ]
 }

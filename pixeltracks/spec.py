@@ -465,6 +465,10 @@ def _validate_layer(layer, sprite, names, where) -> None:
         rnd = layer.get("round", 0)
         if not (isinstance(rnd, int) and rnd >= 0):
             raise SpecError(f"{where}: form 'round' must be a non-negative int, got {rnd!r}")
+        if "z" in layer and not isinstance(layer["z"], int):
+            raise SpecError(f"{where}: form 'z' (depth for contact shadow) must be an int, got {layer['z']!r}")
+        if "cast" in layer and not isinstance(layer["cast"], bool):
+            raise SpecError(f"{where}: form 'cast' must be true/false, got {layer['cast']!r}")
         if "light" in layer:
             _check_light(layer["light"], where)
         flip_axis = layer.get("flip")
