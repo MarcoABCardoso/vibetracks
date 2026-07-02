@@ -1,0 +1,349 @@
+{
+  "name": "main",
+  "extends": "../artbook.json",
+  "_comment": "Chibi peasant hero, hybrid build: a shaded form-skeleton for the volumes (sphere head, capsule limbs, box torso/jerkin \u2014 auto-lit, connected by construction, poseable) plus a hand-pixelled overlay for the face/hair (big glossy eyes, fringe, cheeks) pinned over the head. A three-quarter turn from the torso skew, a staggered stance and eyes nudged to the near side. Regenerate with build_main.py.",
+  "checks": [
+    {
+      "rule": "connected",
+      "layer": [
+        "head",
+        "torso",
+        "leg-front",
+        "leg-back",
+        "boot-front",
+        "boot-back",
+        "arm-near",
+        "arm-far",
+        "jerkin",
+        "belt"
+      ]
+    },
+    {
+      "rule": "on_canvas",
+      "margin": 0
+    }
+  ],
+  "skeleton": [
+    {
+      "name": "arm-far",
+      "form": "capsule",
+      "material": "tunic",
+      "size": [
+        4,
+        8
+      ],
+      "anchors": {
+        "shoulder": [
+          2,
+          1
+        ],
+        "hand": [
+          2,
+          7
+        ]
+      },
+      "pivot": "shoulder",
+      "attach": {
+        "to": "torso",
+        "anchor": "shoulder_r"
+      },
+      "rotate": -16
+    },
+    {
+      "name": "leg-back",
+      "form": "capsule",
+      "material": "pants",
+      "size": [
+        5,
+        6
+      ],
+      "anchors": {
+        "hip": [
+          2.5,
+          0.5
+        ],
+        "foot": [
+          2.5,
+          5.5
+        ]
+      },
+      "pivot": "hip",
+      "attach": {
+        "to": "torso",
+        "anchor": "hip_r",
+        "shift": [
+          -1,
+          -1
+        ]
+      },
+      "rotate": -14
+    },
+    {
+      "name": "boot-back",
+      "form": "box",
+      "material": "boot",
+      "size": [
+        6,
+        3
+      ],
+      "round": 1,
+      "anchors": {
+        "top": [
+          3,
+          0
+        ]
+      },
+      "pivot": "top",
+      "rotate": -16,
+      "attach": {
+        "to": "leg-back",
+        "anchor": "foot"
+      }
+    },
+    {
+      "name": "leg-front",
+      "form": "capsule",
+      "material": "pants",
+      "size": [
+        5,
+        8
+      ],
+      "anchors": {
+        "hip": [
+          2.5,
+          0.5
+        ],
+        "foot": [
+          2.5,
+          7.5
+        ]
+      },
+      "pivot": "hip",
+      "attach": {
+        "to": "torso",
+        "anchor": "hip_l",
+        "shift": [
+          0,
+          1
+        ]
+      },
+      "rotate": 8
+    },
+    {
+      "name": "boot-front",
+      "form": "box",
+      "material": "boot",
+      "size": [
+        8,
+        4
+      ],
+      "round": 1,
+      "anchors": {
+        "top": [
+          3,
+          0
+        ]
+      },
+      "pivot": "top",
+      "rotate": 14,
+      "attach": {
+        "to": "leg-front",
+        "anchor": "foot"
+      }
+    },
+    {
+      "name": "torso",
+      "form": "box",
+      "material": "tunic",
+      "size": [
+        13,
+        10
+      ],
+      "round": 3,
+      "anchors": {
+        "neck": [
+          6.5,
+          0
+        ],
+        "shoulder_l": [
+          1,
+          2
+        ],
+        "shoulder_r": [
+          12,
+          2
+        ],
+        "chest_mid": [
+          6.5,
+          4
+        ],
+        "waist": [
+          6.5,
+          8
+        ],
+        "hip_l": [
+          4,
+          9.5
+        ],
+        "hip_r": [
+          9,
+          9.5
+        ]
+      },
+      "pivot": "neck",
+      "attach": {
+        "to": "head",
+        "anchor": "neck",
+        "shift": [
+          0,
+          -1
+        ]
+      },
+      "skew": [
+        -0.16,
+        0
+      ]
+    },
+    {
+      "name": "jerkin",
+      "form": "box",
+      "material": "vest",
+      "size": [
+        9,
+        8
+      ],
+      "round": 2,
+      "anchors": {
+        "top": [
+          4.5,
+          0
+        ]
+      },
+      "pivot": "top",
+      "attach": {
+        "to": "torso",
+        "anchor": "chest_mid",
+        "shift": [
+          0,
+          -1
+        ]
+      }
+    },
+    {
+      "name": "belt",
+      "form": "box",
+      "material": "rope",
+      "size": [
+        11,
+        2
+      ],
+      "anchors": {
+        "c": [
+          5.5,
+          1
+        ]
+      },
+      "pivot": "c",
+      "attach": {
+        "to": "torso",
+        "anchor": "waist"
+      }
+    },
+    {
+      "name": "arm-near",
+      "form": "capsule",
+      "material": "tunic",
+      "size": [
+        4,
+        8
+      ],
+      "anchors": {
+        "shoulder": [
+          2,
+          1
+        ],
+        "hand": [
+          2,
+          7
+        ]
+      },
+      "pivot": "shoulder",
+      "attach": {
+        "to": "torso",
+        "anchor": "shoulder_l"
+      },
+      "rotate": 18
+    },
+    {
+      "name": "head",
+      "form": "sphere",
+      "material": "skin",
+      "size": [
+        20,
+        18
+      ],
+      "anchors": {
+        "neck": [
+          10,
+          17
+        ],
+        "crown": [
+          10,
+          1
+        ]
+      },
+      "pivot": "neck",
+      "at": [
+        14,
+        18
+      ]
+    }
+  ],
+  "layers": [
+    {
+      "name": "face",
+      "pixels": [
+        "............................",
+        "......rr.rrHrrrrr.rrr.......",
+        "......rrHHHHrrrrrrrrr.......",
+        "......rHHHHHrrrrrrrrr.......",
+        "......HHHHHHrrrrrrrrrr......",
+        ".....HHHHHHHrrrrrrrrrrr.....",
+        ".....HHHHHHHrrrrrrrrRrr.....",
+        "....HHRrRRR.Rr.RR.RRrrrr....",
+        "....rrrR.oo..R.ooo..rrrr....",
+        "....rrr.ogoo...ogo..rrrr....",
+        "....rrr.oowo...oowccrrrr....",
+        "....rrrccoo.S...o...rrrr....",
+        "............S...............",
+        "............................",
+        "...........o.o..............",
+        "............o...............",
+        "............................",
+        "............................",
+        "............................",
+        "............................",
+        "............................",
+        "............................",
+        "............................",
+        "............................",
+        "............................",
+        "............................",
+        "............................",
+        "............................",
+        "............................",
+        "............................"
+      ],
+      "legend": {
+        "o": "outline",
+        "w": "eyewhite",
+        "g": "gleam",
+        "c": "cheek",
+        "r": "hair",
+        "R": "hair_sh",
+        "H": "hair_hi",
+        "S": "skin_sh"
+      }
+    }
+  ]
+}

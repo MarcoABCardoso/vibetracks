@@ -1,0 +1,73 @@
+{
+  "title": "Tinyfolk (chibi peasant hero)",
+  "aesthetic": "A chibi over-world hero, ~2 heads tall, built the hybrid way: the VOLUMES are a shaded form-skeleton (a big sphere head, capsule limbs, a box torso and jerkin) the engine lights and connects by construction, so the little peasant is poseable and animatable; the FACE is a hand-pixelled overlay pinned over the head (hair fringe, big glossy eyes, rosy cheeks, mouth) — the iconographic bits a shaded solid can't express. A gentle three-quarter / isometric turn (torso skew + a staggered stance + features nudged to the near side) sits him in a world rather than flat on the screen. Earthy peasant palette: linen tunic, brown leather jerkin, rope belt, patched trousers, cloth boots.",
+  "size": [
+    28,
+    40
+  ],
+  "scale": 12,
+  "light": "up_left",
+  "palette": {
+    "outline": "#2a2130",
+    "skin_sh": "#cd8659",
+    "skin": "#eaa878",
+    "skin_hi": "#ffcf9f",
+    "cheek": "#e37a5f",
+    "hair_sh": "#4a2f1c",
+    "hair": "#6d4327",
+    "hair_hi": "#8f5c33",
+    "tunic_sh": "#b58a4e",
+    "tunic": "#e0bd7a",
+    "tunic_hi": "#f6dda6",
+    "vest_sh": "#5f3823",
+    "vest": "#8c5733",
+    "vest_hi": "#b5794a",
+    "pants_sh": "#3c5065",
+    "pants": "#5a768f",
+    "pants_hi": "#87a7be",
+    "boot_sh": "#3a2619",
+    "boot": "#63432c",
+    "rope": "#cdae72",
+    "eyewhite": "#fbf3e2",
+    "gleam": "#fffdf6"
+  },
+  "background": null,
+  "outline": {
+    "color": "outline"
+  },
+  "ramps": {
+    "skin": [
+      "skin_sh",
+      "skin",
+      "skin_hi"
+    ],
+    "hair": [
+      "hair_sh",
+      "hair",
+      "hair_hi"
+    ],
+    "tunic": [
+      "tunic_sh",
+      "tunic",
+      "tunic_hi"
+    ],
+    "vest": [
+      "vest_sh",
+      "vest",
+      "vest_hi"
+    ],
+    "pants": [
+      "pants_sh",
+      "pants",
+      "pants_hi"
+    ],
+    "boot": [
+      "boot_sh",
+      "boot"
+    ]
+  },
+  "motifs": {},
+  "sprites": [
+    "main"
+  ]
+}
