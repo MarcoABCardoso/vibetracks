@@ -28,13 +28,13 @@ from labkit.groups import discover_group_dirs
 from labkit.specbase import SpecError, extends_path, load_json  # shared across Labs
 from labkit.world import World, check_spec_refs, load_world
 
-from . import palette, raster, shapes
+from . import forms, palette, raster, shapes
 
 ART_DIR = os.path.join("groups", "sprites")   # where sprite groups live
 BIBLE_FILE = "artbook.json"
 SPRITES_SUBDIR = "sprites"
 
-PRIMITIVES = ("pixels", "shape", "rect", "ellipse", "line", "sprite", "tile")
+PRIMITIVES = ("pixels", "shape", "form", "rect", "ellipse", "line", "sprite", "tile")
 TRANSPARENT_CHARS = set(". ")
 
 __all__ = ["SpecError", "load_json", "Bible", "load_bible", "resolve_sprite",
@@ -53,6 +53,7 @@ class Bible:
     motifs: dict = field(default_factory=dict)       # name -> {legend, pixels}
     background: object = None                        # palette name or None
     outline: object = None                           # {"color": name} or None
+    light: object = forms.DEFAULT_LIGHT              # default light for `form` layers
     fps: int = 10                                    # default animation playback rate
     sprites: list = field(default_factory=list)
     world: World | None = None   # the Root Spec this bible extends, if any
@@ -76,6 +77,7 @@ def load_bible(path: str) -> Bible:
         motifs=data.get("motifs", {}),
         background=data.get("background"),
         outline=data.get("outline"),
+        light=data.get("light", forms.DEFAULT_LIGHT),
         fps=int(data.get("fps", 10)),
         sprites=data.get("sprites", []),
     )
@@ -139,6 +141,7 @@ def _validate_bible(b: Bible) -> None:
     if b.background is not None and b.background not in names:
         raise SpecError(f"{b.path}: background {b.background!r} is not a palette colour")
     _check_outline(b.outline, names, b.path)
+    _check_light(b.light, b.path)
     for cname, ramp in b.ramps.items():
         bad = [c for c in ramp if c not in names]
         if bad:
@@ -154,6 +157,17 @@ def _check_outline(outline, names, where) -> None:
         raise SpecError(f"{where}: outline must be {{'color': <palette name>}}")
     if outline["color"] not in names:
         raise SpecError(f"{where}: outline colour {outline['color']!r} is not in the palette")
+
+
+def _check_light(light, where) -> None:
+    """A light is a named preset or an explicit ``[x, y, z]`` direction."""
+    if isinstance(light, str):
+        if light not in forms.LIGHTS:
+            raise SpecError(f"{where}: light {light!r} is not a known preset "
+                            f"(presets: {sorted(forms.LIGHTS)})")
+    elif not (isinstance(light, (list, tuple)) and len(light) == 3
+              and all(_is_num(v) for v in light)):
+        raise SpecError(f"{where}: light must be a preset name or [x, y, z] numbers, got {light!r}")
 
 
 # --- Skeleton resolution ----------------------------------------------------- #
@@ -295,6 +309,8 @@ def resolve_sprite(path: str, bible: Bible | None = None, _stack=frozenset()) ->
     colours.update(data.get("palette", {}))          # per-sprite palette override
     motifs = dict(bible.motifs) if bible else {}
     motifs.update(data.get("motifs", {}))
+    ramps = dict(bible.ramps) if bible else {}
+    ramps.update(data.get("ramps", {}))              # per-sprite ramp override
 
     # Normalise to a list of frames; a still sprite is a single frame. A frame
     # (or the whole sprite) may declare a `skeleton` that expands into layers
@@ -330,6 +346,8 @@ def resolve_sprite(path: str, bible: Bible | None = None, _stack=frozenset()) ->
         "outline": data.get("outline", bible.outline if bible else None),
         "legend": data.get("legend", {}),   # sprite-level default for pixels layers
         "motifs": motifs,
+        "ramps": ramps,                      # material ramps for `form` layers
+        "light": data.get("light", bible.light if bible else forms.DEFAULT_LIGHT),
         "frames": frames,
         "checks": data.get("checks", []),    # declarative art-direction predicates
         "flip": data.get("flip"),            # mirror the whole composite ("h"/"v"/"hv")
@@ -379,6 +397,11 @@ def _validate_sprite(s: dict, path: str) -> None:
     if s["background"] is not None and s["background"] not in names:
         raise SpecError(f"{path}: background {s['background']!r} is not a palette colour")
     _check_outline(s["outline"], names, path)
+    _check_light(s["light"], path)
+    for cname, ramp in s.get("ramps", {}).items():
+        bad = [c for c in ramp if c not in names]
+        if bad:
+            raise SpecError(f"{path}: ramp {cname!r} references unknown colours {bad}")
     if not (isinstance(s["fps"], int) and s["fps"] >= 1):
         raise SpecError(f"{path}: fps must be a positive int")
     if not s["frames"]:
@@ -420,6 +443,34 @@ def _validate_layer(layer, sprite, names, where) -> None:
         for src, dst in (layer.get("recolor") or {}).items():
             if dst not in names:
                 raise SpecError(f"{where}: recolor target {dst!r} is not a palette colour")
+    elif kind == "form":
+        # A shaded solid primitive: the engine derives every pixel from a material
+        # ramp + light (see forms.py), so validation is about the *decisions* —
+        # a real form kind, a real material, a sane box.
+        if layer["form"] not in forms.FORM_KINDS:
+            raise SpecError(f"{where}: unknown form {layer['form']!r} "
+                            f"(forms: {list(forms.FORM_KINDS)})")
+        size = layer.get("size")
+        if not (isinstance(size, (list, tuple)) and len(size) == 2
+                and all(isinstance(v, int) and v > 0 for v in size)):
+            raise SpecError(f"{where}: form 'size' must be [w, h] positive ints, got {size!r}")
+        at = layer.get("at", layer.get("offset", [0, 0]))
+        if not (isinstance(at, (list, tuple)) and len(at) == 2 and all(isinstance(v, int) for v in at)):
+            raise SpecError(f"{where}: form 'at' must be [x, y] integers, got {at!r}")
+        material = layer.get("material")
+        if material not in sprite.get("ramps", {}) and material not in names:
+            raise SpecError(f"{where}: form 'material' {material!r} must name a ramp or a "
+                            f"palette colour (ramps: {sorted(sprite.get('ramps', {}))}, "
+                            f"palette: {sorted(names)})")
+        rnd = layer.get("round", 0)
+        if not (isinstance(rnd, int) and rnd >= 0):
+            raise SpecError(f"{where}: form 'round' must be a non-negative int, got {rnd!r}")
+        if "light" in layer:
+            _check_light(layer["light"], where)
+        flip_axis = layer.get("flip")
+        if flip_axis is not None and (not isinstance(flip_axis, str)
+                                      or set(flip_axis) - set("hv") or not flip_axis):
+            raise SpecError(f"{where}: form 'flip' must be 'h', 'v' or 'hv', got {flip_axis!r}")
     elif kind == "sprite":
         # A scene layer that stamps another sprite. Existence/cycles were checked
         # at resolution (which attached `_resolved`); here we vet the placement.

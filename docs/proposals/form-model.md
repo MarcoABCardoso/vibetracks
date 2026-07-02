@@ -1,8 +1,10 @@
 # Proposal: the Form model — give sprites the abstraction gap that makes music work
 
-> Status: proposal / RFC. Nothing here is implemented yet. This is the design
-> case for why PixelTracks feels "limited" next to VibeTracks and the smallest
-> change that closes the gap.
+> Status: **Phase 1 landed.** The `form` layer kind, the `forms.py` lighting
+> model, and the `forge-knights` parity demo (`knight-forms` vs `knight-pixels`)
+> are implemented and tested; the rest (depth/occlusion, pose relighting, view
+> presets) remains proposed. This is the design case for why PixelTracks felt
+> "limited" next to VibeTracks and the change that closes the gap.
 
 ## The observation
 
@@ -150,10 +152,13 @@ stops being true once the primitive is a solid with a surface normal.
 
 ## Phased, additive migration
 
-1. **Phase 1 — `form` layer kind + lighting model.** `forms.py` +
-   `draw_form_shaded` + the compositor branch, consuming the bible's existing
-   `ramps`. No spec breaks. Ship one demo character authored purely in forms
-   beside a hand-pixelled twin to prove parity in far fewer spec lines.
+1. **Phase 1 — `form` layer kind + lighting model. ✅ DONE.** `pixeltracks/forms.py`
+   (`shade_form`/`draw_form`) + the compositor branch + spec validation, consuming
+   the bible's existing `ramps` and a new (optional) `light`. No spec breaks — a
+   sprite mixes `pixels`, `shape` and `form` layers freely. The `forge-knights`
+   group ships the proof: `knight-forms` is the figure in a dozen shaded solids,
+   `knight-pixels` the same figure hand-pixelled at the same size; the forms output
+   is verified on-palette and genuinely multi-step-shaded (`tests/test_pixeltracks.py`).
 2. **Phase 2 — depth / occlusion + auto contact shadow** via per-form `z`. Retire
    the hand-faked shadow guidance.
 3. **Phase 3 — pose relighting + view presets** (`light: front | three_quarter |

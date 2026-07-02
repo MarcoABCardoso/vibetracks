@@ -122,6 +122,21 @@ Each layer is composited in order and is **exactly one** of:
   fractional scale (sx < 1 foreshortens width — a turned torso). Grid transforms
   apply flip→rotate→scale; the articulated matrix is rotate∘shear∘squash about
   the pivot.
+- **`form`** — a **shaded solid primitive** the engine lights for you (the sprite
+  Lab's *synth*; `pixeltracks/forms.py`): `{"form": "sphere"|"disc"|"capsule"|
+  "box"|"cone", "at": [x,y], "size": [w,h], "material": <ramp or colour>, "light"?,
+  "round"?, "flip"?}`. Instead of hand-placing pixels, you name a solid and a
+  **material** — a bible `ramp` (shadow→highlight) or a bare palette colour — and
+  the engine derives every pixel *and its shade* from the form's 2.5-D surface
+  normal against the sprite `light` (default `up_left`; presets `up_left`/`up_right`/
+  `up`/`left`/`right`/`down`/`front`, or an explicit `[x,y,z]`). Output is provably
+  on-palette (ramp members only). This is what finally makes `ramps` do real work.
+  A whole character is ~10 forms (see the `forge-knights` demo: `knight-forms` is
+  the figure in a dozen solids, `knight-pixels` is the *same* figure hand-pixelled —
+  the leverage contrast, and the rationale, are in `docs/proposals/form-model.md`).
+  *Phase-1 note:* same-material forms merge (no seam between them); separate masses
+  by material, or wait for per-form depth/occlusion (Phase 2). Affine posing of a
+  form (`rotate`/`skew`/`squash`) is Phase 3 — for now forms are axis-aligned.
 - **`rect`** / **`ellipse`** — `{"at": [x,y], "size": [w,h], "color": <name>, "fill": bool}`.
 - **`line`** — `{"from": [x,y], "to": [x,y], "color": <name>}`.
 - **`sprite`** — name of **another sprite in the same group** (a sibling
@@ -233,6 +248,9 @@ is a layer name, a list of names, or `"all"`.
 
 - `pixeltracks/palette.py` — hex↔RGBA, named palettes, `shade` (≈ `theory.py`).
 - `pixeltracks/shapes.py` — grids + transforms `flip`/`rotate`/`scale`/`recolor`.
+- `pixeltracks/forms.py` — the **form synth**: light presets, the per-normal
+  lighting model, and `shade_form`/`draw_form` for the `form` layer kind. Add new
+  form primitives or shading behaviour here.
 - `pixeltracks/raster.py` — canvas, pixel/rect/ellipse/line painters, the affine
   grid draw (rotate/shear/squash, **sub-pixel supersampled so thin rotated parts
   don't break into gaps**), auto-outline, upscale (≈ `synth.py`).

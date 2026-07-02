@@ -1,0 +1,193 @@
+"""Shaded solid forms — the sprite Lab's *synth*.
+
+This module is the visual answer to the question "why does JSON modeling feel
+higher-leverage for music than for sprites?" A music note sits far above the
+waveform: the synth (``synth.py``) manufactures the timbre (oscillators, ADSR,
+filters, reverb) from a compact ``[pitch, beats]`` token. A pixel grid, by
+contrast, sits *right on top of* the PNG — ``draw_grid`` is nearly the identity
+map, so the author must hand-place every pixel. There is no abstraction gap for
+the engine to fill.
+
+A **form** restores that gap. The author declares a solid primitive — a sphere,
+capsule, box or cone — with a *material* (a palette **ramp**, shadow→highlight)
+and a *light* direction, and this module renders it to shaded pixels: it derives
+a 2.5-D surface normal for every interior pixel, lights it against the ramp, and
+snaps the result onto the ramp's colours (so the output is provably on-palette,
+exactly like every other layer). The author supplies what an artist *decides*
+(which forms, where, what material, lit from where); the engine supplies what an
+artist grinds out by hand (every pixel and its shade).
+
+Crucially this makes the bible's ``ramps`` — until now inert documentation — do
+real work, precisely as a synth patch turns one note into a full ADSR-shaped
+timbre. See ``docs/proposals/form-model.md`` for the full rationale.
+"""
+
+from __future__ import annotations
+
+import numpy as np
+
+from . import raster
+
+# Named light directions as ``(x, y, z)`` unit-ish vectors. Image y grows
+# downward, so a light "up" has a *negative* y; z points toward the viewer, so a
+# form's core (facing the camera) always catches some light.
+LIGHTS = {
+    "up_left": (-0.6, -0.6, 0.55),
+    "up_right": (0.6, -0.6, 0.55),
+    "up": (0.0, -0.75, 0.55),
+    "left": (-0.85, -0.1, 0.45),
+    "right": (0.85, -0.1, 0.45),
+    "down": (0.0, 0.75, 0.55),
+    "front": (0.0, 0.0, 1.0),
+}
+DEFAULT_LIGHT = "up_left"
+
+FORM_KINDS = ("sphere", "disc", "capsule", "box", "cone")
+
+
+def light_vector(light) -> np.ndarray:
+    """Resolve a light preset name or explicit ``[x, y, z]`` to a unit vector."""
+    if isinstance(light, str):
+        vec = LIGHTS.get(light, LIGHTS[DEFAULT_LIGHT])
+    else:
+        vec = tuple(light)
+    v = np.array(vec, dtype=float)
+    n = np.linalg.norm(v)
+    return v / n if n > 1e-9 else np.array(LIGHTS[DEFAULT_LIGHT])
+
+
+def ramp_rgba(material: str, sprite: dict) -> list:
+    """The material's shadow→highlight colours as a list of RGBA tuples.
+
+    ``material`` names either a bible ``ramp`` (→ its ordered colours, so a form
+    shades across three-plus values) or a single palette colour (→ a one-entry
+    ramp, i.e. a flat fill). Either way every emitted colour is a palette member,
+    keeping the on-palette invariant the validator enforces for every other layer.
+    """
+    ramps = sprite.get("ramps", {})
+    pal = sprite["palette"]
+    if material in ramps:
+        return [pal[name] for name in ramps[material]]
+    return [pal[material]]
+
+
+def _fields(kind: str, w: int, h: int, round_px: int):
+    """Per-pixel geometry of a form on its ``h×w`` bounding box.
+
+    Returns ``(mask, e, ox, oy)``: ``mask`` = inside the silhouette; ``e`` =
+    normalized distance from the form's medial core (0) to its surface (1); and
+    ``(ox, oy)`` = the outward surface direction in the image plane. Every form
+    reduces to "distance from a medial primitive, normalized by a radius": a
+    point (sphere), a segment (capsule), a rectangle (box) or a tapering axis
+    (cone). That single model gives all four a rounded, form-reading shade.
+    """
+    ys, xs = np.mgrid[0:h, 0:w].astype(float)
+    cx, cy = (w - 1) / 2.0, (h - 1) / 2.0
+
+    if kind in ("sphere", "disc"):
+        rx, ry = max(w / 2.0, 0.5), max(h / 2.0, 0.5)
+        nx, ny = (xs - cx) / rx, (ys - cy) / ry
+        e = np.sqrt(nx * nx + ny * ny)
+        mask = e <= 1.0
+        mag = np.maximum(e, 1e-6)
+        ox, oy = nx / mag, ny / mag
+
+    elif kind == "capsule":
+        if h >= w:                       # vertical capsule
+            r = max(w / 2.0, 0.5)
+            half = max(h / 2.0 - r, 0.0)
+            qx, qy = cx, np.clip(ys, cy - half, cy + half)
+        else:                            # horizontal capsule
+            r = max(h / 2.0, 0.5)
+            half = max(w / 2.0 - r, 0.0)
+            qx, qy = np.clip(xs, cx - half, cx + half), cy
+        dx, dy = xs - qx, ys - qy
+        dist = np.sqrt(dx * dx + dy * dy)
+        e = dist / r
+        mask = e <= 1.0
+        mag = np.maximum(dist, 1e-6)
+        ox, oy = dx / mag, dy / mag
+
+    elif kind == "box":
+        r = max(int(round_px), 0)
+        ix, iy = max(w / 2.0 - r, 0.0), max(h / 2.0 - r, 0.0)
+        qx = np.clip(xs, cx - ix, cx + ix)
+        qy = np.clip(ys, cy - iy, cy + iy)
+        dx, dy = xs - qx, ys - qy
+        dist = np.sqrt(dx * dx + dy * dy)
+        rr = max(r, 0.5)
+        inside_rect = (np.abs(xs - cx) <= w / 2.0) & (np.abs(ys - cy) <= h / 2.0)
+        mask = inside_rect & (dist <= rr + 1e-6)
+        e = np.clip(dist / rr, 0.0, 1.0)  # 0 across the flat face, →1 at rounded edges
+        mag = np.maximum(dist, 1e-6)
+        ox, oy = dx / mag, dy / mag
+
+    elif kind == "cone":                 # apex at top, base at bottom
+        top = cy - h / 2.0
+        frac = np.clip((ys - top) / max(h, 1.0), 0.0, 1.0)
+        halfw = np.maximum(frac * (w / 2.0), 0.5)
+        e = np.abs(xs - cx) / halfw
+        mask = (e <= 1.0) & (ys >= top) & (ys <= cy + h / 2.0)
+        ox, oy = np.sign(xs - cx), np.zeros_like(xs)
+
+    else:
+        raise ValueError(f"unknown form kind {kind!r}")
+
+    e = np.clip(e, 0.0, 1.0)
+    return mask, e, ox, oy
+
+
+def shade_form(kind: str, w: int, h: int, ramp: list, light, round_px: int = 0) -> np.ndarray:
+    """Render one form to an ``h×w`` RGBA tile, shaded from ``ramp`` under ``light``.
+
+    The lighting model: from ``_fields`` recover a unit surface normal per pixel
+    (``n = (ox·e, oy·e, sqrt(1-e²))`` — sideways at the silhouette, facing the
+    viewer at the core), take ``dot(n, light)`` for brightness, and map that onto
+    the ramp so the core lands mid-ramp, lit faces climb toward the highlight and
+    away-faces fall to the shadow. A lit rim on the silhouette gets the top value —
+    the classic pixel-art edge light. With a one-entry ramp this degrades to a
+    flat fill.
+    """
+    mask, e, ox, oy = _fields(kind, w, h, round_px)
+    nz = np.sqrt(np.clip(1.0 - e * e, 0.0, 1.0))
+    nx, ny = ox * e, oy * e
+
+    lx, ly, lz = light_vector(light)
+    brightness = nx * lx + ny * ly + nz * lz
+    mid = float(lz)                       # a viewer-facing surface catches exactly lz
+
+    k = len(ramp)
+    tile = np.zeros((h, w, 4), dtype=np.uint8)
+    if k == 0:
+        return tile
+    if k == 1:
+        tile[mask] = ramp[0]
+        return tile
+
+    t = 0.5 + (brightness - mid) * 1.35
+    idx = np.clip(np.round(t * (k - 1)).astype(int), 0, k - 1)
+    rim = (e > 0.82) & (brightness > mid)   # lit silhouette → edge highlight
+    idx = np.where(rim, k - 1, idx)
+
+    ramp_arr = np.array(ramp, dtype=np.uint8)
+    tile[mask] = ramp_arr[idx[mask]]
+    return tile
+
+
+def draw_form(canvas: np.ndarray, layer: dict, sprite: dict) -> None:
+    """Composite a ``form`` layer onto the canvas (the compositor's entry point)."""
+    kind = layer["form"]
+    w, h = layer["size"]
+    ax, ay = layer.get("at", layer.get("offset", [0, 0]))
+    ox, oy = layer.get("offset", [0, 0]) if "at" in layer else (0, 0)
+    light = layer.get("light", sprite.get("light", DEFAULT_LIGHT))
+    ramp = ramp_rgba(layer["material"], sprite)
+    tile = shade_form(kind, int(w), int(h), ramp, light, int(layer.get("round", 0)))
+
+    flip = layer.get("flip")
+    if flip:
+        if "h" in flip:
+            tile = tile[:, ::-1]
+        if "v" in flip:
+            tile = tile[::-1, :]
+    raster.blit(canvas, tile, int(ax) + int(ox), int(ay) + int(oy))

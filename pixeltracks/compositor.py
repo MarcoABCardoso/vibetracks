@@ -15,7 +15,7 @@ from __future__ import annotations
 
 import numpy as np
 
-from . import raster, shapes
+from . import forms, raster, shapes
 
 
 def _legend_to_rgba(legend: dict, sprite_palette: dict) -> dict:
@@ -63,6 +63,11 @@ def _draw_layer(canvas, layer, sprite) -> None:
                                           scale=tuple(squash) if squash else (1.0, 1.0))
             at = layer.get("at", layer.get("offset", [0, 0]))
             raster.draw_grid_affine(canvas, rows, legend_rgba, matrix, piv, at)
+    elif "form" in layer:
+        # A shaded solid primitive: the engine derives every pixel and its shade
+        # from a material ramp + light, instead of the author hand-placing them.
+        # This is the sprite Lab's "synth" — see forms.py.
+        forms.draw_form(canvas, layer, sprite)
     elif "rect" in layer:
         r = layer["rect"]
         x, y = r.get("at", [0, 0])

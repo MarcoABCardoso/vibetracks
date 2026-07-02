@@ -10,7 +10,7 @@ import unittest
 
 import numpy as np
 
-from pixeltracks import palette, shapes, spec
+from pixeltracks import forms, palette, shapes, spec
 from pixeltracks.compositor import composite_frame, coverage, render_sprite
 from pixeltracks.pngio import encode_png
 from pixeltracks.raster import add_outline, new_canvas, upscale
@@ -432,6 +432,54 @@ class TestSceneComposition(unittest.TestCase):
                  "_resolved": {"frames": [{"layers": []}]}}
         with self.assertRaises(spec.SpecError):
             spec._validate_layer(layer, sprite, names, where="t")
+
+
+FORGE = os.path.join(ROOT, "groups", "sprites", "forge-knights")
+
+
+class TestFormModel(unittest.TestCase):
+    """The `form` layer kind: solids shaded from a material ramp + light."""
+
+    def setUp(self):
+        self.sprite = spec.resolve_sprite(os.path.join(FORGE, "sprites", "knight-forms.json"))
+        self.canvas = composite_frame(self.sprite, self.sprite["frames"][0])
+
+    def test_forms_render_only_palette_colours(self):
+        """Every pixel a form emits is a palette entry — the on-palette invariant."""
+        allowed = {tuple(int(c) for c in v) for v in self.sprite["palette"].values()}
+        allowed.add((0, 0, 0, 0))
+        opaque = self.canvas.reshape(-1, 4)
+        used = {tuple(int(c) for c in px) for px in opaque[opaque[:, 3] > 0].tolist()}
+        self.assertTrue(used <= allowed, f"off-palette pixels: {used - allowed}")
+
+    def test_ramp_actually_shades(self):
+        """A shaded form uses more than one step of its ramp (shadow AND highlight),
+        i.e. the engine derived form — not a flat fill."""
+        pal = self.sprite["palette"]
+        for step in ("steel_sh", "steel", "steel_hi"):
+            colour = tuple(int(c) for c in pal[step])
+            hits = int(np.count_nonzero(np.all(self.canvas.reshape(-1, 4) == colour, axis=1)))
+            self.assertGreater(hits, 0, f"steel ramp step {step!r} unused — form not shaded")
+
+    def test_flat_material_is_single_colour(self):
+        """A material that names a bare palette colour (no ramp) fills flat."""
+        ramp = forms.ramp_rgba("outline", self.sprite)   # 'outline' is a colour, not a ramp
+        self.assertEqual(len(ramp), 1)
+        tile = forms.shade_form("sphere", 8, 8, ramp, "up_left")
+        colours = {tuple(int(c) for c in px) for px in tile.reshape(-1, 4) if px[3] > 0}
+        self.assertEqual(len(colours), 1)
+
+    def test_bad_form_kind_rejected(self):
+        names = set(self.sprite["palette"])
+        layer = {"form": "pyramid", "material": "steel", "at": [0, 0], "size": [4, 4]}
+        with self.assertRaises(spec.SpecError):
+            spec._validate_layer(layer, self.sprite, names, where="t")
+
+    def test_unknown_material_rejected(self):
+        names = set(self.sprite["palette"])
+        layer = {"form": "sphere", "material": "plasma", "at": [0, 0], "size": [4, 4]}
+        with self.assertRaises(spec.SpecError):
+            spec._validate_layer(layer, self.sprite, names, where="t")
 
 
 if __name__ == "__main__":
