@@ -1,141 +1,164 @@
 # VibeTracks — guide for Claude
 
-This repo is a **coherence engine for solo game worlds** — a multi-Lab
-workshop that lets a solo dev (with an AI copilot) build a whole game's worth of
-assets that read as *one game*. A *Lab* is a structured spec → validate →
-compile → iterate workshop for one artifact class. Every Lab is the same machine
-with a different theory; `VISION.md` frames the product (who it's for, honest
-scope, roadmap).
+This repo is a **game-soundtrack lab**: songs are modeled as JSON specs and
+compiled to WAV by a pure-Python synth (`numpy` + `scipy` only — no FluidSynth,
+SoX, ffmpeg, or soundfonts; those aren't installable in this environment).
 
-| Lab | Artifact | Author edits | Compiles to | Skill | Spec reference |
-|-----|----------|--------------|-------------|-------|----------------|
-| **VibeTracks** | music / SFX | JSON song specs | WAV (pure-Python synth) | `/soundtrack` | `vibetracks/CLAUDE.md` |
-| **PixelTracks** | sprites / images | JSON sprite specs | PNG (procedural raster) | `/spritesheet` | `pixeltracks/CLAUDE.md` |
+When the user wants to make game music, use the **`/soundtrack` skill** — it
+encodes the compose→render→iterate workflow. This file is the **spec reference**;
+**`docs/composition.md`** is the craft guide (leitmotif transformation, melody,
+harmony, form — lessons from Zelda/Castlevania/Undertale and others).
 
-> 🖼️ **PixelTracks is a capable pixel-art engine.** Its deterministic raster
-> engine renders coherent sprite sets straight from JSON — palette-swap
-> leitmotifs, skeleton-rigged poses, frame animation, multi-object scenes, even
-> higher-detail bust portraits — with no image model in the loop. It's tuned for
-> pixel art and flat/stylised work, not photoreal or painterly illustration; author
-> within that lane and it stands beside the music Lab.
-
-## This file is an index, not the whole manual
-
-The per-Lab **spec reference lives next to each Lab's code** so you only load the
-detail you need:
-
-- **VibeTracks (music)** → **`vibetracks/CLAUDE.md`** — bible/track/part model,
-  instrument engines, expression, where to edit.
-- **PixelTracks (sprites)** → **`pixeltracks/CLAUDE.md`** — bible/sprite/layer
-  model, shape transforms, authoring + posing notes.
-
-Claude Code loads a subdirectory's `CLAUDE.md` automatically when you work on
-files there, so opening the relevant Lab pulls in its reference. Read the matching
-one before authoring specs — this index is deliberately thin.
-
-## Picking the right Lab
-
-Game *music* → VibeTracks (`/soundtrack`); game *sprites / pixel art / images* →
-PixelTracks (`/spritesheet`). A user who **describes a whole game** and wants
-engine-ready assets → the **`/gamepack`** skill (world → assets → Godot pack).
-
-## The dispatcher & layout
-
-A single front door unifies the Labs:
+## Commands
 
 ```bash
-python -m labs                       # list the Labs (and exporters)
-python -m labs <lab> <command...>    # run a Lab's CLI (e.g. labs pixeltracks render-all)
-python -m labs validate              # validate every Lab's specs
-python -m labs new-world <name>      # scaffold a cross-medium world + a group per Lab
-python -m labs build <world> --engine godot   # render + export a Godot resource pack
-python -m <lab> <command...>         # or run a Lab directly
+python -m vibetracks validate                   # check every group's specs
+python -m vibetracks render <group>/<track>     # render one track to out/<group>/<track>.wav
+python -m vibetracks render-all                 # render every track in every group
+python -m vibetracks new <track> --group <g>    # scaffold groups/<g>/tracks/<track>.json
+python -m vibetracks new-group <name>           # scaffold a whole new group
+python -m unittest discover -s tests            # run tests
 ```
 
-Every Lab ships the **same CLI verbs** (`validate` / `render` / `render-all` /
-`new` / `new-group`) and the same addressing (`<group>/<asset>`, a bare `<asset>`
-with `--group`, or a path). All assets live under one **`groups/`** tree, split by
-medium:
+`render`, `render-all`, `validate`, and `new` take an optional `--group`; when a
+repo has just one group you can omit it. A track is addressed as `<group>/<track>`,
+as a bare `<track>` (with `--group`), or as a path to its JSON. `render-all` writes
+`out/<group>/manifest.json` per group plus a top-level `out/manifest.json` index.
 
-```
-worlds/<w>/world.json                                # Root Specs (the cross-medium bible; demo: emberhold)
-groups/music/<g>/soundtrack.json + tracks/*.json     # VibeTracks groups (demo: neon-frontier)
-groups/sprites/<g>/artbook.json  + sprites/*.json    # PixelTracks groups (demo: mossy-hollow)
-out/<group>/                                          # rendered artifacts (gitignored)
-dist/<world>/                                         # exported engine resource packs (gitignored)
-```
+Render is CPU-bound (pure-Python DSP): roughly real-time-ish — a 25 s track takes
+~20 s. For a quick check, render a single short track rather than `render-all`.
 
-## Shipping — the exporter (`build`)
+## The model
 
-The Labs render raw artifacts; an **exporter** wraps a whole world's artifacts into
-an engine resource pack — the last mile so assets actually run in a game.
-`python -m labs build <world> --engine godot` renders every asset in the world's
-groups and writes a **drop-in Godot 4 pack** to `dist/<world>/` (+ a `.zip`):
-textures/audio with `.import` files (crisp pixels; forward-loop on looping music)
-and a **SpriteFrames `.tres`** per animated sprite (frame atlas → per-frame
-`hold`/`fps`/loop). Exporters live in a registry (`labkit/export.py`) mirroring the
-Lab registry — a new engine target is one `Exporter(...)` entry plus an emitter in
-`labkit/exporters/`. Full detail in **`docs/godot.md`**; the **`/gamepack`** skill
-drives description → world → assets → pack.
+### Group — `groups/<name>/`
+One self-contained soundtrack: its own bible plus tracks. Groups let a single repo
+hold several independent scores — different regions of a game, or different games
+entirely — without sharing or overwriting one top-level bible. The repo ships a
+demo group (`neon-frontier`); `new-group` scaffolds a fresh one alongside it. Each
+group is `groups/<name>/soundtrack.json` + `groups/<name>/tracks/*.json`. (For
+backward compatibility, a `soundtrack.json` at the repo root still works as a lone
+`default` group when there's no `groups/` directory.)
 
-## The Root Spec — one world, many artifacts
+### Bible — `groups/<name>/soundtrack.json`
+Global identity inherited by every track in its group.
 
-A **world** (`worlds/<name>/world.json`) is the coherence anchor *above* the
-Labs: the single identity from which each medium's bible descends. A group bible
-`extends` a world exactly as a track/sprite `extends` its bible. A world declares
-what is true *across* modalities — identity, a **palette of meaning** (shape/
-colour/voice tags), named **entities**, and **cross-modal motifs**: one root
-motif with a *face* in every medium, plus **transforms** that move every face
-together (darken the root once → both the art and the music fall in step).
+| Field | Meaning |
+|-------|---------|
+| `title`, `aesthetic` | Labels (informational). |
+| `key` | e.g. `"A minor"`. Used for validation + `scale`/`chord` helpers. |
+| `bpm` | Default tempo; tracks may override. |
+| `palette` | Map of instrument name → patch overrides (merged onto the defaults in `vibetracks/instruments.py`). |
+| `motifs` | Named melodies, each `{"notes": [[pitch, beats, vel?], ...]}`. The cohesion mechanism. |
+| `tracks` | Ordered track names that `render-all` builds. |
 
-`python -m labs validate` validates each world and runs a **cross-Lab coherence
-pass**: every motif face and transform target must resolve to a real motif/spec
-in the named Lab, so the media provably cannot drift apart. The bundled
-`emberhold` world spans both media (`groups/music/emberhold` +
-`groups/sprites/emberhold`); its `ember` motif is the gold sun-crest you *see* and
-the `ember_theme` you *hear*, with a `fallen` transform (the `dark-knight`
-palette-swap ⇄ the `siege` dirge). The meaning palette and entities reach the
-**leaf specs** too: a track or sprite may declare what it `means` (a meaning tag)
-and which `entities` it is about, checked against the world at validate time
-(shared `check_spec_refs` in `labkit`). Not every group needs a world — a bible
-with no `extends` is a standalone identity, exactly as before.
+### Track — `groups/<name>/tracks/<track>.json`
 
-### When to use a world (and when not to)
+| Field | Meaning |
+|-------|---------|
+| `name` | Output filename stem. |
+| `extends` | Path to the bible, e.g. `"../soundtrack.json"`. |
+| `key`, `bpm`, `time_signature` | Optional overrides (`time_signature` default `[4,4]`). |
+| `palette` | Optional per-track patch overrides. |
+| `loops` | Default repeat count for `"loop": true` sections (CLI `--loops` overrides). |
+| `sections` | List of `{name, bars, loop?, repeat?, parts}`. |
 
-A world earns its keep only when something has to cohere *across* media; its
-unique machinery — the meaning palette, cross-modal motifs, `fallen`-style
-transforms — is inert or redundant for a single artifact class. So don't default
-to `worlds/` for every job:
+Section assembly: non-loop sections play `repeat` times (default 1); a section with
+`"loop": true` repeats `loops` times (default 2). Sections are concatenated in order,
+so the usual shape is `intro` (once) + `loop` (×N).
 
-| The ask | Start at |
-|---------|----------|
-| one artifact class ("a boss theme", "a fox sprite") | a **standalone group** (`new-group`), no world |
-| music **and** art for one game; "a whole world"; a shared identity across media | a **world** (`new-world`), then author in each Lab's group |
-| single medium now, maybe more later | a group now — **promote** it later (add `extends`) with no rewrite |
+### Parts
+Each section's `parts` is a map of part-name → part. Every part needs an
+`instrument` (a palette name) and is **exactly one** of:
 
-Prefer **lazy promotion**: build the group world-less, and only add the world the
-moment a second medium or a genuine cross-modal motif appears. A world-scale
-project starts coherent with:
+- **`notes`** — `[[pitch, beats, velocity?], ...]`. `pitch` is a note name
+  (`"C#4"`, `"Bb2"`); use `null` for a rest. `beats` are quarter notes.
+  Supports `transpose` (semitones) and `repeat` (tile the figure).
+- **`motif`** — name of a bible motif; supports `slice` (`[start, end]`, quote only
+  those notes), `repeat`, and the leitmotif transforms below. Prefer this for melodic
+  cues so the theme recurs across tracks.
+
+  Transforms (also work on `notes` parts; applied retrograde→invert→transpose→stretch):
+  `transpose` (semitones), `stretch` (×duration: `2.0` augment/slow, `0.5` diminish/
+  fast), `invert` (`true`, or a pivot note like `"A4"`), `retrograde` (`true`).
+- **`chords`** — `["Am", "F", "C", "G"]`; each chord held `chord_beats` (default =
+  one bar), tiled to fill the section. Qualities: `m, maj, dim, aug, sus2, sus4, 7,
+  maj7, m7, add9, 5`, default major. `octave` sets the chord root octave.
+- **`drums`** — `{"kick": "x...x...", "snare": "....x...", "hat": "x.x.x.x.", ...}`.
+  Each string is one bar; `x`/`X` = hit, `o` = open hi-hat (on the `hat` voice),
+  `.`/`-` = rest. Patterns tile across the section's bars.
+
+Optional per-part knobs: `gain` (level), `pan` (−1 left … 1 right).
+
+## Instrument engines & expression (palette patches)
+
+A patch's `engine` chooses how a pitch becomes sound — this is the lever for
+going beyond bare-oscillator chiptune (full param list in `instruments.py`):
+
+- **`subtractive`** (default) — detuned `wave` oscillators → ADSR → filter. The
+  classic synthwave voice. Add `resonance` (filter Q) for an analog squelch.
+- **`fm`** — two-operator FM. `ratio` (modulator:carrier) + `index` (brightness);
+  integer ratios sound harmonic (Rhodes-like electric piano at `1.0`), inharmonic
+  ratios give bells/metallic tones. `mod_decay` fades the modulator for a struck attack.
+- **`karplus`** — Karplus-Strong plucked string (guitar/harp/koto) from a noise
+  burst through a tuned lossy comb. `decay` near `1.0` sustains longer.
+- **`soundfont`** — *real recorded instruments* (piano, strings, brass, woodwinds,
+  harp, mallets…) via FluidSynth + a General MIDI soundfont. `program` is the GM
+  patch number (0–127), optional `bank`; `soundfont` overrides the `.sf2` path.
+  This engine is **optional and sample-based**, not numpy — see below.
+
+### The `soundfont` engine (sample-based realism)
+
+The numpy engines synthesize every timbre from math; `soundfont` instead plays
+back real multisamples for genuine acoustic instruments. It needs FluidSynth and
+a GM `.sf2`, which the core synth path does not:
 
 ```bash
-python -m labs new-world <name>            # world.json + one wired group per Lab
-python -m labs new-world <name> --media vibetracks   # only some media
-python -m labs new-world <name> --world-only         # just the Root Spec
+scripts/setup-soundfont.sh          # apt: fluidsynth + FluidR3_GM.sf2 + pyfluidsynth
+# or: pip install vibetracks[soundfont]  (still needs the FluidSynth system lib)
 ```
 
-Each scaffolded group's bible is pre-wired to `extends` the new world; the world
-ships with a starter meaning palette + entities and an **empty** `motifs` map (add
-a cross-modal motif once each medium has a face to bind). `python -m labs validate`
-passes immediately, so you fill in identity from a coherent base.
+The soundfont is resolved from a patch's `soundfont` field, then
+`$VIBETRACKS_SOUNDFONT`, then `/usr/share/sounds/sf2/FluidR3_GM.sf2`. The engine
+is imported lazily — `validate` works without FluidSynth; only *rendering* a
+soundfont part needs it (and raises a clear `SoundfontError` with install hints
+if missing). A soundfont part is rendered whole (notes streamed through one
+cached FluidSynth instance), downmixed to mono, and flows through the same
+pan/effects/master-normalize pipeline as synth parts — so the two engine families
+mix freely in one track. The `amber-court` group is a worked orchestral demo
+(`vibetracks/soundfont.py`).
 
-## The shared core & adding a Lab
+Per-note expression (numpy engines only): `vibrato`/`tremolo` `{rate, depth,
+shape, delay}` (pitch / amplitude LFOs; vibrato `delay` eases the wobble in
+mid-note). Buffer effects (every engine, including `soundfont`): `delay`,
+`chorus` `{rate, depth, mix}` for width, and `reverb` as either a scalar (cheap
+Schroeder) or `{decay, mix, predelay}` for the denser convolution reverb. The
+`verdant-vale` group is a worked demo of the numpy engines and their expression.
 
-- `labkit/` — `SpecError` + `load_json` + the shared `extends_path` inheritance
-  helper (`specbase.py`), generic group discovery (`groups.py`), the `Lab`
-  registry (`registry.py`), and the Root Spec: `World` + `load_world` +
-  cross-Lab `check_world` coherence (`world.py`). Both Labs build on it.
-- `labs/__main__.py` — the dispatcher (`python -m labs`).
-- To add a Lab: create a package mirroring the existing layout (model + validator +
-  deterministic engine + CLI with the same verbs) and append a `Lab(...)` entry to
-  `labkit/registry.py`, pointing `assets_dir` at its `groups/<medium>/` subtree.
-  See `VISION.md` for the roadmap of future Labs.
+## How compilation works (where to edit)
+
+- `vibetracks/theory.py` — note↔frequency, scales, chord parsing, transpose.
+- `vibetracks/synth.py` — oscillators, ADSR, drum synths, filters/delay/reverb,
+  normalize. Add new waveforms or effects here.
+- `vibetracks/instruments.py` — `DEFAULT_PALETTE` patches + the per-note renderer
+  and engine dispatch (`NOTE_ENGINES`/`PART_ENGINES`).
+- `vibetracks/soundfont.py` — the optional `soundfont` engine: FluidSynth setup,
+  soundfont discovery, and the part-level scheduled renderer.
+- `vibetracks/sequencer.py` — schedules parts on a beat grid, mixes, pans, loops,
+  master-normalizes. Add new part *kinds* here (and validation in `spec.py`).
+- `vibetracks/spec.py` — load/validate the bible and tracks; `extends` inheritance;
+  `Group`/`discover_groups`/`find_group` for the `groups/` layout.
+- `vibetracks/wavio.py` — float buffer → 16-bit PCM WAV (stdlib `wave`).
+
+## Conventions
+
+- Keep tracks coherent: `extends` the bible, reuse motifs, keep keys/tempos related.
+- **State the full theme in one place** (usually the title). Elsewhere, vary how
+  prominent it is — `slice` a fragment, move it off the lead, or drop it entirely
+  and let the shared key/palette plus a secondary motif (e.g. `danger`) carry
+  continuity. Restating the whole hook in every track makes them sound identical.
+- The master stage normalizes every track to the same peak (≈0.89), so don't fight
+  loudness with per-part `gain` — use `gain` only for *balance within* a track.
+- WAV is the only output format (no MIDI/OGG yet). 44.1 kHz, 16-bit, stereo.
+- Rendered `out/<group>/*.wav` are build artifacts (gitignored); commit the JSON specs.
+- One group = one coherent score. Don't reach across groups for motifs/palette; to
+  start a new game or region, `new-group` rather than overwriting an existing bible.

@@ -2,15 +2,15 @@
 
 Three layers:
 
-* **a group** (``groups/music/<name>/``): one self-contained soundtrack — its
-  own bible plus tracks. Groups let a single repo hold several independent scores
+* **a group** (``groups/<name>/``): one self-contained soundtrack — its own
+  bible plus tracks. Groups let a single repo hold several independent scores
   (different regions of a game, or different games entirely) without sharing or
   overwriting one top-level bible.
-* **the bible** (``groups/music/<name>/soundtrack.json``): global musical
-  identity shared by every track in the group — key, bpm, instrument
-  ``palette``, reusable ``motifs``, ``tracks`` list.
-* **a track** (``groups/music/<name>/tracks/<track>.json``): one piece of music.
-  A track may ``extends`` the bible to inherit its key/bpm/palette and override.
+* **the bible** (``groups/<name>/soundtrack.json``): global musical identity
+  shared by every track in the group — key, bpm, instrument ``palette``,
+  reusable ``motifs``, ``tracks`` list.
+* **a track** (``groups/<name>/tracks/<track>.json``): one piece of music. A
+  track may ``extends`` the bible to inherit its key/bpm/palette and override.
 
 A resolved track is returned as a plain dict with the bible folded in, ready for
 the sequencer. Validation raises :class:`SpecError` with a human-readable path.
@@ -18,24 +18,30 @@ the sequencer. Validation raises :class:`SpecError` with a human-readable path.
 
 from __future__ import annotations
 
+import json
 import os
 from dataclasses import dataclass, field
-
-from labkit.groups import discover_group_dirs
-from labkit.specbase import SpecError, extends_path, load_json  # shared across Labs
-from labkit.world import World, check_spec_refs, load_world
 
 from . import theory
 from .instruments import DEFAULT_PALETTE, ENGINES, merge_patch
 
 VALID_DRUM_CHARS = set("x.Xo-")  # x/X = hit, o = open (hat), '.'/'-' = rest
 
-GROUPS_DIR = os.path.join("groups", "music")   # where soundtrack groups live
+GROUPS_DIR = "groups"        # where soundtrack groups live
 BIBLE_FILE = "soundtrack.json"
 TRACKS_SUBDIR = "tracks"
 
-__all__ = ["SpecError", "load_json", "Bible", "load_bible", "resolve_track",
-           "Group", "discover_groups", "find_group"]
+
+class SpecError(ValueError):
+    """Raised when a spec is structurally or musically invalid."""
+
+
+def load_json(path: str) -> dict:
+    with open(path, "r", encoding="utf-8") as f:
+        try:
+            return json.load(f)
+        except json.JSONDecodeError as e:
+            raise SpecError(f"{path}: invalid JSON: {e}") from e
 
 
 @dataclass
@@ -48,7 +54,6 @@ class Bible:
     palette: dict = field(default_factory=dict)
     motifs: dict = field(default_factory=dict)
     tracks: list = field(default_factory=list)
-    world: World | None = None   # the Root Spec this bible extends, if any
 
     def resolved_palette(self) -> dict:
         """Palette defaults merged with the bible's per-instrument overrides."""
@@ -72,12 +77,6 @@ def load_bible(path: str) -> Bible:
         motifs=data.get("motifs", {}),
         tracks=data.get("tracks", []),
     )
-    # A bible may `extends` a world (the Root Spec) to inherit the shared identity
-    # and enrol in the world's cross-modal motifs. Resolving it here means a
-    # broken world link fails validation just like a wrong note would.
-    world_path = extends_path(path, data)
-    if world_path:
-        bible.world = load_world(world_path)
     _validate_bible(bible)
     return bible
 
@@ -116,10 +115,9 @@ def resolve_track(path: str, bible: Bible | None = None) -> dict:
     name = data.get("name", os.path.splitext(os.path.basename(path))[0])
 
     # Resolve the bible the track extends, if not supplied.
-    if bible is None:
-        bible_path = extends_path(path, data)
-        if bible_path:
-            bible = load_bible(bible_path)
+    if bible is None and data.get("extends"):
+        bible_path = os.path.join(os.path.dirname(path), data["extends"])
+        bible = load_bible(bible_path)
 
     base_key = bible.key if bible else "A minor"
     base_bpm = bible.bpm if bible else 110.0
@@ -131,12 +129,6 @@ def resolve_track(path: str, bible: Bible | None = None) -> dict:
     for inst, override in (data.get("palette") or {}).items():
         palette[inst] = merge_patch(palette.get(inst, {}), override)
 
-    # A track may claim a world `meaning` tag and reference world `entities` —
-    # the Root Spec's palette of meaning inherited down to the leaf spec. Checked
-    # against the bible's world, so a stray tag/id fails like a wrong note.
-    world = bible.world if bible else None
-    meaning, entities = check_spec_refs(data, world, path)
-
     resolved = {
         "name": name,
         "key": data.get("key", base_key),
@@ -146,8 +138,6 @@ def resolve_track(path: str, bible: Bible | None = None) -> dict:
         "palette": palette,
         "motifs": motifs,
         "loops": data.get("loops"),  # default loop repeats; CLI can override
-        "meaning": meaning,          # world meaning tag (or None)
-        "entities": entities,        # world entity ids this track is about
     }
     _validate_track(resolved, path)
     return resolved
@@ -235,8 +225,8 @@ def _validate_part(part: dict, track: dict, where: str) -> None:
 class Group:
     """One self-contained soundtrack: a bible plus its tracks directory.
 
-    A group lives in ``groups/music/<name>/`` with its own ``soundtrack.json``
-    and ``tracks/`` folder. Several groups coexist in one repo without sharing or
+    A group lives in ``groups/<name>/`` with its own ``soundtrack.json`` and
+    ``tracks/`` folder. Several groups coexist in one repo without sharing or
     overwriting a single top-level bible, so users can spin up their own score
     alongside the bundled demo.
     """
@@ -275,14 +265,18 @@ class Group:
 def discover_groups(root: str = ".") -> list:
     """Find every soundtrack group under ``root``.
 
-    Each subdirectory of ``groups/music/`` that holds a ``soundtrack.json`` is a
-    group, returned sorted by name. For backward compatibility a
-    ``soundtrack.json`` at ``root`` itself is exposed as the ``default`` group
-    when there is no ``groups/music/`` directory.
+    Each subdirectory of ``groups/`` that holds a ``soundtrack.json`` is a group,
+    returned sorted by name. For backward compatibility a ``soundtrack.json`` at
+    ``root`` itself is exposed as the ``default`` group when there is no
+    ``groups/`` directory.
     """
-    groups = [Group(name=name, dir=d)
-              for name, d in discover_group_dirs(os.path.join(root, GROUPS_DIR),
-                                                 BIBLE_FILE)]
+    groups = []
+    gdir = os.path.join(root, GROUPS_DIR)
+    if os.path.isdir(gdir):
+        for name in sorted(os.listdir(gdir)):
+            d = os.path.join(gdir, name)
+            if os.path.isfile(os.path.join(d, BIBLE_FILE)):
+                groups.append(Group(name=name, dir=d))
     if not groups and os.path.isfile(os.path.join(root, BIBLE_FILE)):
         groups.append(Group(name="default", dir=root))
     return groups
