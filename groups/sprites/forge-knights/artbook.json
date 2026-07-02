@@ -60,6 +60,7 @@
   "sprites": [
     "knight-forms",
     "knight-forms-mono",
+    "knight-forms-hero",
     "knight-pixels"
   ]
 }

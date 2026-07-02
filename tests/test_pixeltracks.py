@@ -510,6 +510,49 @@ class TestFormModel(unittest.TestCase):
                                   smap=forms.shadow_map(self.sprite))
         self.assertEqual(tuple(canvas[4, 3]), steel)      # nothing darkened
 
+    def test_articulated_form_relights_world_fixed(self):
+        """A rotated form is *relit*, not spun: its highlight stays on the world
+        light side (up-left) regardless of the form's own rotation. A disc keeps
+        the same silhouette under rotation, so only the shading can move — and it
+        must not."""
+        pal = {"steel_sh": (61, 90, 134, 255), "steel": (107, 143, 196, 255),
+               "steel_hi": (191, 218, 244, 255)}
+        sprite = {"palette": pal, "ramps": {"steel": ["steel_sh", "steel", "steel_hi"]},
+                  "light": "up_left"}
+
+        def highlight_offset(rotate):
+            # Pin the disc centre to (12,12) via pivot/at so both rotations place
+            # identically — only the shading can differ.
+            canvas = new_canvas(24, 24)
+            forms.draw_form(canvas, {"form": "disc", "material": "steel",
+                                     "at": [12, 12], "pivot": [8, 8],
+                                     "size": [16, 16], "rotate": rotate},
+                            sprite, None, 0)
+            hi = np.all(canvas == pal["steel_hi"], axis=2)
+            ys, xs = np.where(hi)
+            self.assertGreater(len(xs), 0, "no highlight rendered")
+            return xs.mean() - 12.0, ys.mean() - 12.0   # offset from centre
+
+        dx0, dy0 = highlight_offset(0)
+        dx90, dy90 = highlight_offset(90)
+        self.assertLess(dx0, 0); self.assertLess(dy0, 0)       # rot 0: highlight up-left
+        self.assertLess(dx90, 0); self.assertLess(dy90, 0)     # rot 90: STILL up-left
+        self.assertLess(abs(dx0 - dx90), 2.5)                  # invariant to rotation
+        self.assertLess(abs(dy0 - dy90), 2.5)
+
+    def test_articulated_form_renders(self):
+        """The posed hero sprite (rotate/skew/squash forms) resolves and rasterises."""
+        s = spec.resolve_sprite(os.path.join(FORGE, "sprites", "knight-forms-hero.json"))
+        c = composite_frame(s, s["frames"][0])
+        self.assertGreater(coverage(c), 0.3)
+
+    def test_bad_squash_rejected(self):
+        names = set(self.sprite["palette"])
+        layer = {"form": "capsule", "material": "steel", "at": [0, 0], "size": [4, 8],
+                 "squash": [0.0, 1.0]}
+        with self.assertRaises(spec.SpecError):
+            spec._validate_layer(layer, self.sprite, names, where="t")
+
     def test_bad_form_kind_rejected(self):
         names = set(self.sprite["palette"])
         layer = {"form": "pyramid", "material": "steel", "at": [0, 0], "size": [4, 4]}

@@ -24,6 +24,8 @@ timbre. See ``docs/proposals/form-model.md`` for the full rationale.
 
 from __future__ import annotations
 
+import math
+
 import numpy as np
 
 from . import raster
@@ -234,33 +236,42 @@ def cast_contact_shadow(canvas, mask, z, zbuf, light, smap, depth: int = 2) -> N
             canvas[y, x] = rep
 
 
-def _placed_mask(shape, tile: np.ndarray, x: int, y: int) -> np.ndarray:
-    """Where an opaque ``tile`` blitted at ``(x, y)`` would land on the canvas."""
-    mask = np.zeros(shape, dtype=bool)
-    th, tw = tile.shape[:2]
-    y0, y1 = max(0, y), min(shape[0], y + th)
-    x0, x1 = max(0, x), min(shape[1], x + tw)
-    if y1 <= y0 or x1 <= x0:
-        return mask
-    mask[y0:y1, x0:x1] = tile[y0 - y:y1 - y, x0 - x:x1 - x, 3] > 0
-    return mask
+def _rotate_light_vec(light, degrees: float) -> list:
+    """Rotate a light's in-plane direction by ``degrees`` (its z is unchanged)."""
+    v = light_vector(light)
+    th = math.radians(degrees)
+    c, s = math.cos(th), math.sin(th)
+    return [c * v[0] - s * v[1], s * v[0] + c * v[1], float(v[2])]
 
 
 def draw_form(canvas: np.ndarray, layer: dict, sprite: dict,
               zbuf: np.ndarray | None = None, z: int = 0) -> None:
     """Composite a ``form`` layer onto the canvas (the compositor's entry point).
 
-    When a ``zbuf`` is supplied (Phase 2), the form first casts a contact shadow
-    onto the geometry already behind it, then paints — so nearer forms visibly
-    sit in front of farther ones even in the same material.
+    * Phase 2 — with a ``zbuf``, the form first casts a contact shadow onto the
+      geometry behind it, so nearer forms sit in front of farther ones.
+    * Phase 3 — a form may be **articulated**: ``rotate`` (deg) / ``skew`` /
+      ``squash`` about a ``pivot`` pinned to ``at``, the same affine a `shape`
+      layer or skeleton bone uses. The shading is computed in the form's *local*
+      frame with the world light pre-rotated by ``-rotate``, so after the tile
+      turns into world space the highlight lands on the world-lit side — a limb
+      that leans is relit, not a highlight that spins with the part.
     """
     kind = layer["form"]
     w, h = layer["size"]
     ax, ay = layer.get("at", layer.get("offset", [0, 0]))
     ox, oy = layer.get("offset", [0, 0]) if "at" in layer else (0, 0)
-    light = layer.get("light", sprite.get("light", DEFAULT_LIGHT))
+    world_light = layer.get("light", sprite.get("light", DEFAULT_LIGHT))
     ramp = ramp_rgba(layer["material"], sprite)
-    tile = shade_form(kind, int(w), int(h), ramp, light, int(layer.get("round", 0)))
+
+    rotate = layer.get("rotate", 0)
+    skew = layer.get("skew")
+    squash = layer.get("squash")
+    pivot = layer.get("pivot")
+    articulated = bool(rotate) or bool(skew) or bool(squash) or pivot is not None
+
+    shade_light = _rotate_light_vec(world_light, -rotate) if rotate else world_light
+    tile = shade_form(kind, int(w), int(h), ramp, shade_light, int(layer.get("round", 0)))
 
     flip = layer.get("flip")
     if flip:
@@ -268,8 +279,22 @@ def draw_form(canvas: np.ndarray, layer: dict, sprite: dict,
             tile = tile[:, ::-1]
         if "v" in flip:
             tile = tile[::-1, :]
-    x, y = int(ax) + int(ox), int(ay) + int(oy)
+
+    # Render the form into its own full-canvas layer so its placed silhouette (for
+    # the contact shadow) is exact whether it is axis-aligned or articulated.
+    ch, cw = canvas.shape[:2]
+    layer_canvas = raster.new_canvas(cw, ch)
+    if articulated:
+        matrix = raster.affine_matrix(rotate,
+                                      skew=tuple(skew) if skew else (0.0, 0.0),
+                                      scale=tuple(squash) if squash else (1.0, 1.0))
+        gh, gw = tile.shape[:2]
+        piv = pivot if pivot is not None else [gw / 2.0, gh / 2.0]
+        raster.blit_affine(layer_canvas, tile, matrix, piv, [int(ax) + int(ox), int(ay) + int(oy)])
+    else:
+        raster.blit(layer_canvas, tile, int(ax) + int(ox), int(ay) + int(oy))
+
     if zbuf is not None and layer.get("cast", True):
-        mask = _placed_mask(canvas.shape[:2], tile, x, y)
-        cast_contact_shadow(canvas, mask, z, zbuf, light, shadow_map(sprite))
-    raster.blit(canvas, tile, x, y)
+        cast_contact_shadow(canvas, layer_canvas[:, :, 3] > 0, z, zbuf,
+                            world_light, shadow_map(sprite))
+    raster.blit(canvas, layer_canvas, 0, 0)

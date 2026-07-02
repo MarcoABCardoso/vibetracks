@@ -1,0 +1,21 @@
+{
+  "name": "knight-forms-hero",
+  "extends": "../artbook.json",
+  "size": [28, 34],
+  "_comment": "Phase-3 proof: the same solid forms, now ARTICULATED. rotate/skew/squash about a pivot pose the limbs (sword arm cocked back-high, off-hand forward as a guard, torso leaning, legs in a stance) and a capsule sword swings from the grip — the same affine a shape layer or skeleton bone uses. Crucially each form is shaded in its LOCAL frame with the world light pre-rotated, so a leaning limb is relit (highlight stays up-left) instead of its highlight spinning with the part. This is what dissolves the 'a turned pose needs a redraw' ceiling for forms.",
+  "layers": [
+    { "form": "capsule", "material": "iron", "at": [7, 26], "size": [5, 8], "pivot": [2.5, 0], "rotate": 10 },
+    { "form": "capsule", "material": "iron", "at": [15, 26], "size": [5, 8], "pivot": [2.5, 0], "rotate": -16 },
+    { "form": "capsule", "material": "iron", "at": [6, 18], "size": [5, 12], "pivot": [2.5, 1], "rotate": 34 },
+    { "form": "box", "material": "steel", "at": [6, 16], "size": [16, 13], "round": 4, "pivot": [8, 6], "skew": [-0.14, 0] },
+    { "form": "box", "material": "cloak", "at": [12, 17], "size": [4, 12], "round": 1, "pivot": [2, 6], "skew": [-0.14, 0] },
+    { "form": "sphere", "material": "gold", "at": [3, 15], "size": [6, 6] },
+    { "form": "sphere", "material": "gold", "at": [19, 14], "size": [6, 6] },
+    { "form": "sphere", "material": "gold", "at": [11, 19], "size": [6, 6] },
+    { "form": "sphere", "material": "skin", "at": [8, 6], "size": [10, 9], "squash": [0.9, 1] },
+    { "form": "sphere", "material": "steel", "at": [7, 1], "size": [12, 9] },
+    { "form": "cone", "material": "gold", "at": [11, 0], "size": [4, 5] },
+    { "form": "capsule", "material": "iron", "at": [19, 17], "size": [5, 12], "pivot": [2.5, 1], "rotate": -38 },
+    { "form": "capsule", "material": "steel", "at": [22, 12], "size": [3, 17], "pivot": [1.5, 15], "rotate": 28 }
+  ]
+}

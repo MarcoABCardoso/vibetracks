@@ -139,8 +139,16 @@ Each layer is composited in order and is **exactly one** of:
   ramp is pushed one step darker — provably on-palette), so *same-material* forms
   read as distinct masses without any hand shading (`knight-forms-mono` is the
   all-steel proof). Optional per-form `"z"` (int) overrides the shadow depth order;
-  `"cast": false` opts a form out of casting. *Still Phase 3:* affine posing of a
-  form (`rotate`/`skew`/`squash`) — for now forms are axis-aligned.
+  `"cast": false` opts a form out of casting. **Articulation (Phase 3):** a form
+  poses through the same affine as a `shape` layer — `rotate` (deg) / `skew` /
+  `squash` about a `pivot` pinned to `at` (when any is present, `at` is the
+  pivot-pin, as for shapes; otherwise `at`/`offset` is the top-left). The shading
+  is computed in the form's *local* frame with the world light pre-rotated, so a
+  leaning limb is **relit** (highlight stays world-up-left) rather than its
+  highlight spinning with the part — this is what dissolves the "a turned pose needs
+  a redraw" ceiling. `knight-forms-hero` is the posed proof (swung arms, leaning
+  torso, a capsule sword on an arc). *Still ahead:* a skeleton whose bones are
+  forms (anchors on forms), and `light` view-preset sugar.
 - **`rect`** / **`ellipse`** — `{"at": [x,y], "size": [w,h], "color": <name>, "fill": bool}`.
 - **`line`** — `{"from": [x,y], "to": [x,y], "color": <name>}`.
 - **`sprite`** — name of **another sprite in the same group** (a sibling

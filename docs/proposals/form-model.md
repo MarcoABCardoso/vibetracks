@@ -1,11 +1,12 @@
 # Proposal: the Form model — give sprites the abstraction gap that makes music work
 
-> Status: **Phases 1–2 landed.** The `form` layer kind + `forms.py` lighting
-> model (Phase 1) and per-form depth with automatic contact shadow (Phase 2) are
-> implemented and tested, with the `forge-knights` demo (`knight-forms`,
-> `knight-forms-mono`, `knight-pixels`) as the proof; pose relighting and view
-> presets (Phase 3) remain proposed. This is the design case for why PixelTracks
-> felt "limited" next to VibeTracks and the change that closes the gap.
+> Status: **Phases 1–3 landed.** The `form` layer kind + `forms.py` lighting
+> model (Phase 1), per-form depth with automatic contact shadow (Phase 2), and
+> articulated forms with world-fixed pose relighting (Phase 3) are implemented and
+> tested, with the `forge-knights` demo (`knight-forms`, `knight-forms-mono`,
+> `knight-forms-hero`, `knight-pixels`) as the proof. What remains: a skeleton
+> whose bones are forms, and `light` view-preset sugar. This is the design case for
+> why PixelTracks felt "limited" next to VibeTracks and the change that closes it.
 
 ## The observation
 
@@ -166,9 +167,16 @@ stops being true once the primitive is a solid with a surface normal.
    overlapping *same-material* forms read as distinct masses with the shadow still
    provably on-palette. `knight-forms-mono` (all steel + a skin face) is the proof
    — in Phase 1 it fused into one blob. Retires the hand-faked shadow guidance.
-3. **Phase 3 — pose relighting + view presets** (`light: front | three_quarter |
-   side` sugar) so the documented ¾-turn is a parameter — killing the
-   "view-set redraw" roadmap item.
+3. **Phase 3 — articulated forms + pose relighting. ✅ DONE.** A form poses through
+   the same affine as a `shape`/bone (`rotate`/`skew`/`squash` about a `pivot`), via
+   a shared `raster.blit_affine` sub-pixel sampler. The key move: shade each form in
+   its *local* frame with the world light pre-rotated by `-rotate`, so once the tile
+   turns into world space the highlight lands on the world-lit side — a limb that
+   leans is **relit**, not a highlight that spins with the part (verified by
+   `test_articulated_form_relights_world_fixed`). `knight-forms-hero` is the posed
+   proof. This kills the "a true change of view is still a redraw" ceiling for forms.
+   *Still ahead:* `light: front | three_quarter | side` view-preset sugar and a
+   skeleton whose bones are forms.
 4. **Phase 4 — craft guide + skill + `describe`/`inspect`** updated to make forms
    the default way to author a figure; grids remain for emblems, UI, and pixel
    detail.

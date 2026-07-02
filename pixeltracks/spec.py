@@ -471,6 +471,7 @@ def _validate_layer(layer, sprite, names, where) -> None:
             raise SpecError(f"{where}: form 'cast' must be true/false, got {layer['cast']!r}")
         if "light" in layer:
             _check_light(layer["light"], where)
+        _check_pose_transforms(layer, where)
         flip_axis = layer.get("flip")
         if flip_axis is not None and (not isinstance(flip_axis, str)
                                       or set(flip_axis) - set("hv") or not flip_axis):
@@ -533,6 +534,29 @@ def _is_num(v) -> bool:
 
 def _is_point(v) -> bool:
     return isinstance(v, (list, tuple)) and len(v) == 2 and all(_is_num(c) for c in v)
+
+
+def _check_pose_transforms(layer, where) -> None:
+    """Validate a `form`'s articulation (Phase 3): rotate/skew/squash about a pivot.
+
+    A form poses through the same affine as a `shape` layer, but sizes itself with
+    `size` rather than an integer `scale`, so `scale` is not a form transform.
+    """
+    rot = layer.get("rotate", 0)
+    if not _is_num(rot):
+        raise SpecError(f"{where}: form 'rotate' must be a number (degrees), got {rot!r}")
+    pivot = layer.get("pivot")
+    if pivot is not None and not _is_point(pivot):
+        raise SpecError(f"{where}: form 'pivot' must be [px, py] numbers, got {pivot!r}")
+    skew = layer.get("skew")
+    if skew is not None and not _is_point(skew):
+        raise SpecError(f"{where}: form 'skew' must be [kx, ky] numbers, got {skew!r}")
+    squash = layer.get("squash")
+    if squash is not None:
+        if not _is_point(squash):
+            raise SpecError(f"{where}: form 'squash' must be [sx, sy] numbers, got {squash!r}")
+        if any(v <= 0 for v in squash):
+            raise SpecError(f"{where}: form 'squash' factors must be > 0, got {squash!r}")
 
 
 def _check_transforms(layer, where) -> None:
