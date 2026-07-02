@@ -22,4 +22,4 @@ pixeltracks = "pixeltracks.__main__:main" # the sprite Lab
 
 [tool.setuptools]
 # labkit is the shared core; labs is the dispatcher; the rest are the Labs.
-packages = ["labkit", "labs", "vibetracks", "pixeltracks"]
+packages = ["labkit", "labkit.exporters", "labs", "vibetracks", "pixeltracks"]

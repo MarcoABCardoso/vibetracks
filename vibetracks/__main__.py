@@ -126,8 +126,12 @@ def _render_one(track_path, bible, group_name, out_root, loops) -> dict:
     import numpy as np
     peak = float(np.max(np.abs(buf)))
     print(f"  rendered  {out_path}  ({dur:.1f}s, peak {peak:.2f})")
+    # `loop` records the track's intent: a track with any `"loop": true` section is
+    # meant to repeat seamlessly (game BGM). Exporters use it to set engine loop flags.
+    loop = any(s.get("loop") for s in track["sections"])
     return {"track": track["name"], "file": out_path, "seconds": round(dur, 2),
-            "peak": round(peak, 3), "bpm": track["bpm"], "key": track["key"]}
+            "peak": round(peak, 3), "bpm": track["bpm"], "key": track["key"],
+            "loop": loop}
 
 
 def cmd_render(args) -> int:

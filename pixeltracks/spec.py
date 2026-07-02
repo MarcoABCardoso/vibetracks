@@ -53,6 +53,7 @@ class Bible:
     motifs: dict = field(default_factory=dict)       # name -> {legend, pixels}
     background: object = None                        # palette name or None
     outline: object = None                           # {"color": name} or None
+    fps: int = 10                                    # default animation playback rate
     sprites: list = field(default_factory=list)
     world: World | None = None   # the Root Spec this bible extends, if any
 
@@ -75,6 +76,7 @@ def load_bible(path: str) -> Bible:
         motifs=data.get("motifs", {}),
         background=data.get("background"),
         outline=data.get("outline"),
+        fps=int(data.get("fps", 10)),
         sprites=data.get("sprites", []),
     )
     # A bible may `extends` a world (the Root Spec) to inherit the shared identity
@@ -128,6 +130,8 @@ def _validate_bible(b: Bible) -> None:
     _check_size(b.size, b.path)
     if not (isinstance(b.scale, int) and b.scale >= 1):
         raise SpecError(f"{b.path}: scale must be a positive int")
+    if not (isinstance(b.fps, int) and b.fps >= 1):
+        raise SpecError(f"{b.path}: fps must be a positive int")
     try:
         names = set(b.resolved_palette())
     except ValueError as e:
@@ -330,6 +334,7 @@ def resolve_sprite(path: str, bible: Bible | None = None, _stack=frozenset()) ->
         "checks": data.get("checks", []),    # declarative art-direction predicates
         "flip": data.get("flip"),            # mirror the whole composite ("h"/"v"/"hv")
         "scene": bool(data.get("scene", False)),  # a multi-object composite, not one figure
+        "fps": data.get("fps", bible.fps if bible else 10),  # animation playback rate
         "meaning": meaning,          # world meaning tag (or None)
         "entities": entities,        # world entity ids this sprite is about
     }
@@ -374,6 +379,8 @@ def _validate_sprite(s: dict, path: str) -> None:
     if s["background"] is not None and s["background"] not in names:
         raise SpecError(f"{path}: background {s['background']!r} is not a palette colour")
     _check_outline(s["outline"], names, path)
+    if not (isinstance(s["fps"], int) and s["fps"] >= 1):
+        raise SpecError(f"{path}: fps must be a positive int")
     if not s["frames"]:
         raise SpecError(f"{path}: sprite has no frames")
     for fi, frame in enumerate(s["frames"]):

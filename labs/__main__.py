@@ -16,12 +16,15 @@ coherent (each medium's group pre-wired to `extends` the world).
 from __future__ import annotations
 
 import argparse
+import importlib
 import json
 import os
+import shutil
 import sys
 
+from labkit.export import EXPORTERS, find_exporter
 from labkit.registry import LABS, find_lab
-from labkit.specbase import SpecError, load_json
+from labkit.specbase import SpecError, extends_path, load_json
 from labkit.world import (WORLD_FILE, WORLDS_DIR, check_world, discover_worlds,
                           load_world)
 
@@ -34,12 +37,18 @@ def _print_labs() -> None:
         print(f"  {lab.name:<{width}}  {lab.summary}")
         print(f"  {'':<{width}}  artifact: {lab.artifact}; "
               f"assets in {lab.assets_dir}/<group>/{lab.bible_file}")
+    print("\nExporters (ship a world's assets into a game engine):")
+    ewidth = max(len(e.name) for e in EXPORTERS)
+    for e in EXPORTERS:
+        print(f"  {e.name:<{ewidth}}  {e.summary}")
     print("\nRun a Lab:   python -m labs <lab> <command>   "
           "(e.g. python -m labs pixeltracks render-all)")
     print("Or directly: python -m <lab> <command>")
     print("All at once: python -m labs validate")
     print("New world:   python -m labs new-world <name>   "
           "(a cross-modal project spanning every Lab)")
+    print("Ship it:     python -m labs build <world> --engine godot   "
+          "(render + export a resource pack)")
 
 
 # A fresh world (VISION.md, the world layer): identity + a palette of MEANING + named
@@ -185,6 +194,92 @@ def _validate_worlds() -> int:
     return rc
 
 
+def _bible_extends_world(bible_path: str, world_path: str) -> bool:
+    """True if the group bible at ``bible_path`` ``extends`` the given world file."""
+    if not os.path.isfile(bible_path):
+        return False
+    ep = extends_path(bible_path, load_json(bible_path))
+    return bool(ep) and os.path.abspath(ep) == os.path.abspath(world_path)
+
+
+def _build_targets(world_name: str | None):
+    """Collect the ``(lab, module, group)`` triples to build.
+
+    With ``world_name`` set, only groups whose bible ``extends`` that world are
+    included (a single game's asset set); otherwise every group in every Lab.
+    """
+    world_path = (os.path.join(WORLDS_DIR, world_name, WORLD_FILE)
+                  if world_name else None)
+    targets = []
+    for lab in LABS:
+        module = importlib.import_module(lab.entry.partition(":")[0])
+        for g in module.spec.discover_groups():
+            if world_path and not _bible_extends_world(g.bible_path, world_path):
+                continue
+            targets.append((lab, module, g))
+    return targets
+
+
+def _render_group(lab, module, g, out_root: str) -> list:
+    """Render every asset in one group via the Lab's own ``_render_one``.
+
+    Reuses each Lab's existing render path (no duplication) and returns the record
+    dicts it produces — the structured input the exporter consumes.
+    """
+    bible = g.load_bible()
+    if bible is None:
+        return []
+    if lab.name == "vibetracks":
+        return [module._render_one(g.track_path(n), bible, g.name, out_root, None)
+                for n in g.track_names()]
+    if lab.name == "pixeltracks":
+        return [module._render_one(g.sprite_path(n), bible, g.name, out_root)
+                for n in g.sprite_names()]
+    return []
+
+
+def cmd_build(argv) -> int:
+    p = argparse.ArgumentParser(
+        prog="labs build",
+        description="Render assets and export a drop-in engine resource pack.")
+    p.add_argument("world", nargs="?",
+                   help="build only groups under this world (default: every group)")
+    p.add_argument("--engine", default="godot",
+                   help=f"target engine exporter (default: godot; "
+                        f"available: {[e.name for e in EXPORTERS]})")
+    p.add_argument("--out", default="dist", help="output directory (default: dist)")
+    p.add_argument("--no-zip", action="store_true",
+                   help="write the pack folder but don't also zip it")
+    args = p.parse_args(argv)
+
+    exporter = find_exporter(args.engine)  # fail fast on a bad engine name
+    name = args.world or "all"
+    targets = _build_targets(args.world)
+    if not targets:
+        where = f"under world {args.world!r}" if args.world else "in any Lab"
+        print(f"no groups found {where} to build", file=sys.stderr)
+        return 1
+
+    print(f"=== building {name!r} for {args.engine} ===")
+    out_root = "out"
+    records: dict = {}
+    for lab, module, g in targets:
+        print(f"--- rendering {lab.name}/{g.name} ---")
+        recs = _render_group(lab, module, g, out_root)
+        if recs:
+            records.setdefault(lab.name, {})[g.name] = recs
+
+    dist_dir = exporter.export(records, args.out, name)
+    n_assets = sum(len(v) for groups in records.values() for v in groups.values())
+    print(f"\nexported {n_assets} asset(s) -> {dist_dir}/")
+
+    if not args.no_zip:
+        zip_path = shutil.make_archive(dist_dir, "zip", root_dir=args.out, base_dir=name)
+        print(f"packed -> {zip_path}")
+    print("Drop the pack into your Godot project (see the pack's README.md).")
+    return 0
+
+
 def _validate_all() -> int:
     rc = 0
     for lab in LABS:
@@ -203,6 +298,8 @@ def main(argv=None) -> int:
         return _validate_all()
     if argv[0] == "new-world":
         return cmd_new_world(argv[1:])
+    if argv[0] == "build":
+        return cmd_build(argv[1:])
     lab = find_lab(argv[0])
     return lab.main(argv[1:])
 

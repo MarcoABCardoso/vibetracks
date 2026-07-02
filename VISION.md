@@ -106,6 +106,11 @@ ships, with nothing hallucinated in.
   scenes, higher-detail portraits. The one thing still out of reach is
   painterly/photoreal finish, and that's precisely the slot a leashed generator
   will fill.
+- **The Godot exporter — assets that ship.** `python -m labs build <world> --engine
+  godot` renders a whole world and emits a drop-in Godot 4 resource pack: textures
+  and audio with `.import` files (crisp pixels; looping BGM) and a SpriteFrames
+  `.tres` per animation. The `/gamepack` skill drives the whole path from a plain
+  game description. This is roadmap step 2 landing for the first engine.
 - **The world layer — coherence made checkable.** `worlds/<name>/world.json` is
   the root spec every medium's bible descends from: an identity, a *palette of
   meaning* (shape/colour/voice tags), named entities, and **cross-modal motifs**
@@ -170,10 +175,13 @@ surface area. So the plan is depth first.
    this is both the proof and the template. Sharpen what a solo dev touches: the
    agent-driven authoring flow, the preview loop, and the moment-to-value of
    `new-world`. **A real user's world is the forcing function; find one.**
-2. **Make assets actually ship.** Exporters into the tools a solo dev already
-   uses — Godot, Tiled, Aseprite — and a unified `build` that compiles a whole
-   world at once (the way `render-all` already indexes every track). Coherent
-   assets that can't leave the repo aren't a product.
+2. **Make assets actually ship.** *(Godot: done.)* A unified `python -m labs build
+   <world>` renders a whole world at once and an **exporter** wraps the artifacts
+   into a drop-in **Godot 4** resource pack — textures/audio with `.import` files
+   and SpriteFrames `.tres` for animations, driven by the `/gamepack` skill from a
+   plain game description. Exporters are a registry mirroring the Lab registry, so
+   **Tiled/Aseprite/Unity** are each one more entry — the next targets to add.
+   Coherent assets that can't leave the repo aren't a product; now they leave.
 3. **Add the next Lab a real project needs — pulled, not pushed.** When an actual
    world hits a wall, fill it. The cheapest, highest-certainty wins are
    **SystemTracks** (enemy stats, loot, balance — pure deterministic data) and
