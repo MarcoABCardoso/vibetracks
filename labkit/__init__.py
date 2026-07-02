@@ -9,6 +9,7 @@ loading, group discovery, and the Lab registry — so each Lab adds only its own
 
 from __future__ import annotations
 
+from .export import EXPORTERS, Exporter, find_exporter
 from .groups import Group, discover_group_dirs
 from .registry import LABS, Lab, find_lab
 from .specbase import SpecError, load_json
@@ -21,4 +22,7 @@ __all__ = [
     "Lab",
     "LABS",
     "find_lab",
+    "Exporter",
+    "EXPORTERS",
+    "find_exporter",
 ]

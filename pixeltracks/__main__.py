@@ -152,7 +152,8 @@ def _render_one(sprite_path, bible, group_name, out_root) -> dict:
     return {"sprite": sprite["name"], "file": png_path,
             "size": [sprite["size"][0], sprite["size"][1]],
             "scale": sprite["scale"], "frames": result["atlas"]["frame_count"],
-            "coverage": round(cov, 3)}
+            "fps": result["atlas"]["fps"], "loop": result["atlas"]["loop"],
+            "atlas": result["atlas"], "coverage": round(cov, 3)}
 
 
 def cmd_render(args) -> int:

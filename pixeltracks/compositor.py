@@ -157,6 +157,7 @@ def render_sprite(sprite: dict) -> dict:
         "name": sprite["name"],
         "size": [w, h],
         "scale": scale,
+        "fps": sprite.get("fps", 10),
         "frame_count": len(frames),
         "loop": len(frames) > 1,
         "frames": atlas_frames,

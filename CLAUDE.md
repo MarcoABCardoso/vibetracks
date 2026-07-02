@@ -36,16 +36,19 @@ one before authoring specs — this index is deliberately thin.
 ## Picking the right Lab
 
 Game *music* → VibeTracks (`/soundtrack`); game *sprites / pixel art / images* →
-PixelTracks (`/spritesheet`).
+PixelTracks (`/spritesheet`). A user who **describes a whole game** and wants
+engine-ready assets → the **`/gamepack`** skill (world → assets → Godot pack).
 
 ## The dispatcher & layout
 
 A single front door unifies the Labs:
 
 ```bash
-python -m labs                       # list the Labs
+python -m labs                       # list the Labs (and exporters)
 python -m labs <lab> <command...>    # run a Lab's CLI (e.g. labs pixeltracks render-all)
 python -m labs validate              # validate every Lab's specs
+python -m labs new-world <name>      # scaffold a cross-medium world + a group per Lab
+python -m labs build <world> --engine godot   # render + export a Godot resource pack
 python -m <lab> <command...>         # or run a Lab directly
 ```
 
@@ -59,7 +62,21 @@ worlds/<w>/world.json                                # Root Specs (the cross-med
 groups/music/<g>/soundtrack.json + tracks/*.json     # VibeTracks groups (demo: neon-frontier)
 groups/sprites/<g>/artbook.json  + sprites/*.json    # PixelTracks groups (demo: mossy-hollow)
 out/<group>/                                          # rendered artifacts (gitignored)
+dist/<world>/                                         # exported engine resource packs (gitignored)
 ```
+
+## Shipping — the exporter (`build`)
+
+The Labs render raw artifacts; an **exporter** wraps a whole world's artifacts into
+an engine resource pack — the last mile so assets actually run in a game.
+`python -m labs build <world> --engine godot` renders every asset in the world's
+groups and writes a **drop-in Godot 4 pack** to `dist/<world>/` (+ a `.zip`):
+textures/audio with `.import` files (crisp pixels; forward-loop on looping music)
+and a **SpriteFrames `.tres`** per animated sprite (frame atlas → per-frame
+`hold`/`fps`/loop). Exporters live in a registry (`labkit/export.py`) mirroring the
+Lab registry — a new engine target is one `Exporter(...)` entry plus an emitter in
+`labkit/exporters/`. Full detail in **`docs/godot.md`**; the **`/gamepack`** skill
+drives description → world → assets → pack.
 
 ## The Root Spec — one world, many artifacts
 

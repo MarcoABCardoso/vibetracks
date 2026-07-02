@@ -15,8 +15,14 @@ artifact* — with a different theory. This repo ships two:
 | **VibeTracks** | music / SFX | JSON song specs | `.wav` | pure-Python synth (`numpy`+`scipy`) |
 | **PixelTracks** | sprites / images | JSON sprite specs | `.png` | procedural raster (`numpy`+stdlib) |
 
+Then **ship it**: one `build` renders a whole game's assets and **exports a drop-in
+Godot 4 resource pack** (textures + audio with `.import` files, and SpriteFrames
+`.tres` for animations). Describe a game and get coherent, engine-ready assets —
+that is the `/gamepack` workflow.
+
 See **`VISION.md`** for the thesis and the roadmap of further Labs (tiles, UI,
-lore, systems) bound by a shared World Bible.
+lore, systems) bound by a shared World Bible, and **`docs/godot.md`** for the
+exporter.
 
 ## Quickstart
 
@@ -33,6 +39,10 @@ python -m vibetracks render neon-frontier/battle
 # the sprite Lab
 python -m pixeltracks render-all             # -> out/<group>/*.png
 python -m pixeltracks render mossy-hollow/fox
+
+# ship a whole world into Godot
+python -m labs new-world my-game             # scaffold a cross-medium world
+python -m labs build emberhold --engine godot   # -> dist/emberhold/ + dist/emberhold.zip
 ```
 
 Each Lab has the same CLI verbs (`validate` / `render` / `render-all` / `new` /
@@ -43,8 +53,9 @@ the dispatcher (`python -m labs vibetracks …`).
 ## How the repo is laid out
 
 ```
-labkit/           # shared core: SpecError/load_json, group discovery, the Lab registry
-labs/             # the multi-Lab dispatcher (python -m labs)
+labkit/           # shared core: SpecError/load_json, group discovery, Lab + Exporter registries
+labkit/exporters/ # engine exporters (godot today) — turn artifacts into a resource pack
+labs/             # the multi-Lab dispatcher (python -m labs): validate / new-world / build
 CLAUDE.md         # index; per-Lab spec reference in vibetracks/ & pixeltracks/CLAUDE.md
 
 vibetracks/       # the music Lab (theory, synth, instruments, sequencer, wavio, CLI)
@@ -54,8 +65,9 @@ pixeltracks/      # the sprite Lab (palette, shapes, raster, compositor, pngio, 
 groups/sprites/<g>/artbook.json + sprites/*.json     # sprite groups (demo: mossy-hollow)
 
 docs/composition.md   # music craft guide      docs/pixelcraft.md   # sprite craft guide
-.claude/skills/soundtrack                       .claude/skills/spritesheet
-tests/                                          out/<group>/   # build artifacts (gitignored)
+docs/godot.md         # exporter / Godot guide
+.claude/skills/soundtrack   .claude/skills/spritesheet   .claude/skills/gamepack
+tests/                out/<group>/  # render artifacts     dist/<world>/  # packs (both gitignored)
 ```
 
 All assets live under one **`groups/`** tree, split by medium: `groups/music/`
@@ -129,6 +141,26 @@ with transforms — `flip`/`rotate`/`scale`/`recolor`), `rect`, `ellipse`, or
 and an integer export upscale. PNG is written with stdlib `zlib` — no Pillow, no
 image generator. See `docs/pixelcraft.md` for the craft and the `/spritesheet`
 skill for the workflow.
+
+---
+
+## 🎮 Ship it — the Godot exporter
+
+Specs and renders are only useful if they reach an engine. `python -m labs build
+<world> --engine godot` renders every asset in a world and writes a **drop-in
+Godot 4 resource pack** to `dist/<world>/` (plus a `.zip`):
+
+- **sprites** → PNG + a `.png.import` tuned for crisp, uncompressed pixel art;
+- **animations** → a **SpriteFrames `.tres`** built from the sprite's frame atlas
+  (per-frame `hold` → Godot frame `duration`, `fps` → playback `speed`, loop flag);
+- **music** → WAV + a `.wav.import` that forward-loops tracks with a `loop` section;
+- a `pack.json` index and a `README.md` with node-wiring notes.
+
+Extract the zip at your project root (it lands at `res://<world>/`), open in Godot 4,
+and wire an `AnimatedSprite2D`/`Sprite2D`/`AudioStreamPlayer` to the resources. The
+**`/gamepack`** skill drives the whole path — game description → world → assets →
+pack. Exporters are a registry (`labkit/export.py`), so a new engine target is one
+entry. See **`docs/godot.md`**.
 
 ## Tests
 
