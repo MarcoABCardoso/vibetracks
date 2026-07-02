@@ -577,6 +577,20 @@
         "..g.."
       ]
     },
+    "shadow_sigil": {
+      "_comment": "The FACE of the world's cross-modal `shadow` motif (its musical twin is shadow_theme) — the shadow-violet ANTI-crest. The gold sun-crest is radiant and symmetrical (the `hope` meaning); this is the same emblem cracked down the middle and shattered to the right, jagged + asymmetrical (the `hostile` meaning). Flown on the enemy standard (shadow-banner) exactly as the crest flies on the party banner.",
+      "legend": {
+        "s": "shadow",
+        "S": "shadow_hi"
+      },
+      "pixels": [
+        "..s..",
+        ".sS..",
+        "sSS.s",
+        ".sS.s",
+        "..s.s"
+      ]
+    },
     "spark": {
       "legend": {
         "f": "flash",
@@ -1082,6 +1096,12 @@
     "banner",
     "mage-portrait",
     "ranger-portrait",
-    "cleric-portrait"
+    "cleric-portrait",
+    "brazier",
+    "keep-wall",
+    "flagstone",
+    "ember-shard",
+    "potion",
+    "shadow-banner"
   ]
 }

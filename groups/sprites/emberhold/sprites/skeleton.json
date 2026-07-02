@@ -1,6 +1,8 @@
 {
   "name": "skeleton",
   "extends": "../artbook.json",
+  "meaning": "hostile",
+  "entity": "the-shadow",
   "legend": {
     "B": "bone",
     "o": "bone_sh",

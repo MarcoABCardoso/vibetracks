@@ -1,0 +1,74 @@
+{
+  "name": "boss",
+  "extends": "../soundtrack.json",
+  "_comment": "\"The Fallen Captain\" — the dark-knight's personal theme and the FACE of the world's `shadow` motif in music. Distinct from `siege`: siege is the alarm (the whole keep called to the wall, the ember_theme inverted); THIS is one duel with the captain, and it states his OWN leitmotif, shadow_theme, the falling chromatic menace. `approach` stalks in on a low pedal with the theme's head; `duel` churns the full theme over a galloping Dm–Bb–Gm–A7; `onslaught` throws the theme an octave up and inverted so the falling menace CLIMBS — the captain pressing the attack — over a rising pull back to the tonic.",
+  "bpm": 132,
+  "meaning": "hostile",
+  "entity": "the-shadow",
+
+  "sections": [
+    {
+      "name": "approach",
+      "bars": 4,
+      "_comment": "The captain stalks in: a low string drone on the tonic, a heavy half-time bass pedal, and just the falling HEAD of shadow_theme low on the brass — dread, not yet violence. A lone kick marks the tread.",
+      "parts": {
+        "strings": { "instrument": "strings", "chords": ["Dm", "Dm", "Bb", "A"], "chord_beats": 4, "octave": 2, "gain": 0.44 },
+        "brass": { "instrument": "brass", "motif": "shadow_theme", "slice": [0, 4], "transpose": -12, "gain": 0.5 },
+        "bass": { "instrument": "bass", "gain": 0.85,
+                  "notes": [["D2", 2], ["D2", 2], ["D2", 2], ["D2", 2],
+                            ["Bb1", 2], ["Bb1", 2], ["A1", 2], ["A1", 2]] },
+        "drums": { "instrument": "drums", "gain": 0.5,
+                   "drums": { "kick": "x.......", "snare": "........", "hat": "....x..." } }
+      }
+    },
+    {
+      "name": "duel",
+      "bars": 4,
+      "loop": true,
+      "_comment": "The engine of the fight: shadow_theme stated in full on the brass over a churning minor harp and a galloping octave bass under Dm–Bb–Gm–A7, four-on-the-floor kick and driving hats. Menace at speed.",
+      "parts": {
+        "brass": { "instrument": "brass", "motif": "shadow_theme", "gain": 0.6 },
+        "harp": { "instrument": "harp", "pan": -0.2, "gain": 0.5,
+                  "notes": [
+                    ["D4", 0.5], ["F4", 0.5], ["A4", 0.5], ["F4", 0.5], ["D4", 0.5], ["F4", 0.5], ["A4", 0.5], ["F4", 0.5],
+                    ["Bb3", 0.5], ["D4", 0.5], ["F4", 0.5], ["D4", 0.5], ["Bb3", 0.5], ["D4", 0.5], ["F4", 0.5], ["D4", 0.5],
+                    ["G3", 0.5], ["Bb3", 0.5], ["D4", 0.5], ["Bb3", 0.5], ["G3", 0.5], ["Bb3", 0.5], ["D4", 0.5], ["Bb3", 0.5],
+                    ["A3", 0.5], ["C#4", 0.5], ["E4", 0.5], ["C#4", 0.5], ["A3", 0.5], ["C#4", 0.5], ["E4", 0.5], ["G4", 0.5]
+                  ] },
+        "strings": { "instrument": "strings", "chords": ["Dm", "Bb", "Gm", "A7"], "chord_beats": 4, "octave": 2, "gain": 0.42 },
+        "bass": { "instrument": "bass", "gain": 0.85,
+                  "notes": [["D2", 0.5], ["D2", 0.5], ["D2", 0.5], ["D3", 0.5], ["D2", 0.5], ["D2", 0.5], ["D3", 0.5], ["D2", 0.5],
+                            ["Bb1", 0.5], ["Bb1", 0.5], ["Bb1", 0.5], ["Bb2", 0.5], ["Bb1", 0.5], ["Bb1", 0.5], ["Bb2", 0.5], ["Bb1", 0.5],
+                            ["G1", 0.5], ["G1", 0.5], ["G1", 0.5], ["G2", 0.5], ["G1", 0.5], ["G1", 0.5], ["G2", 0.5], ["G1", 0.5],
+                            ["A1", 0.5], ["A1", 0.5], ["A1", 0.5], ["A2", 0.5], ["A1", 0.5], ["A1", 0.5], ["E2", 0.5], ["A1", 0.5]] },
+        "drums": { "instrument": "drums", "gain": 0.6,
+                   "drums": { "kick": "x.x.x.x.", "snare": "....x...", "hat": "xxxxxxxxxxxxxxxx" } }
+      }
+    },
+    {
+      "name": "onslaught",
+      "bars": 4,
+      "loop": true,
+      "_comment": "The captain presses: shadow_theme thrown an octave up and INVERTED about D5, so the falling menace now CLIMBS — the attack rising — twice, over a rising Dm–Bb–C–A7 that keeps pulling back to the tonic. Harp lifts an octave, kick doubles up.",
+      "parts": {
+        "brass": { "instrument": "brass", "motif": "shadow_theme", "invert": "D5",
+                   "transpose": 12, "repeat": 2, "gain": 0.62 },
+        "harp": { "instrument": "harp", "pan": 0.2, "gain": 0.48,
+                  "notes": [
+                    ["D4", 0.5], ["F4", 0.5], ["A4", 0.5], ["D5", 0.5], ["A4", 0.5], ["F4", 0.5], ["A4", 0.5], ["F4", 0.5],
+                    ["Bb3", 0.5], ["D4", 0.5], ["F4", 0.5], ["Bb4", 0.5], ["F4", 0.5], ["D4", 0.5], ["F4", 0.5], ["D4", 0.5],
+                    ["C4", 0.5], ["E4", 0.5], ["G4", 0.5], ["C5", 0.5], ["G4", 0.5], ["E4", 0.5], ["G4", 0.5], ["E4", 0.5],
+                    ["A3", 0.5], ["C#4", 0.5], ["E4", 0.5], ["A4", 0.5], ["G4", 0.5], ["E4", 0.5], ["C#4", 0.5], ["E4", 0.5]
+                  ] },
+        "strings": { "instrument": "strings", "chords": ["Dm", "Bb", "C", "A7"], "chord_beats": 4, "octave": 2, "gain": 0.42 },
+        "bass": { "instrument": "bass", "gain": 0.85,
+                  "notes": [["D2", 0.5], ["D2", 0.5], ["D3", 0.5], ["D2", 0.5], ["D2", 0.5], ["D2", 0.5], ["D3", 0.5], ["D2", 0.5],
+                            ["Bb1", 0.5], ["Bb1", 0.5], ["Bb2", 0.5], ["Bb1", 0.5], ["Bb1", 0.5], ["Bb1", 0.5], ["Bb2", 0.5], ["Bb1", 0.5],
+                            ["C2", 0.5], ["C2", 0.5], ["C3", 0.5], ["C2", 0.5], ["C2", 0.5], ["C2", 0.5], ["C3", 0.5], ["C2", 0.5],
+                            ["A1", 0.5], ["A1", 0.5], ["A2", 0.5], ["A1", 0.5], ["A1", 0.5], ["E2", 0.5], ["A1", 0.5], ["A1", 0.5]] },
+        "drums": { "instrument": "drums", "gain": 0.6,
+                   "drums": { "kick": "x.xx.xx.", "snare": "....x...", "hat": "xxxxxxxxxxxxxxxx" } }
+      }
+    }
+  ]
+}

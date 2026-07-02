@@ -1,0 +1,35 @@
+{
+  "name": "keep-wall",
+  "extends": "../artbook.json",
+  "meaning": "resolve",
+  "entity": "the-keep",
+  "_comment": "A tileable rampart block — the wall the Vanguard holds (the-keep, but its meaning here is `resolve`: upright, solid, steel-blue). Crenellated battlements on top over a running-bond stone body, mortar courses in steel_sh. `outline` is turned OFF so blocks abut seamlessly when tiled edge to edge; definition comes from the mortar and the lit top course instead.",
+  "size": [20, 20],
+  "outline": null,
+  "legend": { "a": "steel", "d": "steel_sh", "h": "steel_hi" },
+  "layers": [
+    { "name": "wall",
+      "pixels": [
+        "hh..hh..hh..hh..hh..",
+        "hhhhhhhhhhhhhhhhhhhh",
+        "adaaaadaaaadaaaadaaa",
+        "aaaaaaaaaaaaaaaaaaaa",
+        "dddddddddddddddddddd",
+        "aaadaaaadaaaadaaaada",
+        "aaaaaaaaaaaaaaaaaaaa",
+        "adaaaadaaaadaaaadaaa",
+        "aaaaaaaaaaaaaaaaaaaa",
+        "dddddddddddddddddddd",
+        "aaadaaaadaaaadaaaada",
+        "aaaaaaaaaaaaaaaaaaaa",
+        "adaaaadaaaadaaaadaaa",
+        "aaaaaaaaaaaaaaaaaaaa",
+        "dddddddddddddddddddd",
+        "aaadaaaadaaaadaaaada",
+        "aaaaaaaaaaaaaaaaaaaa",
+        "adaaaadaaaadaaaadaaa",
+        "aaaaaaaaaaaaaaaaaaaa",
+        "dddddddddddddddddddd"
+      ] }
+  ]
+}

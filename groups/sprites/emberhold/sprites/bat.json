@@ -1,6 +1,8 @@
 {
   "name": "bat",
   "extends": "../artbook.json",
+  "meaning": "hostile",
+  "entity": "the-shadow",
   "legend": {
     "S": "shadow",
     "s": "shadow_hi",

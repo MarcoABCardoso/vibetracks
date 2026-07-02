@@ -1,0 +1,35 @@
+{
+  "name": "ember-shard",
+  "extends": "../artbook.json",
+  "meaning": "hope",
+  "entity": "the-keep",
+  "_comment": "The sacred ember as a collectible pickup — a faceted gold shard with a flash-white core and two glinting sparkles. Shares the gold of the `crest`/brazier so it reads as a splinter of the same holy flame (the-keep / hope). A discrete object, so it keeps the auto-outline.",
+  "size": [20, 20],
+  "legend": { "g": "gold", "G": "gold_sh", "f": "flash" },
+  "layers": [
+    { "name": "shard",
+      "pixels": [
+        "....................",
+        "....................",
+        "..........f.........",
+        "....................",
+        "........f...........",
+        ".......fgf..........",
+        ".......ggf..........",
+        "......fgGgf.........",
+        "......gGGGg.........",
+        ".....fgGGGgf........",
+        ".....gGGfGGg........",
+        ".....gGGGGGg........",
+        "......gGGGg.........",
+        "......fgGgf.........",
+        ".......ggg..........",
+        "........g...........",
+        "....f...............",
+        "....................",
+        "....................",
+        "...................."
+      ] }
+  ],
+  "checks": [ { "rule": "on_canvas" } ]
+}

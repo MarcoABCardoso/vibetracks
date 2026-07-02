@@ -1,7 +1,9 @@
 {
   "name": "slime",
   "extends": "../artbook.json",
-  "_comment": "Companion: shares only the palette + outline, none of the hero shape.",
+  "meaning": "hostile",
+  "entity": "the-shadow",
+  "_comment": "A footsoldier of the-shadow (hostile) — shares only the palette + outline, none of the hero shape.",
   "legend": {
     "N": "slime_hi",
     "n": "slime",
