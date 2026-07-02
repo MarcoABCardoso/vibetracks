@@ -65,6 +65,48 @@ Draw it **without** the outer black outline — the engine adds that — carryin
 only interior shading. ASCII-art it so it reads in a diff. Add small emblem
 motifs (a crest) you can reuse on other sprites.
 
+## 2.5 Forms — sculpt characters from shaded solids (the high-leverage path)
+
+For **characters, creatures, and props with volume**, prefer **`form` layers**
+over hand-placing pixels. A form is a solid primitive — `sphere`/`disc`/`capsule`/
+`box`/`cone` — with a `material` (a bible **ramp**) and the engine derives every
+pixel *and its shadow/highlight* from the form's surface normal under the sprite
+`light`. You decide *which solid, where, what material*; the engine does the
+shading. A whole figure is ~10 forms, not a 400-cell grid. (Keep `pixels` grids
+for emblems, UI, faces, and fine detail.) Full reference: `pixeltracks/CLAUDE.md`
+"form" layer; craft: `docs/pixelcraft.md` §8. The worked demos are the
+`forge-knights` group.
+
+The rules that save exploration (learned the hard way):
+
+- **Material must be a ramp to shade.** Declare `ramps` in the bible
+  (`steel: [steel_sh, steel, steel_hi]`); point a form's `material` at the ramp
+  name. A bare palette colour fills flat. The light defaults to `up_left`.
+- **Separate touching masses.** Same-material forms merge visually; the engine's
+  automatic **contact shadow** (Phase 2) helps, but for clarity give adjacent
+  parts different materials (iron limbs, gold accents) or rely on the shadow and
+  *check* the read in `inspect`, never the PNG.
+- **Rig any real pose with a form skeleton — do not hand-place rotated forms.**
+  Articulated forms (`rotate`/`skew`/`squash`) do **not** connect by construction;
+  hand-placed limbs float, clip, or detach (and the PNG hides it). Use a
+  `skeleton` whose **bones are forms**: each bone carries `form`/`size`/`material`
+  and its own inline `anchors`, and `attach`es its pivot to a parent bone's anchor
+  — so parts meet no matter how the torso leans. `knight-forms-rig` is the model.
+- **A raised weapon needs a CONTRASTING material.** A steel blade beside a steel
+  helm reads as a *pipe* joining the arm to the head. Make the blade gold (or any
+  ramp that isn't the armour's), and aim it into **empty space**, away from the
+  head.
+- **Derive rotation angles; don't guess.** For a capsule that hangs down at
+  `rotate: 0` (pivot at the top), the free end lands at offset
+  `(-L·sin θ, L·cos θ)` from the pivot: `θ≈180` points it up, `θ≈270` right,
+  `θ≈90` left, `θ≈0` down. When animating, make **all** turning parts (arm *and*
+  blade) rotate the **same** direction and make the hand actually **travel**
+  through the motion — an arm that only spins while staying put reads as "rotating
+  the wrong way."
+- **Gate every posed/animated form sprite with `checks`** — at least
+  `{ "rule": "connected" }` and `{ "rule": "on_canvas", "margin": 0 }` — and judge
+  it with `inspect` (`--all-frames` for animations), **never** by reading the PNG.
+
 ## 3. Draft → render → view → iterate (per sprite)
 
 1. Hand-write `groups/sprites/<g>/sprites/<name>.json` (or `python -m pixeltracks new
@@ -85,16 +127,23 @@ motifs (a crest) you can reuse on other sprites.
    pass/fail. For rigged poses, prefer a `skeleton` (parts attached at anchors)
    so connection is guaranteed, not tuned. See `pixeltracks/CLAUDE.md`.
 4. `python -m pixeltracks render <g>/<name>` — writes `out/<g>/<name>.png`.
-5. **Read the PNG** to judge *colour/shading/read* (what text can't tell you),
-   and **always send it to the user with SendUserFile** — the sprite is the
-   deliverable, so the user wants to *see* every meaningful revision, not just
-   read that it's done. Send proactively after each render worth showing (a new
-   sprite, a pose change, a before/after); don't wait to be asked. A quick
-   before/after contact sheet is ideal when iterating on one sprite. Translate
-   feedback into spec edits: "muddy" → widen the shadow/highlight spread;
-   "unreadable" → simplify
-   the silhouette; "doesn't fit" → pull colours back to the palette or reuse a
-   shared motif.
+5. **Judge structure in `inspect`, not the PNG.** Whether a pose is connected,
+   whether a limb floats or clips, whether the sword is beside the helm — these
+   are read from the ASCII dump + geometry + `checks`, because an upscaled PNG
+   *hides* them (a broken sprite can look fine at a glance — this has bitten us
+   more than once). Use the PNG only for what text can't convey — **colour,
+   shading, overall read** — and for **delivery**. Iterate on the spec until
+   `inspect` is clean *first*, then look at the PNG for feel.
+6. **Always send the PNG to the user with SendUserFile** — the sprite is the
+   deliverable, so they want to *see* every meaningful revision. Send proactively
+   after each render worth showing (a new sprite, a pose change, a before/after);
+   don't wait to be asked. A labelled contact sheet is ideal for a set or an
+   animation's frames. (For an animated sprite the native output is a horizontal
+   **sheet** PNG + `.atlas.json`; a spritesheet is the reliable way to show
+   motion.) Translate feedback into spec edits: "muddy" → widen the ramp spread;
+   "unreadable" → simplify the silhouette; "reads as a pipe" → contrasting
+   material + aim into empty space; "doesn't fit" → pull colours back to the
+   palette or reuse a shared motif/ramp.
 
 ## 4. Derive variants from the hero (coherence ≠ repetition)
 
@@ -113,11 +162,18 @@ shares only the palette; `fox-hop` re-poses the fox across 4 frames.
 
 ## 5. Animate by re-posing (optional)
 
-For motion, give the sprite `frames` (a list); each frame has its own `layers`.
-Re-pose the shared shape with per-frame `offset`/`flip` (windup → strike →
-recover), `hold` the impact frame, and add a `flash`/`slash` motif on the action
-frame only. It compiles to a horizontal sheet + `<name>.atlas.json` (frame rects
-+ holds). See `docs/pixelcraft.md` §6.
+For motion, give the sprite `frames` (a list); each frame has its own `layers`
+(or `skeleton`). Re-pose the shared shape per frame (windup → strike → recover),
+`hold` the impact frame, add a `flash`/`slash` on the action frame only. It
+compiles to a horizontal sheet + `<name>.atlas.json` (frame rects + holds). See
+`docs/pixelcraft.md` §6.
+
+For a **form rig**, each frame is its own `skeleton`; only the moving bones'
+angles change. Because that repeats the whole rig per frame, define it **once in a
+small builder script** and sweep the animated angles — the repo endorses this
+(`groups/sprites/forge-knights/build_swing.py` builds `knight-forms-swing`, a
+5-frame sword chop). Give the canvas room for the swing extremes, and verify
+**every** frame with `inspect --all-frames --strict` before rendering.
 
 ## 6. Scenes & large sprites (optional)
 
@@ -148,7 +204,12 @@ does every group plus a top-level index. Check the manifest for sane coverage
 
 - [ ] Every sprite `extends` its group's `artbook.json`.
 - [ ] Every colour is a palette **name**; the palette is small and role-named.
-- [ ] The hero shape is a bible motif, stated once and reused by reference.
+- [ ] The hero shape is a bible motif (or form set), stated once and reused.
 - [ ] At least one variant is a pure palette swap; at least one companion shares
       only the palette.
+- [ ] Characters/creatures use **`form` layers** shaded from bible `ramps`; any
+      real pose is a **form skeleton** (bones attached at anchors), not
+      hand-placed rotated forms.
+- [ ] Every posed/animated sprite carries `connected` + `on_canvas` `checks` and
+      was judged in **`inspect`** (`--all-frames` for animations) — not by the PNG.
 - [ ] `validate` passes and `render-all` produces a clean manifest.

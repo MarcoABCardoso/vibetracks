@@ -134,6 +134,63 @@ Two ways to go bigger than one small figure — both are *composition*, the same
   leaf stamps and a trunk. The silhouette rule still rules: get the big shape
   reading first, shade second.
 
+## 8. Forms: sculpt with light, don't place pixels
+
+For anything with **volume** — a character, a creature, a rounded prop — reach for
+**`form` layers** before hand-pixelling. This is the visual echo of the music
+Lab's synth: a note is a compact token the synth turns into a full timbre, and a
+form is a compact solid the engine turns into fully-shaded pixels. You state
+*which solid, where, in what material, lit from where*; the engine derives every
+shadow and highlight. A figure becomes ~10 forms you can hold in your head, not a
+400-cell grid you place by hand.
+
+- **Think in solids.** Block the body as spheres/capsules/boxes/cones the way a
+  sculptor blocks masses: a capsule torso, a sphere head, cone helm, capsule
+  limbs. Get the *masses* right first — silhouette still rules (§2), so check the
+  blocked silhouette in `inspect` before fussing shading.
+- **The ramp is the material; light does the modelling.** A form's `material` is a
+  bible **ramp** (`steel_sh → steel → steel_hi`). Three values read as a rounded
+  surface; one reads flat. This is finally what makes `ramps` *work* — declare them
+  once and every form of that material shades consistently under one `light`
+  (default `up_left`). Keep the light direction the same across a set, exactly as a
+  score keeps one key.
+- **Depth is overlap + contact shadow.** Forms composite back-to-front (later =
+  nearer); a nearer form drops an automatic **contact shadow** on the one behind.
+  Order lower-on-canvas parts *later* so nearer things overlap farther ones, and
+  let the shadow carve the seams — it's what separates a helm from a head even in
+  one colour.
+- **Separate touching masses by material.** Same-material forms fuse into a blob.
+  Contact shadow helps, but give adjacent parts a *reason* to differ — iron limbs
+  against a steel torso, a warm gold accent on the pauldrons — the same
+  one-warm-accent discipline as §1, now doing double duty as mass separation.
+- **Pose for life — but rig it.** Everything in §6's "posing for life" applies:
+  a line of action, contrapposto (hips and shoulders tilting opposite ways),
+  breaking the flat frontal plane with a `skew`/`squash`, total asymmetry and
+  overlap. Forms buy this cheaply because articulating a form **relights** it (the
+  highlight stays with the world light, it doesn't spin with the part). But
+  articulated forms **do not hold together on their own** — hand-placed rotated
+  limbs float and gap. Build any real pose as a **form skeleton**: bones that
+  `attach` at anchors so the parts meet by construction (the same fix grids needed).
+- **A raised weapon must contrast — or it reads as a pipe.** A steel blade ending
+  next to a steel helm looks like a tube joining the arm to the head. Make the
+  blade a *different* ramp (gold), and swing it into **empty space** away from the
+  body, not back across the head.
+- **Animate by sweeping the rig.** A form rig animates like any skeleton (§6): one
+  skeleton per frame, only the moving bones' angles changing, with anticipation →
+  strike (held) → follow-through. Two rules that are easy to get backwards: make
+  **all** the turning parts rotate the **same** direction, and make the acting
+  hand actually **travel** through the arc (a limb that only spins in place reads
+  as moving the wrong way). Derive the angles from the geometry rather than
+  guessing — a down-hanging capsule's free end sits at `(-L·sinθ, L·cosθ)`.
+- **Judge it in `inspect`, never the PNG.** Every rule above is verified as text +
+  geometry + `checks` (`connected`, `on_canvas`, `top_above` a blade over the
+  helm…), because an upscaled PNG *hides* floating limbs, clipped blades, and
+  pipe-to-the-head reads. Add the checks, get `inspect --all-frames` clean, *then*
+  look at the PNG for colour and feel. The `forge-knights` group is the worked set:
+  `knight-forms` (a figure in solids), `knight-forms-mono` (contact shadow alone
+  separating one material), `knight-forms-rig` (a skeleton-held steep pose), and
+  `knight-forms-swing` (a 5-frame chop).
+
 ## Cohesion checklist
 
 - [ ] Every sprite `extends` its group's `artbook.json`.
@@ -143,4 +200,10 @@ Two ways to go bigger than one small figure — both are *composition*, the same
 - [ ] At least one variant is a pure **palette swap** of another sprite.
 - [ ] At least one companion shares only the palette, not the hero shape.
 - [ ] Silhouettes read at native size; the auto-outline is on.
+- [ ] Volumetric subjects use **`form` layers** shaded from bible `ramps` under one
+      consistent `light`; a raised weapon uses a contrasting material.
+- [ ] Any real pose is a **form skeleton** (bones attached at anchors), not
+      hand-placed rotated forms; it carries `connected` + `on_canvas` `checks`.
+- [ ] Structure/pose was judged in **`inspect`** (`--all-frames` for animations),
+      with the PNG used only for colour and delivery.
 - [ ] `validate` passes and `render-all` produces a clean manifest.
