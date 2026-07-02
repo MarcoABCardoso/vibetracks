@@ -546,6 +546,23 @@ class TestFormModel(unittest.TestCase):
         c = composite_frame(s, s["frames"][0])
         self.assertGreater(coverage(c), 0.3)
 
+    def test_form_demo_sprites_pass_declared_checks(self):
+        """Every form demo satisfies its own art-direction checks (connected /
+        on_canvas). This is how a figure is validated — as geometry, not by eye."""
+        from pixeltracks import inspect as pt_inspect
+        for name in ("knight-forms", "knight-forms-mono", "knight-forms-hero"):
+            s = spec.resolve_sprite(os.path.join(FORGE, "sprites", name + ".json"))
+            failed = [r for r in pt_inspect.run_checks(s) if not r["ok"]]
+            self.assertEqual(failed, [], f"{name} failed checks: {failed}")
+
+    def test_posed_hero_is_one_clean_piece(self):
+        """The articulated hero must be a single connected, on-canvas silhouette —
+        no floating limbs, no clipping (the defects a PNG glance misses)."""
+        from pixeltracks import inspect as pt_inspect
+        s = spec.resolve_sprite(os.path.join(FORGE, "sprites", "knight-forms-hero.json"))
+        warns = pt_inspect.geometry(s)["warnings"]
+        self.assertEqual(warns, [], f"hero geometry warnings: {warns}")
+
     def test_bad_squash_rejected(self):
         names = set(self.sprite["palette"])
         layer = {"form": "capsule", "material": "steel", "at": [0, 0], "size": [4, 8],

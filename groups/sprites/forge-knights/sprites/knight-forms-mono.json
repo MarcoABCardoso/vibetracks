@@ -2,6 +2,10 @@
   "name": "knight-forms-mono",
   "extends": "../artbook.json",
   "_comment": "The Phase-2 proof: the SAME knight built entirely from one material (steel) plus a skin face. In Phase 1 these forms would fuse into a single steel blob; here the engine's automatic contact shadow (a nearer form ramp-shifts the geometry behind it one step darker) separates helm from head, pauldrons from torso, and limbs from body — with no material change and no hand-placed shading. Draw order is back-to-front; `z` could override the shadow depth per form.",
+  "checks": [
+    { "rule": "connected" },
+    { "rule": "on_canvas", "margin": 0 }
+  ],
   "layers": [
     { "form": "capsule", "material": "steel", "at": [1, 18], "size": [5, 12] },
     { "form": "capsule", "material": "steel", "at": [18, 18], "size": [5, 12] },

@@ -2,6 +2,10 @@
   "name": "knight-forms",
   "extends": "../artbook.json",
   "_comment": "The whole knight as a dozen shaded solid forms. Every pixel and its shadow/highlight is DERIVED by the engine from each form's material ramp + the sprite light — the author only decides which solid goes where, in what material. This is the 'note, not waveform' move for pixels: contrast the layer count and legibility with knight-pixels.json, the same figure hand-placed pixel by pixel. Masses are separated by material (iron limbs, gold accents) since same-material forms merge — the honest Phase-1 limitation that per-form depth/occlusion (Phase 2) removes.",
+  "checks": [
+    { "rule": "connected" },
+    { "rule": "on_canvas", "margin": 0 }
+  ],
   "layers": [
     { "form": "capsule", "material": "iron", "at": [1, 18], "size": [5, 12] },
     { "form": "capsule", "material": "iron", "at": [18, 18], "size": [5, 12] },
