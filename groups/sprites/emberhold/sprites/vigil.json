@@ -3,41 +3,42 @@
   "extends": "../artbook.json",
   "meaning": "hope",
   "entity": "the-keep",
-  "_comment": "The Emberhold premise as one picture, staged like a Zelda: A Link to the Past dungeon hall — a flat top-down floor that fills the frame (tiled `floor_stone`), a cool `wall_stone` band across the top with a shadowed lip so floor-vs-wall reads at a glance, torch sconces on the wall and stone pillars framing the sides, cracks worn into the flagstones. The Vanguard gathers TIGHT around the sacred brazier (two per side, casters inner / fighters on the wings with weapons turned outward) while the Shadow's monsters close in. Pure reuse: a `scene` of tiled motifs + stamped sprites, no empty space.",
-  "size": [160, 64],
-  "scale": 5,
+  "_comment": "The last stand at the ember, staged like a Zelda: A Link to the Past dungeon hall. Now the Vanguard is in BATTLE POSE and formed into a defensive RING around the sacred brazier, every hero's BACK to the fire and weapons turned OUTWARD: casters behind (mage upper-left, cleric upper-right), fighters in front (knight lower-left with his guard up, ranger lower-right loosing an arrow), the fire they protect at the centre. The Shadow's monsters close from beyond the ring. All four use the same knight skeleton (default facing right), so the left-hand heroes are flipped to face out. A flat top-down `floor_stone` fills the frame, a `wall_stone` band + lit lip caps the top, pillars frame the sides and sconces light the wall — no empty space, and the y-axis gives the ring real depth.",
+  "size": [176, 104],
+  "scale": 4,
   "background": "mage_sh",
   "outline": null,
   "scene": true,
   "layers": [
-    { "name": "wall",  "tile": { "shape": "wall_stone",  "at": [0, 0],  "size": [160, 21] } },
-    { "name": "wall_lip", "line": { "from": [0, 20], "to": [159, 20], "color": "steel_hi" } },
-    { "name": "seam",  "rect": { "at": [0, 21], "size": [160, 2], "color": "outline" } },
-    { "name": "floor", "tile": { "shape": "floor_stone", "at": [0, 23], "size": [160, 41] } },
+    { "name": "wall",  "tile": { "shape": "wall_stone",  "at": [0, 0],  "size": [176, 24] } },
+    { "name": "wall_lip", "line": { "from": [0, 23], "to": [175, 23], "color": "steel_hi" } },
+    { "name": "seam",  "rect": { "at": [0, 24], "size": [176, 2], "color": "outline" } },
+    { "name": "floor", "tile": { "shape": "floor_stone", "at": [0, 26], "size": [176, 78] } },
 
-    { "name": "crack_l", "shape": "floor_crack", "offset": [30, 52] },
-    { "name": "crack_c", "shape": "floor_crack", "offset": [78, 60] },
-    { "name": "crack_r", "shape": "floor_crack", "offset": [118, 48] },
+    { "name": "crack_l", "shape": "floor_crack", "offset": [44, 84] },
+    { "name": "crack_c", "shape": "floor_crack", "offset": [88, 94] },
+    { "name": "crack_r", "shape": "floor_crack", "offset": [128, 80] },
 
-    { "name": "pillar_l", "sprite": "pillar", "offset": [4, 4] },
-    { "name": "pillar_r", "sprite": "pillar", "offset": [140, 4] },
+    { "name": "pillar_l", "sprite": "pillar", "offset": [4, 8] },
+    { "name": "pillar_r", "sprite": "pillar", "offset": [156, 8] },
 
-    { "name": "sconce_l", "sprite": "sconce", "frame": 0, "offset": [30, 3] },
-    { "name": "sconce_r", "sprite": "sconce", "frame": 0, "flip": "h", "offset": [118, 3] },
+    { "name": "sconce_l", "sprite": "sconce", "frame": 0, "offset": [40, 3] },
+    { "name": "sconce_r", "sprite": "sconce", "frame": 0, "flip": "h", "offset": [124, 3] },
 
-    { "name": "bat_l", "sprite": "bat", "offset": [40, 20] },
-    { "name": "bat_r", "sprite": "bat", "flip": "h", "offset": [100, 20] },
+    { "name": "bat_l", "sprite": "bat", "offset": [56, 14] },
+    { "name": "bat_r", "sprite": "bat", "flip": "h", "offset": [118, 20] },
 
-    { "name": "glow", "ellipse": { "at": [70, 52], "size": [24, 7], "color": "gold_sh" } },
-    { "name": "brazier", "sprite": "brazier", "frame": 0, "offset": [70, 36] },
+    { "name": "mage",   "sprite": "mage-battle",   "flip": "h", "offset": [46, 30] },
+    { "name": "cleric", "sprite": "cleric-battle", "offset": [92, 30] },
 
-    { "name": "cleric", "sprite": "cleric", "flip": "h", "offset": [54, 38] },
-    { "name": "mage",   "sprite": "mage",   "offset": [92, 38] },
-    { "name": "knight", "sprite": "knight", "flip": "h", "offset": [37, 42] },
-    { "name": "ranger", "sprite": "ranger", "offset": [109, 42] },
+    { "name": "glow", "ellipse": { "at": [76, 62], "size": [26, 8], "color": "gold_sh" } },
+    { "name": "brazier", "sprite": "brazier", "frame": 0, "offset": [78, 46] },
 
-    { "name": "slime",    "sprite": "slime",    "offset": [19, 44] },
-    { "name": "skeleton", "sprite": "skeleton", "flip": "h", "offset": [125, 42] }
+    { "name": "knight", "sprite": "knight-battle", "flip": "h", "offset": [36, 54] },
+    { "name": "ranger", "sprite": "ranger-battle", "offset": [100, 54] },
+
+    { "name": "slime",    "sprite": "slime",    "offset": [4, 70] },
+    { "name": "skeleton", "sprite": "skeleton", "flip": "h", "offset": [142, 64] }
   ],
   "checks": [
     { "rule": "on_canvas", "layer": "brazier" }
