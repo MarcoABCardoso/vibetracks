@@ -1,0 +1,31 @@
+{
+  "name": "vigil",
+  "extends": "../artbook.json",
+  "meaning": "hope",
+  "entity": "the-keep",
+  "_comment": "The Emberhold premise made into one picture: the Vanguard drawn up around the sacred brazier — two per side, casters (cleric/mage) close to the flame, fighters (knight/ranger) on the outer wings with their weapons turned OUTWARD — while the Shadow's monsters close in from the edges and the dark of the long night presses in behind (the mage_sh backdrop). Pure REUSE: a `scene` that stamps sprites already in the group (brazier at its tall flame frame, the four heroes, slime/skeleton/bats), no new art. The warm gold glow-pool under the brazier is the light this whole world is besieged to keep.",
+  "size": [140, 48],
+  "scale": 6,
+  "background": "mage_sh",
+  "outline": null,
+  "scene": true,
+  "layers": [
+    { "name": "ground", "rect": { "at": [0, 40], "size": [140, 8], "color": "steel_sh" } },
+    { "name": "glow", "ellipse": { "at": [58, 39], "size": [24, 8], "color": "gold_sh" } },
+
+    { "name": "brazier", "sprite": "brazier", "frame": 0, "offset": [60, 22] },
+
+    { "name": "knight", "sprite": "knight", "flip": "h", "offset": [16, 22] },
+    { "name": "cleric", "sprite": "cleric", "flip": "h", "offset": [38, 22] },
+    { "name": "mage",   "sprite": "mage",   "offset": [82, 22] },
+    { "name": "ranger", "sprite": "ranger", "offset": [104, 22] },
+
+    { "name": "slime",    "sprite": "slime",    "offset": [0, 24] },
+    { "name": "skeleton", "sprite": "skeleton", "flip": "h", "offset": [122, 22] },
+    { "name": "bat_l",    "sprite": "bat",      "offset": [6, 2] },
+    { "name": "bat_r",    "sprite": "bat",      "flip": "h", "offset": [114, 3] }
+  ],
+  "checks": [
+    { "rule": "on_canvas", "layer": "brazier" }
+  ]
+}
