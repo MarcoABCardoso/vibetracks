@@ -1,0 +1,1546 @@
+{
+  "name": "knight-forms-swing",
+  "extends": "../artbook.json",
+  "_comment": "Form-rig sword-swing animation (regenerate with build_swing.py in this dir). One skeleton of form bones per frame; only the sword arm + gold blade and a little counter-motion change. Anticipation (windup) -> strike (held) -> follow-through -> recover. Every frame stays connected by construction and is gated by the checks below via `inspect --all-frames`.",
+  "size": [
+    48,
+    60
+  ],
+  "fps": 8,
+  "checks": [
+    {
+      "rule": "connected"
+    },
+    {
+      "rule": "on_canvas",
+      "margin": 0
+    }
+  ],
+  "frames": [
+    {
+      "name": "ready",
+      "hold": 2,
+      "skeleton": [
+        {
+          "name": "leg-back",
+          "form": "capsule",
+          "material": "iron",
+          "size": [
+            5,
+            11
+          ],
+          "anchors": {
+            "hip": [
+              2.5,
+              0.5
+            ],
+            "foot": [
+              2.5,
+              10.5
+            ]
+          },
+          "pivot": "hip",
+          "attach": {
+            "to": "chest",
+            "anchor": "hip_l"
+          },
+          "rotate": 10
+        },
+        {
+          "name": "leg-front",
+          "form": "capsule",
+          "material": "iron",
+          "size": [
+            5,
+            11
+          ],
+          "anchors": {
+            "hip": [
+              2.5,
+              0.5
+            ],
+            "foot": [
+              2.5,
+              10.5
+            ]
+          },
+          "pivot": "hip",
+          "attach": {
+            "to": "chest",
+            "anchor": "hip_r"
+          },
+          "rotate": -12
+        },
+        {
+          "name": "arm-off",
+          "form": "capsule",
+          "material": "iron",
+          "size": [
+            5,
+            11
+          ],
+          "anchors": {
+            "shoulder": [
+              2.5,
+              1
+            ],
+            "hand": [
+              2.5,
+              10
+            ]
+          },
+          "pivot": "shoulder",
+          "attach": {
+            "to": "chest",
+            "anchor": "shoulder_l"
+          },
+          "rotate": 36
+        },
+        {
+          "name": "chest",
+          "form": "box",
+          "material": "steel",
+          "size": [
+            15,
+            15
+          ],
+          "round": 4,
+          "anchors": {
+            "neck": [
+              7.5,
+              1.5
+            ],
+            "chest_mid": [
+              7.5,
+              5
+            ],
+            "shoulder_l": [
+              2,
+              4
+            ],
+            "shoulder_r": [
+              13,
+              4
+            ],
+            "hip_l": [
+              4,
+              14.5
+            ],
+            "hip_r": [
+              11,
+              14.5
+            ]
+          },
+          "pivot": "hip_l",
+          "at": [
+            18,
+            45
+          ],
+          "skew": [
+            -0.08,
+            0
+          ]
+        },
+        {
+          "name": "surcoat",
+          "form": "box",
+          "material": "cloak",
+          "size": [
+            5,
+            13
+          ],
+          "round": 1,
+          "anchors": {
+            "top": [
+              2.5,
+              0
+            ]
+          },
+          "pivot": "top",
+          "attach": {
+            "to": "chest",
+            "anchor": "chest_mid"
+          }
+        },
+        {
+          "name": "pauldron-off",
+          "form": "sphere",
+          "material": "gold",
+          "size": [
+            7,
+            7
+          ],
+          "anchors": {
+            "c": [
+              3.5,
+              3.5
+            ]
+          },
+          "pivot": "c",
+          "attach": {
+            "to": "chest",
+            "anchor": "shoulder_l"
+          }
+        },
+        {
+          "name": "pauldron-sword",
+          "form": "sphere",
+          "material": "gold",
+          "size": [
+            7,
+            7
+          ],
+          "anchors": {
+            "c": [
+              3.5,
+              3.5
+            ]
+          },
+          "pivot": "c",
+          "attach": {
+            "to": "chest",
+            "anchor": "shoulder_r"
+          }
+        },
+        {
+          "name": "head",
+          "form": "sphere",
+          "material": "skin",
+          "size": [
+            8,
+            8
+          ],
+          "anchors": {
+            "neck": [
+              4,
+              7
+            ],
+            "crown": [
+              4,
+              1
+            ]
+          },
+          "pivot": "neck",
+          "attach": {
+            "to": "chest",
+            "anchor": "neck",
+            "shift": [
+              0,
+              -1
+            ]
+          }
+        },
+        {
+          "name": "helm",
+          "form": "sphere",
+          "material": "steel",
+          "size": [
+            10,
+            7
+          ],
+          "anchors": {
+            "base": [
+              5,
+              6
+            ],
+            "top": [
+              5,
+              1
+            ]
+          },
+          "pivot": "base",
+          "attach": {
+            "to": "head",
+            "anchor": "crown"
+          }
+        },
+        {
+          "name": "plume",
+          "form": "cone",
+          "material": "gold",
+          "size": [
+            4,
+            6
+          ],
+          "anchors": {
+            "base": [
+              2,
+              5.5
+            ]
+          },
+          "pivot": "base",
+          "attach": {
+            "to": "helm",
+            "anchor": "top"
+          }
+        },
+        {
+          "name": "arm-sword",
+          "form": "capsule",
+          "material": "iron",
+          "size": [
+            5,
+            12
+          ],
+          "anchors": {
+            "shoulder": [
+              2.5,
+              1
+            ],
+            "hand": [
+              2.5,
+              11
+            ]
+          },
+          "pivot": "shoulder",
+          "attach": {
+            "to": "chest",
+            "anchor": "shoulder_r"
+          },
+          "rotate": 210
+        },
+        {
+          "name": "sword",
+          "form": "capsule",
+          "material": "gold",
+          "size": [
+            3,
+            18
+          ],
+          "anchors": {
+            "grip": [
+              1.5,
+              16
+            ]
+          },
+          "pivot": "grip",
+          "attach": {
+            "to": "arm-sword",
+            "anchor": "hand"
+          },
+          "rotate": 20
+        }
+      ]
+    },
+    {
+      "name": "windup",
+      "hold": 2,
+      "skeleton": [
+        {
+          "name": "leg-back",
+          "form": "capsule",
+          "material": "iron",
+          "size": [
+            5,
+            11
+          ],
+          "anchors": {
+            "hip": [
+              2.5,
+              0.5
+            ],
+            "foot": [
+              2.5,
+              10.5
+            ]
+          },
+          "pivot": "hip",
+          "attach": {
+            "to": "chest",
+            "anchor": "hip_l"
+          },
+          "rotate": 10
+        },
+        {
+          "name": "leg-front",
+          "form": "capsule",
+          "material": "iron",
+          "size": [
+            5,
+            11
+          ],
+          "anchors": {
+            "hip": [
+              2.5,
+              0.5
+            ],
+            "foot": [
+              2.5,
+              10.5
+            ]
+          },
+          "pivot": "hip",
+          "attach": {
+            "to": "chest",
+            "anchor": "hip_r"
+          },
+          "rotate": -12
+        },
+        {
+          "name": "arm-off",
+          "form": "capsule",
+          "material": "iron",
+          "size": [
+            5,
+            11
+          ],
+          "anchors": {
+            "shoulder": [
+              2.5,
+              1
+            ],
+            "hand": [
+              2.5,
+              10
+            ]
+          },
+          "pivot": "shoulder",
+          "attach": {
+            "to": "chest",
+            "anchor": "shoulder_l"
+          },
+          "rotate": 36
+        },
+        {
+          "name": "chest",
+          "form": "box",
+          "material": "steel",
+          "size": [
+            15,
+            15
+          ],
+          "round": 4,
+          "anchors": {
+            "neck": [
+              7.5,
+              1.5
+            ],
+            "chest_mid": [
+              7.5,
+              5
+            ],
+            "shoulder_l": [
+              2,
+              4
+            ],
+            "shoulder_r": [
+              13,
+              4
+            ],
+            "hip_l": [
+              4,
+              14.5
+            ],
+            "hip_r": [
+              11,
+              14.5
+            ]
+          },
+          "pivot": "hip_l",
+          "at": [
+            18,
+            45
+          ],
+          "skew": [
+            -0.13,
+            0
+          ]
+        },
+        {
+          "name": "surcoat",
+          "form": "box",
+          "material": "cloak",
+          "size": [
+            5,
+            13
+          ],
+          "round": 1,
+          "anchors": {
+            "top": [
+              2.5,
+              0
+            ]
+          },
+          "pivot": "top",
+          "attach": {
+            "to": "chest",
+            "anchor": "chest_mid"
+          }
+        },
+        {
+          "name": "pauldron-off",
+          "form": "sphere",
+          "material": "gold",
+          "size": [
+            7,
+            7
+          ],
+          "anchors": {
+            "c": [
+              3.5,
+              3.5
+            ]
+          },
+          "pivot": "c",
+          "attach": {
+            "to": "chest",
+            "anchor": "shoulder_l"
+          }
+        },
+        {
+          "name": "pauldron-sword",
+          "form": "sphere",
+          "material": "gold",
+          "size": [
+            7,
+            7
+          ],
+          "anchors": {
+            "c": [
+              3.5,
+              3.5
+            ]
+          },
+          "pivot": "c",
+          "attach": {
+            "to": "chest",
+            "anchor": "shoulder_r"
+          }
+        },
+        {
+          "name": "head",
+          "form": "sphere",
+          "material": "skin",
+          "size": [
+            8,
+            8
+          ],
+          "anchors": {
+            "neck": [
+              4,
+              7
+            ],
+            "crown": [
+              4,
+              1
+            ]
+          },
+          "pivot": "neck",
+          "attach": {
+            "to": "chest",
+            "anchor": "neck",
+            "shift": [
+              0,
+              -1
+            ]
+          }
+        },
+        {
+          "name": "helm",
+          "form": "sphere",
+          "material": "steel",
+          "size": [
+            10,
+            7
+          ],
+          "anchors": {
+            "base": [
+              5,
+              6
+            ],
+            "top": [
+              5,
+              1
+            ]
+          },
+          "pivot": "base",
+          "attach": {
+            "to": "head",
+            "anchor": "crown"
+          }
+        },
+        {
+          "name": "plume",
+          "form": "cone",
+          "material": "gold",
+          "size": [
+            4,
+            6
+          ],
+          "anchors": {
+            "base": [
+              2,
+              5.5
+            ]
+          },
+          "pivot": "base",
+          "attach": {
+            "to": "helm",
+            "anchor": "top"
+          }
+        },
+        {
+          "name": "arm-sword",
+          "form": "capsule",
+          "material": "iron",
+          "size": [
+            5,
+            12
+          ],
+          "anchors": {
+            "shoulder": [
+              2.5,
+              1
+            ],
+            "hand": [
+              2.5,
+              11
+            ]
+          },
+          "pivot": "shoulder",
+          "attach": {
+            "to": "chest",
+            "anchor": "shoulder_r"
+          },
+          "rotate": 190
+        },
+        {
+          "name": "sword",
+          "form": "capsule",
+          "material": "gold",
+          "size": [
+            3,
+            18
+          ],
+          "anchors": {
+            "grip": [
+              1.5,
+              16
+            ]
+          },
+          "pivot": "grip",
+          "attach": {
+            "to": "arm-sword",
+            "anchor": "hand"
+          },
+          "rotate": 0
+        }
+      ]
+    },
+    {
+      "name": "strike",
+      "hold": 3,
+      "skeleton": [
+        {
+          "name": "leg-back",
+          "form": "capsule",
+          "material": "iron",
+          "size": [
+            5,
+            11
+          ],
+          "anchors": {
+            "hip": [
+              2.5,
+              0.5
+            ],
+            "foot": [
+              2.5,
+              10.5
+            ]
+          },
+          "pivot": "hip",
+          "attach": {
+            "to": "chest",
+            "anchor": "hip_l"
+          },
+          "rotate": 10
+        },
+        {
+          "name": "leg-front",
+          "form": "capsule",
+          "material": "iron",
+          "size": [
+            5,
+            11
+          ],
+          "anchors": {
+            "hip": [
+              2.5,
+              0.5
+            ],
+            "foot": [
+              2.5,
+              10.5
+            ]
+          },
+          "pivot": "hip",
+          "attach": {
+            "to": "chest",
+            "anchor": "hip_r"
+          },
+          "rotate": -14
+        },
+        {
+          "name": "arm-off",
+          "form": "capsule",
+          "material": "iron",
+          "size": [
+            5,
+            11
+          ],
+          "anchors": {
+            "shoulder": [
+              2.5,
+              1
+            ],
+            "hand": [
+              2.5,
+              10
+            ]
+          },
+          "pivot": "shoulder",
+          "attach": {
+            "to": "chest",
+            "anchor": "shoulder_l"
+          },
+          "rotate": 36
+        },
+        {
+          "name": "chest",
+          "form": "box",
+          "material": "steel",
+          "size": [
+            15,
+            15
+          ],
+          "round": 4,
+          "anchors": {
+            "neck": [
+              7.5,
+              1.5
+            ],
+            "chest_mid": [
+              7.5,
+              5
+            ],
+            "shoulder_l": [
+              2,
+              4
+            ],
+            "shoulder_r": [
+              13,
+              4
+            ],
+            "hip_l": [
+              4,
+              14.5
+            ],
+            "hip_r": [
+              11,
+              14.5
+            ]
+          },
+          "pivot": "hip_l",
+          "at": [
+            18,
+            45
+          ],
+          "skew": [
+            0.06,
+            0
+          ]
+        },
+        {
+          "name": "surcoat",
+          "form": "box",
+          "material": "cloak",
+          "size": [
+            5,
+            13
+          ],
+          "round": 1,
+          "anchors": {
+            "top": [
+              2.5,
+              0
+            ]
+          },
+          "pivot": "top",
+          "attach": {
+            "to": "chest",
+            "anchor": "chest_mid"
+          }
+        },
+        {
+          "name": "pauldron-off",
+          "form": "sphere",
+          "material": "gold",
+          "size": [
+            7,
+            7
+          ],
+          "anchors": {
+            "c": [
+              3.5,
+              3.5
+            ]
+          },
+          "pivot": "c",
+          "attach": {
+            "to": "chest",
+            "anchor": "shoulder_l"
+          }
+        },
+        {
+          "name": "pauldron-sword",
+          "form": "sphere",
+          "material": "gold",
+          "size": [
+            7,
+            7
+          ],
+          "anchors": {
+            "c": [
+              3.5,
+              3.5
+            ]
+          },
+          "pivot": "c",
+          "attach": {
+            "to": "chest",
+            "anchor": "shoulder_r"
+          }
+        },
+        {
+          "name": "head",
+          "form": "sphere",
+          "material": "skin",
+          "size": [
+            8,
+            8
+          ],
+          "anchors": {
+            "neck": [
+              4,
+              7
+            ],
+            "crown": [
+              4,
+              1
+            ]
+          },
+          "pivot": "neck",
+          "attach": {
+            "to": "chest",
+            "anchor": "neck",
+            "shift": [
+              0,
+              -1
+            ]
+          }
+        },
+        {
+          "name": "helm",
+          "form": "sphere",
+          "material": "steel",
+          "size": [
+            10,
+            7
+          ],
+          "anchors": {
+            "base": [
+              5,
+              6
+            ],
+            "top": [
+              5,
+              1
+            ]
+          },
+          "pivot": "base",
+          "attach": {
+            "to": "head",
+            "anchor": "crown"
+          }
+        },
+        {
+          "name": "plume",
+          "form": "cone",
+          "material": "gold",
+          "size": [
+            4,
+            6
+          ],
+          "anchors": {
+            "base": [
+              2,
+              5.5
+            ]
+          },
+          "pivot": "base",
+          "attach": {
+            "to": "helm",
+            "anchor": "top"
+          }
+        },
+        {
+          "name": "arm-sword",
+          "form": "capsule",
+          "material": "iron",
+          "size": [
+            5,
+            12
+          ],
+          "anchors": {
+            "shoulder": [
+              2.5,
+              1
+            ],
+            "hand": [
+              2.5,
+              11
+            ]
+          },
+          "pivot": "shoulder",
+          "attach": {
+            "to": "chest",
+            "anchor": "shoulder_r"
+          },
+          "rotate": 310
+        },
+        {
+          "name": "sword",
+          "form": "capsule",
+          "material": "gold",
+          "size": [
+            3,
+            18
+          ],
+          "anchors": {
+            "grip": [
+              1.5,
+              16
+            ]
+          },
+          "pivot": "grip",
+          "attach": {
+            "to": "arm-sword",
+            "anchor": "hand"
+          },
+          "rotate": 150
+        }
+      ]
+    },
+    {
+      "name": "follow",
+      "hold": 1,
+      "skeleton": [
+        {
+          "name": "leg-back",
+          "form": "capsule",
+          "material": "iron",
+          "size": [
+            5,
+            11
+          ],
+          "anchors": {
+            "hip": [
+              2.5,
+              0.5
+            ],
+            "foot": [
+              2.5,
+              10.5
+            ]
+          },
+          "pivot": "hip",
+          "attach": {
+            "to": "chest",
+            "anchor": "hip_l"
+          },
+          "rotate": 10
+        },
+        {
+          "name": "leg-front",
+          "form": "capsule",
+          "material": "iron",
+          "size": [
+            5,
+            11
+          ],
+          "anchors": {
+            "hip": [
+              2.5,
+              0.5
+            ],
+            "foot": [
+              2.5,
+              10.5
+            ]
+          },
+          "pivot": "hip",
+          "attach": {
+            "to": "chest",
+            "anchor": "hip_r"
+          },
+          "rotate": -14
+        },
+        {
+          "name": "arm-off",
+          "form": "capsule",
+          "material": "iron",
+          "size": [
+            5,
+            11
+          ],
+          "anchors": {
+            "shoulder": [
+              2.5,
+              1
+            ],
+            "hand": [
+              2.5,
+              10
+            ]
+          },
+          "pivot": "shoulder",
+          "attach": {
+            "to": "chest",
+            "anchor": "shoulder_l"
+          },
+          "rotate": 36
+        },
+        {
+          "name": "chest",
+          "form": "box",
+          "material": "steel",
+          "size": [
+            15,
+            15
+          ],
+          "round": 4,
+          "anchors": {
+            "neck": [
+              7.5,
+              1.5
+            ],
+            "chest_mid": [
+              7.5,
+              5
+            ],
+            "shoulder_l": [
+              2,
+              4
+            ],
+            "shoulder_r": [
+              13,
+              4
+            ],
+            "hip_l": [
+              4,
+              14.5
+            ],
+            "hip_r": [
+              11,
+              14.5
+            ]
+          },
+          "pivot": "hip_l",
+          "at": [
+            18,
+            45
+          ],
+          "skew": [
+            0.1,
+            0
+          ]
+        },
+        {
+          "name": "surcoat",
+          "form": "box",
+          "material": "cloak",
+          "size": [
+            5,
+            13
+          ],
+          "round": 1,
+          "anchors": {
+            "top": [
+              2.5,
+              0
+            ]
+          },
+          "pivot": "top",
+          "attach": {
+            "to": "chest",
+            "anchor": "chest_mid"
+          }
+        },
+        {
+          "name": "pauldron-off",
+          "form": "sphere",
+          "material": "gold",
+          "size": [
+            7,
+            7
+          ],
+          "anchors": {
+            "c": [
+              3.5,
+              3.5
+            ]
+          },
+          "pivot": "c",
+          "attach": {
+            "to": "chest",
+            "anchor": "shoulder_l"
+          }
+        },
+        {
+          "name": "pauldron-sword",
+          "form": "sphere",
+          "material": "gold",
+          "size": [
+            7,
+            7
+          ],
+          "anchors": {
+            "c": [
+              3.5,
+              3.5
+            ]
+          },
+          "pivot": "c",
+          "attach": {
+            "to": "chest",
+            "anchor": "shoulder_r"
+          }
+        },
+        {
+          "name": "head",
+          "form": "sphere",
+          "material": "skin",
+          "size": [
+            8,
+            8
+          ],
+          "anchors": {
+            "neck": [
+              4,
+              7
+            ],
+            "crown": [
+              4,
+              1
+            ]
+          },
+          "pivot": "neck",
+          "attach": {
+            "to": "chest",
+            "anchor": "neck",
+            "shift": [
+              0,
+              -1
+            ]
+          }
+        },
+        {
+          "name": "helm",
+          "form": "sphere",
+          "material": "steel",
+          "size": [
+            10,
+            7
+          ],
+          "anchors": {
+            "base": [
+              5,
+              6
+            ],
+            "top": [
+              5,
+              1
+            ]
+          },
+          "pivot": "base",
+          "attach": {
+            "to": "head",
+            "anchor": "crown"
+          }
+        },
+        {
+          "name": "plume",
+          "form": "cone",
+          "material": "gold",
+          "size": [
+            4,
+            6
+          ],
+          "anchors": {
+            "base": [
+              2,
+              5.5
+            ]
+          },
+          "pivot": "base",
+          "attach": {
+            "to": "helm",
+            "anchor": "top"
+          }
+        },
+        {
+          "name": "arm-sword",
+          "form": "capsule",
+          "material": "iron",
+          "size": [
+            5,
+            12
+          ],
+          "anchors": {
+            "shoulder": [
+              2.5,
+              1
+            ],
+            "hand": [
+              2.5,
+              11
+            ]
+          },
+          "pivot": "shoulder",
+          "attach": {
+            "to": "chest",
+            "anchor": "shoulder_r"
+          },
+          "rotate": 340
+        },
+        {
+          "name": "sword",
+          "form": "capsule",
+          "material": "gold",
+          "size": [
+            3,
+            18
+          ],
+          "anchors": {
+            "grip": [
+              1.5,
+              16
+            ]
+          },
+          "pivot": "grip",
+          "attach": {
+            "to": "arm-sword",
+            "anchor": "hand"
+          },
+          "rotate": 170
+        }
+      ]
+    },
+    {
+      "name": "recover",
+      "hold": 2,
+      "skeleton": [
+        {
+          "name": "leg-back",
+          "form": "capsule",
+          "material": "iron",
+          "size": [
+            5,
+            11
+          ],
+          "anchors": {
+            "hip": [
+              2.5,
+              0.5
+            ],
+            "foot": [
+              2.5,
+              10.5
+            ]
+          },
+          "pivot": "hip",
+          "attach": {
+            "to": "chest",
+            "anchor": "hip_l"
+          },
+          "rotate": 10
+        },
+        {
+          "name": "leg-front",
+          "form": "capsule",
+          "material": "iron",
+          "size": [
+            5,
+            11
+          ],
+          "anchors": {
+            "hip": [
+              2.5,
+              0.5
+            ],
+            "foot": [
+              2.5,
+              10.5
+            ]
+          },
+          "pivot": "hip",
+          "attach": {
+            "to": "chest",
+            "anchor": "hip_r"
+          },
+          "rotate": -12
+        },
+        {
+          "name": "arm-off",
+          "form": "capsule",
+          "material": "iron",
+          "size": [
+            5,
+            11
+          ],
+          "anchors": {
+            "shoulder": [
+              2.5,
+              1
+            ],
+            "hand": [
+              2.5,
+              10
+            ]
+          },
+          "pivot": "shoulder",
+          "attach": {
+            "to": "chest",
+            "anchor": "shoulder_l"
+          },
+          "rotate": 36
+        },
+        {
+          "name": "chest",
+          "form": "box",
+          "material": "steel",
+          "size": [
+            15,
+            15
+          ],
+          "round": 4,
+          "anchors": {
+            "neck": [
+              7.5,
+              1.5
+            ],
+            "chest_mid": [
+              7.5,
+              5
+            ],
+            "shoulder_l": [
+              2,
+              4
+            ],
+            "shoulder_r": [
+              13,
+              4
+            ],
+            "hip_l": [
+              4,
+              14.5
+            ],
+            "hip_r": [
+              11,
+              14.5
+            ]
+          },
+          "pivot": "hip_l",
+          "at": [
+            18,
+            45
+          ],
+          "skew": [
+            -0.08,
+            0
+          ]
+        },
+        {
+          "name": "surcoat",
+          "form": "box",
+          "material": "cloak",
+          "size": [
+            5,
+            13
+          ],
+          "round": 1,
+          "anchors": {
+            "top": [
+              2.5,
+              0
+            ]
+          },
+          "pivot": "top",
+          "attach": {
+            "to": "chest",
+            "anchor": "chest_mid"
+          }
+        },
+        {
+          "name": "pauldron-off",
+          "form": "sphere",
+          "material": "gold",
+          "size": [
+            7,
+            7
+          ],
+          "anchors": {
+            "c": [
+              3.5,
+              3.5
+            ]
+          },
+          "pivot": "c",
+          "attach": {
+            "to": "chest",
+            "anchor": "shoulder_l"
+          }
+        },
+        {
+          "name": "pauldron-sword",
+          "form": "sphere",
+          "material": "gold",
+          "size": [
+            7,
+            7
+          ],
+          "anchors": {
+            "c": [
+              3.5,
+              3.5
+            ]
+          },
+          "pivot": "c",
+          "attach": {
+            "to": "chest",
+            "anchor": "shoulder_r"
+          }
+        },
+        {
+          "name": "head",
+          "form": "sphere",
+          "material": "skin",
+          "size": [
+            8,
+            8
+          ],
+          "anchors": {
+            "neck": [
+              4,
+              7
+            ],
+            "crown": [
+              4,
+              1
+            ]
+          },
+          "pivot": "neck",
+          "attach": {
+            "to": "chest",
+            "anchor": "neck",
+            "shift": [
+              0,
+              -1
+            ]
+          }
+        },
+        {
+          "name": "helm",
+          "form": "sphere",
+          "material": "steel",
+          "size": [
+            10,
+            7
+          ],
+          "anchors": {
+            "base": [
+              5,
+              6
+            ],
+            "top": [
+              5,
+              1
+            ]
+          },
+          "pivot": "base",
+          "attach": {
+            "to": "head",
+            "anchor": "crown"
+          }
+        },
+        {
+          "name": "plume",
+          "form": "cone",
+          "material": "gold",
+          "size": [
+            4,
+            6
+          ],
+          "anchors": {
+            "base": [
+              2,
+              5.5
+            ]
+          },
+          "pivot": "base",
+          "attach": {
+            "to": "helm",
+            "anchor": "top"
+          }
+        },
+        {
+          "name": "arm-sword",
+          "form": "capsule",
+          "material": "iron",
+          "size": [
+            5,
+            12
+          ],
+          "anchors": {
+            "shoulder": [
+              2.5,
+              1
+            ],
+            "hand": [
+              2.5,
+              11
+            ]
+          },
+          "pivot": "shoulder",
+          "attach": {
+            "to": "chest",
+            "anchor": "shoulder_r"
+          },
+          "rotate": 210
+        },
+        {
+          "name": "sword",
+          "form": "capsule",
+          "material": "gold",
+          "size": [
+            3,
+            18
+          ],
+          "anchors": {
+            "grip": [
+              1.5,
+              16
+            ]
+          },
+          "pivot": "grip",
+          "attach": {
+            "to": "arm-sword",
+            "anchor": "hand"
+          },
+          "rotate": 20
+        }
+      ]
+    }
+  ]
+}

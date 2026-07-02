@@ -594,6 +594,22 @@ class TestFormModel(unittest.TestCase):
         self.assertEqual([r for r in pt_inspect.run_checks(s) if not r["ok"]], [])
         self.assertEqual(pt_inspect.geometry(s)["warnings"], [])
 
+    def test_swing_animation_every_frame_is_clean(self):
+        """The form-rig sword swing: 5 frames, each a single connected, on-canvas
+        piece with no geometry warnings, packed into a looping 5-frame atlas."""
+        from pixeltracks import inspect as pt_inspect
+        from pixeltracks.compositor import render_sprite
+        s = spec.resolve_sprite(os.path.join(FORGE, "sprites", "knight-forms-swing.json"))
+        self.assertEqual(len(s["frames"]), 5)
+        for i in range(len(s["frames"])):
+            self.assertEqual([r for r in pt_inspect.run_checks(s, i) if not r["ok"]], [],
+                             f"frame {i} failed checks")
+            self.assertEqual(pt_inspect.geometry(s, i)["warnings"], [],
+                             f"frame {i} geometry warnings")
+        atlas = render_sprite(s)["atlas"]
+        self.assertEqual(atlas["frame_count"], 5)
+        self.assertTrue(atlas["loop"])
+
     def test_bad_squash_rejected(self):
         names = set(self.sprite["palette"])
         layer = {"form": "capsule", "material": "steel", "at": [0, 0], "size": [4, 8],
