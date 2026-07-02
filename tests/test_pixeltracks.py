@@ -563,6 +563,37 @@ class TestFormModel(unittest.TestCase):
         warns = pt_inspect.geometry(s)["warnings"]
         self.assertEqual(warns, [], f"hero geometry warnings: {warns}")
 
+    def test_form_bone_attaches_at_anchor(self):
+        """A form skeleton bone pins its pivot to a parent's world anchor, so the
+        child's `at` is *derived* (connection by construction, not luck)."""
+        bones = [
+            {"name": "chest", "form": "box", "material": "steel", "size": [12, 12],
+             "pivot": [6, 11], "at": [15, 24],
+             "anchors": {"neck": [6, 1], "hip_l": [3, 11]}, "skew": [-0.1, 0]},
+            {"name": "head", "form": "sphere", "material": "skin", "size": [9, 9],
+             "anchors": {"crown": [4, 1]}, "pivot": [4, 8],
+             "attach": {"to": "chest", "anchor": "neck"}},
+        ]
+        layers = spec.resolve_skeleton(bones, {}, "t")
+        head = next(l for l in layers if l["name"] == "head")
+        self.assertEqual(head["form"], "sphere")
+        self.assertNotEqual(list(head["at"]), [0, 0])      # derived, not defaulted
+        # the chest's leaning neck anchor is where the head lands
+        self.assertAlmostEqual(head["at"][0], 16.0, delta=0.5)
+        self.assertAlmostEqual(head["at"][1], 14.0, delta=0.5)
+
+    def test_form_bone_needs_size_and_material(self):
+        with self.assertRaises(spec.SpecError):
+            spec.resolve_skeleton([{"name": "x", "form": "sphere"}], {}, "t")
+
+    def test_form_rig_sprite_is_one_clean_piece(self):
+        """The skeleton-posed knight resolves, passes its checks, and has no
+        geometry warnings — a steep pose that stays connected by construction."""
+        from pixeltracks import inspect as pt_inspect
+        s = spec.resolve_sprite(os.path.join(FORGE, "sprites", "knight-forms-rig.json"))
+        self.assertEqual([r for r in pt_inspect.run_checks(s) if not r["ok"]], [])
+        self.assertEqual(pt_inspect.geometry(s)["warnings"], [])
+
     def test_bad_squash_rejected(self):
         names = set(self.sprite["palette"])
         layer = {"form": "capsule", "material": "steel", "at": [0, 0], "size": [4, 8],

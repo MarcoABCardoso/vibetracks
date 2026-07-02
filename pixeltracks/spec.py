@@ -194,17 +194,21 @@ def _anchor_in_transformed(pt, flip_axis, scale_by, gw0, gh0):
 
 
 def resolve_skeleton(bones, motifs, where="skeleton") -> list:
-    """Expand a list of skeleton bones into plain affine ``shape`` layers.
+    """Expand a list of skeleton bones into plain affine ``shape``/``form`` layers.
 
-    Each bone is drawn like a normal shape layer but its ``at`` (where its pivot
-    lands on the canvas) may be *derived* from a parent bone's world anchor via
-    ``attach: {to, anchor}``. Returns the layers in bone order (z-order).
+    Each bone is drawn like a normal shape (or shaded **form**) layer, but its
+    ``at`` (where its pivot lands on the canvas) may be *derived* from a parent
+    bone's world anchor via ``attach: {to, anchor}`` — so the parts meet no matter
+    how the parent leans. A **form bone** carries a `form`/`size`/`material` and
+    declares its own `anchors` inline (its solid is parametric, so there is no
+    motif grid to read them from); a **shape bone** reads anchors off its motif.
+    Returns the layers in bone order (z-order).
     """
     by_name, order = {}, []
     for b in bones:
-        if not isinstance(b, dict) or "shape" not in b:
-            raise SpecError(f"{where}: each bone needs a 'shape'")
-        name = b.get("name", b["shape"])
+        if not isinstance(b, dict) or ("shape" not in b and "form" not in b):
+            raise SpecError(f"{where}: each bone needs a 'shape' or a 'form'")
+        name = b.get("name", b.get("shape", b.get("form")))
         by_name[name] = b
         order.append(name)
 
@@ -217,18 +221,27 @@ def resolve_skeleton(bones, motifs, where="skeleton") -> list:
         if name in stack:
             raise SpecError(f"{where}: attach cycle through {name!r}")
         b = by_name[name]
-        motif = motifs.get(b["shape"])
-        if motif is None:
-            raise SpecError(f"{where}: bone {name!r} unknown shape {b['shape']!r}")
-        anchors = motif.get("anchors", {})
-        gw0, gh0 = shapes.grid_size(motif["pixels"])
+        is_form = "form" in b
+        if is_form:
+            if "size" not in b or "material" not in b:
+                raise SpecError(f"{where}: form bone {name!r} needs a 'size' and 'material'")
+            anchors = b.get("anchors", {})
+            gw0, gh0 = b["size"]
+            scale_by = 1                     # a form sizes itself; no grid scale
+        else:
+            motif = motifs.get(b["shape"])
+            if motif is None:
+                raise SpecError(f"{where}: bone {name!r} unknown shape {b['shape']!r}")
+            anchors = motif.get("anchors", {})
+            gw0, gh0 = shapes.grid_size(motif["pixels"])
+            scale_by = b.get("scale", 1)
         flip_axis = b.get("flip")
-        scale_by = b.get("scale", 1)
 
         def anchor_pt(a):
             if isinstance(a, str):
                 if a not in anchors:
-                    raise SpecError(f"{where}: bone {name!r} shape {b['shape']!r} "
+                    kind = b.get("form", b.get("shape"))
+                    raise SpecError(f"{where}: bone {name!r} ({kind!r}) "
                                     f"has no anchor {a!r} (anchors: {sorted(anchors)})")
                 raw = anchors[a]
             else:
@@ -268,11 +281,20 @@ def resolve_skeleton(bones, motifs, where="skeleton") -> list:
             wa[an] = [at[0] + a_ * rx + b_ * ry, at[1] + c_ * rx + d_ * ry]
         world_anchors[name] = wa
 
-        layer = {"name": name, "shape": b["shape"],
+        layer = {"name": name,
                  "pivot": [piv[0], piv[1]], "at": [at[0], at[1]], "rotate": rotate}
-        for k in ("skew", "squash", "flip", "scale", "recolor"):
-            if k in b:
-                layer[k] = b[k]
+        if is_form:
+            layer["form"] = b["form"]
+            layer["size"] = list(b["size"])
+            layer["material"] = b["material"]
+            for k in ("skew", "squash", "flip", "round", "light", "z", "cast"):
+                if k in b:
+                    layer[k] = b[k]
+        else:
+            layer["shape"] = b["shape"]
+            for k in ("skew", "squash", "flip", "scale", "recolor"):
+                if k in b:
+                    layer[k] = b[k]
         layers.append((order.index(name), layer))
         done.add(name)
 
@@ -455,8 +477,10 @@ def _validate_layer(layer, sprite, names, where) -> None:
                 and all(isinstance(v, int) and v > 0 for v in size)):
             raise SpecError(f"{where}: form 'size' must be [w, h] positive ints, got {size!r}")
         at = layer.get("at", layer.get("offset", [0, 0]))
-        if not (isinstance(at, (list, tuple)) and len(at) == 2 and all(isinstance(v, int) for v in at)):
-            raise SpecError(f"{where}: form 'at' must be [x, y] integers, got {at!r}")
+        # `at` accepts numbers (a skeleton bone pins a form's pivot to a parent's
+        # world anchor, which is fractional); the renderer rounds to a pixel.
+        if not _is_point(at):
+            raise SpecError(f"{where}: form 'at' must be [x, y] numbers, got {at!r}")
         material = layer.get("material")
         if material not in sprite.get("ramps", {}) and material not in names:
             raise SpecError(f"{where}: form 'material' {material!r} must name a ramp or a "

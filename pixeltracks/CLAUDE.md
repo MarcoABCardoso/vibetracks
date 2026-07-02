@@ -147,11 +147,15 @@ Each layer is composited in order and is **exactly one** of:
   leaning limb is **relit** (highlight stays world-up-left) rather than its
   highlight spinning with the part — this is what dissolves the "a turned pose needs
   a redraw" ceiling. `knight-forms-hero` is the posed proof (swung arms, leaning
-  torso, a capsule sword on an arc). Posed forms **do not connect by construction**
-  (no forms-skeleton yet), so a steep pose can float or clip — gate every posed
-  sprite with `connected`/`on_canvas` `checks` and judge it in `inspect` (ASCII +
-  geometry), never by glancing at the upscaled PNG. *Still ahead:* a skeleton whose
-  bones are forms (anchors on forms), and `light` view-preset sugar.
+  torso, a capsule sword on an arc). **Rig a steep pose with a skeleton (Phase 3b):**
+  a `skeleton` bone may carry a `form` (with `size`, `material`, and its own inline
+  `anchors`) instead of a motif `shape`, so form limbs **attach at anchors and meet
+  by construction** — the sword arm can cock high and the torso lean without the
+  parts drifting apart (`knight-forms-rig` is the dynamic proof; `knight-forms-hero`
+  is the hand-placed version that had to stay timid). Still, gate every posed sprite
+  with `connected`/`on_canvas` `checks` and judge it in `inspect` (ASCII + geometry),
+  never by glancing at the upscaled PNG. *Still ahead:* `light` view-preset sugar,
+  and frame-animating a form rig.
 - **`rect`** / **`ellipse`** — `{"at": [x,y], "size": [w,h], "color": <name>, "fill": bool}`.
 - **`line`** — `{"from": [x,y], "to": [x,y], "color": <name>}`.
 - **`sprite`** — name of **another sprite in the same group** (a sibling

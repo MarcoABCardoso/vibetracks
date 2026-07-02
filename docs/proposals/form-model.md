@@ -2,11 +2,12 @@
 
 > Status: **Phases 1–3 landed.** The `form` layer kind + `forms.py` lighting
 > model (Phase 1), per-form depth with automatic contact shadow (Phase 2), and
-> articulated forms with world-fixed pose relighting (Phase 3) are implemented and
-> tested, with the `forge-knights` demo (`knight-forms`, `knight-forms-mono`,
-> `knight-forms-hero`, `knight-pixels`) as the proof. What remains: a skeleton
-> whose bones are forms, and `light` view-preset sugar. This is the design case for
-> why PixelTracks felt "limited" next to VibeTracks and the change that closes it.
+> articulated forms with world-fixed pose relighting + skeleton-driven forms
+> (Phase 3/3b) are implemented and tested, with the `forge-knights` demo
+> (`knight-forms`, `knight-forms-mono`, `knight-forms-hero`, `knight-forms-rig`,
+> `knight-pixels`) as the proof. What remains: `light` view-preset sugar and
+> frame-animating a form rig. This is the design case for why PixelTracks felt
+> "limited" next to VibeTracks and the change that closes it.
 
 ## The observation
 
@@ -175,8 +176,14 @@ stops being true once the primitive is a solid with a surface normal.
    leans is **relit**, not a highlight that spins with the part (verified by
    `test_articulated_form_relights_world_fixed`). `knight-forms-hero` is the posed
    proof. This kills the "a true change of view is still a redraw" ceiling for forms.
-   *Still ahead:* `light: front | three_quarter | side` view-preset sugar and a
-   skeleton whose bones are forms.
+   **Phase 3b — skeleton-driven forms. ✅ DONE.** A `skeleton` bone may carry a
+   `form` (with `size`/`material`/inline `anchors`) instead of a motif `shape`, so
+   posed form limbs attach at anchors and connect *by construction* — the same rig
+   that keeps grid parts from drifting apart. `knight-forms-rig` is a steep,
+   connected pose (sword arm cocked high, torso leaning, legs mid-stride) that
+   passes `connected`/`on_canvas`; the hand-placed `knight-forms-hero` had to stay
+   timid to avoid detaching. *Still ahead:* `light: front | three_quarter | side`
+   view-preset sugar, and frame-animating a form rig.
 4. **Phase 4 — craft guide + skill + `describe`/`inspect`** updated to make forms
    the default way to author a figure; grids remain for emblems, UI, and pixel
    detail.
