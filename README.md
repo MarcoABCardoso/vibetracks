@@ -1,94 +1,40 @@
-# VibeTracks 🎮🎶🖼️
+# VibeTracks 🎮🎶
 
-A **multi-Lab game-artifact workshop** for Claude Code. The premise: Claude is
-great at editing structured text, so a game asset is described as a **spec**
-(diffable, reviewable, version-controlled), and a small deterministic compiler
-turns that spec into the real artifact — **no black-box generator at the wheel.**
-A whole set of assets stays coherent because everything shares one **bible**.
+A **game-soundtrack lab** for Claude Code. Model a song as plain JSON, then
+compile it into real `.wav` audio with a pure-Python synthesizer — no FluidSynth,
+no SoX, no ffmpeg, no soundfonts. Just `numpy` + `scipy`.
 
-A **Lab** is one such workshop for one artifact class. Every Lab is the same
-machine — *bible → specs → reusable motifs → validator → deterministic engine →
-artifact* — with a different theory. This repo ships two:
+The point: Claude is great at editing structured text, so a song is described as
+a **spec** (diffable, reviewable, version-controlled), and a small compiler turns
+that spec into sound. A whole soundtrack stays coherent because every track shares
+one **bible** — the same key, tempo family, instrument palette, and recurring
+musical motifs.
 
-| Lab | Artifact | Author edits | Compiles to | Engine |
-|-----|----------|--------------|-------------|--------|
-| **VibeTracks** | music / SFX | JSON song specs | `.wav` | pure-Python synth (`numpy`+`scipy`) |
-| **PixelTracks** | sprites / images | JSON sprite specs | `.png` | procedural raster (`numpy`+stdlib) |
-
-Then **ship it**: one `build` renders a whole game's assets and **exports a drop-in
-Godot 4 resource pack** (textures + audio with `.import` files, and SpriteFrames
-`.tres` for animations). Describe a game and get coherent, engine-ready assets —
-that is the `/gamepack` workflow.
-
-See **`VISION.md`** for the thesis and the roadmap of further Labs (tiles, UI,
-lore, systems) bound by a shared World Bible, and **`docs/godot.md`** for the
-exporter.
+Tracks are organized into **groups**. A group is one self-contained soundtrack —
+its own bible plus tracks — so a single repo can hold several independent scores:
+different regions of a game, or entirely different games. The repo ships a demo
+group, `neon-frontier`; spin up your own with `new-group` without touching it.
 
 ## Quickstart
 
 ```bash
 pip install -r requirements.txt
 
-python -m labs                               # list the Labs
-python -m labs validate                      # validate every Lab's specs
-
-# the music Lab
-python -m vibetracks render-all              # -> out/<group>/*.wav
-python -m vibetracks render neon-frontier/battle
-
-# the sprite Lab
-python -m pixeltracks render-all             # -> out/<group>/*.png
-python -m pixeltracks render mossy-hollow/fox
-
-# ship a whole world into Godot
-python -m labs new-world my-game             # scaffold a cross-medium world
-python -m labs build emberhold --engine godot   # -> dist/emberhold/ + dist/emberhold.zip
+python -m vibetracks validate                  # check every group's specs
+python -m vibetracks render-all                # render all groups -> out/<group>/*.wav
+python -m vibetracks render neon-frontier/battle  # render one track -> out/neon-frontier/battle.wav
+python -m vibetracks new menu --group neon-frontier  # scaffold a track in a group
+python -m vibetracks new-group spooky-cave     # start a fresh, independent soundtrack
 ```
 
-Each Lab has the same CLI verbs (`validate` / `render` / `render-all` / `new` /
-`new-group`) and the same addressing (`<group>/<asset>`, a bare `<asset>` with
-`--group`, or a path). Run a Lab directly (`python -m vibetracks …`) or through
-the dispatcher (`python -m labs vibetracks …`).
+A track is addressed as `<group>/<track>`, or as a bare `<track>` with `--group`
+(or when the repo has just one group).
 
-## How the repo is laid out
+## The included demo: *Neon Frontier*
 
-```
-labkit/           # shared core: SpecError/load_json, group discovery, Lab + Exporter registries
-labkit/exporters/ # engine exporters (godot today) — turn artifacts into a resource pack
-labs/             # the multi-Lab dispatcher (python -m labs): validate / new-world / build
-CLAUDE.md         # index; per-Lab spec reference in vibetracks/ & pixeltracks/CLAUDE.md
-
-vibetracks/       # the music Lab (theory, synth, instruments, sequencer, wavio, CLI)
-groups/music/<g>/soundtrack.json + tracks/*.json     # music groups (demo: neon-frontier)
-
-pixeltracks/      # the sprite Lab (palette, shapes, raster, compositor, pngio, CLI)
-groups/sprites/<g>/artbook.json + sprites/*.json     # sprite groups (demo: mossy-hollow)
-
-docs/composition.md   # music craft guide      docs/pixelcraft.md   # sprite craft guide
-docs/godot.md         # exporter / Godot guide
-.claude/skills/soundtrack   .claude/skills/spritesheet   .claude/skills/gamepack
-tests/                out/<group>/  # render artifacts     dist/<world>/  # packs (both gitignored)
-```
-
-All assets live under one **`groups/`** tree, split by medium: `groups/music/`
-for VibeTracks and `groups/sprites/` for PixelTracks.
-
-Adding a Lab is a new package mirroring this layout plus one `Lab(...)` entry in
-`labkit/registry.py` — that's the structural claim of the vision.
-
----
-
-## 🎶 VibeTracks — the music Lab
-
-A coherent soundtrack stays coherent because every track shares one bible: the
-same key, tempo family, instrument palette, and recurring musical **motifs**.
-Tracks live in **groups** (`groups/music/<name>/`) — independent scores in one repo.
-
-### The included demo: *Neon Frontier*
-
-A five-cue synthwave score in A minor. The full `main_theme` is stated in only
-**one** track, so the set feels like a family of cues rather than one song on
-repeat:
+A coherent five-cue synthwave score in A minor. Cohesion comes from a shared key,
+palette, and motifs — but the full `main_theme` is stated in only **one** track, so
+the set feels like a family of cues rather than one song on repeat:
 
 | Track | Feel | Theme treatment |
 |-------|------|------------------|
@@ -98,69 +44,45 @@ repeat:
 | `boss` | Dark, intense | Just the 4-note head, dropped an octave; `danger` leads |
 | `victory` | Bright fanfare | Quotes the opening phrase, then an original flourish home |
 
-A **part** is exactly one of `notes` (explicit events), `motif` (a bible motif
-with leitmotif transforms — `slice`/`transpose`/`stretch`/`invert`/`retrograde`),
-`chords`, or `drums`. It compiles `spec → sequencer → synth → WAV`. See
-`docs/composition.md` for the craft and the `/soundtrack` skill for the workflow.
+## How a song is modeled
 
----
+Each group (`groups/<name>/`) has two file kinds:
 
-## 🖼️ PixelTracks — the sprite Lab
+- **`groups/<name>/soundtrack.json`** — the *bible*: global `key`, `bpm`,
+  `aesthetic`, instrument `palette`, reusable `motifs`, and the `tracks` list.
+- **`groups/<name>/tracks/<track>.json`** — one cue. It `extends` the bible
+  (inherits key/bpm/palette), may override them, and is built from `sections` of
+  named `parts`.
 
-> 🖼️ **A deterministic pixel-art engine.** Built on the same `labkit` core as
-> VibeTracks, PixelTracks renders coherent sprite sets from JSON — palette swaps,
-> skeleton-rigged poses, animation, scenes, higher-detail portraits — with **no
-> image model**. It targets pixel art and flat/stylised work rather than photoreal
-> illustration, and within that lane it delivers.
+A **part** is exactly one of:
 
-The visual sibling, built on the same `labkit` core and mirroring VibeTracks
-module-for-module. A sprite set stays coherent because every sprite shares one
-**artbook**: a colour `palette` and reusable shape **motifs**. The leitmotif move
-is a **palette swap** — change the bible's colours and a sprite recolours in step.
+- `notes`: explicit events `[pitch, beats, velocity?]`, e.g. `["A4", 1, 0.8]`
+- `motif`: a named motif from the bible, with leitmotif transforms — `slice` (quote a fragment), `transpose`, `stretch` (augment/diminish), `invert`, `retrograde`, `repeat`
+- `chords`: chord symbols like `["Am", "F", "C", "G"]`, each held `chord_beats`
+- `drums`: per-voice step patterns, e.g. `{"kick": "x...x...", "hat": "x.x.x.x."}`
 
-### The included demo: *Mossy Hollow*
+See **`CLAUDE.md`** for the complete spec reference, **`docs/composition.md`** for
+the craft of writing a coherent score (leitmotif transformation, melody, harmony,
+form — lessons from Zelda/Castlevania/Undertale and others), and the `/soundtrack`
+skill for the compose→render→iterate workflow.
 
-A five-sprite 20×20 set of woodland critters on a warm autumn palette —
-deliberately not a re-skin of an armoured hero, to show that swapping the
-artbook reshapes the whole world, not just the colours:
+## How it compiles to sound
 
-| Sprite | What it shows |
-|--------|---------------|
-| `fox` | The anchor: states the hero shape in full and wears the `leaf` charm |
-| `fox-night` | **Palette swap** — identical layers, moonlit colours (the headline move) |
-| `signpost` | The `leaf` motif recurring elsewhere, plus `rect`/`line` primitives |
-| `owl` | Coherence ≠ repetition — shares only the palette, carries its own shape |
-| `fox-hop` | A 4-frame animation re-posing the fox → sprite sheet + `.atlas.json` |
+`spec → sequencer → synth → WAV`. Oscillators (sine/square/saw/triangle/noise),
+ADSR envelopes, detuned supersaws, synth drums, and lightweight delay/reverb
+(IIR via `scipy.signal.lfilter`) are mixed per part, panned to stereo, and
+normalized to a consistent peak so every track matches in loudness.
 
-A second, bigger group (`emberhold`) shows the same mechanics scaled up to a
-4-class JRPG party with battle poses and skeleton-rigged attacks.
+## Project layout
 
-A **layer** is exactly one of `pixels` (a char grid + legend), `shape` (a motif
-with transforms — `flip`/`rotate`/`scale`/`recolor`), `rect`, `ellipse`, or
-`line`. It compiles `spec → compositor → raster → PNG`, with an auto-outline pass
-and an integer export upscale. PNG is written with stdlib `zlib` — no Pillow, no
-image generator. See `docs/pixelcraft.md` for the craft and the `/spritesheet`
-skill for the workflow.
-
----
-
-## 🎮 Ship it — the Godot exporter
-
-Specs and renders are only useful if they reach an engine. `python -m labs build
-<world> --engine godot` renders every asset in a world and writes a **drop-in
-Godot 4 resource pack** to `dist/<world>/` (plus a `.zip`):
-
-- **sprites** → PNG + a `.png.import` tuned for crisp, uncompressed pixel art;
-- **animations** → a **SpriteFrames `.tres`** built from the sprite's frame atlas
-  (per-frame `hold` → Godot frame `duration`, `fps` → playback `speed`, loop flag);
-- **music** → WAV + a `.wav.import` that forward-loops tracks with a `loop` section;
-- a `pack.json` index and a `README.md` with node-wiring notes.
-
-Extract the zip at your project root (it lands at `res://<world>/`), open in Godot 4,
-and wire an `AnimatedSprite2D`/`Sprite2D`/`AudioStreamPlayer` to the resources. The
-**`/gamepack`** skill drives the whole path — game description → world → assets →
-pack. Exporters are a registry (`labkit/export.py`), so a new engine target is one
-entry. See **`docs/godot.md`**.
+```
+groups/<name>/soundtrack.json   # a group's bible
+groups/<name>/tracks/*.json      # one spec per track in that group
+vibetracks/                      # the compiler (theory, synth, instruments, sequencer, wavio, CLI)
+tests/test_smoke.py              # theory + validation + render sanity
+.claude/skills/soundtrack        # the authoring workflow skill
+out/<group>/                     # rendered WAVs (gitignored) + per-group manifest.json
+```
 
 ## Tests
 

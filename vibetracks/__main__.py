@@ -1,6 +1,6 @@
 """VibeTracks CLI: validate specs and compile them to WAV.
 
-Tracks are organized into **groups** — each ``groups/music/<name>/`` is a
+Tracks are organized into **groups** — each ``groups/<name>/`` is a
 self-contained soundtrack with its own ``soundtrack.json`` bible and ``tracks/``.
 The repo ships a demo group (``neon-frontier``); spin up your own with
 ``new-group`` instead of overwriting it.
@@ -22,13 +22,11 @@ import json
 import os
 import sys
 
-from labkit import world as world_mod
-
 from . import spec
 from .sequencer import render_track
 from .wavio import write_wav
 
-GROUPS_DIR = spec.GROUPS_DIR
+GROUPS_DIR = "groups"
 OUT_DIR = "out"
 
 
@@ -107,8 +105,7 @@ def cmd_validate(args) -> int:
             try:
                 t = spec.resolve_track(path, bible)
                 secs = ", ".join(s.get("name", "?") for s in t["sections"])
-                tags = world_mod.fmt_refs(t.get("meaning"), t.get("entities"))
-                print(f"  ok  {path}  ({t['bpm']:g} bpm, sections: {secs}){tags}")
+                print(f"  ok  {path}  ({t['bpm']:g} bpm, sections: {secs})")
             except (spec.SpecError, FileNotFoundError) as e:
                 print(f"  ERR  {e}")
                 ok = False
@@ -126,12 +123,8 @@ def _render_one(track_path, bible, group_name, out_root, loops) -> dict:
     import numpy as np
     peak = float(np.max(np.abs(buf)))
     print(f"  rendered  {out_path}  ({dur:.1f}s, peak {peak:.2f})")
-    # `loop` records the track's intent: a track with any `"loop": true` section is
-    # meant to repeat seamlessly (game BGM). Exporters use it to set engine loop flags.
-    loop = any(s.get("loop") for s in track["sections"])
     return {"track": track["name"], "file": out_path, "seconds": round(dur, 2),
-            "peak": round(peak, 3), "bpm": track["bpm"], "key": track["key"],
-            "loop": loop}
+            "peak": round(peak, 3), "bpm": track["bpm"], "key": track["key"]}
 
 
 def cmd_render(args) -> int:
