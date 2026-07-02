@@ -610,6 +610,29 @@ class TestFormModel(unittest.TestCase):
         self.assertEqual(atlas["frame_count"], 5)
         self.assertTrue(atlas["loop"])
 
+    def test_diamond_form_is_a_faceted_rhombus(self):
+        """The `diamond` form: an L1/rhombus silhouette (corners empty, points on
+        the axes filled) shaded as flat facets — more than one ramp step used."""
+        ramp = forms.ramp_rgba("steel", self.sprite)
+        tile = forms.shade_form("diamond", 11, 11, ramp, "up_left")
+        alpha = tile[:, :, 3] > 0
+        self.assertFalse(alpha[0, 0])         # corners lie outside the rhombus
+        self.assertFalse(alpha[0, -1])
+        self.assertTrue(alpha[5, 5])          # centre is filled
+        self.assertTrue(alpha[0, 5])          # top point on the vertical axis
+        self.assertTrue(alpha[5, 0])          # left point on the horizontal axis
+        steps = {tuple(int(c) for c in px) for px in tile.reshape(-1, 4) if px[3] > 0}
+        self.assertGreater(len(steps), 1)     # faceted, not a flat fill
+
+    def test_forge_lord_boss_is_one_clean_piece(self):
+        """The palette-swapped boss (obsidian/ember materials, diamond gems)
+        resolves, passes its checks and has no geometry warnings — the new form
+        and material set keep the rig's connection-by-construction."""
+        from pixeltracks import inspect as pt_inspect
+        s = spec.resolve_sprite(os.path.join(FORGE, "sprites", "forge-lord.json"))
+        self.assertEqual([r for r in pt_inspect.run_checks(s) if not r["ok"]], [])
+        self.assertEqual(pt_inspect.geometry(s)["warnings"], [])
+
     def test_bad_squash_rejected(self):
         names = set(self.sprite["palette"])
         layer = {"form": "capsule", "material": "steel", "at": [0, 0], "size": [4, 8],

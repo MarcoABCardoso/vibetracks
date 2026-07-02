@@ -9,7 +9,7 @@ map, so the author must hand-place every pixel. There is no abstraction gap for
 the engine to fill.
 
 A **form** restores that gap. The author declares a solid primitive — a sphere,
-capsule, box or cone — with a *material* (a palette **ramp**, shadow→highlight)
+capsule, box, cone or diamond — with a *material* (a palette **ramp**, shadow→highlight)
 and a *light* direction, and this module renders it to shaded pixels: it derives
 a 2.5-D surface normal for every interior pixel, lights it against the ramp, and
 snaps the result onto the ramp's colours (so the output is provably on-palette,
@@ -44,7 +44,7 @@ LIGHTS = {
 }
 DEFAULT_LIGHT = "up_left"
 
-FORM_KINDS = ("sphere", "disc", "capsule", "box", "cone")
+FORM_KINDS = ("sphere", "disc", "capsule", "box", "cone", "diamond")
 
 
 def light_vector(light) -> np.ndarray:
@@ -80,8 +80,9 @@ def _fields(kind: str, w: int, h: int, round_px: int):
     normalized distance from the form's medial core (0) to its surface (1); and
     ``(ox, oy)`` = the outward surface direction in the image plane. Every form
     reduces to "distance from a medial primitive, normalized by a radius": a
-    point (sphere), a segment (capsule), a rectangle (box) or a tapering axis
-    (cone). That single model gives all four a rounded, form-reading shade.
+    point (sphere), a segment (capsule), a rectangle (box), a tapering axis
+    (cone) or a point under the L1 metric (diamond — flat facets). That single
+    model gives them all a form-reading shade.
     """
     ys, xs = np.mgrid[0:h, 0:w].astype(float)
     cx, cy = (w - 1) / 2.0, (h - 1) / 2.0
@@ -123,6 +124,18 @@ def _fields(kind: str, w: int, h: int, round_px: int):
         e = np.clip(dist / rr, 0.0, 1.0)  # 0 across the flat face, →1 at rounded edges
         mag = np.maximum(dist, 1e-6)
         ox, oy = dx / mag, dy / mag
+
+    elif kind == "diamond":              # a cut gem / rhombus — flat facets, not a smooth ball
+        rx, ry = max(w / 2.0, 0.5), max(h / 2.0, 0.5)
+        nx, ny = (xs - cx) / rx, (ys - cy) / ry
+        e = np.abs(nx) + np.abs(ny)      # L1 norm → rhombus silhouette
+        mask = e <= 1.0
+        # Each of the four faces has a *constant* outward normal, so the gem reads
+        # as flat crystalline facets (a hard shade step per face) rather than the
+        # sphere's smooth gradient — the same medial model, a different metric.
+        inv = 1.0 / math.sqrt(2.0)
+        ox = np.sign(nx) * inv
+        oy = np.sign(ny) * inv
 
     elif kind == "cone":                 # apex at top, base at bottom
         top = cy - h / 2.0

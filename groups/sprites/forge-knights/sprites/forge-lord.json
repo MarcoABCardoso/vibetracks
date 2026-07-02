@@ -1,0 +1,343 @@
+{
+  "name": "forge-lord",
+  "extends": "../artbook.json",
+  "size": [
+    34,
+    48
+  ],
+  "_comment": "The palette-swap leitmotif one level up: the SAME rigged form-skeleton as knight-forms-rig, re-materialised as an obsidian-and-ember boss and showing off the new `diamond` form. The armour bones are `obsidian` instead of iron/steel; the surcoat and greatsword are `ember` (a glowing forge ramp). The crown gem and chest forge-heart are `ember` `diamond`s, the two pauldron spikes are `gold` `diamond`s \u2014 the new flat-faceted primitive shown in two materials, a cut gem that catches the light on one facet, unmistakably NOT a smooth sphere. Nothing about the pose was re-authored; the skeleton still meets by construction, so `connected`/`on_canvas` hold for the boss exactly as for the base knight.",
+  "checks": [
+    {
+      "rule": "connected"
+    },
+    {
+      "rule": "on_canvas",
+      "margin": 0
+    }
+  ],
+  "skeleton": [
+    {
+      "name": "leg-back",
+      "form": "capsule",
+      "material": "obsidian",
+      "size": [
+        5,
+        11
+      ],
+      "anchors": {
+        "hip": [
+          2.5,
+          0.5
+        ],
+        "foot": [
+          2.5,
+          10.5
+        ]
+      },
+      "pivot": "hip",
+      "attach": {
+        "to": "chest",
+        "anchor": "hip_l"
+      },
+      "rotate": 12
+    },
+    {
+      "name": "leg-front",
+      "form": "capsule",
+      "material": "obsidian",
+      "size": [
+        5,
+        11
+      ],
+      "anchors": {
+        "hip": [
+          2.5,
+          0.5
+        ],
+        "foot": [
+          2.5,
+          10.5
+        ]
+      },
+      "pivot": "hip",
+      "attach": {
+        "to": "chest",
+        "anchor": "hip_r"
+      },
+      "rotate": -16
+    },
+    {
+      "name": "arm-off",
+      "form": "capsule",
+      "material": "obsidian",
+      "size": [
+        5,
+        12
+      ],
+      "anchors": {
+        "shoulder": [
+          2.5,
+          1
+        ],
+        "hand": [
+          2.5,
+          11
+        ]
+      },
+      "pivot": "shoulder",
+      "attach": {
+        "to": "chest",
+        "anchor": "shoulder_l"
+      },
+      "rotate": 40
+    },
+    {
+      "name": "chest",
+      "form": "box",
+      "material": "obsidian",
+      "size": [
+        15,
+        15
+      ],
+      "round": 4,
+      "anchors": {
+        "neck": [
+          7.5,
+          1.5
+        ],
+        "chest_mid": [
+          7.5,
+          6
+        ],
+        "shoulder_l": [
+          2,
+          4
+        ],
+        "shoulder_r": [
+          13,
+          4
+        ],
+        "hip_l": [
+          4,
+          14.5
+        ],
+        "hip_r": [
+          11,
+          14.5
+        ]
+      },
+      "pivot": "hip_l",
+      "at": [
+        13,
+        35
+      ],
+      "skew": [
+        -0.14,
+        0
+      ]
+    },
+    {
+      "name": "surcoat",
+      "form": "box",
+      "material": "ember",
+      "size": [
+        5,
+        13
+      ],
+      "round": 1,
+      "anchors": {
+        "top": [
+          2.5,
+          0
+        ]
+      },
+      "pivot": "top",
+      "attach": {
+        "to": "chest",
+        "anchor": "chest_mid"
+      }
+    },
+    {
+      "name": "pauldron-off",
+      "form": "diamond",
+      "material": "gold",
+      "size": [
+        9,
+        9
+      ],
+      "anchors": {
+        "c": [
+          4.5,
+          4.5
+        ]
+      },
+      "pivot": "c",
+      "attach": {
+        "to": "chest",
+        "anchor": "shoulder_l"
+      }
+    },
+    {
+      "name": "pauldron-sword",
+      "form": "diamond",
+      "material": "gold",
+      "size": [
+        9,
+        9
+      ],
+      "anchors": {
+        "c": [
+          4.5,
+          4.5
+        ]
+      },
+      "pivot": "c",
+      "attach": {
+        "to": "chest",
+        "anchor": "shoulder_r"
+      }
+    },
+    {
+      "name": "head",
+      "form": "sphere",
+      "material": "skin",
+      "size": [
+        8,
+        8
+      ],
+      "anchors": {
+        "neck": [
+          4,
+          7
+        ],
+        "crown": [
+          4,
+          1
+        ]
+      },
+      "pivot": "neck",
+      "attach": {
+        "to": "chest",
+        "anchor": "neck",
+        "shift": [
+          0,
+          -1
+        ]
+      }
+    },
+    {
+      "name": "helm",
+      "form": "sphere",
+      "material": "obsidian",
+      "size": [
+        10,
+        7
+      ],
+      "anchors": {
+        "base": [
+          5,
+          6
+        ],
+        "top": [
+          5,
+          1
+        ]
+      },
+      "pivot": "base",
+      "attach": {
+        "to": "head",
+        "anchor": "crown"
+      }
+    },
+    {
+      "name": "crown-gem",
+      "form": "diamond",
+      "material": "ember",
+      "size": [
+        5,
+        8
+      ],
+      "anchors": {
+        "base": [
+          2.5,
+          6.5
+        ]
+      },
+      "pivot": "base",
+      "attach": {
+        "to": "helm",
+        "anchor": "top"
+      }
+    },
+    {
+      "name": "arm-sword",
+      "form": "capsule",
+      "material": "obsidian",
+      "size": [
+        5,
+        12
+      ],
+      "anchors": {
+        "shoulder": [
+          2.5,
+          1
+        ],
+        "hand": [
+          2.5,
+          11
+        ]
+      },
+      "pivot": "shoulder",
+      "attach": {
+        "to": "chest",
+        "anchor": "shoulder_r"
+      },
+      "rotate": -52
+    },
+    {
+      "name": "sword",
+      "form": "capsule",
+      "material": "ember",
+      "size": [
+        3,
+        20
+      ],
+      "anchors": {
+        "grip": [
+          1.5,
+          18
+        ]
+      },
+      "pivot": "grip",
+      "attach": {
+        "to": "arm-sword",
+        "anchor": "hand"
+      },
+      "rotate": -18
+    },
+    {
+      "name": "heart-gem",
+      "form": "diamond",
+      "material": "ember",
+      "size": [
+        7,
+        8
+      ],
+      "anchors": {
+        "c": [
+          3.5,
+          4
+        ]
+      },
+      "pivot": "c",
+      "attach": {
+        "to": "chest",
+        "anchor": "chest_mid",
+        "shift": [
+          0,
+          -3
+        ]
+      }
+    }
+  ]
+}

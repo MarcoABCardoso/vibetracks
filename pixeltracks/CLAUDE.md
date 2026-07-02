@@ -124,8 +124,11 @@ Each layer is composited in order and is **exactly one** of:
   the pivot.
 - **`form`** — a **shaded solid primitive** the engine lights for you (the sprite
   Lab's *synth*; `pixeltracks/forms.py`): `{"form": "sphere"|"disc"|"capsule"|
-  "box"|"cone", "at": [x,y], "size": [w,h], "material": <ramp or colour>, "light"?,
-  "round"?, "flip"?}`. Instead of hand-placing pixels, you name a solid and a
+  "box"|"cone"|"diamond", "at": [x,y], "size": [w,h], "material": <ramp or colour>,
+  "light"?, "round"?, "flip"?}`. (`diamond` is a **flat-faceted cut gem** — an
+  L1/rhombus silhouette whose four faces each take a constant normal, so it shades
+  as hard facets rather than a smooth ball: gems, crystals, spiked crowns.
+  `forge-lord` is the demo.) Instead of hand-placing pixels, you name a solid and a
   **material** — a bible `ramp` (shadow→highlight) or a bare palette colour — and
   the engine derives every pixel *and its shade* from the form's 2.5-D surface
   normal against the sprite `light` (default `up_left`; presets `up_left`/`up_right`/
