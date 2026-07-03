@@ -1,6 +1,6 @@
-filename,category,authors,license,source
-assets/body/male/light.png,body,"Stephen Challener (Redshrike); Johannes Sjölund (wulax); Matthew Krohn; Marcus Nelson (makrohn)","CC-BY-SA 3.0 / GPL 3.0",https://github.com/jrconway3/Universal-LPC-spritesheet
-assets/legs/pants/male/teal_pants_male.png,legs,"Liberated Pixel Cup contributors (see upstream AUTHORS.txt)","CC-BY-SA 3.0 / GPL 3.0",https://github.com/jrconway3/Universal-LPC-spritesheet
-assets/torso/leather/chest_male.png,torso,"Johannes Sjölund (wulax)","CC-BY-SA 3.0 / GPL 3.0",https://github.com/jrconway3/Universal-LPC-spritesheet
-assets/feet/shoes/male/black_shoes_male.png,feet,"Liberated Pixel Cup contributors (see upstream AUTHORS.txt)","CC-BY-SA 3.0 / GPL 3.0",https://github.com/jrconway3/Universal-LPC-spritesheet
-assets/hair/male/plain/blonde.png,hair,"Manuel Riecke (MrBeast); Marcus Nelson (makrohn)","CC-BY-SA 3.0 / GPL 3.0",https://github.com/jrconway3/Universal-LPC-spritesheet
+source_path,category,authors,license,fetched_from
+body/male/light.png,body,"Stephen Challener (Redshrike); Johannes Sjölund (wulax); Matthew Krohn; Marcus Nelson (makrohn)","CC-BY-SA 3.0 / GPL 3.0",https://github.com/jrconway3/Universal-LPC-spritesheet
+legs/pants/male/teal_pants_male.png,legs,"Liberated Pixel Cup contributors (see upstream AUTHORS.txt)","CC-BY-SA 3.0 / GPL 3.0",https://github.com/jrconway3/Universal-LPC-spritesheet
+torso/leather/chest_male.png,torso,"Johannes Sjölund (wulax)","CC-BY-SA 3.0 / GPL 3.0",https://github.com/jrconway3/Universal-LPC-spritesheet
+feet/shoes/male/black_shoes_male.png,feet,"Liberated Pixel Cup contributors (see upstream AUTHORS.txt)","CC-BY-SA 3.0 / GPL 3.0",https://github.com/jrconway3/Universal-LPC-spritesheet
+hair/male/plain/blonde.png,hair,"Manuel Riecke (MrBeast); Marcus Nelson (makrohn)","CC-BY-SA 3.0 / GPL 3.0",https://github.com/jrconway3/Universal-LPC-spritesheet

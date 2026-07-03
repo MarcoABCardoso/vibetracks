@@ -11,26 +11,42 @@ depends only on numpy; Pillow is imported lazily and a missing library raises
 :class:`LPCError` with install instructions only when a character actually asks to
 be rendered. Validation never imports Pillow.
 
+Layer art is **fetched on demand**, not vendored: the copyleft LPC PNGs are never
+committed to this repo. A missing layer is downloaded from the cast's ``remote``
+base into a local cache (gitignored) and reused thereafter, so a first render needs
+the network but repeats are offline. Point ``$VIBESPRITES_ASSETS`` at a local LPC
+checkout to render fully offline. Attribution/copyleft still apply to anything you
+distribute — see each cast's ``CREDITS.csv``.
+
 Reading source art needs Pillow; *writing* the finished sheet does not
 (:mod:`vibesprites.pngio` uses the stdlib) — the same split as
-soundfont-reads vs. wavio-writes.
+soundfont-reads vs. wavio-writes. Fetching uses only the stdlib (``urllib``).
 """
 
 from __future__ import annotations
 
 import os
+import ssl
+import tempfile
+import urllib.parse
+import urllib.request
 
 import numpy as np
 
-# Where layer PNGs are looked up when a patch ``source`` is relative: first the
-# cast's own ``assets/`` dir, then a shared LPC checkout pointed at by this env
-# var (so a user can render against the full upstream asset library).
-ASSETS_ENV = "VIBETRACKS_LPC_ASSETS"
+# A relative layer ``source`` (e.g. ``body/male/light.png``) is resolved against,
+# in order: a local checkout in $VIBESPRITES_ASSETS, the download cache, then the
+# remote base (fetched into the cache). The default remote is the upstream LPC art.
+ASSETS_ENV = "VIBESPRITES_ASSETS"       # a local LPC checkout, for offline rendering
+REMOTE_ENV = "VIBESPRITES_REMOTE"       # override the remote base URL
+CACHE_ENV = "VIBESPRITES_CACHE"         # override the download cache directory
+DEFAULT_REMOTE = ("https://raw.githubusercontent.com/"
+                  "jrconway3/Universal-LPC-spritesheet/master")
 
 _INSTALL_HINT = (
     "the lpc engine needs Pillow to read layer art.\n"
     "  install:  pip install Pillow   (or:  pip install vibetracks[sprites])\n"
-    "  point $VIBETRACKS_LPC_ASSETS at an LPC checkout to render against its assets."
+    "  layer art is fetched from the cast's 'remote' base; set $VIBESPRITES_ASSETS\n"
+    "  to a local LPC checkout to render offline."
 )
 
 
@@ -47,27 +63,70 @@ def available() -> bool:
         return False
 
 
-def find_asset(source: str, cast_dir: str | None = None) -> str:
-    """Resolve a layer's ``source`` to a real file.
+def _is_url(s: str) -> bool:
+    return s.startswith(("http://", "https://"))
 
-    An absolute ``source`` is used as-is; a relative one is resolved against the
-    cast's ``assets/`` directory, then against ``$VIBETRACKS_LPC_ASSETS``.
+
+def cache_dir(cast_dir: str | None = None) -> str:
+    """The download cache: ``$VIBESPRITES_CACHE``, else ``<cast>/.cache``."""
+    env = os.environ.get(CACHE_ENV)
+    if env:
+        return env
+    if cast_dir:
+        return os.path.join(cast_dir, ".cache")
+    return os.path.join(tempfile.gettempdir(), "vibesprites-cache")
+
+
+def fetch_asset(url: str, dest: str) -> str:
+    """Download ``url`` to ``dest`` (atomic), returning ``dest``. Stdlib only."""
+    os.makedirs(os.path.dirname(dest) or ".", exist_ok=True)
+    try:
+        ctx = ssl.create_default_context()  # honors $SSL_CERT_FILE / system CAs
+        with urllib.request.urlopen(url, context=ctx, timeout=30) as r:
+            data = r.read()
+    except Exception as e:  # network / TLS / HTTP error
+        raise LPCError(f"failed to fetch layer art {url!r}: {e}\n  {_INSTALL_HINT}") from e
+    tmp = dest + ".part"
+    with open(tmp, "wb") as f:
+        f.write(data)
+    os.replace(tmp, dest)
+    return dest
+
+
+def find_asset(source: str, cast_dir: str | None = None,
+               remote: str | None = None) -> str:
+    """Resolve a layer's ``source`` to a real file, fetching it if necessary.
+
+    Order: an explicit ``http(s)`` ``source`` (cached by URL) → a local checkout in
+    ``$VIBESPRITES_ASSETS`` → the download cache → fetched from ``remote`` (or
+    ``$VIBESPRITES_REMOTE``, else the default LPC base) into the cache.
     """
+    cache = cache_dir(cast_dir)
+
+    if _is_url(source):
+        rel = urllib.parse.urlparse(source).path.lstrip("/")
+        dest = os.path.join(cache, rel)
+        return dest if os.path.isfile(dest) else fetch_asset(source, dest)
+
     if os.path.isabs(source):
         if os.path.isfile(source):
             return source
         raise LPCError(f"layer asset not found: {source!r}")
-    candidates = []
-    if cast_dir:
-        candidates.append(os.path.join(cast_dir, "assets", source))
-    env = os.environ.get(ASSETS_ENV)
-    if env:
-        candidates.append(os.path.join(env, source))
-    for c in candidates:
-        if os.path.isfile(c):
-            return c
-    raise LPCError(
-        f"layer asset {source!r} not found (looked in {candidates}).\n  {_INSTALL_HINT}")
+
+    # A local checkout wins over the cache (lets a user render fully offline).
+    assets = os.environ.get(ASSETS_ENV)
+    if assets:
+        local = os.path.join(assets, source)
+        if os.path.isfile(local):
+            return local
+
+    cached = os.path.join(cache, source)
+    if os.path.isfile(cached):
+        return cached
+
+    base = remote or os.environ.get(REMOTE_ENV) or DEFAULT_REMOTE
+    url = base.rstrip("/") + "/" + source.lstrip("/")
+    return fetch_asset(url, cached)
 
 
 def load_layer_sheet(path: str) -> np.ndarray:

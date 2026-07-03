@@ -51,6 +51,7 @@ class Charset:
     palette: dict = field(default_factory=dict)
     outfits: dict = field(default_factory=dict)
     characters: list = field(default_factory=list)
+    remote: str | None = None  # base URL layer art is fetched from (see lpc.py)
 
     def resolved_palette(self) -> dict:
         """Palette defaults merged with the charset's per-category overrides."""
@@ -72,6 +73,7 @@ def load_charset(path: str) -> Charset:
         palette=data.get("palette", {}),
         outfits=data.get("outfits", {}),
         characters=data.get("characters", []),
+        remote=data.get("remote"),
     )
     _validate_charset(cs)
     return cs
@@ -94,6 +96,9 @@ def _validate_palette(palette: dict, where: str) -> None:
 def _validate_charset(cs: Charset) -> None:
     _validate_frame(cs.frame, cs.path)
     _validate_palette(cs.resolved_palette(), cs.path)
+    if cs.remote is not None and not (isinstance(cs.remote, str)
+                                      and cs.remote.startswith(("http://", "https://"))):
+        raise SpriteSpecError(f"{cs.path}: 'remote' must be an http(s) URL, got {cs.remote!r}")
     # Outfit definitions are lists of concrete layer entries.
     for name, entries in cs.outfits.items():
         if not isinstance(entries, list) or not entries:
@@ -127,6 +132,7 @@ def resolve_character(path: str, charset: Charset | None = None) -> dict:
         "frame": frame,
         "palette": palette,
         "outfits": outfits,
+        "remote": data.get("remote", charset.remote if charset else None),
         "layers": data.get("layers", []),
     }
     _validate_character(resolved, path)

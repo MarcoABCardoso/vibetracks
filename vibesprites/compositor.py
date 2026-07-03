@@ -81,11 +81,12 @@ def alpha_over(dst: np.ndarray, src: np.ndarray, offset=(0, 0)) -> None:
 def render_sheet(character: dict, cast_dir: str | None = None) -> np.ndarray:
     """Composite a resolved character into an ``(h, w, 4)`` uint8 RGBA sheet."""
     fw, fh = character["frame"]
+    remote = character.get("remote")
     canvas = np.zeros((layout.ROWS * fh, layout.COLS * fw, 4), dtype=np.uint8)
     for lyr in expand_layers(character):
         engine = lyr["engine"]
         if engine in ("lpc",):  # SHEET_ENGINES
-            path = lpc.find_asset(lyr["source"], cast_dir)
+            path = lpc.find_asset(lyr["source"], cast_dir, remote=remote)
             sheet = lpc.load_layer_sheet(path)
             if lyr["recolor"]:
                 sheet = lpc.recolor(sheet, lyr["recolor"])

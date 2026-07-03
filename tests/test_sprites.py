@@ -139,13 +139,66 @@ class TestAlphaOver(unittest.TestCase):
         self.assertTrue(np.all(dst[..., 0] == 100))
 
 
+class TestFindAsset(unittest.TestCase):
+    """Fetch resolution — exercised without any network access."""
+
+    def setUp(self):
+        self._saved = {k: os.environ.get(k) for k in
+                       (lpc.ASSETS_ENV, lpc.REMOTE_ENV, lpc.CACHE_ENV)}
+        for k in self._saved:
+            os.environ.pop(k, None)
+
+    def tearDown(self):
+        for k, v in self._saved.items():
+            if v is None:
+                os.environ.pop(k, None)
+            else:
+                os.environ[k] = v
+
+    def test_cache_hit_returns_without_fetching(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as d:
+            os.environ[lpc.CACHE_ENV] = d
+            dest = os.path.join(d, "body", "x.png")
+            os.makedirs(os.path.dirname(dest))
+            open(dest, "wb").close()
+            # A cache hit must resolve without contacting the (unset) remote.
+            self.assertEqual(lpc.find_asset("body/x.png"), dest)
+
+    def test_local_checkout_wins_over_cache(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as assets:
+            os.environ[lpc.ASSETS_ENV] = assets
+            f = os.path.join(assets, "hair", "y.png")
+            os.makedirs(os.path.dirname(f))
+            open(f, "wb").close()
+            self.assertEqual(lpc.find_asset("hair/y.png"), f)
+
+    def test_url_source_cache_hit(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as d:
+            os.environ[lpc.CACHE_ENV] = d
+            # A URL source caches under its URL path; a pre-seeded cache avoids fetch.
+            dest = os.path.join(d, "torso", "z.png")
+            os.makedirs(os.path.dirname(dest))
+            open(dest, "wb").close()
+            got = lpc.find_asset("https://example.test/torso/z.png")
+            self.assertEqual(got, dest)
+
+
 @unittest.skipUnless(HAVE_LPC, "Pillow (lpc engine) not installed")
 class TestRender(unittest.TestCase):
-    def test_knight_composites_to_universal_sheet(self):
+    def _render_knight(self):
         cast = spec.find_cast("knight-guild", ROOT)
         ch = spec.resolve_character(
             cast.character_path("knight"), cast.load_charset())
-        sheet = compositor.render_sheet(ch, cast.dir)
+        try:  # first render fetches art; skip (don't fail) when offline
+            return compositor.render_sheet(ch, cast.dir)
+        except lpc.LPCError as e:
+            self.skipTest(f"LPC art unavailable (offline?): {e}")
+
+    def test_knight_composites_to_universal_sheet(self):
+        sheet = self._render_knight()
         self.assertEqual(sheet.shape, (1344, 832, 4))
         self.assertEqual(sheet.dtype, np.uint8)
         # Compositing real layers must produce visible (non-empty) pixels.
@@ -155,10 +208,7 @@ class TestRender(unittest.TestCase):
     def test_write_png_produces_readable_file(self):
         import tempfile
         from PIL import Image
-        cast = spec.find_cast("knight-guild", ROOT)
-        ch = spec.resolve_character(
-            cast.character_path("knight"), cast.load_charset())
-        sheet = compositor.render_sheet(ch, cast.dir)
+        sheet = self._render_knight()
         with tempfile.TemporaryDirectory() as d:
             path = os.path.join(d, "knight.png")
             pngio.write_png(path, sheet)
