@@ -1,0 +1,48 @@
+{
+  "name": "triumph",
+  "extends": "../soundtrack.json",
+  "_comment": "Victory. The same hero_theme, now recolored major: its pitches all live in F major (the relative major), so harmonizing it with F/Bb/C and a bright plagal Bb->F cadence turns the yearning minor tune radiant. Fanfare crowns it. Brisk, short, jubilant. Key overridden to F major for the bright cadence helpers.",
+  "key": "F major",
+  "bpm": 118,
+  "time_signature": [4, 4],
+  "loops": 1,
+
+  "sections": [
+    {
+      "name": "intro",
+      "bars": 2,
+      "_comment": "The fanfare bursts out, timpani roll, harp glissando up. IV - V into the theme.",
+      "parts": {
+        "trumpet": { "instrument": "trumpet", "motif": "fanfare", "transpose": 12, "pan": 0.0, "gain": 0.9 },
+        "brass":   { "instrument": "brass", "chords": ["Bb", "C"], "chord_beats": 4, "gain": 0.6 },
+        "harp":    { "instrument": "harp", "repeat": 1, "gain": 0.5, "pan": 0.25,
+                     "notes": [["F4", 0.25], ["A4", 0.25], ["C5", 0.25], ["F5", 0.25],
+                               ["A5", 0.25], ["C6", 0.25], ["F6", 0.25], ["C6", 0.25]] },
+        "timpani": { "instrument": "timpani", "gain": 0.7,
+                     "notes": [["F2", 0.25], ["F2", 0.25], ["C2", 0.25], ["C2", 0.25], ["F2", 1], [null, 5]] }
+      }
+    },
+    {
+      "name": "A",
+      "bars": 8,
+      "loop": true,
+      "_comment": "Full brass and choir sing the hero_theme in radiant F major; horn doubles up high; harp shimmers; strings ride; a bright plagal Bb->F closes each phrase.",
+      "parts": {
+        "brass":   { "instrument": "brass", "motif": "hero_theme", "repeat": 4, "pan": -0.08, "gain": 0.85 },
+        "horn":    { "instrument": "horn", "motif": "hero_theme", "repeat": 4, "transpose": 12, "pan": 0.1, "gain": 0.55 },
+        "trumpet": { "instrument": "trumpet", "motif": "fanfare", "repeat": 4, "transpose": 12, "pan": 0.22, "gain": 0.5 },
+        "choir":   { "instrument": "choir", "chords": ["F", "C", "Bb", "F", "Dm", "Bb", "C", "F"], "chord_beats": 4, "gain": 0.55 },
+        "strings": { "instrument": "strings", "chords": ["F", "C", "Bb", "F", "Dm", "Bb", "C", "F"], "chord_beats": 4, "octave": 4, "gain": 0.55 },
+        "harp":    { "instrument": "harp", "repeat": 16, "pan": 0.26, "gain": 0.4,
+                     "notes": [["F4", 0.25], ["A4", 0.25], ["C5", 0.25], ["F5", 0.25]] },
+        "cello":   { "instrument": "cello", "gain": 0.8,
+                     "notes": [["F2", 2], ["F2", 2], ["C2", 2], ["C2", 2],
+                               ["Bb1", 2], ["Bb1", 2], ["F2", 2], ["F2", 2],
+                               ["D2", 2], ["D2", 2], ["Bb1", 2], ["C2", 2],
+                               ["C2", 2], ["C2", 2], ["F2", 4]] },
+        "timpani": { "instrument": "timpani", "gain": 0.6,
+                     "notes": [["F2", 0.5], [null, 1.5], ["C2", 0.5], [null, 1.5]], "repeat": 8 }
+      }
+    }
+  ]
+}

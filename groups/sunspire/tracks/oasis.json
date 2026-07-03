@@ -1,0 +1,39 @@
+{
+  "name": "oasis",
+  "extends": "../soundtrack.json",
+  "_comment": "The emotional breather: still water under the stars. The 'sands' theme is stretched to half-speed and given to solo flute — the same DNA as the road, now a lullaby. Harp, clarinet counter-line, a breath of strings. No percussion; space is the point.",
+  "bpm": 66,
+  "time_signature": [4, 4],
+  "loops": 1,
+
+  "sections": [
+    {
+      "name": "intro",
+      "bars": 4,
+      "_comment": "Ripples: harp arpeggios over an aura pad, a distant clarinet. i - iv - VI - V, gentle.",
+      "parts": {
+        "harp":     { "instrument": "harp", "repeat": 8, "pan": 0.2, "gain": 0.5,
+                      "notes": [["D4", 0.5], ["F4", 0.5], ["A4", 0.5], ["D5", 0.5]] },
+        "aura":     { "instrument": "aura", "chords": ["Dm", "Gm", "Bb", "A"], "chord_beats": 4, "gain": 0.8 },
+        "clarinet": { "instrument": "clarinet", "gain": 0.4, "pan": -0.25,
+                      "notes": [["A4", 4], [null, 4], ["F4", 4], ["E4", 4]] }
+      }
+    },
+    {
+      "name": "A",
+      "bars": 8,
+      "loop": true,
+      "_comment": "Solo flute sings the sands theme at half-speed (augmentation) — wistful, unhurried; clarinet answers with its inversion; harp and soft strings hold the light. Lots of air.",
+      "parts": {
+        "flute":    { "instrument": "flute", "motif": "sands", "repeat": 2, "stretch": 2.0, "pan": -0.05, "gain": 0.7 },
+        "clarinet": { "instrument": "clarinet", "motif": "sands", "slice": [0, 6], "repeat": 2, "stretch": 2.0, "invert": "A4", "pan": 0.3, "gain": 0.4 },
+        "harp":     { "instrument": "harp", "repeat": 16, "pan": 0.22, "gain": 0.45,
+                      "notes": [["D4", 0.5], ["F4", 0.5], ["A4", 0.5], ["D5", 0.5]] },
+        "strings":  { "instrument": "strings", "chords": ["Dm", "Gm", "Bb", "A", "Dm", "F", "Gm", "A"], "chord_beats": 4, "gain": 0.4 },
+        "cello":    { "instrument": "cello", "gain": 0.6,
+                      "notes": [["D2", 4], ["G2", 4], ["Bb1", 4], ["A2", 4],
+                                ["D2", 4], ["F2", 4], ["G2", 4], ["A2", 4]] }
+      }
+    }
+  ]
+}
