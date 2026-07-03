@@ -47,6 +47,7 @@ def expand_layers(character: dict) -> list:
             "engine": entry.get("engine", patch.get("engine", "lpc")),
             "zPos": entry.get("zPos", patch.get("zPos", 0)),
             "recolor": entry.get("recolor") or patch.get("recolor"),
+            "assemble": entry.get("assemble"),  # split-per-animation source (see lpc)
             "offset": entry.get("offset", [0, 0]),
             "_order": i,  # stable tiebreak within equal zPos
         })
@@ -86,8 +87,11 @@ def render_sheet(character: dict, cast_dir: str | None = None) -> np.ndarray:
     for lyr in expand_layers(character):
         engine = lyr["engine"]
         if engine in ("lpc",):  # SHEET_ENGINES
-            path = lpc.find_asset(lyr["source"], cast_dir, remote=remote)
-            sheet = lpc.load_layer_sheet(path)
+            if lyr["assemble"]:  # build a sheet from split-per-animation art
+                sheet = lpc.assemble_sheet(lyr["assemble"], cast_dir, remote=remote)
+            else:
+                sheet = lpc.load_layer_sheet(
+                    lpc.find_asset(lyr["source"], cast_dir, remote=remote))
             if lyr["recolor"]:
                 sheet = lpc.recolor(sheet, lyr["recolor"])
             alpha_over(canvas, sheet, lyr["offset"])

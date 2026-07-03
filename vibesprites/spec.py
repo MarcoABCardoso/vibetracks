@@ -156,6 +156,7 @@ def _validate_layer(entry: dict, character: dict, where: str) -> None:
     if "zPos" in entry and not isinstance(entry["zPos"], (int, float)):
         raise SpriteSpecError(f"{where}: 'zPos' must be a number, got {entry['zPos']!r}")
     _validate_recolor(entry.get("recolor"), where)
+    _validate_assemble(entry.get("assemble"), where)
     if "variant" in entry:
         cat = entry.get("layer")
         if cat is None:
@@ -167,6 +168,14 @@ def _validate_layer(entry: dict, character: dict, where: str) -> None:
         if entry["outfit"] not in character["outfits"]:
             raise SpriteSpecError(f"{where}: unknown outfit {entry['outfit']!r} "
                                   f"(outfits: {sorted(character['outfits'])})")
+
+
+def _validate_assemble(assemble, where: str) -> None:
+    if assemble is None:
+        return
+    if not isinstance(assemble, dict) or not isinstance(assemble.get("base"), str) \
+            or not isinstance(assemble.get("color"), str):
+        raise SpriteSpecError(f"{where}: 'assemble' needs string 'base' and 'color'")
 
 
 def _validate_recolor(recolor, where: str) -> None:

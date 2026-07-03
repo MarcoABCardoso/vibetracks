@@ -87,6 +87,17 @@ class TestValidation(unittest.TestCase):
         spec._validate_character(
             self._char([{"layer": "body", "variant": "v"}]), "x")
 
+    def test_bad_assemble_rejected(self):
+        with self.assertRaises(spec.SpriteSpecError):
+            spec._validate_character(
+                self._char([{"layer": "body", "variant": "v",
+                             "assemble": {"base": "http://x"}}]), "x")  # missing color
+
+    def test_valid_assemble_accepted(self):
+        spec._validate_character(
+            self._char([{"layer": "body", "variant": "v",
+                         "assemble": {"base": "http://x", "color": "blue"}}]), "x")
+
 
 class TestExpandLayers(unittest.TestCase):
     def test_outfit_expands_and_sorts_by_zpos(self):
@@ -184,6 +195,34 @@ class TestFindAsset(unittest.TestCase):
             open(dest, "wb").close()
             got = lpc.find_asset("https://example.test/torso/z.png")
             self.assertEqual(got, dest)
+
+
+@unittest.skipUnless(HAVE_LPC, "Pillow (lpc engine) not installed")
+class TestAssemble(unittest.TestCase):
+    """Assembling split-per-animation art into the classic grid — no network."""
+
+    def test_places_present_animations_and_skips_missing(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as base:
+            # A local 'source' with only walk + spellcast files (as an absolute base).
+            for anim, frames in (("walk", 9), ("spellcast", 7)):
+                d = os.path.join(base, anim)
+                os.makedirs(d)
+                tile = np.zeros((4 * 64, frames * 64, 4), dtype=np.uint8)
+                tile[..., :] = (20, 200, 40, 255)  # opaque green
+                pngio.write_png(os.path.join(d, "x.png"), tile)
+            sheet = lpc.assemble_sheet({"base": base, "color": "x"})
+            self.assertEqual(sheet.shape, (layout.HEIGHT, layout.WIDTH, 4))
+            wy = layout.animation_row("walk") * 64
+            self.assertGreater(int(sheet[wy:wy + 256, :576, 3].min()), 0)   # walk filled
+            ty = layout.animation_row("thrust") * 64
+            self.assertEqual(int(sheet[ty:ty + 256, :, 3].max()), 0)        # thrust absent
+
+    def test_no_animations_raises(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as base:
+            with self.assertRaises(lpc.LPCError):
+                lpc.assemble_sheet({"base": base, "color": "nope"})
 
 
 @unittest.skipUnless(HAVE_LPC, "Pillow (lpc engine) not installed")
