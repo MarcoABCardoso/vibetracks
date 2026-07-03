@@ -1,0 +1,10 @@
+{
+  "name": "knight",
+  "extends": "../charset.json",
+  "_comment": "One character = a z-ordered stack of layers. 'guild-uniform' is quoted as a shared outfit (the cohesion mechanism); body and hair are per-character. Source paths resolve to <layer>/<variant>.png under the cast's assets/.",
+  "layers": [
+    {"layer": "body", "variant": "male/light"},
+    {"outfit": "guild-uniform"},
+    {"layer": "hair", "variant": "male/plain/blonde"}
+  ]
+}

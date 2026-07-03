@@ -1,0 +1,40 @@
+VibeTracks License
+
+Copyright (c) 2026 VibeTracks contributors
+
+VibeTracks is a lab for authoring game assets as specs — songs compiled to audio,
+characters compiled to spritesheets. This license covers the parts of this
+repository that the VibeTracks authors wrote, and defers to third parties for the
+parts they wrote.
+
+1. The software and the specs
+
+   The source code, and the JSON specs and compositions authored in this
+   repository, are provided freely. You may use, copy, modify, and distribute
+   them, and use whatever you create with them — rendered audio, spritesheets,
+   your own specs — for any purpose, commercial or not, without royalty.
+
+   If you build something out of this (a tool, a game, a derivative), please give
+   reasonable credit to VibeTracks, and retain this notice in copies of the source.
+
+2. Bundled artwork and other third-party assets — their licenses come first
+
+   This repository bundles and composes artwork created by other people (for
+   example, the Liberated Pixel Cup sprite layers under sprites/*/assets/). Those
+   assets are NOT covered by Section 1. They remain under their creators' own
+   licenses, which take precedence and must be honored first.
+
+   Each such asset's author, license, and source are recorded alongside it — see
+   the CREDITS files (e.g. sprites/<cast>/CREDITS.csv). Some of those licenses
+   require attribution and/or impose share-alike (copyleft) terms on works that
+   include the art. When you distribute anything that incorporates a bundled asset,
+   you must comply with that asset's license — attribution and all — before the
+   permissions in Section 1 apply to the rest.
+
+   In short: credit the artists, honor their terms, then freely use what is yours.
+
+3. No warranty
+
+   The software and assets are provided "as is", without warranty of any kind,
+   express or implied. In no event shall the authors be liable for any claim,
+   damages, or other liability arising from their use.
