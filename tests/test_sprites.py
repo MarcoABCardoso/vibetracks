@@ -11,8 +11,8 @@ import unittest
 
 import numpy as np
 
-from vibetracks.vibesprites import compositor, layout, lpc, pngio, spec
-from vibetracks.vibesprites.layers import ENGINES, SHEET_ENGINES
+from vibesprites import compositor, layout, lpc, pngio, spec
+from vibesprites.layers import ENGINES, SHEET_ENGINES
 
 HAVE_LPC = lpc.available()
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

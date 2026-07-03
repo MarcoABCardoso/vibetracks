@@ -4,11 +4,11 @@ Characters are organized into **casts** — each ``sprites/<name>/`` is a
 self-contained sprite set with its own ``charset.json``, a ``characters/`` folder,
 and the ``assets/`` LPC art it composites. Mirrors the audio CLI:
 
-    python -m vibetracks.vibesprites validate                    # check every cast
-    python -m vibetracks.vibesprites render knight-guild/knight  # composite one -> out/
-    python -m vibetracks.vibesprites render-all                  # every character
-    python -m vibetracks.vibesprites new <char> --cast <c>       # scaffold a character
-    python -m vibetracks.vibesprites new-cast <name>             # scaffold a whole cast
+    python -m vibesprites validate                    # check every cast
+    python -m vibesprites render knight-guild/knight  # composite one -> out/
+    python -m vibesprites render-all                  # every character
+    python -m vibesprites new <char> --cast <c>       # scaffold a character
+    python -m vibesprites new-cast <name>             # scaffold a whole cast
 
 A character may be addressed as ``<cast>/<char>``, as a bare ``<char>`` (with
 ``--cast``, or when only one cast exists), or as a path to its JSON file.
@@ -208,7 +208,7 @@ def cmd_new(args) -> int:
     with open(path, "w", encoding="utf-8") as f:
         json.dump(dict(CHARACTER_TEMPLATE, name=args.name), f, indent=2)
     print(f"scaffolded {path} — edit it, then: "
-          f"python -m vibetracks.vibesprites render {c.name}/{args.name}")
+          f"python -m vibesprites render {c.name}/{args.name}")
     return 0
 
 
@@ -233,12 +233,12 @@ def cmd_new_cast(args) -> int:
     print(f"  charset:    {charset_path}")
     print(f"  character:  {char_path}")
     print(f"  add LPC PNGs under {cdir}/assets/ (or set $VIBETRACKS_LPC_ASSETS), then:")
-    print(f"  render:     python -m vibetracks.vibesprites render-all --cast {args.name}")
+    print(f"  render:     python -m vibesprites render-all --cast {args.name}")
     return 0
 
 
 def main(argv=None) -> int:
-    p = argparse.ArgumentParser(prog="vibetracks.vibesprites", description=__doc__,
+    p = argparse.ArgumentParser(prog="vibesprites", description=__doc__,
                                 formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = p.add_subparsers(dest="cmd", required=True)
 

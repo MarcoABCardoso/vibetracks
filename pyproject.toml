@@ -20,7 +20,7 @@ sprites = ["Pillow>=10"]
 
 [project.scripts]
 vibetracks = "vibetracks.__main__:main"
-vibesprites = "vibetracks.vibesprites.__main__:main"
+vibesprites = "vibesprites.__main__:main"
 
 [tool.setuptools]
-packages = ["vibetracks", "vibetracks.vibesprites"]
+packages = ["vibetracks", "vibesprites"]

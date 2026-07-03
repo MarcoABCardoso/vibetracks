@@ -5,8 +5,8 @@ stack of real [Universal-LPC](https://github.com/jrconway3/Universal-LPC-sprites
 layer PNGs, composited to an 832×1344 spritesheet.
 
 ```bash
-python -m vibetracks.vibesprites validate                    # no Pillow needed
-python -m vibetracks.vibesprites render knight-guild/knight  # needs Pillow (pip install vibetracks[sprites])
+python -m vibesprites validate                    # no Pillow needed
+python -m vibesprites render knight-guild/knight  # needs Pillow (pip install vibetracks[sprites])
 # -> out/sprites/knight-guild/knight.png
 ```
 

@@ -4,7 +4,7 @@ The sprite analogue of :mod:`vibetracks.wavio`: just as a float audio buffer is
 serialized to WAV with the stdlib ``wave`` module, an ``(h, w, 4)`` uint8 RGBA
 array is serialized to a PNG here with stdlib ``zlib`` + ``struct``. No Pillow is
 needed to *write* — reading arbitrary source art is the only thing that needs it
-(see :mod:`vibetracks.vibesprites.lpc`), exactly as FluidSynth is only needed to
+(see :mod:`vibesprites.lpc`), exactly as FluidSynth is only needed to
 read soundfonts, never to write WAVs.
 """
 
