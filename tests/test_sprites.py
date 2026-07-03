@@ -16,7 +16,7 @@ from vibesprites.layers import ENGINES, SHEET_ENGINES
 
 HAVE_LPC = lpc.available()
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-CAST_DIR = os.path.join(ROOT, "sprites", "knight-guild")
+CAST_DIR = os.path.join(ROOT, "sprites", "rpg-party")
 
 
 class TestLayout(unittest.TestCase):
@@ -39,7 +39,7 @@ class TestEngineRegistry(unittest.TestCase):
 
 class TestSpec(unittest.TestCase):
     def test_demo_cast_resolves(self):
-        cast = spec.find_cast("knight-guild", ROOT)
+        cast = spec.find_cast("rpg-party", ROOT)
         charset = cast.load_charset()
         self.assertIsNotNone(charset)
         for name in cast.character_names():
@@ -48,7 +48,7 @@ class TestSpec(unittest.TestCase):
 
     def test_discover_finds_the_cast(self):
         names = [c.name for c in spec.discover_casts(ROOT)]
-        self.assertIn("knight-guild", names)
+        self.assertIn("rpg-party", names)
 
 
 class TestValidation(unittest.TestCase):
@@ -227,17 +227,17 @@ class TestAssemble(unittest.TestCase):
 
 @unittest.skipUnless(HAVE_LPC, "Pillow (lpc engine) not installed")
 class TestRender(unittest.TestCase):
-    def _render_knight(self):
-        cast = spec.find_cast("knight-guild", ROOT)
+    def _render_mage(self):
+        cast = spec.find_cast("rpg-party", ROOT)
         ch = spec.resolve_character(
-            cast.character_path("knight"), cast.load_charset())
+            cast.character_path("mage"), cast.load_charset())
         try:  # first render fetches art; skip (don't fail) when offline
             return compositor.render_sheet(ch, cast.dir)
         except lpc.LPCError as e:
             self.skipTest(f"LPC art unavailable (offline?): {e}")
 
-    def test_knight_composites_to_universal_sheet(self):
-        sheet = self._render_knight()
+    def test_mage_composites_to_universal_sheet(self):
+        sheet = self._render_mage()
         self.assertEqual(sheet.shape, (1344, 832, 4))
         self.assertEqual(sheet.dtype, np.uint8)
         # Compositing real layers must produce visible (non-empty) pixels.
@@ -247,9 +247,9 @@ class TestRender(unittest.TestCase):
     def test_write_png_produces_readable_file(self):
         import tempfile
         from PIL import Image
-        sheet = self._render_knight()
+        sheet = self._render_mage()
         with tempfile.TemporaryDirectory() as d:
-            path = os.path.join(d, "knight.png")
+            path = os.path.join(d, "mage.png")
             pngio.write_png(path, sheet)
             with Image.open(path) as im:
                 self.assertEqual(im.size, (832, 1344))
