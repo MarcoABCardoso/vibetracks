@@ -1,0 +1,26 @@
+{
+  "name": "cleric",
+  "extends": "../charset.json",
+  "layers": [
+    {
+      "layer": "body",
+      "variant": "male/light"
+    },
+    {
+      "layer": "legs",
+      "variant": "pants/male/white_pants_male"
+    },
+    {
+      "layer": "feet",
+      "variant": "shoes/male/black_shoes_male"
+    },
+    {
+      "layer": "torso",
+      "variant": "gold/chest_male"
+    },
+    {
+      "layer": "hair",
+      "variant": "male/plain/blonde"
+    }
+  ]
+}

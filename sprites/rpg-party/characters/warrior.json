@@ -1,0 +1,26 @@
+{
+  "name": "warrior",
+  "extends": "../charset.json",
+  "layers": [
+    {
+      "layer": "body",
+      "variant": "male/light"
+    },
+    {
+      "layer": "legs",
+      "variant": "armor/male/metal_pants_male"
+    },
+    {
+      "layer": "feet",
+      "variant": "armor/male/metal_boots_male"
+    },
+    {
+      "layer": "torso",
+      "variant": "plate/chest_male"
+    },
+    {
+      "layer": "head",
+      "variant": "helms/male/metal_helm_male"
+    }
+  ]
+}

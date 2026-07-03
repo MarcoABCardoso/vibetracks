@@ -1,0 +1,65 @@
+{
+  "name": "mage",
+  "extends": "../charset.json",
+  "layers": [
+    {
+      "layer": "body",
+      "variant": "male/light"
+    },
+    {
+      "layer": "legs",
+      "variant": "pants/male/white_pants_male",
+      "recolor": {
+        "#000000": "#141030",
+        "#281820": "#211b4d",
+        "#2c2d17": "#28215d",
+        "#2c2d18": "#28215d",
+        "#2c2d19": "#28215d",
+        "#2d2e18": "#28215e",
+        "#2d3f39": "#2f276d",
+        "#547d84": "#4a3eaa",
+        "#686869": "#44399d",
+        "#7a979d": "#6054bd",
+        "#c6c7c9": "#938bd6",
+        "#d5d7da": "#a39bdd",
+        "#e4e4e5": "#afa9e4",
+        "#fafafa": "#c4bfee"
+      }
+    },
+    {
+      "layer": "feet",
+      "variant": "shoes/male/black_shoes_male"
+    },
+    {
+      "layer": "torso",
+      "variant": "leather/chest_male",
+      "recolor": {
+        "#1d131e": "#1e1947",
+        "#241213": "#1e1947",
+        "#2e2533": "#26205a",
+        "#301210": "#1f1a49",
+        "#311210": "#1f1a4a",
+        "#31313e": "#2b2464",
+        "#322125": "#251e56",
+        "#411e05": "#241e55",
+        "#444455": "#342b78",
+        "#4a2a12": "#2a2261",
+        "#4a5057": "#392f83",
+        "#4b2b13": "#2a2362",
+        "#4d4a5d": "#372e7f",
+        "#704325": "#362d7e",
+        "#726b7e": "#473ba3",
+        "#734e2b": "#3b3187",
+        "#744f2c": "#3b3188",
+        "#75502d": "#3b3189",
+        "#9a6f37": "#4a3ea9",
+        "#a8c4b1": "#8a80d1",
+        "#aa8550": "#584cb9"
+      }
+    },
+    {
+      "layer": "head",
+      "variant": "hoods/male/cloth_hood_male"
+    }
+  ]
+}
