@@ -1,12 +1,12 @@
 # knight-guild — LPC sprite cast (demo / PoC)
 
-A worked demo of the `spritekit` **LPC-compositor** engine: a character is a JSON
+A worked demo of the `vibesprites` **LPC-compositor** engine: a character is a JSON
 stack of real [Universal-LPC](https://github.com/jrconway3/Universal-LPC-spritesheet)
 layer PNGs, composited to an 832×1344 spritesheet.
 
 ```bash
-python -m vibetracks.spritekit validate                    # no Pillow needed
-python -m vibetracks.spritekit render knight-guild/knight  # needs Pillow (pip install vibetracks[sprites])
+python -m vibetracks.vibesprites validate                    # no Pillow needed
+python -m vibetracks.vibesprites render knight-guild/knight  # needs Pillow (pip install vibetracks[sprites])
 # -> out/sprites/knight-guild/knight.png
 ```
 

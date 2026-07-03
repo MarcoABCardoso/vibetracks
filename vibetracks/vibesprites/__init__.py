@@ -1,4 +1,4 @@
-"""VibeTracks spritekit — model characters as JSON, composite them to PNG sheets.
+"""VibeSprites — model characters as JSON, composite them to PNG sheets.
 
 The sprite counterpart of the audio engine: a JSON *sprite spec* describes a
 character as a stack of LPC layers, and the compositor renders it to a Universal-LPC

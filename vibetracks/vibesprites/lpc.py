@@ -12,7 +12,7 @@ depends only on numpy; Pillow is imported lazily and a missing library raises
 be rendered. Validation never imports Pillow.
 
 Reading source art needs Pillow; *writing* the finished sheet does not
-(:mod:`vibetracks.spritekit.pngio` uses the stdlib) — the same split as
+(:mod:`vibetracks.vibesprites.pngio` uses the stdlib) — the same split as
 soundfont-reads vs. wavio-writes.
 """
 

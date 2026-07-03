@@ -1,4 +1,4 @@
-"""Tests for the sprite spritekit subsystem.
+"""Tests for the vibesprites subsystem.
 
 The spec loaders, validators, and the pure ``expand_layers`` resolve step always
 run — they depend only on numpy. The actual composite render is gated behind
@@ -11,8 +11,8 @@ import unittest
 
 import numpy as np
 
-from vibetracks.spritekit import compositor, layout, lpc, pngio, spec
-from vibetracks.spritekit.layers import ENGINES, SHEET_ENGINES
+from vibetracks.vibesprites import compositor, layout, lpc, pngio, spec
+from vibetracks.vibesprites.layers import ENGINES, SHEET_ENGINES
 
 HAVE_LPC = lpc.available()
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
