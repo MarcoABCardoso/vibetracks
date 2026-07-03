@@ -1,0 +1,73 @@
+{
+  "name": "clash-of-blades",
+  "extends": "../soundtrack.json",
+  "_comment": "Battle. The hero_theme is compressed to double-speed (diminution) and hammered out by the horns as a driving riff, with the 'omen' cell snarling underneath in the low brass. Taiko and timpani pound eighths; pizz + cello drive the bass. A(statement) then B(heavier, trumpet + choir stabs) which loops.",
+  "bpm": 150,
+  "time_signature": [4, 4],
+  "loops": 1,
+
+  "sections": [
+    {
+      "name": "intro",
+      "bars": 4,
+      "_comment": "Drums call to arms: taiko + timpani build, pizz stabs, no melody.",
+      "parts": {
+        "taiko":   { "instrument": "taiko", "gain": 0.85,
+                     "notes": [["D2", 0.5]], "repeat": 32 },
+        "timpani": { "instrument": "timpani", "gain": 0.7,
+                     "notes": [["D2", 1], ["A2", 1], ["D2", 1], ["A2", 1]], "repeat": 4 },
+        "pizz":    { "instrument": "pizz", "chords": ["Dm", "Dm", "A", "A"], "chord_beats": 4, "gain": 0.6 },
+        "aura":    { "instrument": "aura", "notes": [["D2", 16]], "gain": 0.9 }
+      }
+    },
+    {
+      "name": "A",
+      "bars": 8,
+      "_comment": "Horns hammer the diminished hero_theme as the riff; bassoon growls the omen; taiko/pizz drive. i - bVI - bVII - V.",
+      "parts": {
+        "horn":    { "instrument": "horn", "motif": "hero_theme", "stretch": 0.5, "repeat": 8, "pan": -0.05, "gain": 0.9 },
+        "bassoon": { "instrument": "bassoon", "motif": "omen", "repeat": 8, "pan": 0.15, "gain": 0.6 },
+        "taiko":   { "instrument": "taiko", "gain": 0.75, "notes": [["D2", 0.5]], "repeat": 64 },
+        "timpani": { "instrument": "timpani", "gain": 0.6,
+                     "notes": [["D2", 1], [null, 1], ["D2", 0.5], ["D2", 0.5], ["A2", 1]], "repeat": 8 },
+        "pizz":    { "instrument": "pizz", "chords": ["Dm", "Bb", "C", "A", "Dm", "Bb", "A", "A"], "chord_beats": 4, "gain": 0.55 },
+        "cello":   { "instrument": "cello", "gain": 0.8,
+                     "notes": [["D2", 0.5], ["D2", 0.5], ["D3", 0.5], ["D2", 0.5], ["A2", 0.5], ["A2", 0.5], ["A2", 0.5], ["A2", 0.5],
+                               ["Bb1", 0.5], ["Bb1", 0.5], ["Bb2", 0.5], ["Bb1", 0.5], ["F2", 0.5], ["F2", 0.5], ["F2", 0.5], ["F2", 0.5],
+                               ["C2", 0.5], ["C2", 0.5], ["C3", 0.5], ["C2", 0.5], ["G2", 0.5], ["G2", 0.5], ["G2", 0.5], ["G2", 0.5],
+                               ["A1", 0.5], ["A1", 0.5], ["A2", 0.5], ["A1", 0.5], ["A1", 0.5], ["A1", 0.5], ["A2", 0.5], ["A1", 0.5],
+                               ["D2", 0.5], ["D2", 0.5], ["D3", 0.5], ["D2", 0.5], ["A2", 0.5], ["A2", 0.5], ["A2", 0.5], ["A2", 0.5],
+                               ["Bb1", 0.5], ["Bb1", 0.5], ["Bb2", 0.5], ["Bb1", 0.5], ["F2", 0.5], ["F2", 0.5], ["F2", 0.5], ["F2", 0.5],
+                               ["A1", 0.5], ["A1", 0.5], ["A2", 0.5], ["A1", 0.5], ["A1", 0.5], ["E2", 0.5], ["A1", 0.5], ["E2", 0.5],
+                               ["A1", 0.5], ["A1", 0.5], ["A2", 0.5], ["A1", 0.5], ["A1", 0.5], ["A1", 0.5], ["A2", 0.5], ["A1", 0.5]] }
+      }
+    },
+    {
+      "name": "B",
+      "bars": 8,
+      "loop": true,
+      "_comment": "Full assault and loop point: brass tutti carries the diminished theme, trumpet fires the fanfare, choir stabs, trombone drags the omen down an octave. Everything drives.",
+      "parts": {
+        "brass":   { "instrument": "brass", "motif": "hero_theme", "stretch": 0.5, "repeat": 8, "pan": -0.1, "gain": 0.85 },
+        "trumpet": { "instrument": "trumpet", "motif": "fanfare", "stretch": 0.5, "repeat": 8, "transpose": 12, "pan": 0.2, "gain": 0.55 },
+        "trombone":{ "instrument": "trombone", "motif": "omen", "repeat": 8, "transpose": -12, "pan": 0.1, "gain": 0.55 },
+        "choir":   { "instrument": "choir", "chords": ["Dm", "Bb", "C", "A", "Dm", "Bb", "A", "A"], "chord_beats": 4, "gain": 0.45 },
+        "taiko":   { "instrument": "taiko", "gain": 0.8, "notes": [["D2", 0.5]], "repeat": 64 },
+        "timpani": { "instrument": "timpani", "gain": 0.65,
+                     "notes": [["D2", 0.5], ["D2", 0.5], ["D2", 0.5], ["D2", 0.5], ["A2", 0.5], ["A2", 0.5], ["A2", 0.5], ["A2", 0.5]], "repeat": 8 },
+        "cello":   { "instrument": "cello", "gain": 0.85,
+                     "notes": [["D2", 0.5], ["D2", 0.5], ["D3", 0.5], ["D2", 0.5], ["A2", 0.5], ["A2", 0.5], ["A2", 0.5], ["A2", 0.5],
+                               ["Bb1", 0.5], ["Bb1", 0.5], ["Bb2", 0.5], ["Bb1", 0.5], ["F2", 0.5], ["F2", 0.5], ["F2", 0.5], ["F2", 0.5],
+                               ["C2", 0.5], ["C2", 0.5], ["C3", 0.5], ["C2", 0.5], ["G2", 0.5], ["G2", 0.5], ["G2", 0.5], ["G2", 0.5],
+                               ["A1", 0.5], ["A1", 0.5], ["A2", 0.5], ["A1", 0.5], ["A1", 0.5], ["A1", 0.5], ["A2", 0.5], ["A1", 0.5],
+                               ["D2", 0.5], ["D2", 0.5], ["D3", 0.5], ["D2", 0.5], ["A2", 0.5], ["A2", 0.5], ["A2", 0.5], ["A2", 0.5],
+                               ["Bb1", 0.5], ["Bb1", 0.5], ["Bb2", 0.5], ["Bb1", 0.5], ["F2", 0.5], ["F2", 0.5], ["F2", 0.5], ["F2", 0.5],
+                               ["A1", 0.5], ["A1", 0.5], ["A2", 0.5], ["A1", 0.5], ["A1", 0.5], ["E2", 0.5], ["A1", 0.5], ["E2", 0.5],
+                               ["D2", 1], ["A2", 1], ["D2", 1], ["A2", 1]] },
+        "bass":    { "instrument": "bass", "gain": 0.7,
+                     "notes": [["D1", 4], ["Bb0", 4], ["C1", 4], ["A0", 4],
+                               ["D1", 4], ["Bb0", 4], ["A0", 4], ["A0", 4]] }
+      }
+    }
+  ]
+}

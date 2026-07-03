@@ -1,0 +1,43 @@
+{
+  "name": "catacombs",
+  "extends": "../soundtrack.json",
+  "_comment": "The dungeon: tombs beneath the temple. A held D pedal under shifting tremolo strings and a dim chord; the 'omen' cell crawls in the low bassoon and trombone; a dulcimer drips single eerie notes. Dread and space — no melody to hum, the texture is the fear.",
+  "bpm": 84,
+  "time_signature": [4, 4],
+  "loops": 2,
+
+  "sections": [
+    {
+      "name": "intro",
+      "bars": 4,
+      "_comment": "Descent: aura sub-pedal on D, tremolo strings creep from i to the leading-tone dim, a lone timpani.",
+      "parts": {
+        "aura":    { "instrument": "aura", "notes": [["D2", 16]], "gain": 1.0 },
+        "tremolo": { "instrument": "tremolo", "chords": ["Dm", "Dm", "C#dim", "C#dim"], "chord_beats": 4, "gain": 0.6 },
+        "timpani": { "instrument": "timpani", "gain": 0.5,
+                     "notes": [["D2", 0.5], [null, 7.5], ["D2", 0.5], [null, 7.5]] }
+      }
+    },
+    {
+      "name": "A",
+      "bars": 8,
+      "loop": true,
+      "_comment": "The omen cell stalks the low bassoon; trombone shadows it a phrase later; tremolo strings shift over the D pedal through dim colors; the dulcimer drips high, unresolved notes. Occasional taiko like a far-off door.",
+      "parts": {
+        "bassoon":  { "instrument": "bassoon", "motif": "omen", "repeat": 8, "pan": -0.2, "gain": 0.75 },
+        "trombone": { "instrument": "trombone", "motif": "omen", "repeat": 8, "transpose": -12, "retrograde": true, "pan": 0.2, "gain": 0.4 },
+        "tremolo":  { "instrument": "tremolo", "chords": ["Dm", "Ebdim", "Dm", "C#dim", "Gm", "Ebdim", "A", "A"], "chord_beats": 4, "gain": 0.6 },
+        "aura":     { "instrument": "aura", "notes": [["D2", 16], ["D2", 12], ["A2", 4]], "gain": 0.95 },
+        "dulcimer": { "instrument": "dulcimer", "gain": 0.4, "pan": 0.35,
+                      "notes": [["A5", 0.5], [null, 5.5], ["Bb5", 0.5], [null, 3.5],
+                                ["Eb5", 0.5], [null, 5.5], ["C#5", 0.5], [null, 5.5],
+                                ["A5", 0.5], [null, 3.5]] },
+        "timpani":  { "instrument": "timpani", "gain": 0.55,
+                      "notes": [["D2", 0.5], [null, 7.5], ["Bb1", 0.5], [null, 7.5],
+                                ["D2", 0.5], [null, 7.5], ["A2", 0.5], [null, 3.5], ["A2", 0.5], [null, 3.5]] },
+        "taiko":    { "instrument": "taiko", "gain": 0.35, "pan": -0.1,
+                      "notes": [["D2", 0.5], [null, 15.5], ["D2", 0.5], ["D2", 0.5], [null, 14.5]] }
+      }
+    }
+  ]
+}

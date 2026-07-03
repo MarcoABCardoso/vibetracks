@@ -1,0 +1,94 @@
+{
+  "title": "Sunspire",
+  "aesthetic": "mythic-heroic orchestral (sample-based)",
+  "_comment": "An epic score for a mythic ancient world — sun-worshipping desert empire of gods, temples and ruins; heroic and adventurous. Full orchestra via the 'soundfont' engine (FluidSynth + FluidR3_GM): brass, strings, double reeds, choir, harp, timpani and war-drum, plus a santur-like dulcimer for desert color. A single soft synth pad ('aura') breathes underneath, proving the sample and synth engines mix in one score. Home mode is D harmonic minor — the augmented second between Bb and C# gives the exotic, ceremonial flavor; heroic cues borrow D/F/Bb major. Requires FluidSynth + a GM soundfont (see CLAUDE.md).",
+
+  "key": "D harmonic_minor",
+  "bpm": 100,
+
+  "palette": {
+    "horn":      { "engine": "soundfont", "program": 60, "gain": 0.9,  "reverb": { "decay": 2.4, "mix": 0.28 } },
+    "trumpet":   { "engine": "soundfont", "program": 56, "gain": 0.85, "reverb": { "decay": 2.2, "mix": 0.26 } },
+    "trombone":  { "engine": "soundfont", "program": 57, "gain": 0.85, "reverb": { "decay": 2.2, "mix": 0.24 } },
+    "brass":     { "engine": "soundfont", "program": 61, "gain": 0.8,  "reverb": { "decay": 2.2, "mix": 0.26 } },
+
+    "strings":   { "engine": "soundfont", "program": 48, "gain": 0.72, "octave": 3, "reverb": { "decay": 2.8, "mix": 0.32 } },
+    "tremolo":   { "engine": "soundfont", "program": 44, "gain": 0.6,  "octave": 3, "reverb": { "decay": 2.8, "mix": 0.34 } },
+    "pizz":      { "engine": "soundfont", "program": 45, "gain": 0.7,  "octave": 3, "reverb": { "decay": 1.8, "mix": 0.20 } },
+    "viola":     { "engine": "soundfont", "program": 41, "gain": 0.68, "reverb": { "decay": 2.4, "mix": 0.28 } },
+    "cello":     { "engine": "soundfont", "program": 42, "gain": 0.82, "reverb": { "decay": 2.2, "mix": 0.24 } },
+    "bass":      { "engine": "soundfont", "program": 43, "gain": 0.9,  "reverb": { "decay": 2.0, "mix": 0.18 } },
+
+    "oboe":       { "engine": "soundfont", "program": 68, "gain": 0.7,  "reverb": { "decay": 2.2, "mix": 0.28 } },
+    "englishhorn":{ "engine": "soundfont", "program": 69, "gain": 0.72, "reverb": { "decay": 2.2, "mix": 0.28 } },
+    "flute":      { "engine": "soundfont", "program": 73, "gain": 0.68, "reverb": { "decay": 2.2, "mix": 0.28 } },
+    "clarinet":   { "engine": "soundfont", "program": 71, "gain": 0.7,  "reverb": { "decay": 2.2, "mix": 0.26 } },
+    "bassoon":    { "engine": "soundfont", "program": 70, "gain": 0.78, "reverb": { "decay": 2.0, "mix": 0.22 } },
+    "panflute":   { "engine": "soundfont", "program": 75, "gain": 0.7,  "reverb": { "decay": 2.6, "mix": 0.34 } },
+
+    "harp":      { "engine": "soundfont", "program": 46, "gain": 0.66, "octave": 4, "reverb": { "decay": 2.4, "mix": 0.30 } },
+    "dulcimer":  { "engine": "soundfont", "program": 15, "gain": 0.6,  "octave": 4, "reverb": { "decay": 2.2, "mix": 0.30 } },
+
+    "choir":     { "engine": "soundfont", "program": 52, "gain": 0.7,  "octave": 4, "reverb": { "decay": 3.2, "mix": 0.38 } },
+    "voice":     { "engine": "soundfont", "program": 53, "gain": 0.62, "octave": 4, "reverb": { "decay": 3.2, "mix": 0.38 } },
+
+    "timpani":   { "engine": "soundfont", "program": 47, "gain": 0.85, "reverb": { "decay": 2.4, "mix": 0.22 } },
+    "taiko":     { "engine": "soundfont", "program": 116, "gain": 0.9, "reverb": { "decay": 1.8, "mix": 0.16 } },
+
+    "aura": {
+      "_comment": "Stage 1 synth pad — a warm analog bed under the orchestra, tuned low. The two engine families coexisting.",
+      "engine": "subtractive", "wave": "saw", "voices": 5, "detune": 0.012,
+      "adsr": [0.8, 0.5, 0.85, 1.0], "filter": 1900, "gain": 0.2, "octave": 2,
+      "chorus": { "rate": 0.4, "depth": 0.0022, "mix": 0.4 },
+      "reverb": { "decay": 3.0, "mix": 0.34 }
+    }
+  },
+
+  "motifs": {
+    "hero_theme": {
+      "_comment": "8 beats / 2 bars in D minor. THE leitmotif: a noble climb to a Bb yearning-note, then a stepwise settle home. Rhythmic fingerprint = the dotted 1.5+0.5 peak. Sung by horn/strings; stated in full only in the overture.",
+      "notes": [
+        ["D4", 1], ["A4", 1], ["Bb4", 1.5], ["A4", 0.5],
+        ["G4", 1], ["F4", 1], ["E4", 1], ["D4", 1]
+      ]
+    },
+    "fanfare": {
+      "_comment": "4 beats. A rising D-minor arpeggio brass call that crests on D5 — the heraldic stinger for titles and victory.",
+      "notes": [
+        ["A3", 0.5], ["D4", 0.5], ["F4", 0.5], ["A4", 0.5],
+        ["D5", 1], ["A4", 1]
+      ]
+    },
+    "sands": {
+      "_comment": "8 beats. The wandering desert theme — leans on the augmented second (Bb->C#) for a snake-charmer, sun-baked lilt. For exploration and the oasis. Home on oboe / pan flute.",
+      "notes": [
+        ["A4", 1], ["Bb4", 0.5], ["C#5", 0.5], ["D5", 1], ["C#5", 0.5], ["Bb4", 0.5],
+        ["A4", 1], ["G4", 0.5], ["F4", 0.5], ["E4", 1], ["F4", 0.5], ["D4", 0.5]
+      ]
+    },
+    "omen": {
+      "_comment": "4 beats. Low, chromatic dread — a Phrygian b2 sigh (Eb) sinking to the tritone-shadowed Bb. The danger/menace cell for catacombs, battle and boss.",
+      "notes": [
+        ["D3", 1], ["Eb3", 0.5], ["D3", 0.5], ["A2", 1], ["Bb2", 1]
+      ]
+    },
+    "hymn": {
+      "_comment": "8 beats. A slow, reverent sacred phrase, mostly stepwise with an open plagal lift — for the sun-temple, sung by the choir.",
+      "notes": [
+        ["D4", 2], ["F4", 1], ["G4", 1], ["A4", 2], ["G4", 1], ["F4", 1]
+      ]
+    }
+  },
+
+  "tracks": [
+    "overture",
+    "sunspire-temple",
+    "desert-road",
+    "oasis",
+    "catacombs",
+    "clash-of-blades",
+    "the-god-king",
+    "triumph",
+    "the-long-road-home"
+  ]
+}
