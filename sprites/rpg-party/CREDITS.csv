@@ -1,0 +1,22 @@
+source_path,category,authors,license,fetched_from
+body/male/light.png,body,"Stephen Challener (Redshrike); Johannes Sjölund (wulax); Matthew Krohn; Marcus Nelson (makrohn)","CC-BY-SA 3.0 / GPL 3.0",https://github.com/jrconway3/Universal-LPC-spritesheet
+body/male/tanned2.png,body,"Stephen Challener (Redshrike); Johannes Sjölund (wulax); Matthew Krohn","CC-BY-SA 3.0 / GPL 3.0",https://github.com/jrconway3/Universal-LPC-spritesheet
+body/female/light.png,body,"Stephen Challener (Redshrike); Johannes Sjölund (wulax); Matthew Krohn","CC-BY-SA 3.0 / GPL 3.0",https://github.com/jrconway3/Universal-LPC-spritesheet
+hair/male/plain/blonde.png,hair,"Manuel Riecke (MrBeast); Marcus Nelson (makrohn)","CC-BY-SA 3.0 / GPL 3.0",https://github.com/jrconway3/Universal-LPC-spritesheet
+hair/male/messy2/brown.png,hair,"Manuel Riecke (MrBeast); Marcus Nelson (makrohn)","CC-BY-SA 3.0 / GPL 3.0",https://github.com/jrconway3/Universal-LPC-spritesheet
+hair/female/long/black.png,hair,"Manuel Riecke (MrBeast); Marcus Nelson (makrohn)","CC-BY-SA 3.0 / GPL 3.0",https://github.com/jrconway3/Universal-LPC-spritesheet
+torso/plate/chest_male.png,torso,"Johannes Sjölund (wulax)","CC-BY-SA 3.0 / GPL 3.0",https://github.com/jrconway3/Universal-LPC-spritesheet
+torso/gold/chest_male.png,torso,"Johannes Sjölund (wulax); Matthew Krohn (recolor)","CC-BY-SA 3.0 / GPL 3.0",https://github.com/jrconway3/Universal-LPC-spritesheet
+torso/leather/chest_male.png,torso,"Johannes Sjölund (wulax)","CC-BY-SA 3.0 / GPL 3.0",https://github.com/jrconway3/Universal-LPC-spritesheet
+torso/leather/shoulders_male.png,shoulders,"Johannes Sjölund (wulax)","CC-BY-SA 3.0 / GPL 3.0",https://github.com/jrconway3/Universal-LPC-spritesheet
+hands/bracers/male/leather_bracers_male.png,hands,"Johannes Sjölund (wulax)","CC-BY-SA 3.0 / GPL 3.0",https://github.com/jrconway3/Universal-LPC-spritesheet
+legs/armor/male/metal_pants_male.png,legs,"Johannes Sjölund (wulax)","CC-BY-SA 3.0 / GPL 3.0",https://github.com/jrconway3/Universal-LPC-spritesheet
+legs/pants/male/teal_pants_male.png,legs,"Liberated Pixel Cup contributors (see upstream AUTHORS.txt)","CC-BY-SA 3.0 / GPL 3.0",https://github.com/jrconway3/Universal-LPC-spritesheet
+legs/pants/male/white_pants_male.png,legs,"Liberated Pixel Cup contributors (see upstream AUTHORS.txt)","CC-BY-SA 3.0 / GPL 3.0",https://github.com/jrconway3/Universal-LPC-spritesheet
+legs/pants/female/white_pants_female.png,legs,"Liberated Pixel Cup contributors (see upstream AUTHORS.txt)","CC-BY-SA 3.0 / GPL 3.0",https://github.com/jrconway3/Universal-LPC-spritesheet
+feet/armor/male/metal_boots_male.png,feet,"Johannes Sjölund (wulax)","CC-BY-SA 3.0 / GPL 3.0",https://github.com/jrconway3/Universal-LPC-spritesheet
+feet/shoes/male/black_shoes_male.png,feet,"Liberated Pixel Cup contributors (see upstream AUTHORS.txt)","CC-BY-SA 3.0 / GPL 3.0",https://github.com/jrconway3/Universal-LPC-spritesheet
+feet/shoes/female/black_shoes_female.png,feet,"Liberated Pixel Cup contributors (see upstream AUTHORS.txt)","CC-BY-SA 3.0 / GPL 3.0",https://github.com/jrconway3/Universal-LPC-spritesheet
+head/helms/male/metal_helm_male.png,head,"Johannes Sjölund (wulax)","CC-BY-SA 3.0 / GPL 3.0",https://github.com/jrconway3/Universal-LPC-spritesheet
+torso/clothes/robe/female/<anim>/purple.png (assembled),torso,"Luke Mehl","CC-BY-SA 3.0 / GPL 3.0 (https://opengameart.org/content/female-mage-clothing-set)",https://github.com/LiberatedPixelCup/Universal-LPC-Spritesheet-Character-Generator
+hat/magic/wizard/base/adult/<anim>/base_black.png (assembled),head,"Michael Whitlock (bigbeargames); Tuomo Untinen (reemax); JaidynReiman","CC-BY-SA 3.0 / GPL 2.0 / GPL 3.0 (LPC pointed hats)",https://github.com/LiberatedPixelCup/Universal-LPC-Spritesheet-Character-Generator

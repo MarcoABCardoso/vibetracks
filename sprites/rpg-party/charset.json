@@ -1,0 +1,50 @@
+{
+  "title": "Adventurers' Guild",
+  "style": "lpc",
+  "_comment": "A stereotypical 4-person RPG party \u2014 tank, scout, caster, healer \u2014 each a z-ordered stack of real Universal-LPC layers fetched from 'remote'. The mage's blue robe is the same leather+cloth art recolored by the engine.",
+  "frame": [
+    64,
+    64
+  ],
+  "remote": "https://raw.githubusercontent.com/jrconway3/Universal-LPC-spritesheet/master",
+  "palette": {
+    "body": {
+      "engine": "lpc",
+      "zPos": 10
+    },
+    "legs": {
+      "engine": "lpc",
+      "zPos": 30
+    },
+    "feet": {
+      "engine": "lpc",
+      "zPos": 40
+    },
+    "torso": {
+      "engine": "lpc",
+      "zPos": 50
+    },
+    "shoulders": {
+      "engine": "lpc",
+      "zPos": 55
+    },
+    "hands": {
+      "engine": "lpc",
+      "zPos": 58
+    },
+    "hair": {
+      "engine": "lpc",
+      "zPos": 60
+    },
+    "head": {
+      "engine": "lpc",
+      "zPos": 70
+    }
+  },
+  "characters": [
+    "warrior",
+    "ranger",
+    "mage",
+    "cleric"
+  ]
+}

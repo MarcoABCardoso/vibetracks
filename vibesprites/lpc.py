@@ -33,6 +33,8 @@ import urllib.request
 
 import numpy as np
 
+from . import layout
+
 # A relative layer ``source`` (e.g. ``body/male/light.png``) is resolved against,
 # in order: a local checkout in $VIBESPRITES_ASSETS, the download cache, then the
 # remote base (fetched into the cache). The default remote is the upstream LPC art.
@@ -141,6 +143,48 @@ def load_layer_sheet(path: str) -> np.ndarray:
         raise LPCError(f"{e}\n  {_INSTALL_HINT}") from e
     with Image.open(path) as im:
         return np.asarray(im.convert("RGBA"), dtype=np.uint8)
+
+
+def assemble_sheet(assemble: dict, cast_dir: str | None = None,
+                   remote: str | None = None) -> np.ndarray:
+    """Build a classic 832x1344 sheet from a *split-per-animation* source.
+
+    The modern LPC library stores one PNG per animation (``<base>/<anim>/<color>.png``)
+    instead of one combined sheet, which unlocks thousands of assets (robes, cloaks,
+    hats…) the classic set lacks. Given ``assemble = {"base", "color", "slot"?}``, this
+    fetches each classic animation's file and pastes it at that animation's row, so the
+    result drops into the same compositor as a combined layer.
+
+    Animations the source omits (e.g. a robe with no ``thrust``) are skipped, leaving
+    those rows transparent. Oversize-frame art (some weapons) does not fit the 64px grid
+    and is out of scope here.
+    """
+    base = assemble["base"].rstrip("/")
+    color = assemble["color"]
+    slot = assemble.get("slot")
+    mid = f"{slot}/" if slot else ""
+    canvas = np.zeros((layout.HEIGHT, layout.WIDTH, 4), dtype=np.uint8)
+    placed = 0
+    for name, _frames, _dirs in layout.ANIMATIONS:
+        sub = f"{base}/{name}/{mid}{color}.png"
+        try:
+            path = find_asset(sub, cast_dir, remote=remote)
+        except LPCError:
+            continue  # this source has no art for that animation
+        _paste_animation(canvas, load_layer_sheet(path), name)
+        placed += 1
+    if placed == 0:
+        raise LPCError(f"assemble found no animations under {base!r} "
+                       f"(color {color!r}).\n  {_INSTALL_HINT}")
+    return canvas
+
+
+def _paste_animation(canvas: np.ndarray, sheet: np.ndarray, anim: str) -> None:
+    """Paste a per-animation sheet into ``canvas`` at that animation's row block."""
+    y = layout.animation_row(anim) * layout.FRAME
+    h = min(sheet.shape[0], canvas.shape[0] - y)
+    w = min(sheet.shape[1], canvas.shape[1])
+    canvas[y:y + h, 0:w] = sheet[:h, :w]
 
 
 def recolor(arr: np.ndarray, mapping: dict) -> np.ndarray:

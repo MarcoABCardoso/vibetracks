@@ -16,7 +16,7 @@ from vibesprites.layers import ENGINES, SHEET_ENGINES
 
 HAVE_LPC = lpc.available()
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-CAST_DIR = os.path.join(ROOT, "sprites", "knight-guild")
+CAST_DIR = os.path.join(ROOT, "sprites", "rpg-party")
 
 
 class TestLayout(unittest.TestCase):
@@ -39,7 +39,7 @@ class TestEngineRegistry(unittest.TestCase):
 
 class TestSpec(unittest.TestCase):
     def test_demo_cast_resolves(self):
-        cast = spec.find_cast("knight-guild", ROOT)
+        cast = spec.find_cast("rpg-party", ROOT)
         charset = cast.load_charset()
         self.assertIsNotNone(charset)
         for name in cast.character_names():
@@ -48,7 +48,7 @@ class TestSpec(unittest.TestCase):
 
     def test_discover_finds_the_cast(self):
         names = [c.name for c in spec.discover_casts(ROOT)]
-        self.assertIn("knight-guild", names)
+        self.assertIn("rpg-party", names)
 
 
 class TestValidation(unittest.TestCase):
@@ -86,6 +86,17 @@ class TestValidation(unittest.TestCase):
     def test_valid_character_accepted(self):
         spec._validate_character(
             self._char([{"layer": "body", "variant": "v"}]), "x")
+
+    def test_bad_assemble_rejected(self):
+        with self.assertRaises(spec.SpriteSpecError):
+            spec._validate_character(
+                self._char([{"layer": "body", "variant": "v",
+                             "assemble": {"base": "http://x"}}]), "x")  # missing color
+
+    def test_valid_assemble_accepted(self):
+        spec._validate_character(
+            self._char([{"layer": "body", "variant": "v",
+                         "assemble": {"base": "http://x", "color": "blue"}}]), "x")
 
 
 class TestExpandLayers(unittest.TestCase):
@@ -187,18 +198,46 @@ class TestFindAsset(unittest.TestCase):
 
 
 @unittest.skipUnless(HAVE_LPC, "Pillow (lpc engine) not installed")
+class TestAssemble(unittest.TestCase):
+    """Assembling split-per-animation art into the classic grid — no network."""
+
+    def test_places_present_animations_and_skips_missing(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as base:
+            # A local 'source' with only walk + spellcast files (as an absolute base).
+            for anim, frames in (("walk", 9), ("spellcast", 7)):
+                d = os.path.join(base, anim)
+                os.makedirs(d)
+                tile = np.zeros((4 * 64, frames * 64, 4), dtype=np.uint8)
+                tile[..., :] = (20, 200, 40, 255)  # opaque green
+                pngio.write_png(os.path.join(d, "x.png"), tile)
+            sheet = lpc.assemble_sheet({"base": base, "color": "x"})
+            self.assertEqual(sheet.shape, (layout.HEIGHT, layout.WIDTH, 4))
+            wy = layout.animation_row("walk") * 64
+            self.assertGreater(int(sheet[wy:wy + 256, :576, 3].min()), 0)   # walk filled
+            ty = layout.animation_row("thrust") * 64
+            self.assertEqual(int(sheet[ty:ty + 256, :, 3].max()), 0)        # thrust absent
+
+    def test_no_animations_raises(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as base:
+            with self.assertRaises(lpc.LPCError):
+                lpc.assemble_sheet({"base": base, "color": "nope"})
+
+
+@unittest.skipUnless(HAVE_LPC, "Pillow (lpc engine) not installed")
 class TestRender(unittest.TestCase):
-    def _render_knight(self):
-        cast = spec.find_cast("knight-guild", ROOT)
+    def _render_mage(self):
+        cast = spec.find_cast("rpg-party", ROOT)
         ch = spec.resolve_character(
-            cast.character_path("knight"), cast.load_charset())
+            cast.character_path("mage"), cast.load_charset())
         try:  # first render fetches art; skip (don't fail) when offline
             return compositor.render_sheet(ch, cast.dir)
         except lpc.LPCError as e:
             self.skipTest(f"LPC art unavailable (offline?): {e}")
 
-    def test_knight_composites_to_universal_sheet(self):
-        sheet = self._render_knight()
+    def test_mage_composites_to_universal_sheet(self):
+        sheet = self._render_mage()
         self.assertEqual(sheet.shape, (1344, 832, 4))
         self.assertEqual(sheet.dtype, np.uint8)
         # Compositing real layers must produce visible (non-empty) pixels.
@@ -208,9 +247,9 @@ class TestRender(unittest.TestCase):
     def test_write_png_produces_readable_file(self):
         import tempfile
         from PIL import Image
-        sheet = self._render_knight()
+        sheet = self._render_mage()
         with tempfile.TemporaryDirectory() as d:
-            path = os.path.join(d, "knight.png")
+            path = os.path.join(d, "mage.png")
             pngio.write_png(path, sheet)
             with Image.open(path) as im:
                 self.assertEqual(im.size, (832, 1344))

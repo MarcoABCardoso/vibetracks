@@ -5,7 +5,7 @@ self-contained sprite set with its own ``charset.json``, a ``characters/`` folde
 and the ``assets/`` LPC art it composites. Mirrors the audio CLI:
 
     python -m vibesprites validate                    # check every cast
-    python -m vibesprites render knight-guild/knight  # composite one -> out/
+    python -m vibesprites render rpg-party/warrior     # composite one -> out/
     python -m vibesprites render-all                  # every character
     python -m vibesprites new <char> --cast <c>       # scaffold a character
     python -m vibesprites new-cast <name>             # scaffold a whole cast
