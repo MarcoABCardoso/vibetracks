@@ -21,12 +21,14 @@ import json
 import os
 import sys
 
+from . import scene as scenemod
 from . import spec
 from .compositor import render_sheet
 from .pngio import write_png
 
 SPRITES_DIR = "sprites"
 OUT_DIR = os.path.join("out", "sprites")
+SCENE_OUT_DIR = os.path.join("out", "scenes")
 
 
 # --- cast / character resolution ----------------------------------------- #
@@ -237,6 +239,18 @@ def cmd_new_cast(args) -> int:
     return 0
 
 
+def cmd_scene(args) -> int:
+    path = scenemod.find_scene(args.scene)
+    spec_data = scenemod.load_scene(path)
+    picture = scenemod.render_scene(spec_data)
+    os.makedirs(args.out_dir, exist_ok=True)
+    out_path = args.out or os.path.join(args.out_dir, f"{spec_data['name']}.png")
+    w, h = write_png(out_path, picture)
+    n = len(spec_data["actors"])
+    print(f"  rendered  {out_path}  ({w}x{h}, {n} actor(s))")
+    return 0
+
+
 def main(argv=None) -> int:
     p = argparse.ArgumentParser(prog="vibesprites", description=__doc__,
                                 formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -265,6 +279,11 @@ def main(argv=None) -> int:
     pg.add_argument("--title", help="charset title (defaults to the cast name)")
     pg.add_argument("--force", action="store_true")
 
+    ps = sub.add_parser("scene", help="stage a party vs. monsters into one picture")
+    ps.add_argument("scene", help="a scene name under scenes/, or a path to its JSON")
+    ps.add_argument("-o", "--out", help="explicit output PNG path")
+    ps.add_argument("--out-dir", default=SCENE_OUT_DIR)
+
     args = p.parse_args(argv)
     return {
         "validate": cmd_validate,
@@ -272,6 +291,7 @@ def main(argv=None) -> int:
         "render-all": cmd_render_all,
         "new": cmd_new,
         "new-cast": cmd_new_cast,
+        "scene": cmd_scene,
     }[args.cmd](args)
 
 

@@ -11,7 +11,7 @@ import unittest
 
 import numpy as np
 
-from vibesprites import compositor, layout, lpc, pngio, spec
+from vibesprites import compositor, layout, lpc, pngio, scene, spec
 from vibesprites.layers import ENGINES, SHEET_ENGINES
 
 HAVE_LPC = lpc.available()
@@ -254,6 +254,133 @@ class TestRender(unittest.TestCase):
             with Image.open(path) as im:
                 self.assertEqual(im.size, (832, 1344))
                 self.assertEqual(im.mode, "RGBA")
+
+
+class TestSceneSpec(unittest.TestCase):
+    def _scene(self, **over):
+        base = {"name": "s", "size": [64, 64],
+                "actors": [{"kind": "monster", "monster": "slime", "pos": [0, 0]}]}
+        base.update(over)
+        return base
+
+    def test_bad_size_rejected(self):
+        with self.assertRaises(scene.SceneError):
+            scene._validate_scene(self._scene(size=[64]), "s")
+
+    def test_empty_actors_rejected(self):
+        with self.assertRaises(scene.SceneError):
+            scene._validate_scene(self._scene(actors=[]), "s")
+
+    def test_bad_kind_rejected(self):
+        with self.assertRaises(scene.SceneError):
+            scene._validate_scene(
+                self._scene(actors=[{"kind": "hero", "pos": [0, 0]}]), "s")
+
+    def test_party_actor_needs_character(self):
+        with self.assertRaises(scene.SceneError):
+            scene._validate_scene(
+                self._scene(actors=[{"kind": "party", "pos": [0, 0]}]), "s")
+
+    def test_monster_actor_needs_monster(self):
+        with self.assertRaises(scene.SceneError):
+            scene._validate_scene(
+                self._scene(actors=[{"kind": "monster", "pos": [0, 0]}]), "s")
+
+    def test_valid_scene_accepted(self):
+        scene._validate_scene(self._scene(), "s")
+
+    def test_demo_scene_loads_and_validates(self):
+        path = scene.find_scene("ff3-battle", ROOT)
+        data = scene.load_scene(path)
+        self.assertEqual(data["name"], "ff3-battle")
+        self.assertTrue(any(a["kind"] == "party" for a in data["actors"]))
+        self.assertTrue(any(a["kind"] == "monster" for a in data["actors"]))
+
+    def test_unknown_scene_raises(self):
+        with self.assertRaises(scene.SceneError):
+            scene.find_scene("no-such-scene", ROOT)
+
+    def test_bestiary_lists_the_provided_monsters(self):
+        best = scene.load_bestiary(ROOT)
+        for name in ("slime", "pumpking", "ghost", "eyeball"):
+            self.assertIn(name, best["monsters"])
+
+
+class TestScenePixels(unittest.TestCase):
+    def test_scale_nearest_repeats_pixels(self):
+        cell = np.zeros((2, 2, 4), dtype=np.uint8)
+        cell[0, 0] = (10, 20, 30, 255)
+        big = scene.scale_nearest(cell, 3)
+        self.assertEqual(big.shape, (6, 6, 4))
+        self.assertTrue(np.all(big[0:3, 0:3] == cell[0, 0]))
+
+    def test_scale_one_is_identity(self):
+        cell = np.zeros((2, 2, 4), dtype=np.uint8)
+        self.assertIs(scene.scale_nearest(cell, 1), cell)
+
+    def test_hex_rgba_parses_alpha(self):
+        self.assertTrue(np.array_equal(scene._hex_rgba("#ff8000"), [255, 128, 0, 255]))
+        self.assertTrue(np.array_equal(scene._hex_rgba("#01020380"), [1, 2, 3, 128]))
+
+    def test_background_fills_sky_and_ground(self):
+        canvas = np.zeros((10, 4, 4), dtype=np.uint8)
+        scene.draw_background(canvas, {"top": "#000000", "bottom": "#000000",
+                                       "horizon": 0.5, "ground_top": "#00ff00",
+                                       "ground_bottom": "#00ff00"})
+        self.assertEqual(int(canvas[0, 0, 3]), 255)          # sky opaque
+        self.assertTrue(np.all(canvas[7, :, 1] == 255))       # ground is green
+
+    def test_no_background_leaves_transparent(self):
+        canvas = np.zeros((4, 4, 4), dtype=np.uint8)
+        scene.draw_background(canvas, None)
+        self.assertEqual(int(canvas[..., 3].max()), 0)
+
+    def test_shadow_darkens_and_adds_alpha(self):
+        canvas = np.full((8, 8, 4), 200, dtype=np.uint8)
+        canvas[..., 3] = 0
+        scene.draw_shadow(canvas, 4, 4, 3, 2, alpha=0.5)
+        self.assertLess(int(canvas[4, 4, 0]), 200)            # centre darkened
+        self.assertGreater(int(canvas[4, 4, 3]), 0)           # gained coverage
+
+    def test_dir_row_falls_back_to_first_row(self):
+        self.assertEqual(scene._dir_row(["down", "up"], "right"), 0)
+        self.assertEqual(scene._dir_row(["up", "left", "down", "right"], "right"), 3)
+
+    def test_party_cell_slices_walk_left(self):
+        sheet = np.zeros((layout.HEIGHT, layout.WIDTH, 4), dtype=np.uint8)
+        row = layout.animation_row("walk") + layout.DIRECTIONS.index("left")
+        sheet[row * 64:row * 64 + 64, 0:64] = (5, 6, 7, 255)
+        cell = scene.party_cell(sheet, "walk", "left", 0)
+        self.assertEqual(cell.shape, (64, 64, 4))
+        self.assertTrue(np.all(cell == (5, 6, 7, 255)))
+
+    def test_monster_cell_honours_frame_height(self):
+        entry = {"frame": [64, 128], "dirs": ["up", "left", "down", "right"]}
+        best = {"frame": [64, 64], "dirs": ["up", "left", "down", "right"]}
+        sheet = np.zeros((512, 768, 4), dtype=np.uint8)  # 12x4 of 64x128
+        cell = scene.monster_cell(sheet, entry, best, "right", 0)
+        self.assertEqual(cell.shape, (128, 64, 4))
+
+
+@unittest.skipUnless(HAVE_LPC, "Pillow (lpc engine) not installed")
+class TestSceneRender(unittest.TestCase):
+    """Rendering the monster half needs Pillow but no network (assets are vendored)."""
+
+    def test_monster_only_scene_composites_over_background(self):
+        spec_data = {
+            "name": "t", "size": [80, 64], "upscale": 2,
+            "background": {"top": "#101020", "bottom": "#101020"},
+            "actors": [{"kind": "monster", "monster": "slime", "pos": [8, 8]}],
+        }
+        pic = scene.render_scene(spec_data, ROOT)
+        self.assertEqual(pic.shape, (128, 160, 4))            # size x upscale
+        self.assertGreater(int(pic[..., 3].max()), 0)         # something drawn
+
+    def test_unknown_monster_raises(self):
+        spec_data = {"name": "t", "size": [64, 64],
+                     "actors": [{"kind": "monster", "monster": "dragon", "pos": [0, 0]}]}
+        with self.assertRaises(scene.SceneError):
+            scene.render_scene(spec_data, ROOT)
 
 
 if __name__ == "__main__":

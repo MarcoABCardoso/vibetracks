@@ -1,0 +1,28 @@
+{
+  "name": "ff3-battle",
+  "title": "Ambush on the Floating Continent",
+  "_comment": "A Final Fantasy III-style battle: the four-member party ranked in a column on the right facing left, a monster formation massed on the left facing right, staged over a dusk field. Authored at 384x240 native pixels and zoomed 3x. Party members are composited from the 'rpg-party' cast; monsters are sliced from the lpc-monsters bestiary.",
+  "size": [384, 240],
+  "upscale": 3,
+  "party_cast": "rpg-party",
+  "background": {
+    "top": "#161d3f",
+    "bottom": "#6a5788",
+    "horizon": 0.44,
+    "ground_top": "#4d743c",
+    "ground_bottom": "#1d3115"
+  },
+  "actors": [
+    {"kind": "monster", "monster": "bat",      "pos": [146,  46]},
+    {"kind": "monster", "monster": "ghost",    "pos": [ 74,  74]},
+    {"kind": "monster", "monster": "pumpking", "pos": [120, 118]},
+    {"kind": "monster", "monster": "eyeball",  "pos": [ 58, 150]},
+    {"kind": "monster", "monster": "slime",    "pos": [166, 164]},
+    {"kind": "monster", "monster": "snake",    "pos": [ 74, 182]},
+
+    {"kind": "party", "character": "warrior", "pos": [286,  54], "dir": "left"},
+    {"kind": "party", "character": "ranger",  "pos": [280,  94], "dir": "left"},
+    {"kind": "party", "character": "mage",    "pos": [274, 134], "dir": "left"},
+    {"kind": "party", "character": "cleric",  "pos": [268, 170], "dir": "left"}
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "title": "LPC Monsters",
+  "_comment": "A monster set for battle scenes. Each entry is a standalone LPC enemy sheet of 64px cells laid out as rows of facings (up, left, down, right) x columns of animation frames. Unlike a character 'cast', a monster is not a stack of layers — it is one finished sheet the scene compositor slices a single facing/frame from. Geometry (cols x rows) is derived from the PNG; only non-default facing rows or frame sizes need to be named here. Art: the CC0/OGA lpc-monsters set (see CREDITS.csv).",
+  "frame": [64, 64],
+  "dirs": ["up", "left", "down", "right"],
+  "monsters": {
+    "bat":              {"sheet": "bat.png"},
+    "bee":              {"sheet": "bee.png", "dirs": ["down", "up"]},
+    "big_worm":         {"sheet": "big_worm.png"},
+    "eyeball":          {"sheet": "eyeball.png"},
+    "ghost":            {"sheet": "ghost.png"},
+    "man_eater_flower": {"sheet": "man_eater_flower.png", "frame": [64, 128]},
+    "pumpking":         {"sheet": "pumpking.png"},
+    "slime":            {"sheet": "slime.png"},
+    "small_worm":       {"sheet": "small_worm.png"},
+    "snake":            {"sheet": "snake.png"}
+  }
+}
