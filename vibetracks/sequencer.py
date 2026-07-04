@@ -47,74 +47,148 @@ def _pan(mono: np.ndarray, pan: float) -> np.ndarray:
     return np.column_stack([left, right])
 
 
+# --- Tempo map ---------------------------------------------------------------
+
+def _tempo_map(bpm, bpm_end, total_beats, sr):
+    """Build ``beat -> sample`` for a section, honoring an optional tempo ramp.
+
+    With no ``bpm_end`` (or one equal to ``bpm``) tempo is constant and a beat
+    maps linearly to samples — identical to the old ``round(beat*spb*sr)``. When
+    ``bpm_end`` differs, tempo changes linearly *in bpm* across the section, so
+    the beat->time map is the integral of its reciprocal: an accelerando
+    (``bpm_end > bpm``) that drives into a climax, or a ritardando that relaxes.
+    """
+    bpm0 = float(bpm)
+    if not bpm_end or float(bpm_end) == bpm0 or total_beats <= 0:
+        spb = _spb(bpm0)
+        return lambda beat: int(round(beat * spb * sr))
+    k = (float(bpm_end) - bpm0) / total_beats  # bpm slope per beat
+    scale = 60.0 / k
+
+    def beat_to_sample(beat):
+        # time(beat) = ∫₀ᵇ 60/(bpm0 + k·x) dx = (60/k)·ln((bpm0 + k·beat)/bpm0)
+        return int(round(scale * np.log((bpm0 + k * beat) / bpm0) * sr))
+
+    return beat_to_sample
+
+
 # --- Part renderers ----------------------------------------------------------
 
-def _render_melody(events, patch, bpm, sr, section_samples):
+def _render_melody(events, patch, b2s, sr, section_samples):
     """Render a sequence of [pitch, beats, vel] events laid end to end."""
     buf = np.zeros(section_samples, dtype=np.float64)
-    spb = _spb(bpm)
     beat = 0.0
     for ev in events:
         pitch, dur_beats = ev[0], ev[1]
         vel = ev[2] if len(ev) > 2 else DEFAULT_VELOCITY
-        start = int(round(beat * spb * sr))
+        start = b2s(beat)
         if pitch is not None:  # None -> rest
-            note = render_note(theory.note_to_freq(pitch), dur_beats * spb, patch, sr)
+            dur = max(1, b2s(beat + dur_beats) - start) / sr
+            note = render_note(theory.note_to_freq(pitch), dur, patch, sr)
             _place(buf, note * vel, start)
         beat += dur_beats
     return buf
 
 
-def _render_chords(symbols, patch, bpm, sr, section_samples, chord_beats, bpb, octave):
+def _render_chords(symbols, patch, b2s, sr, section_samples, chord_beats,
+                   total_beats, octave, transpose):
     """Render chord symbols in sequence, each held for ``chord_beats``, tiled."""
     buf = np.zeros(section_samples, dtype=np.float64)
-    spb = _spb(bpm)
-    total_beats = section_samples / (spb * sr)
     beat = 0.0
     i = 0
     while beat < total_beats - 1e-6:
         sym = symbols[i % len(symbols)]
-        start = int(round(beat * spb * sr))
+        start = b2s(beat)
+        dur = max(1, b2s(min(beat + chord_beats, total_beats)) - start) / sr
         for note_name in theory.chord_notes(sym, octave):
-            note = render_note(theory.note_to_freq(note_name), chord_beats * spb, patch, sr)
+            if transpose:
+                note_name = theory.transpose(note_name, transpose)
+            note = render_note(theory.note_to_freq(note_name), dur, patch, sr)
             _place(buf, note * (DEFAULT_VELOCITY / 2.0), start)
         beat += chord_beats
         i += 1
     return buf
 
 
+# --- Arpeggiator -------------------------------------------------------------
+
+def _arp_order(pool, pattern):
+    """Order a chord's pitch ``pool`` into the traversal the arp cycles through."""
+    if isinstance(pattern, list):  # explicit step indices into the pool
+        n = len(pool)
+        return [pool[int(i) % n] for i in pattern]
+    p = (pattern or "up").lower()
+    if p == "down":
+        return list(reversed(pool))
+    if p == "updown":  # ascend then descend without repeating the endpoints
+        return list(pool) if len(pool) <= 2 else list(pool) + list(reversed(pool))[1:-1]
+    if p == "downup":
+        d = list(reversed(pool))
+        return d if len(pool) <= 2 else d + list(pool)[1:-1]
+    return list(pool)  # "up" (default)
+
+
+def _arp_events(symbols, total_beats, chord_beats, rate, pattern, octaves, octave):
+    """Expand chord symbols into an arpeggiated ``[pitch, beats]`` event list.
+
+    Each symbol owns a ``chord_beats`` window; within it the chord's notes
+    (spanning ``octaves``, ordered by ``pattern``) are struck every ``rate``
+    beats, cycling until that window — and finally the section — ends. Steps are
+    clipped at window/section boundaries so the stream is gapless and exactly
+    fills the section. This is the continuous broken-chord shimmer that block
+    ``chords`` can't produce.
+    """
+    events = []
+    beat = 0.0
+    i = 0
+    while beat < total_beats - 1e-6:
+        base = theory.chord_notes(symbols[i % len(symbols)], octave)
+        pool = [theory.transpose(n, 12 * o)
+                for o in range(max(1, octaves)) for n in base]
+        order = _arp_order(pool, pattern)
+        window_end = min(beat + chord_beats, total_beats)
+        k = 0
+        while beat < window_end - 1e-6:
+            step = min(rate, window_end - beat)
+            events.append([order[k % len(order)], step])
+            beat += step
+            k += 1
+        i += 1
+    return events
+
+
 # --- Soundfont (part-level) renderers ---------------------------------------
 
-def _melody_schedule(events, bpm, sr):
+def _melody_schedule(events, b2s):
     """Turn a sequence of [pitch, beats, vel?] into scheduled soundfont notes.
 
     Notes are laid end to end (the same timing as :func:`_render_melody`);
     returns ``(start_sample, dur_samples, midi, velocity)`` tuples, skipping rests.
     """
-    spb = _spb(bpm)
     sched = []
     beat = 0.0
     for ev in events:
         pitch, dur_beats = ev[0], ev[1]
         vel = ev[2] if len(ev) > 2 else DEFAULT_VELOCITY
         if pitch is not None:
-            sched.append((int(round(beat * spb * sr)), int(round(dur_beats * spb * sr)),
+            start = b2s(beat)
+            sched.append((start, max(1, b2s(beat + dur_beats) - start),
                           theory.note_to_midi(pitch), int(round(vel * 127))))
         beat += dur_beats
     return sched
 
 
-def _chord_schedule(symbols, bpm, sr, section_samples, chord_beats, octave):
+def _chord_schedule(symbols, b2s, total_beats, chord_beats, octave, transpose):
     """Schedule tiled chord symbols as simultaneous soundfont notes."""
-    spb = _spb(bpm)
-    total_beats = section_samples / (spb * sr)
-    dur = int(round(chord_beats * spb * sr))
     sched = []
     beat = 0.0
     i = 0
     while beat < total_beats - 1e-6:
-        start = int(round(beat * spb * sr))
+        start = b2s(beat)
+        dur = max(1, b2s(min(beat + chord_beats, total_beats)) - start)
         for note_name in theory.chord_notes(symbols[i % len(symbols)], octave):
+            if transpose:
+                note_name = theory.transpose(note_name, transpose)
             sched.append((start, dur, theory.note_to_midi(note_name),
                           int(round(DEFAULT_VELOCITY * 127))))
         beat += chord_beats
@@ -122,23 +196,20 @@ def _chord_schedule(symbols, bpm, sr, section_samples, chord_beats, octave):
     return sched
 
 
-def _render_drums(voices, bpm, sr, section_samples, bpb, cache):
+def _render_drums(voices, b2s, section_samples, bpb, total_beats, cache):
     """Render per-voice step patterns, tiled across the whole section."""
     buf = np.zeros(section_samples, dtype=np.float64)
-    spb = _spb(bpm)
-    bar_samples = bpb * spb * sr
-    n_bars = max(1, int(round(section_samples / bar_samples)))
+    n_bars = max(1, int(round(total_beats / bpb)))
     for voice, pattern in voices.items():
         steps = len(pattern)
         if steps == 0:
             continue
-        step_samples = bar_samples / steps
         for bar in range(n_bars):
             for s, ch in enumerate(pattern):
                 if ch in ".-":
                     continue
                 sample = cache["ohat" if ch == "o" else voice]
-                start = int(round(bar * bar_samples + s * step_samples))
+                start = b2s(bar * bpb + (s / steps) * bpb)
                 _place(buf, sample, start)
     return buf
 
@@ -177,11 +248,18 @@ def _transform(events, part):
 # --- Section / track assembly -----------------------------------------------
 
 def render_section(section, track, sr, drum_cache):
-    """Render one section (all its parts) to a stereo buffer."""
-    bpm = track["bpm"]
+    """Render one section (all its parts) to a stereo buffer.
+
+    A section may override tempo (``bpm``, plus ``bpm_end`` for a linear ramp)
+    and set ``transpose`` (semitones) applied to every pitched part — the two
+    levers behind a driving-then-modulating climax.
+    """
+    bpm = float(section.get("bpm", track["bpm"]))
     bpb = beats_per_bar(track["time_signature"])
-    section_beats = section["bars"] * bpb
-    section_samples = int(round(section_beats * _spb(bpm) * sr))
+    total_beats = section["bars"] * bpb
+    b2s = _tempo_map(bpm, section.get("bpm_end"), total_beats, sr)
+    section_samples = max(1, b2s(total_beats))
+    sec_transpose = int(section.get("transpose", 0))
     stereo = np.zeros((section_samples, 2), dtype=np.float64)
 
     for part in section.get("parts", {}).values():
@@ -192,32 +270,46 @@ def render_section(section, track, sr, drum_cache):
         is_sf = patch.get("engine") in PART_ENGINES
 
         if "drums" in part:
-            mono = _render_drums(part["drums"], bpm, sr, section_samples, bpb, drum_cache)
+            mono = _render_drums(part["drums"], b2s, section_samples, bpb,
+                                 total_beats, drum_cache)
         elif "chords" in part:
-            chord_beats = float(part.get("chord_beats", bpb))
+            chord_beats = theory.parse_beats(part.get("chord_beats", bpb))
             if is_sf:
-                sched = _chord_schedule(part["chords"], bpm, sr, section_samples,
-                                        chord_beats, octave)
+                sched = _chord_schedule(part["chords"], b2s, total_beats,
+                                        chord_beats, octave, sec_transpose)
                 mono = soundfont.render_scheduled(sched, patch, sr, section_samples)
             else:
-                mono = _render_chords(part["chords"], patch, bpm, sr, section_samples,
-                                      chord_beats, bpb, octave)
+                mono = _render_chords(part["chords"], patch, b2s, sr, section_samples,
+                                      chord_beats, total_beats, octave, sec_transpose)
         else:
-            if "motif" in part:
-                events = list(track["motifs"][part["motif"]].get("notes",
-                              track["motifs"][part["motif"]]))
+            if "arp" in part:
+                events = _arp_events(
+                    part["arp"], total_beats,
+                    theory.parse_beats(part.get("chord_beats", bpb)),
+                    theory.parse_beats(part.get("rate", 0.25)),
+                    part.get("pattern", "up"), int(part.get("octaves", 1)), octave)
+            elif "motif" in part:
+                motif = track["motifs"][part["motif"]]
+                events = list(motif["notes"] if isinstance(motif, dict) else motif)
                 sl = part.get("slice")
                 if sl:  # quote only part of the motif, e.g. [0, 3] = first 3 notes
                     events = events[sl[0]:sl[1]]
             else:
                 events = list(part["notes"])
-            events = _transform(events, part)
+            # Normalize durations (numbers or "1/3" fractions) to floats up front,
+            # so transforms and renderers only ever see numbers.
+            events = [[e[0], theory.parse_beats(e[1]), *e[2:]] for e in events]
+            if "arp" not in part:  # generated arps aren't leitmotif material
+                events = _transform(events, part)
             events = events * int(part.get("repeat", 1))
+            if sec_transpose:
+                events = [[e[0] if e[0] is None else theory.transpose(e[0], sec_transpose),
+                           *e[1:]] for e in events]
             if is_sf:
-                mono = soundfont.render_scheduled(_melody_schedule(events, bpm, sr),
+                mono = soundfont.render_scheduled(_melody_schedule(events, b2s),
                                                   patch, sr, section_samples)
             else:
-                mono = _render_melody(events, patch, bpm, sr, section_samples)
+                mono = _render_melody(events, patch, b2s, sr, section_samples)
 
         mono = apply_part_effects(mono, patch, sr)[:section_samples]
         if mono.shape[0] < section_samples:
