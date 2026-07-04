@@ -33,8 +33,9 @@ Render is CPU-bound (pure-Python DSP): roughly real-time-ish — a 25 s track ta
 ### Group — `groups/<name>/`
 One self-contained soundtrack: its own bible plus tracks. Groups let a single repo
 hold several independent scores — different regions of a game, or different games
-entirely — without sharing or overwriting one top-level bible. The repo ships a
-demo group (`neon-frontier`); `new-group` scaffolds a fresh one alongside it. Each
+entirely — without sharing or overwriting one top-level bible. The repo ships four
+demo groups, each showcasing a distinct feature set (see the README's demo table);
+`new-group` scaffolds a fresh one alongside them. Each
 group is `groups/<name>/soundtrack.json` + `groups/<name>/tracks/*.json`. (For
 backward compatibility, a `soundtrack.json` at the repo root still works as a lone
 `default` group when there's no `groups/` directory.)
@@ -70,7 +71,9 @@ Per-section overrides (all optional): `bpm` overrides the track tempo for that
 section; `bpm_end` ramps tempo linearly from `bpm` to `bpm_end` across the section
 (accelerando/ritardando — drive into a climax or relax out of one). `transpose`
 (semitones) shifts every pitched part in the section — the one-line "kick the final
-chorus up a step" modulation, without editing each part.
+chorus up a step" modulation, without editing each part. The `aurelia` group is a
+worked demo of these long-form tools: a single theme grown across seven sections
+with tempo ramps, per-section transpose, arpeggios, and tuplets.
 
 ### Parts
 Each section's `parts` is a map of part-name → part. Every part needs an
@@ -140,8 +143,9 @@ soundfont part needs it (and raises a clear `SoundfontError` with install hints
 if missing). A soundfont part is rendered whole (notes streamed through one
 cached FluidSynth instance), downmixed to mono, and flows through the same
 pan/effects/master-normalize pipeline as synth parts — so the two engine families
-mix freely in one track. The `amber-court` group is a worked orchestral demo
-(`vibetracks/soundfont.py`).
+mix freely in one track. The `sunspire` group is a worked orchestral demo of this
+engine — a full mythic-heroic score built almost entirely from soundfont
+instruments (`vibetracks/soundfont.py`).
 
 Per-note expression (numpy engines only): `vibrato`/`tremolo` `{rate, depth,
 shape, delay}` (pitch / amplitude LFOs; vibrato `delay` eases the wobble in

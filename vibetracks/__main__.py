@@ -2,8 +2,9 @@
 
 Tracks are organized into **groups** — each ``groups/<name>/`` is a
 self-contained soundtrack with its own ``soundtrack.json`` bible and ``tracks/``.
-The repo ships a demo group (``neon-frontier``); spin up your own with
-``new-group`` instead of overwriting it.
+The repo ships four demo groups, each showcasing a distinct feature set
+(``neon-frontier``, ``verdant-vale``, ``sunspire``, ``aurelia`` — see the
+README); spin up your own with ``new-group`` instead of overwriting them.
 
     python -m vibetracks validate                   # check every group's specs
     python -m vibetracks render neon-frontier/boss  # render one track to out/
