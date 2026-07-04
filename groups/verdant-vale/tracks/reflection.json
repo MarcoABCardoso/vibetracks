@@ -26,7 +26,7 @@
       "loop": true,
       "_comment": "Theme augmented (stretch 2.0) on the bell — the hook heard as a memory.",
       "parts": {
-        "bell": { "instrument": "bell", "motif": "vale_theme", "stretch": 2.0, "repeat": 2, "pan": 0.0, "gain": 0.5 },
+        "bell": { "instrument": "bell", "motif": "vale_theme", "stretch": 2.0, "pan": 0.0, "gain": 0.5 },
         "ep": { "instrument": "ep", "chords": ["D", "Bm", "G", "A"], "chord_beats": 8, "gain": 0.4, "pan": 0.2 },
         "strings": { "instrument": "strings", "chords": ["D", "Bm", "G", "A"], "chord_beats": 8 },
         "guitar": { "instrument": "guitar", "pan": -0.2, "gain": 0.45,

@@ -16,10 +16,10 @@
 
   "motifs": {
     "main_theme": {
-      "_comment": "8 beats / 2 bars in A minor. The hook that recurs across every track.",
+      "_comment": "16 beats / 4 bars in A minor — a full antecedent+consequent sentence, not a cell. Antecedent (notes 0-7, slice [0,8]) rises and ends OPEN on the dominant E; consequent (notes 8-15, slice [8,16]) answers, peaks on a NEW high G5 the question never touched, then resolves home to A. The head A-C-E (notes 0-3) is the signature other cues slice.",
       "notes": [
-        ["A4", 1], ["C5", 1], ["E5", 1.5], ["D5", 0.5],
-        ["C5", 1], ["B4", 1], ["A4", 2]
+        ["A4", 1], ["C5", 1], ["E5", 1.5], ["D5", 0.5], ["C5", 1], ["B4", 1], ["C5", 1], ["E5", 1],
+        ["B4", 0.5], ["D5", 0.5], ["E5", 1], ["G5", 1.5], ["F5", 0.5], ["E5", 1], ["C5", 1], ["A4", 2]
       ]
     },
     "danger": {

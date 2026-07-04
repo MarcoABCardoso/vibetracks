@@ -33,9 +33,9 @@
     {
       "name": "tag",
       "bars": 4,
-      "_comment": "Triumphant flurry: the theme at double-speed (diminution) up an octave, four times, over a plagal F-C-G-Am lift.",
+      "_comment": "Triumphant flurry: the whole theme at double-speed (diminution) up an octave, stated twice — each pass is a complete question+answer arc, not a two-bar cell — over a plagal F-C-G-Am lift.",
       "parts": {
-        "lead":  { "instrument": "lead", "motif": "main_theme", "stretch": 0.5, "transpose": 12, "repeat": 4, "gain": 0.9 },
+        "lead":  { "instrument": "lead", "motif": "main_theme", "stretch": 0.5, "transpose": 12, "repeat": 2, "gain": 0.9 },
         "bass":  { "instrument": "bass",
                    "notes": [["F2", 2], ["F2", 2], ["C2", 2], ["C2", 2],
                              ["G2", 2], ["G2", 2], ["A2", 2], ["A2", 2]] },

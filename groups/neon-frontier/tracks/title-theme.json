@@ -1,7 +1,7 @@
 {
   "name": "title-theme",
   "extends": "../soundtrack.json",
-  "_comment": "Anthemic main theme. A-section states the hook in full (the score's one literal statement); the B-section bridge answers with the SAME motif in retrograde over an Fmaj7-C-G-Am lift, so it's recognisably related yet new.",
+  "_comment": "Anthemic main theme. A-section states the hook in full — one complete antecedent+consequent sentence per pass (question to the open dominant, answer up to the high G5 and home), not a two-bar cell looped. The B-section bridge answers with the SAME motif in retrograde over an Fmaj7-C-G-Am lift, so it's recognisably related yet new.",
   "bpm": 112,
   "time_signature": [4, 4],
 
@@ -21,7 +21,7 @@
       "bars": 4,
       "loop": true,
       "parts": {
-        "lead":  { "instrument": "lead", "motif": "main_theme", "repeat": 2, "gain": 0.9 },
+        "lead":  { "instrument": "lead", "motif": "main_theme", "gain": 0.9 },
         "bass":  { "instrument": "bass",
                    "notes": [["A2", 1], ["A2", 1], ["A2", 1], ["A2", 1],
                              ["F2", 1], ["F2", 1], ["F2", 1], ["F2", 1],
@@ -41,9 +41,9 @@
       "name": "B",
       "bars": 4,
       "loop": true,
-      "_comment": "Bridge: the hook in retrograde (its pitches/rhythm reversed) over a brighter Fmaj7-C-G-Am lift.",
+      "_comment": "Bridge: the whole sentence in retrograde (its pitches/rhythm reversed) over a brighter Fmaj7-C-G-Am lift.",
       "parts": {
-        "lead":  { "instrument": "lead", "motif": "main_theme", "retrograde": true, "repeat": 2, "gain": 0.88 },
+        "lead":  { "instrument": "lead", "motif": "main_theme", "retrograde": true, "gain": 0.88 },
         "bass":  { "instrument": "bass",
                    "notes": [["F2", 1], ["F2", 1], ["F2", 1], ["F2", 1],
                              ["C2", 1], ["C2", 1], ["C2", 1], ["C2", 1],
