@@ -26,6 +26,7 @@ from . import theory
 from .instruments import DEFAULT_PALETTE, ENGINES, merge_patch
 
 VALID_DRUM_CHARS = set("x.Xo-")  # x/X = hit, o = open (hat), '.'/'-' = rest
+ARP_PATTERNS = {"up", "down", "updown", "downup"}  # named arpeggio traversals
 
 GROUPS_DIR = "groups"        # where soundtrack groups live
 BIBLE_FILE = "soundtrack.json"
@@ -93,6 +94,15 @@ def _validate_bible(b: Bible) -> None:
         _validate_note_events(notes, where=f"{b.path}: motif {name!r}")
 
 
+def _validate_beats_field(part: dict, field: str, where: str) -> None:
+    """Validate an optional beat-valued field (number or ``"1/3"`` fraction)."""
+    if field in part:
+        try:
+            theory.parse_beats(part[field])
+        except ValueError as e:
+            raise SpecError(f"{where}: '{field}' {e}") from e
+
+
 def _validate_note_events(events, where: str) -> None:
     if not isinstance(events, list):
         raise SpecError(f"{where}: notes must be a list of [pitch, beats, vel?]")
@@ -105,8 +115,10 @@ def _validate_note_events(events, where: str) -> None:
                 theory.note_to_midi(pitch)
             except ValueError as e:
                 raise SpecError(f"{where}: bad pitch {pitch!r}: {e}") from e
-        if not isinstance(beats, (int, float)) or beats <= 0:
-            raise SpecError(f"{where}: beats must be a positive number, got {beats!r}")
+        try:
+            theory.parse_beats(beats)  # number or fraction string like "1/3"
+        except ValueError as e:
+            raise SpecError(f"{where}: {e}") from e
 
 
 def resolve_track(path: str, bible: Bible | None = None) -> dict:
@@ -169,6 +181,12 @@ def _validate_track(t: dict, path: str) -> None:
         where = f"{path}: section {section.get('name', si)!r}"
         if "bars" not in section or section["bars"] <= 0:
             raise SpecError(f"{where}: needs a positive 'bars'")
+        for fld in ("bpm", "bpm_end"):
+            if fld in section and not (isinstance(section[fld], (int, float))
+                                       and section[fld] > 0):
+                raise SpecError(f"{where}: '{fld}' must be a positive number")
+        if "transpose" in section and not isinstance(section["transpose"], int):
+            raise SpecError(f"{where}: 'transpose' must be an integer (semitones)")
         parts = section.get("parts", {})
         if not isinstance(parts, dict):
             raise SpecError(f"{where}: 'parts' must be an object")
@@ -183,10 +201,10 @@ def _validate_part(part: dict, track: dict, where: str) -> None:
     if inst not in track["palette"]:
         raise SpecError(f"{where}: unknown instrument {inst!r} "
                         f"(palette: {sorted(track['palette'])})")
-    kinds = [k for k in ("notes", "motif", "chords", "drums") if k in part]
+    kinds = [k for k in ("notes", "motif", "chords", "arp", "drums") if k in part]
     if len(kinds) != 1:
         raise SpecError(f"{where}: a part needs exactly one of "
-                        f"notes/motif/chords/drums, found {kinds}")
+                        f"notes/motif/chords/arp/drums, found {kinds}")
     if "stretch" in part and not (isinstance(part["stretch"], (int, float))
                                   and part["stretch"] > 0):
         raise SpecError(f"{where}: 'stretch' must be a positive number")
@@ -212,6 +230,25 @@ def _validate_part(part: dict, track: dict, where: str) -> None:
                 theory.chord_notes(sym)
             except ValueError as e:
                 raise SpecError(f"{where}: bad chord {sym!r}: {e}") from e
+        _validate_beats_field(part, "chord_beats", where)
+    elif "arp" in part:
+        for sym in part["arp"]:
+            try:
+                theory.chord_notes(sym)
+            except ValueError as e:
+                raise SpecError(f"{where}: bad chord {sym!r}: {e}") from e
+        pat = part.get("pattern", "up")
+        if isinstance(pat, list):
+            if not all(isinstance(i, int) for i in pat):
+                raise SpecError(f"{where}: 'pattern' list must be step indices (ints)")
+        elif not (isinstance(pat, str) and pat.lower() in ARP_PATTERNS):
+            raise SpecError(f"{where}: 'pattern' must be one of {sorted(ARP_PATTERNS)} "
+                            f"or a list of step indices, got {pat!r}")
+        if "octaves" in part and not (isinstance(part["octaves"], int)
+                                      and part["octaves"] >= 1):
+            raise SpecError(f"{where}: 'octaves' must be an integer >= 1")
+        _validate_beats_field(part, "rate", where)
+        _validate_beats_field(part, "chord_beats", where)
     elif "drums" in part:
         for voice, pattern in part["drums"].items():
             bad = set(pattern) - VALID_DRUM_CHARS

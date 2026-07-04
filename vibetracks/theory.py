@@ -37,6 +37,35 @@ _MODE_ALIASES = {
 }
 
 
+def parse_beats(value) -> float:
+    """Parse a beat duration into a positive float.
+
+    Accepts a plain number (``1``, ``0.5``) or a fraction string like ``"1/3"``
+    or ``"3/2"``. Fraction strings make exact tuplets writable — a beat split
+    three ways is ``"1/3"`` each, which no finite decimal can express — so a
+    triplet reads as ``[["A4","1/3"],["C5","1/3"],["E5","1/3"]]``.
+    """
+    if isinstance(value, bool):  # bool is an int subclass; reject it explicitly
+        raise ValueError(f"beats must be a number or fraction string, got {value!r}")
+    if isinstance(value, (int, float)):
+        beats = float(value)
+    elif isinstance(value, str):
+        s = value.strip()
+        try:
+            if "/" in s:
+                num, den = s.split("/", 1)
+                beats = float(num) / float(den)
+            else:
+                beats = float(s)
+        except (ValueError, ZeroDivisionError) as e:
+            raise ValueError(f"bad beat duration {value!r}: {e}") from e
+    else:
+        raise ValueError(f"beats must be a number or fraction string, got {value!r}")
+    if not beats > 0:
+        raise ValueError(f"beats must be positive, got {value!r}")
+    return beats
+
+
 def note_to_midi(name: str) -> int:
     """Convert a note name like ``"A4"`` to a MIDI note number (A4 -> 69)."""
     name = name.strip()

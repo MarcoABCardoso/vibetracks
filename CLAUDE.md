@@ -66,13 +66,20 @@ Section assembly: non-loop sections play `repeat` times (default 1); a section w
 `"loop": true` repeats `loops` times (default 2). Sections are concatenated in order,
 so the usual shape is `intro` (once) + `loop` (×N).
 
+Per-section overrides (all optional): `bpm` overrides the track tempo for that
+section; `bpm_end` ramps tempo linearly from `bpm` to `bpm_end` across the section
+(accelerando/ritardando — drive into a climax or relax out of one). `transpose`
+(semitones) shifts every pitched part in the section — the one-line "kick the final
+chorus up a step" modulation, without editing each part.
+
 ### Parts
 Each section's `parts` is a map of part-name → part. Every part needs an
 `instrument` (a palette name) and is **exactly one** of:
 
 - **`notes`** — `[[pitch, beats, velocity?], ...]`. `pitch` is a note name
-  (`"C#4"`, `"Bb2"`); use `null` for a rest. `beats` are quarter notes.
-  Supports `transpose` (semitones) and `repeat` (tile the figure).
+  (`"C#4"`, `"Bb2"`); use `null` for a rest. `beats` are quarter notes — a number,
+  or a fraction string like `"1/3"`/`"3/2"` for exact tuplets (a triplet is three
+  `"1/3"` notes). Supports `transpose` (semitones) and `repeat` (tile the figure).
 - **`motif`** — name of a bible motif; supports `slice` (`[start, end]`, quote only
   those notes), `repeat`, and the leitmotif transforms below. Prefer this for melodic
   cues so the theme recurs across tracks.
@@ -83,6 +90,15 @@ Each section's `parts` is a map of part-name → part. Every part needs an
 - **`chords`** — `["Am", "F", "C", "G"]`; each chord held `chord_beats` (default =
   one bar), tiled to fill the section. Qualities: `m, maj, dim, aug, sus2, sus4, 7,
   maj7, m7, add9, 5`, default major. `octave` sets the chord root octave.
+- **`arp`** — same chord list as `chords`, but **broken into a running arpeggio**
+  instead of held blocks — the continuous shimmer under a big melody (think Hopes
+  and Dreams). Each chord owns `chord_beats` (default = one bar) and is struck one
+  note at a time every `rate` beats (default `0.25` = sixteenths; fractions like
+  `"1/3"` allowed). `pattern` picks the traversal — `"up"` (default), `"down"`,
+  `"updown"`, `"downup"`, or an explicit index list like `[0, 2, 1, 2]`. `octaves`
+  (default 1) stacks the chord across that many octaves for a wider sweep; `octave`
+  sets the root. Renders through the melody path, so it works with every engine
+  (including `soundfont`) and obeys section `transpose`.
 - **`drums`** — `{"kick": "x...x...", "snare": "....x...", "hat": "x.x.x.x.", ...}`.
   Each string is one bar; `x`/`X` = hit, `o` = open hi-hat (on the `hat` voice),
   `.`/`-` = rest. Patterns tile across the section's bars.

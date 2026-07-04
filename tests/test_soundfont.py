@@ -12,7 +12,7 @@ import numpy as np
 
 from vibetracks import soundfont, spec
 from vibetracks.instruments import ENGINES, PART_ENGINES
-from vibetracks.sequencer import _chord_schedule, _melody_schedule
+from vibetracks.sequencer import _chord_schedule, _melody_schedule, _tempo_map
 
 HAVE_SF = soundfont.available()
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -21,7 +21,8 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 class TestSchedules(unittest.TestCase):
     def test_melody_schedule_lays_notes_end_to_end(self):
         sr, bpm = 44100, 120  # 0.5 s per beat
-        sched = _melody_schedule([["C4", 1], [None, 1], ["E4", 2]], bpm, sr)
+        b2s = _tempo_map(bpm, None, 4, sr)
+        sched = _melody_schedule([["C4", 1], [None, 1], ["E4", 2]], b2s)
         # The rest is skipped; E4 starts two beats (1 s) in and lasts 2 beats.
         self.assertEqual(len(sched), 2)
         self.assertEqual(sched[0][2], 60)             # C4 midi
@@ -30,8 +31,8 @@ class TestSchedules(unittest.TestCase):
 
     def test_chord_schedule_is_simultaneous_and_tiles(self):
         sr, bpm = 44100, 120
-        n = int(round(8 * 0.5 * sr))  # 8 beats
-        sched = _chord_schedule(["C", "G"], bpm, sr, n, 4, 4)
+        b2s = _tempo_map(bpm, None, 8, sr)  # 8 beats
+        sched = _chord_schedule(["C", "G"], b2s, 8, 4, 4, 0)
         # Two chords across 8 beats, three notes each.
         self.assertEqual(len(sched), 6)
         # First triad all share start sample 0.
@@ -65,7 +66,8 @@ class TestRender(unittest.TestCase):
     def test_melody_renders_finite_audio(self):
         sr, bpm = 44100, 120
         n = int(round(4 * 0.5 * sr))
-        sched = _melody_schedule([["C4", 1], ["E4", 1], ["G4", 1], ["C5", 1]], bpm, sr)
+        b2s = _tempo_map(bpm, None, 4, sr)
+        sched = _melody_schedule([["C4", 1], ["E4", 1], ["G4", 1], ["C5", 1]], b2s)
         buf = soundfont.render_scheduled(sched, {"engine": "soundfont", "program": 0}, sr, n)
         self.assertEqual(buf.shape[0], n)
         self.assertTrue(np.isfinite(buf).all())
