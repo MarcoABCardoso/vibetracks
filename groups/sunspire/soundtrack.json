@@ -44,12 +44,13 @@
     }
   },
 
+  "_motifs_note": "The three melodic themes are full 16-beat question+answer SENTENCES, not cells: an antecedent that opens (ends unresolved) and a consequent that answers it, climbing to a NEW high note before resolving home. Slice the halves to quote a question or an answer: hero_theme [0,8]=climb (Q) / [8,15]=answer to D5 (A); sands [0,12]=wander (Q) / [12,22]=answer to F5 (A); hymn [0,6]=intone (Q) / [6,12]=plagal lift (A). fanfare and omen stay short — they are heraldic/menace stingers, meant to be cells.",
   "motifs": {
     "hero_theme": {
-      "_comment": "8 beats / 2 bars in D minor. THE leitmotif: a noble climb to a Bb yearning-note, then a stepwise settle home. Rhythmic fingerprint = the dotted 1.5+0.5 peak. Sung by horn/strings; stated in full only in the overture.",
+      "_comment": "16 beats. THE leitmotif, now a full sentence. Antecedent [0,8]: the signature dotted climb to the Bb yearning-note, left open on the dominant (A). Consequent [8,15]: answers it, reaching a NEW peak D5 through the C# leading-tone, then settling home. Stated in full only in the overture; elsewhere sliced/transformed.",
       "notes": [
-        ["D4", 1], ["A4", 1], ["Bb4", 1.5], ["A4", 0.5],
-        ["G4", 1], ["F4", 1], ["E4", 1], ["D4", 1]
+        ["D4", 1], ["A4", 1], ["Bb4", 1.5], ["A4", 0.5], ["G4", 1], ["F4", 1], ["E4", 1], ["A4", 1],
+        ["D4", 1], ["A4", 1], ["D5", 1.5], ["C#5", 0.5], ["Bb4", 1], ["A4", 1], ["D4", 2]
       ]
     },
     "fanfare": {
@@ -60,10 +61,12 @@
       ]
     },
     "sands": {
-      "_comment": "8 beats. The wandering desert theme — leans on the augmented second (Bb->C#) for a snake-charmer, sun-baked lilt. For exploration and the oasis. Home on oboe / pan flute.",
+      "_comment": "16 beats. The wandering desert theme, a full sentence. Antecedent [0,12]: the snake-charmer line on the augmented second (Bb->C#), arcing up to D5 and settling. Consequent [12,22]: answers higher, cresting on a new F5 before the aug-2nd pulls it home. Home on oboe / pan flute.",
       "notes": [
         ["A4", 1], ["Bb4", 0.5], ["C#5", 0.5], ["D5", 1], ["C#5", 0.5], ["Bb4", 0.5],
-        ["A4", 1], ["G4", 0.5], ["F4", 0.5], ["E4", 1], ["F4", 0.5], ["D4", 0.5]
+        ["A4", 1], ["G4", 0.5], ["F4", 0.5], ["E4", 1], ["F4", 0.5], ["D4", 0.5],
+        ["A4", 0.5], ["Bb4", 0.5], ["C#5", 0.5], ["D5", 0.5], ["F5", 1], ["E5", 1],
+        ["D5", 1], ["C#5", 0.5], ["A4", 0.5], ["D4", 2]
       ]
     },
     "omen": {
@@ -73,9 +76,10 @@
       ]
     },
     "hymn": {
-      "_comment": "8 beats. A slow, reverent sacred phrase, mostly stepwise with an open plagal lift — for the sun-temple, sung by the choir.",
+      "_comment": "16 beats. A reverent sacred sentence. Antecedent [0,6]: the stepwise intone rising to A4. Consequent [6,12]: a plagal lift cresting on a new Bb4, then settling home. For the sun-temple, sung by the choir.",
       "notes": [
-        ["D4", 2], ["F4", 1], ["G4", 1], ["A4", 2], ["G4", 1], ["F4", 1]
+        ["D4", 2], ["F4", 1], ["G4", 1], ["A4", 2], ["G4", 1], ["F4", 1],
+        ["Bb4", 2], ["A4", 1], ["G4", 1], ["F4", 2], ["E4", 1], ["D4", 1]
       ]
     }
   },

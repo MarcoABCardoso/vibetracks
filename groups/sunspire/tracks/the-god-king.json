@@ -10,7 +10,9 @@
     {
       "name": "intro",
       "bars": 4,
-      "_comment": "The throne wakes: aura sub on D, tremolo swells to the leading-tone dim, choir groans low, taiko heartbeat doubling.",
+      "bpm": 138,
+      "bpm_end": 152,
+      "_comment": "The throne wakes and quickens (accelerando 138 -> 152): aura sub on D, tremolo swells to the leading-tone dim, choir groans low, taiko heartbeat doubling — dread gathering speed.",
       "parts": {
         "aura":    { "instrument": "aura", "notes": [["D2", 16]], "gain": 1.0 },
         "tremolo": { "instrument": "tremolo", "chords": ["Dm", "Dm", "C#dim", "A"], "chord_beats": 4, "gain": 0.65 },
@@ -21,9 +23,9 @@
     {
       "name": "A",
       "bars": 8,
-      "_comment": "Trombone speaks the corrupted hero cell (down an octave, inverted); bassoon answers with the omen; tremolo grinds through dim chords; choir chants low; taiko drives double-time.",
+      "_comment": "Trombone speaks the corrupted hero antecedent (its whole opening phrase dropped an octave and inverted into a coiling low line); bassoon answers with the omen; tremolo grinds through dim chords; choir chants low; taiko drives double-time.",
       "parts": {
-        "trombone": { "instrument": "trombone", "motif": "hero_theme", "slice": [0, 4], "invert": "D3", "transpose": -12, "repeat": 8, "pan": -0.1, "gain": 0.8 },
+        "trombone": { "instrument": "trombone", "motif": "hero_theme", "slice": [0, 8], "invert": "D3", "transpose": -12, "repeat": 4, "pan": -0.1, "gain": 0.8 },
         "bassoon":  { "instrument": "bassoon", "motif": "omen", "repeat": 8, "pan": 0.15, "gain": 0.6 },
         "tremolo":  { "instrument": "tremolo", "chords": ["Dm", "Ebdim", "C#dim", "A", "Gm", "Ebdim", "A", "A"], "chord_beats": 4, "gain": 0.6 },
         "choir":    { "instrument": "choir", "chords": ["Dm", "Dm", "A", "A", "Gm", "Gm", "A", "A"], "chord_beats": 4, "octave": 3, "gain": 0.5 },
@@ -39,14 +41,14 @@
       "loop": true,
       "_comment": "Full wrath and loop point: brass tutti blasts the corrupted theme, trumpet shrieks the fanfare inverted, full choir, tremolo high, taiko + timpani relentless. The god-king unbound.",
       "parts": {
-        "brass":    { "instrument": "brass", "motif": "hero_theme", "slice": [0, 4], "invert": "D4", "transpose": -12, "repeat": 8, "pan": -0.1, "gain": 0.85 },
+        "brass":    { "instrument": "brass", "motif": "hero_theme", "slice": [0, 8], "invert": "D4", "transpose": -12, "repeat": 4, "pan": -0.1, "gain": 0.85 },
         "trombone": { "instrument": "trombone", "motif": "omen", "repeat": 8, "transpose": -12, "pan": 0.1, "gain": 0.6 },
         "trumpet":  { "instrument": "trumpet", "motif": "fanfare", "invert": "A4", "repeat": 8, "pan": 0.2, "gain": 0.5 },
         "choir":    { "instrument": "choir", "chords": ["Dm", "Ebdim", "C#dim", "A", "Gm", "Ebdim", "A", "A"], "chord_beats": 4, "gain": 0.6 },
         "tremolo":  { "instrument": "tremolo", "chords": ["Dm", "Ebdim", "C#dim", "A", "Gm", "Ebdim", "A", "A"], "chord_beats": 4, "octave": 4, "gain": 0.55 },
         "taiko":    { "instrument": "taiko", "gain": 0.8, "notes": [["D2", 0.5], ["D2", 0.5]], "repeat": 32 },
         "timpani":  { "instrument": "timpani", "gain": 0.65,
-                      "notes": [["D2", 0.5], ["D2", 0.5], ["D2", 0.5], ["D2", 0.5], ["A2", 0.5], ["A2", 0.5], ["A2", 0.5], ["A2", 0.5]], "repeat": 8 },
+                      "notes": [["D2", 1], ["D2", 1], ["D2", "1/3"], ["D2", "1/3"], ["D2", "1/3"], ["A2", 1], ["A2", 1], ["A2", 1], ["A2", 1]], "repeat": 4 },
         "cello":    { "instrument": "cello", "gain": 0.85,
                       "notes": [["D2", 0.5], ["D2", 0.5], ["D2", 0.5], ["D2", 0.5], ["Eb2", 0.5], ["Eb2", 0.5], ["Eb2", 0.5], ["Eb2", 0.5],
                                 ["C#2", 0.5], ["C#2", 0.5], ["C#2", 0.5], ["C#2", 0.5], ["A1", 0.5], ["A1", 0.5], ["A1", 0.5], ["A1", 0.5],

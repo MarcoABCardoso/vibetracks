@@ -29,7 +29,7 @@
         "tremolo":  { "instrument": "tremolo", "chords": ["Dm", "Ebdim", "Dm", "C#dim", "Gm", "Ebdim", "A", "A"], "chord_beats": 4, "gain": 0.6 },
         "aura":     { "instrument": "aura", "notes": [["D2", 16], ["D2", 12], ["A2", 4]], "gain": 0.95 },
         "dulcimer": { "instrument": "dulcimer", "gain": 0.4, "pan": 0.35,
-                      "notes": [["A5", 0.5], [null, 5.5], ["Bb5", 0.5], [null, 3.5],
+                      "notes": [["A5", 0.5], [null, 5.5], ["Bb5", "1/3"], ["A5", "1/3"], ["Bb5", "1/3"], [null, 3],
                                 ["Eb5", 0.5], [null, 5.5], ["C#5", 0.5], [null, 5.5],
                                 ["A5", 0.5], [null, 3.5]] },
         "timpani":  { "instrument": "timpani", "gain": 0.55,
