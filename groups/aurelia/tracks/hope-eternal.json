@@ -3,83 +3,128 @@
   "extends": "../soundtrack.json",
   "time_signature": [4, 4],
   "loops": 1,
-  "_comment": "Magnum opus / finale. One theme (hope), taken the whole Hopes-and-Dreams arc: a lonely music-box FRAGMENT (memory) -> an accelerando that gathers the arpeggio and pulse (rising) -> the full theme at full arrangement over a churning sixteenth arp (climax) -> the same, a whole step higher, the key-change euphoria (ascension) -> a ritardando landing (coda). Showcases all four engine additions: arp part, per-section bpm+ramp, section transpose, and 1/3 tuplet flourishes.",
+  "_comment": "Magnum opus / finale, long-form with a B-section contrast. One theme (hope) taken the whole Hopes-and-Dreams arc: memory (lonely fragment) -> rising (accelerando gathers arp + pulse) -> climax A (full theme, busy: 16th arp + ember counter + driving bass + 16th hats + triplet bell) -> B (the SHADOW: same theme in the relative minor, falling arp, half-time groove, thinned out) -> surge (accelerando on the dominant, rising triplet run rebuilds to major) -> ascension A' (busiest, a whole step up via transpose +2) -> coda (ritardando landing). Exercises all four additions plus the leitmotif transforms.",
 
   "sections": [
     {
       "name": "memory",
-      "bars": 4,
+      "bars": 6,
       "bpm": 66,
-      "_comment": "The theme half-remembered: only its reaching head (slice 0-4), augmented and soft on the music box, over a wistful vi-IV-I-V pad and a low drone. Space, no drums.",
+      "_comment": "The theme half-remembered: only its reaching head (slice 0-4), augmented and soft on the music box, over a wistful vi-IV-I-V pad, a low drone, and a distant bell. Space, no drums.",
       "parts": {
-        "box":  { "instrument": "musicbox", "motif": "hope", "slice": [0, 4], "stretch": 1.5, "repeat": 2, "gain": 0.62, "pan": -0.1 },
-        "pad":  { "instrument": "pad", "chords": ["Bm", "G", "D", "A"], "chord_beats": 4, "octave": 3, "gain": 0.42 },
-        "drone":{ "instrument": "bass", "notes": [["D2", 16]], "gain": 0.3 }
+        "box":   { "instrument": "musicbox", "motif": "hope", "slice": [0, 4], "stretch": 1.5, "repeat": 3, "gain": 0.6, "pan": -0.1 },
+        "pad":   { "instrument": "pad", "chords": ["Bm", "G", "D", "A", "G", "A"], "chord_beats": 4, "octave": 3, "gain": 0.42 },
+        "drone": { "instrument": "bass", "notes": [["D2", 24]], "gain": 0.3 },
+        "far":   { "instrument": "bell", "gain": 0.32, "pan": 0.2,
+                   "notes": [[null, 8], ["F#5", 2], [null, 2], ["D5", 2], [null, 10]] }
       }
     },
     {
       "name": "rising",
-      "bars": 4,
-      "bpm": 84,
+      "bars": 6,
+      "bpm": 88,
       "bpm_end": 120,
-      "_comment": "Accelerando 84 -> 120: the arpeggio wakes (eighths, one octave), the bass starts jumping octaves, a light kick/hat gathers, the music box states the full theme for the first time — building, not yet the payoff.",
+      "_comment": "Accelerando 88 -> 120: the arpeggio wakes (eighths, one octave), the bass jumps octaves, kick/snare/hat gather, the music box states the full theme for the first time — building toward the payoff.",
       "parts": {
-        "arp":  { "instrument": "arp", "arp": ["D", "A", "Bm", "G"], "rate": 0.5, "pattern": "up", "octaves": 1, "octave": 3, "gain": 0.45 },
-        "box":  { "instrument": "musicbox", "motif": "hope", "repeat": 2, "gain": 0.5, "pan": 0.1 },
+        "arp":  { "instrument": "arp", "arp": ["D", "A", "Bm", "G", "D", "A"], "rate": 0.5, "pattern": "up", "octaves": 1, "octave": 3, "gain": 0.45 },
+        "box":  { "instrument": "musicbox", "motif": "hope", "repeat": 3, "gain": 0.5, "pan": 0.1 },
         "bass": { "instrument": "bass", "gain": 0.72,
                   "notes": [["D2", 0.5], ["D3", 0.5], ["D2", 0.5], ["D3", 0.5], ["A1", 0.5], ["A2", 0.5], ["A1", 0.5], ["A2", 0.5],
-                            ["B1", 0.5], ["B2", 0.5], ["B1", 0.5], ["B2", 0.5], ["G1", 0.5], ["G2", 0.5], ["G1", 0.5], ["G2", 0.5]] },
-        "drums":{ "instrument": "drums", "gain": 0.6, "drums": { "kick": "x...x...", "hat": "..x...x." } }
+                            ["B1", 0.5], ["B2", 0.5], ["B1", 0.5], ["B2", 0.5], ["G1", 0.5], ["G2", 0.5], ["G1", 0.5], ["G2", 0.5]],
+                  "repeat": 3 },
+        "drums":{ "instrument": "drums", "gain": 0.62, "drums": { "kick": "x...x...", "snare": "....x...", "hat": "x.x.x.x." } }
       }
     },
     {
       "name": "climax",
       "bars": 8,
       "bpm": 120,
-      "_comment": "The payoff. Full theme soars on the lead (repeat 4) over a churning sixteenth arp (two octaves, up-down), a driving octave bass, full drums, sustained pad. A rising 1/3-triplet bell flourish sparkles once per two bars — the reach that Hopes and Dreams lives on.",
+      "_comment": "Payoff A. Full theme soars on the lead (repeat 4) over a churning two-octave sixteenth arp, an ember counter-line answering below, driving quarter-note octave bass, full drums with sixteenth hats, and a rising 1/3-triplet bell flourish.",
       "parts": {
-        "arp":  { "instrument": "arp", "arp": ["D", "A", "Bm", "G", "D", "A", "G", "A"], "rate": 0.25, "pattern": "updown", "octaves": 2, "octave": 3, "gain": 0.5 },
-        "lead": { "instrument": "lead", "motif": "hope", "repeat": 4, "gain": 0.9 },
-        "pad":  { "instrument": "pad", "chords": ["D", "A", "Bm", "G", "D", "A", "G", "A"], "chord_beats": 4, "octave": 3, "gain": 0.4 },
-        "bass": { "instrument": "bass", "gain": 0.85,
-                  "notes": [["D2", 2], ["D3", 2], ["A1", 2], ["A2", 2], ["B1", 2], ["B2", 2], ["G1", 2], ["G2", 2],
-                            ["D2", 2], ["D3", 2], ["A1", 2], ["A2", 2], ["G1", 2], ["G2", 2], ["A1", 2], ["A2", 2]] },
-        "drums":{ "instrument": "drums", "gain": 0.9, "drums": { "kick": "x...x...", "snare": "....x...", "hat": "x.x.x.x." } },
-        "spark":{ "instrument": "bell", "gain": 0.5, "pan": 0.28, "repeat": 4,
-                  "notes": [[null, 3], ["D5", "1/3"], ["E5", "1/3"], ["F#5", "1/3"], ["A5", "1/3"], ["F#5", "1/3"], ["E5", "1/3"], ["D5", 1], [null, 2]] }
+        "arp":   { "instrument": "arp", "arp": ["D", "A", "Bm", "G", "D", "A", "G", "A"], "rate": 0.25, "pattern": "updown", "octaves": 2, "octave": 3, "gain": 0.48 },
+        "lead":  { "instrument": "lead", "motif": "hope", "repeat": 4, "gain": 0.9 },
+        "ember": { "instrument": "counter", "motif": "ember", "repeat": 8, "gain": 0.46, "pan": -0.28 },
+        "pad":   { "instrument": "pad", "chords": ["D", "A", "Bm", "G", "D", "A", "G", "A"], "chord_beats": 4, "octave": 3, "gain": 0.38 },
+        "bass":  { "instrument": "bass", "gain": 0.85,
+                   "notes": [["D2", 1], ["D3", 1], ["D2", 1], ["D3", 1], ["A1", 1], ["A2", 1], ["A1", 1], ["A2", 1],
+                             ["B1", 1], ["B2", 1], ["B1", 1], ["B2", 1], ["G1", 1], ["G2", 1], ["G1", 1], ["G2", 1],
+                             ["D2", 1], ["D3", 1], ["D2", 1], ["D3", 1], ["A1", 1], ["A2", 1], ["A1", 1], ["A2", 1],
+                             ["G1", 1], ["G2", 1], ["G1", 1], ["G2", 1], ["A1", 1], ["A2", 1], ["A1", 1], ["A2", 1]] },
+        "drums": { "instrument": "drums", "gain": 0.9, "drums": { "kick": "x..x..x.", "snare": "....x...", "hat": "xxxxxxxxxxxxxxxx" } },
+        "spark": { "instrument": "bell", "gain": 0.5, "pan": 0.28, "repeat": 4,
+                   "notes": [[null, 3], ["D5", "1/3"], ["E5", "1/3"], ["F#5", "1/3"], ["A5", "1/3"], ["F#5", "1/3"], ["E5", "1/3"], ["D5", 1], [null, 2]] }
+      }
+    },
+    {
+      "name": "shadow",
+      "bars": 8,
+      "bpm": 112,
+      "_comment": "B-section CONTRAST: the same theme in the relative minor (hope transposed -3 to center B minor) on the darker music box, a FALLING minor arpeggio, a half-time groove, and thinned texture. The struggle before the triumph — same DNA, opposite mood.",
+      "parts": {
+        "shade": { "instrument": "musicbox", "motif": "hope", "transpose": -3, "repeat": 4, "gain": 0.72, "pan": -0.05 },
+        "arp":   { "instrument": "arp", "arp": ["Bm", "F#m", "G", "A", "Bm", "G", "Em", "A"], "rate": 0.25, "pattern": "down", "octaves": 1, "octave": 3, "gain": 0.46 },
+        "pad":   { "instrument": "pad", "chords": ["Bm", "F#m", "G", "A", "Bm", "G", "Em", "A"], "chord_beats": 4, "octave": 3, "gain": 0.42 },
+        "bass":  { "instrument": "bass", "gain": 0.82,
+                   "notes": [["B1", 1], ["B2", 1], ["B1", 1], ["B2", 1], ["F#1", 1], ["F#2", 1], ["F#1", 1], ["F#2", 1],
+                             ["G1", 1], ["G2", 1], ["G1", 1], ["G2", 1], ["A1", 1], ["A2", 1], ["A1", 1], ["A2", 1],
+                             ["B1", 1], ["B2", 1], ["B1", 1], ["B2", 1], ["G1", 1], ["G2", 1], ["G1", 1], ["G2", 1],
+                             ["E1", 1], ["E2", 1], ["E1", 1], ["E2", 1], ["A1", 1], ["A2", 1], ["A1", 1], ["A2", 1]] },
+        "drums": { "instrument": "drums", "gain": 0.74, "drums": { "kick": "x..x....", "snare": "....x...", "hat": "x.x.x.x." } }
+      }
+    },
+    {
+      "name": "surge",
+      "bars": 4,
+      "bpm": 112,
+      "bpm_end": 134,
+      "_comment": "The turn back to the light: an accelerando (112 -> 134) locked on the dominant (A), a rising two-octave arp, a climbing bass run, four-on-the-floor kick and sixteenth hats, and a rising 1/3-triplet bell run that lifts straight into the final key change.",
+      "parts": {
+        "arp":  { "instrument": "arp", "arp": ["A"], "rate": 0.25, "pattern": "up", "octaves": 2, "octave": 3, "gain": 0.5 },
+        "pad":  { "instrument": "pad", "chords": ["A"], "chord_beats": 16, "octave": 3, "gain": 0.4 },
+        "bass": { "instrument": "bass", "gain": 0.82,
+                  "notes": [["A1", 0.5], ["A2", 0.5], ["A1", 0.5], ["A2", 0.5], ["A1", 0.5], ["A2", 0.5], ["A1", 0.5], ["A2", 0.5],
+                            ["A1", 0.5], ["A2", 0.5], ["A1", 0.5], ["A2", 0.5], ["A1", 0.5], ["A2", 0.5], ["A1", 0.5], ["A2", 0.5],
+                            ["A1", 0.5], ["A2", 0.5], ["A1", 0.5], ["A2", 0.5], ["A1", 0.5], ["A2", 0.5], ["A1", 0.5], ["A2", 0.5],
+                            ["A2", 0.5], ["B2", 0.5], ["C#3", 0.5], ["D3", 0.5], ["E3", 0.5], ["F#3", 0.5], ["G3", 0.5], ["A3", 0.5]] },
+        "drums":{ "instrument": "drums", "gain": 0.78, "drums": { "kick": "x.x.x.x.", "snare": "....x...", "hat": "xxxxxxxxxxxxxxxx" } },
+        "lift": { "instrument": "bell", "gain": 0.55,
+                  "notes": [[null, 12], ["A4", "1/3"], ["B4", "1/3"], ["C#5", "1/3"], ["D5", "1/3"], ["E5", "1/3"], ["F#5", "1/3"], ["A5", 1], [null, 1]] }
       }
     },
     {
       "name": "ascension",
       "bars": 8,
-      "bpm": 126,
+      "bpm": 134,
       "transpose": 2,
-      "_comment": "Same climax material, a whole step higher (transpose +2 lifts every pitched part at once) and a touch faster — the classic final-chorus key change. This is the euphoria that a single line of section transpose now buys.",
+      "_comment": "Payoff A' — the busiest moment, a whole step higher (transpose +2 lifts every pitched part at once) and faster. Same forces as the climax plus the ember counter, gains pushed: the key-change euphoria one line of section transpose buys.",
       "parts": {
-        "arp":  { "instrument": "arp", "arp": ["D", "A", "Bm", "G", "D", "A", "G", "A"], "rate": 0.25, "pattern": "updown", "octaves": 2, "octave": 3, "gain": 0.5 },
-        "lead": { "instrument": "lead", "motif": "hope", "repeat": 4, "gain": 0.95 },
-        "pad":  { "instrument": "pad", "chords": ["D", "A", "Bm", "G", "D", "A", "G", "A"], "chord_beats": 4, "octave": 3, "gain": 0.42 },
-        "bass": { "instrument": "bass", "gain": 0.88,
-                  "notes": [["D2", 2], ["D3", 2], ["A1", 2], ["A2", 2], ["B1", 2], ["B2", 2], ["G1", 2], ["G2", 2],
-                            ["D2", 2], ["D3", 2], ["A1", 2], ["A2", 2], ["G1", 2], ["G2", 2], ["A1", 2], ["A2", 2]] },
-        "drums":{ "instrument": "drums", "gain": 0.92, "drums": { "kick": "x...x...", "snare": "....x...", "hat": "x.x.x.x." } },
-        "spark":{ "instrument": "bell", "gain": 0.52, "pan": 0.28, "repeat": 4,
-                  "notes": [[null, 3], ["D5", "1/3"], ["E5", "1/3"], ["F#5", "1/3"], ["A5", "1/3"], ["F#5", "1/3"], ["E5", "1/3"], ["D5", 1], [null, 2]] }
+        "arp":   { "instrument": "arp", "arp": ["D", "A", "Bm", "G", "D", "A", "G", "A"], "rate": 0.25, "pattern": "updown", "octaves": 2, "octave": 3, "gain": 0.5 },
+        "lead":  { "instrument": "lead", "motif": "hope", "repeat": 4, "gain": 0.96 },
+        "ember": { "instrument": "counter", "motif": "ember", "repeat": 8, "gain": 0.5, "pan": -0.28 },
+        "pad":   { "instrument": "pad", "chords": ["D", "A", "Bm", "G", "D", "A", "G", "A"], "chord_beats": 4, "octave": 3, "gain": 0.4 },
+        "bass":  { "instrument": "bass", "gain": 0.88,
+                   "notes": [["D2", 1], ["D3", 1], ["D2", 1], ["D3", 1], ["A1", 1], ["A2", 1], ["A1", 1], ["A2", 1],
+                             ["B1", 1], ["B2", 1], ["B1", 1], ["B2", 1], ["G1", 1], ["G2", 1], ["G1", 1], ["G2", 1],
+                             ["D2", 1], ["D3", 1], ["D2", 1], ["D3", 1], ["A1", 1], ["A2", 1], ["A1", 1], ["A2", 1],
+                             ["G1", 1], ["G2", 1], ["G1", 1], ["G2", 1], ["A1", 1], ["A2", 1], ["A1", 1], ["A2", 1]] },
+        "drums": { "instrument": "drums", "gain": 0.94, "drums": { "kick": "x..x..x.", "snare": "....x...", "hat": "xxxxxxxxxxxxxxxx" } },
+        "spark": { "instrument": "bell", "gain": 0.54, "pan": 0.28, "repeat": 4,
+                   "notes": [[null, 3], ["D5", "1/3"], ["E5", "1/3"], ["F#5", "1/3"], ["A5", "1/3"], ["F#5", "1/3"], ["E5", "1/3"], ["D5", 1], [null, 2]] }
       }
     },
     {
       "name": "coda",
-      "bars": 3,
-      "bpm": 126,
-      "bpm_end": 82,
+      "bars": 4,
+      "bpm": 134,
+      "bpm_end": 80,
       "transpose": 2,
-      "_comment": "The landing: a ritardando (126 -> 82) still up the whole step. Lead sings the theme one last time as the tempo relaxes, over a held tonic pad and pedal, with a final bell sparkle. It breathes out instead of stopping.",
+      "_comment": "The landing: a ritardando (134 -> 80), still up the whole step. The lead sings the theme one last time, augmented, as the tempo relaxes over a held tonic pad and pedal, with a final bell sparkle. It breathes out instead of stopping.",
       "parts": {
-        "lead": { "instrument": "lead", "motif": "hope", "stretch": 1.5, "gain": 0.92 },
-        "pad":  { "instrument": "pad", "chords": ["D"], "chord_beats": 12, "octave": 3, "gain": 0.5 },
-        "pedal":{ "instrument": "bass", "notes": [["D1", 12]], "gain": 0.62 },
-        "spark":{ "instrument": "bell", "gain": 0.5, "pan": 0.2,
-                  "notes": [[null, 2], ["D5", "1/3"], ["E5", "1/3"], ["F#5", "1/3"], ["A5", 3], [null, 4]] }
+        "lead":  { "instrument": "lead", "motif": "hope", "stretch": 1.5, "gain": 0.92 },
+        "pad":   { "instrument": "pad", "chords": ["D"], "chord_beats": 16, "octave": 3, "gain": 0.5 },
+        "pedal": { "instrument": "bass", "notes": [["D1", 16]], "gain": 0.6 },
+        "spark": { "instrument": "bell", "gain": 0.5, "pan": 0.2,
+                   "notes": [[null, 2], ["D5", "1/3"], ["E5", "1/3"], ["F#5", "1/3"], ["A5", 4], [null, 8]] }
       }
     }
   ]
