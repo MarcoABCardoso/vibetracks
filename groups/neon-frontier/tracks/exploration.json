@@ -41,7 +41,7 @@
       "loop": true,
       "_comment": "The full theme at half-speed (augmentation) floats over the pads — recognisable but transformed into something wistful.",
       "parts": {
-        "lead":  { "instrument": "lead", "motif": "main_theme", "stretch": 2.0, "repeat": 2, "pan": 0.0, "gain": 0.5 },
+        "lead":  { "instrument": "lead", "motif": "main_theme", "stretch": 2.0, "pan": 0.0, "gain": 0.5 },
         "pad":   { "instrument": "pad", "chords": ["Cadd9", "G", "Am", "Fmaj7", "Dm", "G", "C", "C"], "chord_beats": 4 },
         "bass":  { "instrument": "bass",
                    "notes": [["C2", 4], ["G2", 4], ["A2", 4], ["F2", 4],

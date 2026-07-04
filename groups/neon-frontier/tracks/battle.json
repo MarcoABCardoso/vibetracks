@@ -51,9 +51,9 @@
       "name": "B",
       "bars": 4,
       "loop": true,
-      "_comment": "Half-time grand statement: the main theme augmented (stretch 2.0) over a rising F-G-Am-E climb; danger keeps pulsing.",
+      "_comment": "Half-time grand statement: the theme's ANSWER phrase (its resolving consequent, slice [8,16]) augmented, rising to its high G5 — the 'here comes the hero' peak — over a rising F-G-Am-E climb; danger keeps pulsing.",
       "parts": {
-        "lead":  { "instrument": "lead", "motif": "main_theme", "stretch": 2.0, "gain": 0.9 },
+        "lead":  { "instrument": "lead", "motif": "main_theme", "slice": [8, 16], "stretch": 2.0, "gain": 0.9 },
         "bass":  { "instrument": "bass",
                    "notes": [["F2", 2], ["F2", 2], ["G2", 2], ["G2", 2],
                              ["A2", 2], ["A2", 2], ["E2", 2], ["E2", 2]] },

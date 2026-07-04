@@ -22,9 +22,13 @@
       "name": "A",
       "bars": 8,
       "loop": true,
-      "_comment": "Full theme on the lead; guitar arpeggiates each chord; strings + ep sustain; sub and brushed drums underneath.",
+      "_comment": "Full theme on the lead — the complete antecedent+consequent sentence, stated twice. The second statement is NOT identical: a bell descant lifts its answer phrase an octave (the return changes, per the craft guide) rather than looping the same cell. Guitar arpeggiates each chord; strings + ep sustain; sub and brushed drums underneath.",
       "parts": {
-        "lead": { "instrument": "lead", "motif": "vale_theme", "repeat": 4, "pan": 0.0, "gain": 0.6 },
+        "lead": { "instrument": "lead", "motif": "vale_theme", "repeat": 2, "pan": 0.0, "gain": 0.6 },
+        "descant": { "instrument": "bell", "pan": 0.3, "gain": 0.4,
+                     "_comment": "Silent through statement 1; on statement 2 it doubles the answer phrase (beats 24-32) an octave up as a descant.",
+                     "notes": [[null, 24],
+                               ["A5", 0.5], ["B5", 0.5], ["D6", 2], ["C#6", 0.5], ["B5", 0.5], ["A5", 1], ["F#5", 1], ["D5", 2]] },
         "guitar": { "instrument": "guitar", "pan": -0.25, "gain": 0.6,
                     "notes": [
                       ["D3", 1], ["F#3", 1], ["A3", 1], ["D4", 1],

@@ -57,10 +57,10 @@
 
   "motifs": {
     "vale_theme": {
-      "_comment": "8 beats / 2 bars in D major. The pastoral hook — stated in full in the title, fragmented elsewhere.",
+      "_comment": "16 beats / 4 bars in D major — a full antecedent+consequent sentence with its OWN rhythmic fingerprint (two quick pickups into a long held note), deliberately unlike neon's dotted A-C-E arch so the two scores don't share a hook. Antecedent (slice [0,8]) opens on the dominant A; consequent (slice [8,16]) climbs to a NEW high D5 and settles home to D. Stated in full in the title, fragmented elsewhere.",
       "notes": [
-        ["F#4", 1], ["A4", 1], ["B4", 1.5], ["A4", 0.5],
-        ["F#4", 1], ["E4", 1], ["D4", 2]
+        ["D4", 0.5], ["E4", 0.5], ["F#4", 2], ["E4", 1], ["D4", 1], ["E4", 0.5], ["F#4", 0.5], ["A4", 2],
+        ["A4", 0.5], ["B4", 0.5], ["D5", 2], ["C#5", 0.5], ["B4", 0.5], ["A4", 1], ["F#4", 1], ["D4", 2]
       ]
     },
     "breeze": {

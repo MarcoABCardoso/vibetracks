@@ -12,8 +12,9 @@ musical motifs.
 
 Tracks are organized into **groups**. A group is one self-contained soundtrack —
 its own bible plus tracks — so a single repo can hold several independent scores:
-different regions of a game, or entirely different games. The repo ships a demo
-group, `neon-frontier`; spin up your own with `new-group` without touching it.
+different regions of a game, or entirely different games. The repo ships four demo
+groups, each chosen to showcase a **distinct slice of the toolkit** (see below);
+spin up your own with `new-group` without touching them.
 
 ## Quickstart
 
@@ -30,11 +31,23 @@ python -m vibetracks new-group spooky-cave     # start a fresh, independent soun
 A track is addressed as `<group>/<track>`, or as a bare `<track>` with `--group`
 (or when the repo has just one group).
 
-## The included demo: *Neon Frontier*
+## The demo soundtracks
 
-A coherent five-cue synthwave score in A minor. Cohesion comes from a shared key,
-palette, and motifs — but the full `main_theme` is stated in only **one** track, so
-the set feels like a family of cues rather than one song on repeat:
+Four groups ship with the repo. Each is a coherent little score in its own right,
+but each was also built to **demonstrate one axis of the toolkit** — so reading them
+side by side is a tour of what VibeTracks can do. Start with `neon-frontier`.
+
+| Group | Feature focus | What it shows |
+|-------|---------------|---------------|
+| **`neon-frontier`** | Core workflow · subtractive synth · leitmotif score | Five synthwave cues (title / exploration / battle / boss / victory) over one bible. The full `main_theme` is stated in **one** track, then `slice`d, `invert`ed, `retrograde`d, and transposed across the rest — a family of cues, not one song on repeat. |
+| **`verdant-vale`** | numpy engines + per-note expression | Goes beyond bare chiptune: `fm`, `karplus` (plucked string), and `subtractive` voices dressed with `vibrato`, `chorus`, `delay`, and `reverb`. The reference for the synthesis and effects params. |
+| **`sunspire`** | `soundfont` engine (sample-based orchestral) | A nine-cue mythic-heroic score built almost entirely from **real recorded instruments** (strings, brass, woodwinds, choir, percussion) via FluidSynth. Needs the optional soundfont setup to render — see below. |
+| **`aurelia`** | Long-form development + advanced sequencing | One theme grown from a lonely music-box to a full finale across seven sections — `arp` arpeggios, per-section tempo ramps (`bpm_end`), section `transpose`, and tuplet durations. |
+
+### `neon-frontier`, up close
+
+The flagship. Cohesion comes from a shared key, palette, and motifs — but because
+the full hook lands in only one track, the set feels like a coherent family of cues:
 
 | Track | Feel | Theme treatment |
 |-------|------|------------------|
@@ -43,6 +56,10 @@ the set feels like a family of cues rather than one song on repeat:
 | `battle` | Fast, driving | Original riff; the shared `danger` motif carries continuity |
 | `boss` | Dark, intense | Just the 4-note head, dropped an octave; `danger` leads |
 | `victory` | Bright fanfare | Quotes the opening phrase, then an original flourish home |
+
+> **Rendering `sunspire`** uses the `soundfont` engine, which needs FluidSynth and a
+> GM soundfont (`scripts/setup-soundfont.sh`). The other three groups render with
+> only `numpy` + `scipy`. `validate` works for every group without FluidSynth.
 
 ## How a song is modeled
 
