@@ -41,6 +41,36 @@ Chrono Trigger). When authoring a motif in the bible:
   (antecedent/consequent): the first half rises or stays open, the second resolves.
   In specs, that's often two `slice`s of one motif, or two motifs that trade off.
 
+## A theme is a sentence, not a cell — and its returns must vary
+
+The fastest way to sound "generated" *within a single track* is to write one short
+figure and loop it. A listener clocks a 6–8 note cell after two passes; by the fifth
+they hear "the same notes" no matter how large the arrangement behind it — no amount
+of arp, drums, or key-change hides a melody that never develops. Three guards:
+
+- **Write a full sentence, not a cell.** A theme worth restating is *antecedent +
+  consequent* — roughly 4 bars / 16 beats, where the first phrase opens (ends
+  unresolved, often on the dominant) and the second answers it, ideally reaching a
+  **new high note the opening never touched** before resolving to the tonic. Author
+  it as one motif and `slice` the halves: `[0, 8]` is the question, `[8, 15]` the
+  answer. Now a single statement carries an arc instead of a two-bar hook you must
+  loop to fill the bars.
+- **Never restate it identically.** Every return should change *something* — lift the
+  answer an octave as a descant (a second voice with `"slice": [8, 15],
+  "transpose": 12`), thin the accompaniment, hand it to another instrument, or quote
+  only the half that fits the moment (the resolving answer alone makes a strong coda).
+  Same DNA, new light — the transform table above is the toolkit for this.
+- **A contrast section needs its own melody, not the theme relocated.** Dropping the
+  main theme a third into the relative minor is *still the main theme*, and the ear
+  isn't fooled. A real B-section earns its contrast with a **different tune** — a
+  second bible motif with the opposite shape (if the theme leaps and rises, make the
+  B melody narrow, stepwise, and falling), over a different progression. Let the
+  shared key, palette, and harmony carry the coherence; the melody gets to be new.
+
+Quick test: if you can hum the whole track's lead from memory after one listen, it's
+probably one cell on repeat. A developed theme is memorable *and* takes a few bars to
+state in full.
+
 ## Energy lives in the accompaniment
 
 Castlevania's "Bloody Tears" and Mega Man are simple melodies over **relentless
@@ -123,6 +153,9 @@ the theme. That's a feature, not a gap.
 - [ ] Every other cue **transforms or fragments** the motif (stretch/invert/slice/
       transpose) rather than restating or ignoring it.
 - [ ] The melody is singable: narrow range, clear rhythm, call-and-response.
+- [ ] The theme is a full question+answer sentence, not a short cell on repeat. No
+      section loops one figure verbatim; each return varies, and contrast sections
+      have their **own** melody rather than the theme transposed.
 - [ ] Drive comes from a **moving bass + ostinato**, not a busier melody.
 - [ ] Harmony fits the cue's emotion; key family is shared, cadences differ.
 - [ ] Each track has contrast (A/B) and at least one moment of space.
