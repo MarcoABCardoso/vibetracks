@@ -1,8 +1,11 @@
 # VibeTracks 🎮🎶
 
 A **game-soundtrack lab** for Claude Code. Model a song as plain JSON, then
-compile it into real `.wav` audio with a pure-Python synthesizer — no FluidSynth,
-no SoX, no ffmpeg, no soundfonts. Just `numpy` + `scipy`.
+compile it into real audio with a **pure-Python synthesizer** — `numpy` + `scipy`,
+no SoX and no ffmpeg, nothing but `pip install -r requirements.txt` to render
+three of the four demo scores. Two capabilities are **optional add-ons**: a
+`soundfont` engine (FluidSynth + a General MIDI soundfont) for real *recorded*
+instruments, and compressed `ogg`/`mp3`/`flac` export for game delivery.
 
 The point: Claude is great at editing structured text, so a song is described as
 a **spec** (diffable, reviewable, version-controlled), and a small compiler turns
@@ -19,10 +22,13 @@ spin up your own with `new-group` without touching them.
 ## Quickstart
 
 ```bash
-pip install -r requirements.txt
+pip install -r requirements.txt                # numpy + scipy: enough for 3 of the 4 demos
+scripts/setup-soundfont.sh                     # optional: FluidSynth + GM soundfont (for the sunspire demo)
+pip install 'vibetracks[export]'               # optional: ogg / mp3 / flac export
 
 python -m vibetracks validate                  # check every group's specs
 python -m vibetracks render-all                # render all groups -> out/<group>/*.wav
+python -m vibetracks render-all --format ogg   # ... as game-ready OGG instead
 python -m vibetracks render neon-frontier/battle  # render one track -> out/neon-frontier/battle.wav
 python -m vibetracks new menu --group neon-frontier  # scaffold a track in a group
 python -m vibetracks new-group spooky-cave     # start a fresh, independent soundtrack
@@ -76,6 +82,7 @@ A **part** is exactly one of:
 - `notes`: explicit events `[pitch, beats, velocity?]`, e.g. `["A4", 1, 0.8]`
 - `motif`: a named motif from the bible, with leitmotif transforms — `slice` (quote a fragment), `transpose`, `stretch` (augment/diminish), `invert`, `retrograde`, `repeat`
 - `chords`: chord symbols like `["Am", "F", "C", "G"]`, each held `chord_beats`
+- `arp`: the same chord list broken into a running arpeggio — a `rate`/`pattern`/`octaves`-driven shimmer instead of held blocks
 - `drums`: per-voice step patterns, e.g. `{"kick": "x...x...", "hat": "x.x.x.x."}`
 
 See **`CLAUDE.md`** for the complete spec reference, **`docs/composition.md`** for
@@ -85,18 +92,25 @@ skill for the compose→render→iterate workflow.
 
 ## How it compiles to sound
 
-`spec → sequencer → synth → WAV`. Oscillators (sine/square/saw/triangle/noise),
-ADSR envelopes, detuned supersaws, synth drums, and lightweight delay/reverb
-(IIR via `scipy.signal.lfilter`) are mixed per part, panned to stereo, and
-normalized to a consistent peak so every track matches in loudness.
+`spec → sequencer → synth → audio`. Each palette patch picks an **engine** for
+turning a pitch into sound: `subtractive` (oscillators + ADSR + filter — the
+synthwave default), `fm` (two-operator FM for bells and electric pianos),
+`karplus` (plucked strings), or the optional `soundfont` (real multisamples via
+FluidSynth). Parts are mixed and panned to stereo, dressed with per-note
+expression (vibrato/tremolo) and buffer effects (delay/chorus/reverb, IIR via
+`scipy.signal.lfilter`), then normalized to a consistent peak so every track
+matches in loudness. Output is 16-bit stereo **WAV** by default; `--format
+ogg|mp3|flac` exports compressed audio for game delivery (OGG, seamless-loop
+friendly, is the game default).
 
 ## Project layout
 
 ```
 groups/<name>/soundtrack.json   # a group's bible
 groups/<name>/tracks/*.json      # one spec per track in that group
-vibetracks/                      # the compiler (theory, synth, instruments, sequencer, wavio, CLI)
-tests/test_smoke.py              # theory + validation + render sanity
+vibetracks/                      # the compiler (theory, synth, instruments, sequencer,
+                                 #   soundfont, audioexport, wavio, CLI)
+tests/                           # theory, validation, engines, export, soundfont, render sanity
 .claude/skills/soundtrack        # the authoring workflow skill
 out/<group>/                     # rendered WAVs (gitignored) + per-group manifest.json
 ```
