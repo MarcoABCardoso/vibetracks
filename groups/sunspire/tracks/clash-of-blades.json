@@ -10,7 +10,9 @@
     {
       "name": "intro",
       "bars": 4,
-      "_comment": "Drums call to arms: taiko + timpani build, pizz stabs, no melody.",
+      "bpm": 126,
+      "bpm_end": 150,
+      "_comment": "Drums call to arms and the tempo charges up (accelerando 126 -> 150): taiko + timpani build, pizz stabs, no melody. The intro literally speeds into the battle.",
       "parts": {
         "taiko":   { "instrument": "taiko", "gain": 0.85,
                      "notes": [["D2", 0.5]], "repeat": 32 },
@@ -25,7 +27,7 @@
       "bars": 8,
       "_comment": "Horns hammer the diminished hero_theme as the riff; bassoon growls the omen; taiko/pizz drive. i - bVI - bVII - V.",
       "parts": {
-        "horn":    { "instrument": "horn", "motif": "hero_theme", "stretch": 0.5, "repeat": 8, "pan": -0.05, "gain": 0.9 },
+        "horn":    { "instrument": "horn", "motif": "hero_theme", "stretch": 0.5, "repeat": 4, "pan": -0.05, "gain": 0.9 },
         "bassoon": { "instrument": "bassoon", "motif": "omen", "repeat": 8, "pan": 0.15, "gain": 0.6 },
         "taiko":   { "instrument": "taiko", "gain": 0.75, "notes": [["D2", 0.5]], "repeat": 64 },
         "timpani": { "instrument": "timpani", "gain": 0.6,
@@ -48,7 +50,7 @@
       "loop": true,
       "_comment": "Full assault and loop point: brass tutti carries the diminished theme, trumpet fires the fanfare, choir stabs, trombone drags the omen down an octave. Everything drives.",
       "parts": {
-        "brass":   { "instrument": "brass", "motif": "hero_theme", "stretch": 0.5, "repeat": 8, "pan": -0.1, "gain": 0.85 },
+        "brass":   { "instrument": "brass", "motif": "hero_theme", "stretch": 0.5, "repeat": 4, "pan": -0.1, "gain": 0.85 },
         "trumpet": { "instrument": "trumpet", "motif": "fanfare", "stretch": 0.5, "repeat": 8, "transpose": 12, "pan": 0.2, "gain": 0.55 },
         "trombone":{ "instrument": "trombone", "motif": "omen", "repeat": 8, "transpose": -12, "pan": 0.1, "gain": 0.55 },
         "choir":   { "instrument": "choir", "chords": ["Dm", "Bb", "C", "A", "Dm", "Bb", "A", "A"], "chord_beats": 4, "gain": 0.45 },

@@ -23,8 +23,9 @@ import os
 import sys
 
 from . import spec
+from .audioexport import FORMATS
 from .sequencer import render_track
-from .wavio import write_wav
+from .audioexport import write_audio
 
 GROUPS_DIR = "groups"
 OUT_DIR = "out"
@@ -113,13 +114,13 @@ def cmd_validate(args) -> int:
     return 0 if ok else 1
 
 
-def _render_one(track_path, bible, group_name, out_root, loops) -> dict:
+def _render_one(track_path, bible, group_name, out_root, loops, fmt="wav") -> dict:
     track = spec.resolve_track(track_path, bible)
     buf = render_track(track, loops=loops)
     out_dir = os.path.join(out_root, group_name)
     os.makedirs(out_dir, exist_ok=True)
-    out_path = os.path.join(out_dir, f"{track['name']}.wav")
-    dur = write_wav(out_path, buf)
+    out_path = os.path.join(out_dir, f"{track['name']}.{fmt}")
+    dur = write_audio(out_path, buf, fmt=fmt)
     import numpy as np
     peak = float(np.max(np.abs(buf)))
     print(f"  rendered  {out_path}  ({dur:.1f}s, peak {peak:.2f})")
@@ -131,7 +132,12 @@ def cmd_render(args) -> int:
     groups = spec.discover_groups()
     g, path = _locate(args.track, args.group, groups)
     bible = g.load_bible()
-    info = _render_one(path, bible, g.name, args.out_dir, args.loops)
+    fmt = args.format
+    if args.out:  # an explicit output path's extension picks the format
+        ext = os.path.splitext(args.out)[1].lstrip(".").lower()
+        if ext:
+            fmt = ext
+    info = _render_one(path, bible, g.name, args.out_dir, args.loops, fmt)
     if args.out:
         # Honour an explicit output path by moving the rendered file.
         os.replace(info["file"], args.out)
@@ -158,7 +164,8 @@ def cmd_render_all(args) -> int:
                     "bpm": bible.bpm, "aesthetic": bible.aesthetic, "tracks": []}
         for name in g.track_names():
             manifest["tracks"].append(
-                _render_one(g.track_path(name), bible, g.name, args.out_dir, args.loops))
+                _render_one(g.track_path(name), bible, g.name, args.out_dir,
+                            args.loops, args.format))
         out_dir = os.path.join(args.out_dir, g.name)
         os.makedirs(out_dir, exist_ok=True)
         manifest_path = os.path.join(out_dir, "manifest.json")
@@ -260,17 +267,21 @@ def main(argv=None) -> int:
     pv = sub.add_parser("validate", help="validate every group's specs")
     pv.add_argument("--group", help="limit to one group")
 
-    pr = sub.add_parser("render", help="render one track to WAV")
+    pr = sub.add_parser("render", help="render one track to audio (WAV/OGG/MP3/FLAC)")
     pr.add_argument("track", help="<group>/<track>, a track name, or a path to JSON")
     pr.add_argument("--group", help="group to look up a bare track name in")
-    pr.add_argument("-o", "--out", help="explicit output WAV path")
+    pr.add_argument("-o", "--out", help="explicit output path (its extension picks the format)")
     pr.add_argument("--out-dir", default=OUT_DIR)
     pr.add_argument("--loops", type=int, default=None, help="loop-section repeats")
+    pr.add_argument("--format", choices=FORMATS, default="wav",
+                    help="output format; ogg (game default), mp3, flac need vibetracks[export]")
 
     pa = sub.add_parser("render-all", help="render every track in every group")
     pa.add_argument("--group", help="limit to one group")
     pa.add_argument("--out-dir", default=OUT_DIR)
     pa.add_argument("--loops", type=int, default=None)
+    pa.add_argument("--format", choices=FORMATS, default="wav",
+                    help="output format; ogg (game default), mp3, flac need vibetracks[export]")
 
     pn = sub.add_parser("new", help="scaffold a new track spec in a group")
     pn.add_argument("name")

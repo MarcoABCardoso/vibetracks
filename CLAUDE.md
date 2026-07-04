@@ -174,7 +174,13 @@ Schroeder) or `{decay, mix, predelay}` for the denser convolution reverb. The
   continuity. Restating the whole hook in every track makes them sound identical.
 - The master stage normalizes every track to the same peak (≈0.89), so don't fight
   loudness with per-part `gain` — use `gain` only for *balance within* a track.
-- WAV is the only output format (no MIDI/OGG yet). 44.1 kHz, 16-bit, stereo.
+- Default output is 44.1 kHz, 16-bit, stereo **WAV** (stdlib, no deps). For game
+  delivery, `render`/`render-all` take `--format ogg|mp3|flac` (or `render -o
+  name.ogg` — the extension picks the format). **OGG Vorbis** is the game default
+  (small, royalty-free, seamless-loop friendly); MP3/FLAC are also supported.
+  Compressed export needs the optional `vibetracks[export]` extra (`soundfile` for
+  OGG/FLAC, `lameenc` for MP3), imported lazily like the soundfont engine — see
+  `vibetracks/audioexport.py`. No MIDI yet.
 - Rendered `out/<group>/*.wav` are build artifacts (gitignored); commit the JSON specs.
 - One group = one coherent score. Don't reach across groups for motifs/palette; to
   start a new game or region, `new-group` rather than overwriting an existing bible.
