@@ -27,6 +27,8 @@ from .instruments import DEFAULT_PALETTE, ENGINES, merge_patch
 
 VALID_DRUM_CHARS = set("x.Xo-")  # x/X = hit, o = open (hat), '.'/'-' = rest
 ARP_PATTERNS = {"up", "down", "updown", "downup"}  # named arpeggio traversals
+AUTOMATION_TARGETS = {"filter", "gain", "pan"}  # parameters an envelope can drive
+AUTOMATION_SHAPES = {"linear", "exp"}            # ramp interpolation shapes
 
 GROUPS_DIR = "groups"        # where soundtrack groups live
 BIBLE_FILE = "soundtrack.json"
@@ -103,6 +105,42 @@ def _validate_beats_field(part: dict, field: str, where: str) -> None:
             raise SpecError(f"{where}: '{field}' {e}") from e
 
 
+def _validate_swing(value, where: str) -> None:
+    """Swing must be a number in ``[0, 1)`` (0 = straight, ~1/3 = hard shuffle)."""
+    if not (isinstance(value, (int, float)) and not isinstance(value, bool)
+            and 0 <= value < 1):
+        raise SpecError(f"{where}: 'swing' must be a number in [0, 1), got {value!r}")
+
+
+def _validate_automation(auto, where: str) -> None:
+    """Validate a part's ``automation`` block: {target: ramp | {"lfo": {...}}}."""
+    if not isinstance(auto, dict):
+        raise SpecError(f"{where}: 'automation' must be an object")
+    for target, env in auto.items():
+        if target not in AUTOMATION_TARGETS:
+            raise SpecError(f"{where}: unknown automation target {target!r} "
+                            f"(valid: {sorted(AUTOMATION_TARGETS)})")
+        if not isinstance(env, dict):
+            raise SpecError(f"{where}: automation {target!r} must be an object "
+                            f"(a from/to ramp or an 'lfo')")
+        w = f"{where}: automation {target!r}"
+        if "lfo" in env:
+            lfo = env["lfo"]
+            if not isinstance(lfo, dict):
+                raise SpecError(f"{w}: 'lfo' must be an object")
+            for fld in ("rate", "depth", "center"):
+                if fld in lfo and not isinstance(lfo[fld], (int, float)):
+                    raise SpecError(f"{w}: lfo '{fld}' must be a number")
+        else:
+            for fld in ("from", "to"):
+                if fld in env and not isinstance(env[fld], (int, float)):
+                    raise SpecError(f"{w}: '{fld}' must be a number")
+            shape = env.get("shape")
+            if shape is not None and shape not in AUTOMATION_SHAPES:
+                raise SpecError(f"{w}: 'shape' must be one of "
+                                f"{sorted(AUTOMATION_SHAPES)}, got {shape!r}")
+
+
 def _validate_note_events(events, where: str) -> None:
     if not isinstance(events, list):
         raise SpecError(f"{where}: notes must be a list of [pitch, beats, vel?]")
@@ -151,6 +189,8 @@ def resolve_track(path: str, bible: Bible | None = None) -> dict:
         "motifs": motifs,
         "loops": data.get("loops"),  # default loop repeats; CLI can override
     }
+    if "swing" in data:
+        resolved["swing"] = data["swing"]  # track-level shuffle, section-overridable
     _validate_track(resolved, path)
     return resolved
 
@@ -162,6 +202,8 @@ def _validate_track(t: dict, path: str) -> None:
         raise SpecError(f"{path}: bad key {t['key']!r}: {e}") from e
     if t["bpm"] <= 0:
         raise SpecError(f"{path}: bpm must be positive")
+    if "swing" in t:
+        _validate_swing(t["swing"], path)
     if not t["sections"]:
         raise SpecError(f"{path}: track has no sections")
 
@@ -187,6 +229,8 @@ def _validate_track(t: dict, path: str) -> None:
                 raise SpecError(f"{where}: '{fld}' must be a positive number")
         if "transpose" in section and not isinstance(section["transpose"], int):
             raise SpecError(f"{where}: 'transpose' must be an integer (semitones)")
+        if "swing" in section:
+            _validate_swing(section["swing"], where)
         parts = section.get("parts", {})
         if not isinstance(parts, dict):
             raise SpecError(f"{where}: 'parts' must be an object")
@@ -214,6 +258,8 @@ def _validate_part(part: dict, track: dict, where: str) -> None:
             theory.note_to_midi(inv)
         except ValueError as e:
             raise SpecError(f"{where}: 'invert' pivot {inv!r} is not a note: {e}") from e
+    if "automation" in part:
+        _validate_automation(part["automation"], where)
     if "notes" in part:
         _validate_note_events(part["notes"], where)
     elif "motif" in part:

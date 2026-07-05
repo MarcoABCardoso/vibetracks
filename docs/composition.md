@@ -88,6 +88,12 @@ parts under it move:
   `motif` part with `repeat`; `arp` is for harmony-driven texture.)
 - **Counterpoint**: give a second voice its own line answering the lead (a `pluck`
   playing the `danger` motif under the `lead`, as `battle`/`boss` do).
+- **Groove, not just grid** — a straight-quantized pocket reads as a demo. Add
+  `swing` (track- or section-level, `0`…just under `1`; `~0.3` is a relaxed
+  shuffle, `~1/3` a hard triplet feel) to lay the off-beats back. It shuffles the
+  whole section at once — the hi-hats, the arp's sixteenths, and the melody's
+  off-beat eighths together — so the feel stays coherent. This is what separates a
+  funk/lofi/synthwave cue from a metronome. See the `midnight-drive` group.
 
 Conversely, for calm cues, *thin it out* — let the melody breathe over pads.
 
@@ -133,6 +139,21 @@ A loop that dumps everything in bar 1 fatigues fast. Build an arc:
   transformed motif) — see how every demo track now has an A→B form.
 - Use dynamics: drop parts out and bring them back. **Silence and space are tools**
   (Undertale's quiet beats, Hollow Knight's restraint). Don't fear an empty bar.
+- **Automate a parameter across the section** so a part *arrives* instead of just
+  being present. A per-part `automation` envelope moves `gain`, `pan`, or `filter`
+  over the section, in two forms — a `{"from","to","shape"}` ramp or an
+  `{"lfo":{...}}` cycle:
+  - **Filter swell** — open the lead as the hook lands:
+    `"automation":{"filter":{"from":500,"to":6000,"shape":"exp"}}` (use `exp` for
+    cutoff Hz). The single most idiomatic synthwave gesture.
+  - **Dynamic swell** — fade a pad in / a cue out:
+    `"automation":{"gain":{"from":0.0,"to":1.0}}`.
+  - **Auto-pan** — drift an arp across the field for width:
+    `"automation":{"pan":{"lfo":{"rate":0.25,"depth":0.8}}}`.
+  These are *time-shape*, the complement to dropping parts in and out. The
+  `midnight-drive` group is the worked demo. (Caveat: `filter` automation steps
+  per note-onset and is numpy-engines-only; `gain`/`pan` are exact for every
+  engine.)
 
 ## Match the music to what the player is doing
 
@@ -162,3 +183,6 @@ the theme. That's a feature, not a gap.
 - [ ] Tempo/density/dissonance match the cue's gameplay function.
 - [ ] If a track builds to a peak, it *earns* it — running `arp`, tempo ramp, and/or
       a `transpose` key-change on the final statement, not just more parts.
+- [ ] The pocket has feel, not just a grid — reach for `swing` where the genre
+      wants it, and let at least one part *move* over time (a filter swell, a fade,
+      an auto-pan) via `automation` rather than sitting at a static level.

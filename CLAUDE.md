@@ -59,6 +59,7 @@ Global identity inherited by every track in its group.
 | `name` | Output filename stem. |
 | `extends` | Path to the bible, e.g. `"../soundtrack.json"`. |
 | `key`, `bpm`, `time_signature` | Optional overrides (`time_signature` default `[4,4]`). |
+| `swing` | Shuffle amount in `[0, 1)` (0 = straight, ~`1/3` = triplet feel); section-overridable. |
 | `palette` | Optional per-track patch overrides. |
 | `loops` | Default repeat count for `"loop": true` sections (CLI `--loops` overrides). |
 | `sections` | List of `{name, bars, loop?, repeat?, parts}`. |
@@ -71,9 +72,13 @@ Per-section overrides (all optional): `bpm` overrides the track tempo for that
 section; `bpm_end` ramps tempo linearly from `bpm` to `bpm_end` across the section
 (accelerando/ritardando — drive into a climax or relax out of one). `transpose`
 (semitones) shifts every pitched part in the section — the one-line "kick the final
-chorus up a step" modulation, without editing each part. The `aurelia` group is a
-worked demo of these long-form tools: a single theme grown across seven sections
-with tempo ramps, per-section transpose, arpeggios, and tuplets.
+chorus up a step" modulation, without editing each part. `swing` overrides the
+track shuffle for that section (e.g. a straight intro into a shuffled groove). The
+`aurelia` group is a worked demo of these long-form tools: a single theme grown
+across seven sections with tempo ramps, per-section transpose, arpeggios, and
+tuplets. The `midnight-drive` group demos the two *motion* tools — `swing` for a
+shuffled pocket and per-part `automation` envelopes for filter sweeps, swells, and
+auto-pan.
 
 ### Parts
 Each section's `parts` is a map of part-name → part. Every part needs an
@@ -106,7 +111,33 @@ Each section's `parts` is a map of part-name → part. Every part needs an
   Each string is one bar; `x`/`X` = hit, `o` = open hi-hat (on the `hat` voice),
   `.`/`-` = rest. Patterns tile across the section's bars.
 
-Optional per-part knobs: `gain` (level), `pan` (−1 left … 1 right).
+Optional per-part knobs: `gain` (level), `pan` (−1 left … 1 right), and
+`automation` — envelopes that move a parameter *over the section* (see below).
+
+### `automation` — parameter movement over time
+The one lever for *continuous shape*, not just static levels — a filter that
+opens, a pad that swells, an arp that drifts across the field. A per-part
+`automation` maps a target to an envelope; targets are `filter`, `gain`, `pan`:
+
+```json
+"automation": {
+  "filter": {"from": 500, "to": 6000, "shape": "exp"},
+  "gain":   {"from": 0.3, "to": 1.0},
+  "pan":    {"lfo": {"rate": 0.25, "depth": 0.8, "center": 0.0}}
+}
+```
+
+Each envelope is one of two forms:
+- **ramp** `{"from", "to", "shape": "linear"|"exp"}` — interpolate across the
+  section. `exp` sweeps musically over wide ranges (use it for filter cutoff Hz).
+- **lfo** `{"lfo": {"rate" (Hz), "depth", "center", "shape"}}` — a cyclic move
+  around `center` with amplitude `depth` (auto-pan, wah, gain wobble).
+
+`gain` (rides on top of the part's balance level) and `pan` (absolute position)
+automate exactly, per sample, for **every engine including `soundfont`**.
+`filter` automation is **numpy engines only** and sampled per note-onset (a
+stepped sweep — ideal for leads/arps/plucks; a single long pad note gets one
+value). It applies to melodic parts (`notes`/`motif`/`arp`).
 
 ## Instrument engines & expression (palette patches)
 
