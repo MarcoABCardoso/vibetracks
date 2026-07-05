@@ -65,8 +65,12 @@ Global identity inherited by every track in its group.
 | `sections` | List of `{name, bars, loop?, repeat?, parts}`. |
 
 Section assembly: non-loop sections play `repeat` times (default 1); a section with
-`"loop": true` repeats `loops` times (default 2). Sections are concatenated in order,
-so the usual shape is `intro` (once) + `loop` (×N).
+`"loop": true` repeats `loops` times (default 2). Sections are laid end to end in
+order, so the usual shape is `intro` (once) + `loop` (×N). Each section's
+delay/reverb **tail rings past its boundary** into the next section (and a loop's
+tail into its own repeat) — sections are overlap-added at their musical offsets,
+not hard-cut at the seam, so the score breathes across boundaries and ends on a
+natural ring-out.
 
 Per-section overrides (all optional): `bpm` overrides the track tempo for that
 section; `bpm_end` ramps tempo linearly from `bpm` to `bpm_end` across the section

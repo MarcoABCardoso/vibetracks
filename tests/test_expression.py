@@ -187,6 +187,22 @@ class TestEndToEnd(unittest.TestCase):
         self.assertGreater(peak, 0.1)     # not silent
         self.assertLessEqual(peak, 1.0)
 
+    def test_effect_tail_bleeds_across_section_seam(self):
+        # A reverb-heavy chord that stops at the section boundary should still
+        # ring into the *next* (silent) section instead of being cut at the seam.
+        track = {"name": "t", "key": "A minor", "bpm": 120, "time_signature": [4, 4],
+                 "motifs": {}, "loops": 1, "palette": _palette(), "sections": [
+                     {"name": "ring", "bars": 1, "parts": {
+                         "pad": {"instrument": "pad", "chords": ["Am"],
+                                 "chord_beats": 4}}},
+                     {"name": "silent", "bars": 1, "parts": {
+                         "pad": {"instrument": "pad", "notes": [[None, 4]]}}}]}
+        buf = render_track(track, sr=16000, loops=1)
+        body = int(round(4 * 0.5 * 16000))          # one 1-bar section at 120 bpm
+        self.assertGreater(buf.shape[0], 2 * body)   # track rings out past the body
+        bleed = buf[body:2 * body]                   # the "silent" section's window
+        self.assertGreater(np.sqrt(np.mean(bleed ** 2)), 1e-4)  # reverb bled in
+
     def test_swing_changes_the_render(self):
         # A swung render must differ from the straight one (same notes, feel only).
         def _track(swing):

@@ -2,8 +2,9 @@
 
 Pipeline per track:
   sections -> parts -> events scheduled on a beat grid -> per-part buffer
-  (with delay/reverb) -> panned into stereo -> summed -> sections concatenated
-  (loop sections repeated) -> master normalize for consistent loudness.
+  (with delay/reverb tail) -> panned into stereo -> summed -> sections
+  overlap-added at their musical offsets (loop sections repeated) so effect tails
+  bleed across the seam -> master normalize for consistent loudness.
 
 Timing is expressed in *beats* (quarter notes). ``seconds_per_beat = 60/bpm``.
 """
@@ -362,8 +363,32 @@ def _transform(events, part):
 
 # --- Section / track assembly -----------------------------------------------
 
+def _part_tail_seconds(patch: dict) -> float:
+    """Estimate how long a part's effects ring after its notes stop.
+
+    Reserved as silence past the section body so delay/reverb tails can bleed into
+    the next section (overlap-added in :func:`render_track`) instead of being cut
+    off at the seam. Capped so a long reverb can't balloon a section.
+    """
+    tail = 0.0
+    rev = patch.get("reverb")
+    if isinstance(rev, dict):
+        tail += float(rev.get("decay", 1.5)) + float(rev.get("predelay", 0.02))
+    elif rev:
+        tail += 0.4  # cheap Schroeder reverb rings ~this long
+    dly = patch.get("delay")
+    if dly:
+        tail += 4.0 * float(dly.get("time", 0.25))  # matches synth.delay's own tail
+    return min(tail, 4.0)
+
+
 def render_section(section, track, sr, drum_cache):
-    """Render one section (all its parts) to a stereo buffer.
+    """Render one section to ``(body_samples, stereo)``.
+
+    ``body_samples`` is the section's musical length (what the next section is
+    offset by); the returned ``stereo`` buffer is that plus an effect *tail*, so
+    delay/reverb (and a part's final ring) can bleed across the section seam
+    instead of being cut off — :func:`render_track` overlap-adds the pieces.
 
     A section may override tempo (``bpm``, plus ``bpm_end`` for a linear ramp)
     and set ``transpose`` (semitones) applied to every pitched part — the two
@@ -439,11 +464,12 @@ def render_section(section, track, sr, drum_cache):
                 mono = _render_melody(events, patch, b2s, sr, section_samples,
                                       filter_env)
 
-        mono = apply_part_effects(mono, patch, sr)[:section_samples]
+        mono = mono[:section_samples]
         if mono.shape[0] < section_samples:
             mono = np.pad(mono, (0, section_samples - mono.shape[0]))
-        # gain/pan automation (exact, per-sample). gain rides as an envelope on
-        # top of the part's balance scalar; pan sets absolute position.
+        # Level shaping (gain automation + sidechain) is applied to the DRY signal
+        # so the effect tail inherits it. A plain scalar gain commutes with the
+        # linear effects, so parts without automation/sidechain are unchanged.
         gain_val = gain
         if "gain" in auto:
             gain_val = gain * _automation_curve(auto["gain"], section_samples, sr)
@@ -456,12 +482,27 @@ def render_section(section, track, sr, drum_cache):
             gain_val = gain_val * _sidechain_env(
                 onset_cache[voice], section_samples, sr,
                 float(sc.get("amount", 0.7)), float(sc.get("release", 0.18)))
-        pan_val = pan
+        mono = mono * gain_val
+        # Reserve a tail, run effects into it, and keep the whole thing so the
+        # delay/reverb ring bleeds past the section (overlap-added downstream).
+        tail = int(_part_tail_seconds(patch) * sr)
+        if tail:
+            mono = np.pad(mono, (0, tail))
+        mono = apply_part_effects(mono, patch, sr)
+        # pan spans the full body+tail; automation holds its end value over the tail.
         if "pan" in auto:
-            pan_val = np.clip(_automation_curve(auto["pan"], section_samples, sr),
-                              -1.0, 1.0)
-        stereo += _pan(mono * gain_val, pan_val)
-    return stereo
+            pc = np.clip(_automation_curve(auto["pan"], section_samples, sr),
+                         -1.0, 1.0)
+            if mono.shape[0] > pc.shape[0]:
+                pc = np.concatenate([pc, np.full(mono.shape[0] - pc.shape[0], pc[-1])])
+            pan_val = pc[:mono.shape[0]]
+        else:
+            pan_val = pan
+        panned = _pan(mono, pan_val)
+        if panned.shape[0] > stereo.shape[0]:
+            stereo = np.pad(stereo, ((0, panned.shape[0] - stereo.shape[0]), (0, 0)))
+        stereo[:panned.shape[0]] += panned
+    return section_samples, stereo
 
 
 def render_track(track, sr=synth.SR, loops=None):
@@ -469,15 +510,25 @@ def render_track(track, sr=synth.SR, loops=None):
     if loops is None:
         loops = track.get("loops") or DEFAULT_LOOPS
     drum_cache = _drum_cache(sr)
-    pieces = []
+    # Place each section at its running body offset and overlap-add, so a
+    # section's effect tail rings into the start of the next (and a loop's tail
+    # into its own repeat) instead of being chopped at the seam. The write cursor
+    # advances by the musical body only; the buffer past it is tail.
+    placements = []  # (start_sample, stereo_buffer)
+    cursor = 0
+    end = 0
     for section in track["sections"]:
-        rendered = render_section(section, track, sr, drum_cache)
+        body, rendered = render_section(section, track, sr, drum_cache)
         repeats = loops if section.get("loop") else section.get("repeat", 1)
         for _ in range(int(repeats)):
-            pieces.append(rendered)
-    if not pieces:
+            placements.append((cursor, rendered))
+            end = max(end, cursor + rendered.shape[0])
+            cursor += body
+    if not placements:
         return np.zeros((sr, 2), dtype=np.float64)
-    full = np.concatenate(pieces, axis=0)
+    full = np.zeros((end, 2), dtype=np.float64)
+    for start, buf in placements:
+        full[start:start + buf.shape[0]] += buf
     # Gentle saturation then normalize to a fixed peak so all tracks match level.
     full = synth.soft_clip(full, drive=1.05)
     full = synth.normalize(full, peak=0.89)
