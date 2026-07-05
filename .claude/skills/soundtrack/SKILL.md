@@ -39,8 +39,16 @@ the `tracks` list.
 ## 2. Compose the main motif before any track
 
 The motif is the glue that makes separate cues feel like one score. Author at
-least a `main_theme` under `motifs` (8 beats / 2 bars is a good hook), in the home
-key. Optionally add answer phrases like `danger` for tense cues.
+least a `main_theme` under `motifs` (8 beats / 2 bars is a good hook). Optionally
+add answer phrases like `danger` for tense cues.
+
+**Seed it, don't recall it.** Left to intuition you will reproduce the model's
+default tune (A-minor tonic-arp up, step down) yet again. Break the bias by rolling
+fresh material from outside your head — run `python scripts/melodyseed.py <track>`
+for a frame (mode/root you wouldn't default to) and a contour, then hand-edit for
+singability and write the answering phrase. See **"Break the default"** in
+`docs/composition.md` for the method and guardrails. Don't accept an A-minor,
+starts-on-A theme by reflex.
 
 ## 3. Draft → render → listen → iterate (per track)
 
