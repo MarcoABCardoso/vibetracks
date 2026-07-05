@@ -11,13 +11,13 @@
       "parts": {
         "pad": {
           "instrument": "pad",
-          "chords": ["Am", "F"],
+          "chords": ["A", "G"],
           "chord_beats": 8,
           "automation": {"gain": {"from": 0.0, "to": 1.0, "shape": "linear"}}
         },
         "arp": {
           "instrument": "arp",
-          "arp": ["Am", "F"],
+          "arp": ["A", "G"],
           "rate": 0.5,
           "pattern": "updown",
           "octaves": 2,
@@ -40,7 +40,7 @@
         },
         "keys": {
           "instrument": "keys",
-          "chords": ["Am", "F", "C", "G"],
+          "chords": ["A", "G", "D", "Em"],
           "chord_beats": 4,
           "octave": 3,
           "gain": 0.55,
@@ -49,7 +49,7 @@
         },
         "arp": {
           "instrument": "arp",
-          "arp": ["Am", "F", "C", "G"],
+          "arp": ["A", "G", "D", "Em"],
           "rate": 0.5,
           "pattern": "up",
           "octaves": 2,
@@ -58,8 +58,11 @@
         },
         "bass": {
           "instrument": "bass",
-          "notes": [["A2", 1], ["A2", 0.5], ["E2", 0.5], ["F2", 1], ["F2", 1],
-                    ["C2", 1], ["C2", 1], ["G2", 1], ["G2", 1]],
+          "notes": [["A2", 1], ["A2", 0.5], ["E2", 0.5], ["A2", 1], ["A2", 1],
+                    ["G2", 1], ["G2", 0.5], ["D2", 0.5], ["G2", 1], ["G2", 1],
+                    ["D2", 1], ["D2", 0.5], ["A2", 0.5], ["D2", 1], ["D2", 1],
+                    ["E2", 1], ["E2", 0.5], ["B2", 0.5], ["E2", 1], ["E2", 1]],
+          "repeat": 2,
           "octave": 2,
           "sidechain": {"amount": 0.7, "release": 0.18}
         },
@@ -90,7 +93,7 @@
         },
         "pad": {
           "instrument": "pad",
-          "chords": ["Am"],
+          "chords": ["A"],
           "chord_beats": 16,
           "automation": {"gain": {"from": 1.0, "to": 0.0, "shape": "linear"}}
         }
