@@ -41,6 +41,52 @@ Chrono Trigger). When authoring a motif in the bible:
   (antecedent/consequent): the first half rises or stays open, the second resolves.
   In specs, that's often two `slice`s of one motif, or two motifs that trade off.
 
+## Break the default: seed the melody, don't recall it
+
+There is a specific trap here, and it is worth naming. Asked to "write a nice
+theme," a language model doesn't *invent* — it returns its **prior**, and in this
+repo that prior is one tune: **A minor, tonic triad up then step down**
+(`A4 C5 E5 … D5 C5 B4 A4`). You have now seen it four or five times because it is
+the path of least resistance every time the melody is left to intuition. Picking a
+"better default" doesn't help — it just relocates the bias. The only real fix is to
+**take the melodic choices out of the model's head** and roll them from outside it.
+
+**Run the seeder, then shape the result.** `scripts/melodyseed.py` rolls a frame
+(key + mode you wouldn't reach for by default) and a random-walk contour with a
+budget of leaps, on a shuffled rhythmic cell — then you edit it for singability:
+
+```bash
+python scripts/melodyseed.py <track-name>     # per-track seed = reproducible
+```
+
+Worked example (`dawn-market` → **E lydian**, a color you'd never default to):
+
+```
+raw roll (the question):   B4 E5 F#5 E5 C#5 E5 C#5 F#4   # lands open on the 2nd
+```
+
+That is already usable — a clear leap up to `E5`, an oscillating middle, an open
+landing. Keep the frame and the shape; nudge only what fights the ear. Then write
+the **answering half by hand** so it resolves and reaches a new high the question
+never touched (the "sentence, not a cell" rule below):
+
+```
++ answer (hand-written):   C#5 F#5 G#5 F#5 E5 D#5 E5    # tops out new on G#5, resolves to E5
+```
+
+Guardrails so the roll still sounds intentional, not random:
+- **Start on a stable tone, but not always the tonic** (the third or fifth is
+  fresher); **end the question open** (2/5/7) and the **answer on the tonic**.
+- **Mostly stepwise, 1–2 leaps** — the seeder budgets this; keep it when editing.
+- **Reuse one rhythmic fingerprint** across the phrase for identity; fix any pitch
+  that leaps twice in a row or wanders past a ninth of range.
+- **Let it roam the invariants the bias freezes**: mode (dorian/phrygian/lydian/
+  mixolydian each recolor the whole score), root, starting register, even meter.
+  If three tracks in a row came out in A minor starting on A, that's the tell.
+
+The point isn't machine-composed melodies — it's breaking the model out of its one
+groove so the *human-in-you* edit starts from fresh clay instead of the cliché.
+
 ## A theme is a sentence, not a cell — and its returns must vary
 
 The fastest way to sound "generated" *within a single track* is to write one short
@@ -176,6 +222,10 @@ the theme. That's a feature, not a gap.
 
 ## Pre-flight checklist (before you call it done)
 
+- [ ] The theme was **seeded, not recalled** — you ran `scripts/melodyseed.py`
+      (or otherwise rolled the frame/contour) rather than defaulting to the
+      A-minor tonic-arp cliché. If it's in A minor starting on A, prove it earned
+      that, don't accept it by reflex.
 - [ ] One motif library; the **full theme appears in only one track**.
 - [ ] Every other cue **transforms or fragments** the motif (stretch/invert/slice/
       transpose) rather than restating or ignoring it.
