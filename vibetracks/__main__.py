@@ -193,8 +193,12 @@ TRACK_TEMPLATE = {
     "sections": [
         {"name": "intro", "bars": 2, "parts": {
             "pad": {"instrument": "pad", "chords": ["Am", "F", "C", "G"]}}},
-        {"name": "loop", "bars": 4, "loop": True, "parts": {
-            "lead": {"instrument": "lead", "motif": "main_theme", "transpose": 0},
+        # `swing` (0..1) shuffles the pocket; a part's `automation` moves a
+        # parameter (filter/gain/pan) over the section — a filter that opens here.
+        {"name": "loop", "bars": 4, "loop": True, "swing": 0, "parts": {
+            "lead": {"instrument": "lead", "motif": "main_theme", "transpose": 0,
+                     "automation": {"filter": {"from": 1200, "to": 6000,
+                                               "shape": "exp"}}},
             "bass": {"instrument": "bass",
                      "notes": [["A2", 1], ["A2", 1], ["F2", 1], ["G2", 1]]},
             "pad": {"instrument": "pad", "chords": ["Am", "F", "C", "G"]},

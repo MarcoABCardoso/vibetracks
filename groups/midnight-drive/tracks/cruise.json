@@ -1,0 +1,100 @@
+{
+  "name": "cruise",
+  "extends": "../soundtrack.json",
+  "swing": 0.3,
+  "_comment": "Track-level swing (0.3 ≈ a relaxed shuffle) grooves every part at once — the off-beat eighths of the melody and the arp's sixteenths all lay back. Then the motion tools: a pad that SWELLS in (gain ramp), a lead filter that OPENS as the hook arrives (filter ramp), an arp that DRIFTS across the stereo field (pan lfo), and a bass+keys that PUMP to the kick (sidechain).",
+  "sections": [
+    {
+      "name": "intro",
+      "bars": 4,
+      "_comment": "Almost no groove yet — just the pad breathing in from silence (gain 0 -> 1) behind a closed-filter arp drifting left-to-right. The swell and the pan sweep are both automation, not static levels.",
+      "parts": {
+        "pad": {
+          "instrument": "pad",
+          "chords": ["Am", "F"],
+          "chord_beats": 8,
+          "automation": {"gain": {"from": 0.0, "to": 1.0, "shape": "linear"}}
+        },
+        "arp": {
+          "instrument": "arp",
+          "arp": ["Am", "F"],
+          "rate": 0.5,
+          "pattern": "updown",
+          "octaves": 2,
+          "octave": 3,
+          "automation": {"pan": {"lfo": {"rate": 0.2, "depth": 0.85, "center": 0.0}}}
+        }
+      }
+    },
+    {
+      "name": "groove",
+      "bars": 8,
+      "loop": true,
+      "_comment": "The pocket drops. Swing is loudest here — the shuffled hi-hats and the lead's off-beat eighths sit late. The lead enters on a slowly OPENING filter (500 -> 6500 Hz, exp); the arp keeps drifting across the field; the bass and keys DUCK to the kick (sidechain) so the whole track pumps on the beat — the synthwave heartbeat.",
+      "parts": {
+        "lead": {
+          "instrument": "lead",
+          "motif": "cruise",
+          "repeat": 2,
+          "automation": {"filter": {"from": 500, "to": 6500, "shape": "exp"}}
+        },
+        "keys": {
+          "instrument": "keys",
+          "chords": ["Am", "F", "C", "G"],
+          "chord_beats": 4,
+          "octave": 3,
+          "gain": 0.55,
+          "automation": {"gain": {"lfo": {"rate": 0.5, "depth": 0.18, "center": 0.85}}},
+          "sidechain": {"amount": 0.5, "release": 0.22}
+        },
+        "arp": {
+          "instrument": "arp",
+          "arp": ["Am", "F", "C", "G"],
+          "rate": 0.5,
+          "pattern": "up",
+          "octaves": 2,
+          "octave": 3,
+          "automation": {"pan": {"lfo": {"rate": 0.28, "depth": 0.8, "center": 0.0}}}
+        },
+        "bass": {
+          "instrument": "bass",
+          "notes": [["A2", 1], ["A2", 0.5], ["E2", 0.5], ["F2", 1], ["F2", 1],
+                    ["C2", 1], ["C2", 1], ["G2", 1], ["G2", 1]],
+          "octave": 2,
+          "sidechain": {"amount": 0.7, "release": 0.18}
+        },
+        "drums": {
+          "instrument": "drums",
+          "drums": {
+            "kick": "x...x...x...x...",
+            "snare": "....x.......x...",
+            "hat": "x.x.x.x.x.x.x.x."
+          }
+        }
+      }
+    },
+    {
+      "name": "outro",
+      "bars": 4,
+      "_comment": "Ease out: only the head of the hook (slice [0,3]) over the pad, the lead filter closing again (6500 -> 900 Hz) and the whole thing fading on a gain ramp down — the swells and sweeps run in reverse to relax the cue home.",
+      "parts": {
+        "lead": {
+          "instrument": "lead",
+          "motif": "cruise",
+          "slice": [0, 3],
+          "stretch": 2.0,
+          "automation": {
+            "filter": {"from": 6500, "to": 900, "shape": "exp"},
+            "gain": {"from": 1.0, "to": 0.4, "shape": "linear"}
+          }
+        },
+        "pad": {
+          "instrument": "pad",
+          "chords": ["Am"],
+          "chord_beats": 16,
+          "automation": {"gain": {"from": 1.0, "to": 0.0, "shape": "linear"}}
+        }
+      }
+    }
+  ]
+}

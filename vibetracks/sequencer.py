@@ -2,8 +2,9 @@
 
 Pipeline per track:
   sections -> parts -> events scheduled on a beat grid -> per-part buffer
-  (with delay/reverb) -> panned into stereo -> summed -> sections concatenated
-  (loop sections repeated) -> master normalize for consistent loudness.
+  (with delay/reverb tail) -> panned into stereo -> summed -> sections
+  overlap-added at their musical offsets (loop sections repeated) so effect tails
+  bleed across the seam -> master normalize for consistent loudness.
 
 Timing is expressed in *beats* (quarter notes). ``seconds_per_beat = 60/bpm``.
 """
@@ -39,9 +40,13 @@ def _place(buf: np.ndarray, sig: np.ndarray, start_sample: int) -> None:
     buf[start_sample:end] += sig
 
 
-def _pan(mono: np.ndarray, pan: float) -> np.ndarray:
-    """Equal-power pan a mono signal to stereo. ``pan`` in [-1, 1]."""
-    angle = (pan + 1.0) * 0.25 * np.pi  # 0..pi/2
+def _pan(mono: np.ndarray, pan) -> np.ndarray:
+    """Equal-power pan a mono signal to stereo.
+
+    ``pan`` in [-1, 1] as a scalar, or a per-sample array (length == ``mono``)
+    for automated auto-pan movement. ``np.cos``/``np.sin`` vectorise over both.
+    """
+    angle = (np.asarray(pan, dtype=np.float64) + 1.0) * 0.25 * np.pi  # 0..pi/2
     left = mono * np.cos(angle)
     right = mono * np.sin(angle)
     return np.column_stack([left, right])
@@ -72,10 +77,117 @@ def _tempo_map(bpm, bpm_end, total_beats, sr):
     return beat_to_sample
 
 
+# --- Swing / groove ----------------------------------------------------------
+
+def _swing_beat(beat: float, swing: float) -> float:
+    """Warp a straight beat position into a swung one (shuffle feel).
+
+    Swing is a piecewise-linear time-warp *within each quarter-note beat*: the
+    straight eighth-note midpoint (``0.5``) is pushed later to ``0.5 + swing*0.5``,
+    with the two halves of the beat stretched/squeezed linearly to match. So the
+    on-beat eighth lengthens and the off-beat eighth is delayed — the long-short
+    lilt of a shuffle. ``swing`` in ``[0, 1)``: ``0`` = straight, ``~1/3`` = a
+    triplet-feel hard swing (off-beat lands at 2/3).
+
+    Integer beat boundaries are fixed points, so a section's total length is
+    unchanged. Working in beat-space (before the beat->sample map) means one wrap
+    swings every part kind at once — melody eighths, arp sixteenths, drum
+    off-hats — and composes with the ``bpm_end`` tempo ramp downstream.
+    """
+    if swing <= 0:
+        return beat
+    whole = np.floor(beat)
+    frac = beat - whole
+    pivot = 0.5 + swing * 0.5
+    if frac <= 0.5:
+        warped = frac * (pivot / 0.5)
+    else:
+        warped = pivot + (frac - 0.5) * ((1.0 - pivot) / 0.5)
+    return float(whole + warped)
+
+
+# --- Automation envelopes ----------------------------------------------------
+
+def _automation_curve(env: dict, n: int, sr: int) -> np.ndarray:
+    """Build a length-``n`` per-sample envelope for one automation target.
+
+    Two forms (a sibling to ``vibrato``/``tremolo`` in style):
+
+    * **ramp** ``{"from": x, "to": y, "shape": "linear"|"exp"}`` — a swell, a
+      filter opening: interpolate across the whole section, linearly or
+      geometrically (``exp`` sweeps musically over wide ranges like cutoff Hz).
+    * **lfo** ``{"lfo": {"rate", "depth", "center", "shape"}}`` — a cyclic move
+      (auto-pan, wah, gain wobble) around ``center`` with amplitude ``depth``.
+    """
+    lfo_spec = env.get("lfo")
+    if lfo_spec is not None:
+        center = float(lfo_spec.get("center", 0.0))
+        depth = float(lfo_spec.get("depth", 0.0))
+        rate = float(lfo_spec.get("rate", 1.0))
+        return center + depth * synth.lfo(rate, n, sr, lfo_spec.get("shape", "sine"))
+    start = float(env.get("from", 0.0))
+    end = float(env.get("to", start))
+    if env.get("shape") == "exp" and start > 0 and end > 0:
+        return start * (end / start) ** np.linspace(0.0, 1.0, n)
+    return np.linspace(start, end, n)
+
+
+# --- Sidechain / pump --------------------------------------------------------
+
+def _drum_onsets(parts, voice, b2s, bpb, total_beats):
+    """Sample positions of every hit of drum ``voice`` in a section.
+
+    Mirrors :func:`_render_drums`' grid so a sidechain ducks in lockstep with the
+    kick it is triggered from; any non-rest step counts as a hit.
+    """
+    onsets = []
+    n_bars = max(1, int(round(total_beats / bpb)))
+    for part in parts.values():
+        if "drums" not in part:
+            continue
+        pattern = part["drums"].get(voice)
+        if not pattern:
+            continue
+        steps = len(pattern)
+        for bar in range(n_bars):
+            for s, ch in enumerate(pattern):
+                if ch in ".-":
+                    continue
+                onsets.append(b2s(bar * bpb + (s / steps) * bpb))
+    return sorted(onsets)
+
+
+def _sidechain_env(onsets, n, sr, amount, release):
+    """Ducking envelope: dip to ``1-amount`` at each trigger, recover over ``release``.
+
+    The classic sidechain 'pump' — the kick momentarily carves a sustained part
+    (bass/pad) down and it breathes back up, the heartbeat under a lot of
+    synthwave/EDM. Recovery is a smooth exponential; overlapping ducks (fast
+    kicks) take the deepest via ``np.minimum``.
+    """
+    env = np.ones(n, dtype=np.float64)
+    if not onsets or amount <= 0:
+        return env
+    rel = max(1, int(release * sr))
+    t = np.arange(rel, dtype=np.float64) / sr
+    recovery = 1.0 - amount * np.exp(-t / (release / 3.0 + 1e-9))
+    for o in onsets:
+        if o >= n:
+            continue
+        end = min(o + rel, n)
+        env[o:end] = np.minimum(env[o:end], recovery[:end - o])
+    return env
+
+
 # --- Part renderers ----------------------------------------------------------
 
-def _render_melody(events, patch, b2s, sr, section_samples):
-    """Render a sequence of [pitch, beats, vel] events laid end to end."""
+def _render_melody(events, patch, b2s, sr, section_samples, filter_env=None):
+    """Render a sequence of [pitch, beats, vel] events laid end to end.
+
+    ``filter_env`` (optional length-``section_samples`` array) automates the
+    lowpass cutoff: each note's cutoff is sampled at its onset, so a filter sweep
+    steps per note-onset — ideal for leads/arps/plucks where sweeps live.
+    """
     buf = np.zeros(section_samples, dtype=np.float64)
     beat = 0.0
     for ev in events:
@@ -84,7 +196,11 @@ def _render_melody(events, patch, b2s, sr, section_samples):
         start = b2s(beat)
         if pitch is not None:  # None -> rest
             dur = max(1, b2s(beat + dur_beats) - start) / sr
-            note = render_note(theory.note_to_freq(pitch), dur, patch, sr)
+            note_patch = patch
+            if filter_env is not None:
+                cutoff = float(filter_env[min(max(start, 0), section_samples - 1)])
+                note_patch = {**patch, "filter": cutoff}
+            note = render_note(theory.note_to_freq(pitch), dur, note_patch, sr)
             _place(buf, note * vel, start)
         beat += dur_beats
     return buf
@@ -247,27 +363,63 @@ def _transform(events, part):
 
 # --- Section / track assembly -----------------------------------------------
 
+def _part_tail_seconds(patch: dict) -> float:
+    """Estimate how long a part's effects ring after its notes stop.
+
+    Reserved as silence past the section body so delay/reverb tails can bleed into
+    the next section (overlap-added in :func:`render_track`) instead of being cut
+    off at the seam. Capped so a long reverb can't balloon a section.
+    """
+    tail = 0.0
+    rev = patch.get("reverb")
+    if isinstance(rev, dict):
+        tail += float(rev.get("decay", 1.5)) + float(rev.get("predelay", 0.02))
+    elif rev:
+        tail += 0.4  # cheap Schroeder reverb rings ~this long
+    dly = patch.get("delay")
+    if dly:
+        tail += 4.0 * float(dly.get("time", 0.25))  # matches synth.delay's own tail
+    return min(tail, 4.0)
+
+
 def render_section(section, track, sr, drum_cache):
-    """Render one section (all its parts) to a stereo buffer.
+    """Render one section to ``(body_samples, stereo)``.
+
+    ``body_samples`` is the section's musical length (what the next section is
+    offset by); the returned ``stereo`` buffer is that plus an effect *tail*, so
+    delay/reverb (and a part's final ring) can bleed across the section seam
+    instead of being cut off — :func:`render_track` overlap-adds the pieces.
 
     A section may override tempo (``bpm``, plus ``bpm_end`` for a linear ramp)
     and set ``transpose`` (semitones) applied to every pitched part — the two
-    levers behind a driving-then-modulating climax.
+    levers behind a driving-then-modulating climax. ``swing`` (track- or
+    section-level) shuffles the off-beats.
     """
     bpm = float(section.get("bpm", track["bpm"]))
     bpb = beats_per_bar(track["time_signature"])
     total_beats = section["bars"] * bpb
-    b2s = _tempo_map(bpm, section.get("bpm_end"), total_beats, sr)
+    b2s_raw = _tempo_map(bpm, section.get("bpm_end"), total_beats, sr)
+    swing = float(section.get("swing", track.get("swing", 0.0)))
+    # Swing warps beat positions before the sample map, so it grooves every part
+    # kind at once; identity on integer beats, so section length is untouched.
+    b2s = (lambda beat: b2s_raw(_swing_beat(beat, swing))) if swing else b2s_raw
     section_samples = max(1, b2s(total_beats))
     sec_transpose = int(section.get("transpose", 0))
     stereo = np.zeros((section_samples, 2), dtype=np.float64)
+    parts = section.get("parts", {})
+    onset_cache = {}  # drum-voice -> trigger sample positions (for sidechain)
 
-    for part in section.get("parts", {}).values():
+    for part in parts.values():
         patch = track["palette"][part["instrument"]]
         pan = float(part.get("pan", 0.0))
         gain = float(part.get("gain", patch.get("gain", 0.8)))
         octave = int(part.get("octave", patch.get("octave", 3)))
         is_sf = patch.get("engine") in PART_ENGINES
+        auto = part.get("automation") or {}
+        # gain/pan automate at the mix stage (exact, every engine); a filter
+        # sweep is sampled per note-onset on the numpy melody path only.
+        filter_env = (_automation_curve(auto["filter"], section_samples, sr)
+                      if "filter" in auto and not is_sf else None)
 
         if "drums" in part:
             mono = _render_drums(part["drums"], b2s, section_samples, bpb,
@@ -309,13 +461,48 @@ def render_section(section, track, sr, drum_cache):
                 mono = soundfont.render_scheduled(_melody_schedule(events, b2s),
                                                   patch, sr, section_samples)
             else:
-                mono = _render_melody(events, patch, b2s, sr, section_samples)
+                mono = _render_melody(events, patch, b2s, sr, section_samples,
+                                      filter_env)
 
-        mono = apply_part_effects(mono, patch, sr)[:section_samples]
+        mono = mono[:section_samples]
         if mono.shape[0] < section_samples:
             mono = np.pad(mono, (0, section_samples - mono.shape[0]))
-        stereo += _pan(mono * gain, pan)
-    return stereo
+        # Level shaping (gain automation + sidechain) is applied to the DRY signal
+        # so the effect tail inherits it. A plain scalar gain commutes with the
+        # linear effects, so parts without automation/sidechain are unchanged.
+        gain_val = gain
+        if "gain" in auto:
+            gain_val = gain * _automation_curve(auto["gain"], section_samples, sr)
+        # Sidechain: duck this part on every hit of a drum voice (the 'pump').
+        sc = part.get("sidechain")
+        if sc:
+            voice = sc.get("source", "kick")
+            if voice not in onset_cache:
+                onset_cache[voice] = _drum_onsets(parts, voice, b2s, bpb, total_beats)
+            gain_val = gain_val * _sidechain_env(
+                onset_cache[voice], section_samples, sr,
+                float(sc.get("amount", 0.7)), float(sc.get("release", 0.18)))
+        mono = mono * gain_val
+        # Reserve a tail, run effects into it, and keep the whole thing so the
+        # delay/reverb ring bleeds past the section (overlap-added downstream).
+        tail = int(_part_tail_seconds(patch) * sr)
+        if tail:
+            mono = np.pad(mono, (0, tail))
+        mono = apply_part_effects(mono, patch, sr)
+        # pan spans the full body+tail; automation holds its end value over the tail.
+        if "pan" in auto:
+            pc = np.clip(_automation_curve(auto["pan"], section_samples, sr),
+                         -1.0, 1.0)
+            if mono.shape[0] > pc.shape[0]:
+                pc = np.concatenate([pc, np.full(mono.shape[0] - pc.shape[0], pc[-1])])
+            pan_val = pc[:mono.shape[0]]
+        else:
+            pan_val = pan
+        panned = _pan(mono, pan_val)
+        if panned.shape[0] > stereo.shape[0]:
+            stereo = np.pad(stereo, ((0, panned.shape[0] - stereo.shape[0]), (0, 0)))
+        stereo[:panned.shape[0]] += panned
+    return section_samples, stereo
 
 
 def render_track(track, sr=synth.SR, loops=None):
@@ -323,15 +510,25 @@ def render_track(track, sr=synth.SR, loops=None):
     if loops is None:
         loops = track.get("loops") or DEFAULT_LOOPS
     drum_cache = _drum_cache(sr)
-    pieces = []
+    # Place each section at its running body offset and overlap-add, so a
+    # section's effect tail rings into the start of the next (and a loop's tail
+    # into its own repeat) instead of being chopped at the seam. The write cursor
+    # advances by the musical body only; the buffer past it is tail.
+    placements = []  # (start_sample, stereo_buffer)
+    cursor = 0
+    end = 0
     for section in track["sections"]:
-        rendered = render_section(section, track, sr, drum_cache)
+        body, rendered = render_section(section, track, sr, drum_cache)
         repeats = loops if section.get("loop") else section.get("repeat", 1)
         for _ in range(int(repeats)):
-            pieces.append(rendered)
-    if not pieces:
+            placements.append((cursor, rendered))
+            end = max(end, cursor + rendered.shape[0])
+            cursor += body
+    if not placements:
         return np.zeros((sr, 2), dtype=np.float64)
-    full = np.concatenate(pieces, axis=0)
+    full = np.zeros((end, 2), dtype=np.float64)
+    for start, buf in placements:
+        full[start:start + buf.shape[0]] += buf
     # Gentle saturation then normalize to a fixed peak so all tracks match level.
     full = synth.soft_clip(full, drive=1.05)
     full = synth.normalize(full, peak=0.89)

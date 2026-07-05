@@ -1,0 +1,42 @@
+{
+  "title": "Midnight Drive",
+  "aesthetic": "nocturnal synthwave cruise — groove and motion: a shuffled pocket, filters that breathe open, pads that swell, an arp that drifts across the stereo field",
+  "key": "A minor",
+  "bpm": 100,
+  "_feature_note": "This group is the worked demo for the expression tools that shape sound *over time*: track/section 'swing' for a shuffled pocket, per-part 'automation' envelopes (ramp or lfo) driving 'filter', 'gain', and 'pan', and per-part 'sidechain' ducking (the kick-triggered pump). Everything else (motif reuse, sections, arp) is here only to give those tools something to move.",
+  "palette": {
+    "lead": {
+      "wave": "saw", "voices": 3, "detune": 0.011,
+      "adsr": [0.01, 0.12, 0.7, 0.24], "filter": 6000, "resonance": 2.2, "gain": 0.8,
+      "delay": {"time": 0.30, "feedback": 0.28, "mix": 0.18}, "reverb": 0.16
+    },
+    "keys": {
+      "engine": "fm", "ratio": 1.0, "index": 1.4, "mod_decay": 4.0,
+      "adsr": [0.006, 0.4, 0.25, 0.4], "filter": 5200, "gain": 0.6,
+      "reverb": {"decay": 2.0, "mix": 0.3}
+    },
+    "arp": {
+      "wave": "triangle", "voices": 1,
+      "adsr": [0.003, 0.06, 0.4, 0.08], "filter": 5600, "gain": 0.42,
+      "delay": {"time": 0.1875, "feedback": 0.3, "mix": 0.26}
+    },
+    "pad": {
+      "wave": "saw", "voices": 4, "detune": 0.016,
+      "adsr": [0.4, 0.3, 0.82, 0.5], "filter": 2600, "gain": 0.5,
+      "reverb": {"decay": 2.6, "mix": 0.4}
+    },
+    "bass": {
+      "wave": "square", "voices": 1,
+      "adsr": [0.006, 0.06, 0.85, 0.06], "filter": 1400, "gain": 0.9
+    },
+    "drums": {"gain": 0.95}
+  },
+  "_motifs_note": "cruise is a laid-back 8-beat hook built to sit in the shuffle: long tones on the strong beats, a couple of eighths on the off-beats where the swing bites. It states whole in the loop and returns sliced in the outro.",
+  "motifs": {
+    "cruise": {
+      "notes": [["A4", 1], ["C5", 1], ["E5", 1.5], ["D5", 0.5],
+                ["C5", 1], ["B4", 1], ["A4", 2]]
+    }
+  },
+  "tracks": ["cruise"]
+}

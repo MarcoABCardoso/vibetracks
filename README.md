@@ -3,7 +3,7 @@
 A **game-soundtrack lab** for Claude Code. Model a song as plain JSON, then
 compile it into real audio with a **pure-Python synthesizer** — `numpy` + `scipy`,
 no SoX and no ffmpeg, nothing but `pip install -r requirements.txt` to render
-three of the four demo scores. Two capabilities are **optional add-ons**: a
+four of the five demo scores. Two capabilities are **optional add-ons**: a
 `soundfont` engine (FluidSynth + a General MIDI soundfont) for real *recorded*
 instruments, and compressed `ogg`/`mp3`/`flac` export for game delivery.
 
@@ -15,7 +15,7 @@ musical motifs.
 
 Tracks are organized into **groups**. A group is one self-contained soundtrack —
 its own bible plus tracks — so a single repo can hold several independent scores:
-different regions of a game, or entirely different games. The repo ships four demo
+different regions of a game, or entirely different games. The repo ships five demo
 groups, each chosen to showcase a **distinct slice of the toolkit** (see below);
 spin up your own with `new-group` without touching them.
 
@@ -39,7 +39,7 @@ A track is addressed as `<group>/<track>`, or as a bare `<track>` with `--group`
 
 ## The demo soundtracks
 
-Four groups ship with the repo. Each is a coherent little score in its own right,
+Five groups ship with the repo. Each is a coherent little score in its own right,
 but each was also built to **demonstrate one axis of the toolkit** — so reading them
 side by side is a tour of what VibeTracks can do. Start with `neon-frontier`.
 
@@ -49,6 +49,7 @@ side by side is a tour of what VibeTracks can do. Start with `neon-frontier`.
 | **`verdant-vale`** | numpy engines + per-note expression | Goes beyond bare chiptune: `fm`, `karplus` (plucked string), and `subtractive` voices dressed with `vibrato`, `chorus`, `delay`, and `reverb`. The reference for the synthesis and effects params. |
 | **`sunspire`** | `soundfont` engine (sample-based orchestral) | A nine-cue mythic-heroic score built almost entirely from **real recorded instruments** (strings, brass, woodwinds, choir, percussion) via FluidSynth. Needs the optional soundfont setup to render — see below. |
 | **`aurelia`** | Long-form development + advanced sequencing | One theme grown from a lonely music-box to a full finale across seven sections — `arp` arpeggios, per-section tempo ramps (`bpm_end`), section `transpose`, and tuplet durations. |
+| **`midnight-drive`** | Groove + motion (`swing` · `automation` · `sidechain`) | A nocturnal synthwave cruise built to move: a shuffled pocket (`swing`), per-part `automation` envelopes that open a filter, swell a pad, and drift an arp across the stereo field, and `sidechain` ducking that pumps the bass and keys to the kick — the tools for shaping sound *over time*. |
 
 ### `neon-frontier`, up close
 
