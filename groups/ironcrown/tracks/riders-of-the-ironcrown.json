@@ -1,0 +1,193 @@
+{
+  "name": "riders-of-the-ironcrown",
+  "extends": "../soundtrack.json",
+  "time_signature": [4, 4],
+  "loops": 1,
+  "_comment": "A complete power-metal SONG, not a loop: intro horn-call (foreshadows the chorus answer, augmented) -> charge (band ignites on an E pedal gallop) -> verse (its own lower marching melody) -> lift (a bar of space) + build (accelerando fill on the dominant) -> CHORUS (the full 'anthem' hook, twin-friendly, keys arp shimmer, double-bass gallop) -> interlude (fanfare quote, breather) -> SOLO (neoclassical shred: soaring lead over a churning 16th arp) -> FINAL CHORUS a whole step up (transpose +2, octave descant on the answer = key-change euphoria) -> outro (ritardando, authentic V-i cadence, final Em power chord rings out). E minor / harmonic minor, 184 BPM.",
+
+  "sections": [
+    {
+      "name": "intro",
+      "bars": 4,
+      "_comment": "Heroic haze: strings + choir swell on i-VI-III-VII while the lead previews the chorus's ANSWER phrase, augmented (stretch 2.0) — the hook heard first as a distant horn call. No drums; all space.",
+      "parts": {
+        "strings": { "instrument": "strings", "chords": ["Em", "C", "G", "D"], "chord_beats": 4, "octave": 3, "gain": 0.5 },
+        "choir":   { "instrument": "choir", "chords": ["Em", "C", "G", "D"], "chord_beats": 4, "octave": 4, "gain": 0.4 },
+        "call":    { "instrument": "lead", "motif": "anthem", "slice": [8, 15], "stretch": 2.0, "gain": 0.72, "pan": 0.0 },
+        "drone":   { "instrument": "bass", "notes": [["E1", 16]], "gain": 0.35 }
+      }
+    },
+    {
+      "name": "charge",
+      "bars": 4,
+      "_comment": "The band ignites: down-picked power-chord wall on an E pedal, galloping double-bass, gallop bass, and a rising fanfare shred on the keys as a pickup into the verse.",
+      "parts": {
+        "rhythm": { "instrument": "rhythm", "chords": ["E5", "E5", "E5", "E5"], "chord_beats": 1, "octave": 3, "gain": 0.85 },
+        "bass":   { "instrument": "bass", "gain": 0.9, "repeat": 4,
+                    "notes": [["E2", 0.5], ["E2", 0.5], ["E2", 0.5], ["E2", 0.5], ["E2", 0.5], ["E2", 0.5], ["E2", 0.5], ["E3", 0.5]] },
+        "keys":   { "instrument": "keys", "gain": 0.5, "pan": 0.15,
+                    "notes": [[null, 12],
+                              ["E5", "0.25"], ["F#5", "0.25"], ["G5", "0.25"], ["A5", "0.25"],
+                              ["B5", "0.25"], ["C6", "0.25"], ["D#6", "0.25"], ["E6", "0.25"],
+                              ["G5", "0.5"], ["E6", "0.5"], ["B5", "0.5"], ["E6", "0.5"]] },
+        "drums":  { "instrument": "drums", "gain": 0.9,
+                    "drums": { "kick": "x.xxx.xxx.xxx.xx", "snare": "....x.......x...", "hat": "x.x.x.x.x.x.x.xo" } }
+      }
+    },
+    {
+      "name": "verse",
+      "bars": 8,
+      "_comment": "The B-material: 'verse' is its OWN lower, tighter marching melody over i-VII-VI-V (Em-D-C-B), ending on the raised-7th dominant that pulls home. Stated twice. Chug wall + gallop, drums pulled back a touch.",
+      "parts": {
+        "lead":   { "instrument": "lead", "motif": "verse", "repeat": 2, "gain": 0.85 },
+        "rhythm": { "instrument": "rhythm", "chord_beats": 1, "octave": 3, "gain": 0.8,
+                    "chords": ["E5", "E5", "E5", "E5", "D5", "D5", "D5", "D5", "C5", "C5", "C5", "C5", "B5", "B5", "B5", "B5"] },
+        "bass":   { "instrument": "bass", "gain": 0.9, "repeat": 2,
+                    "notes": [["E2", 0.5], ["E2", 0.5], ["E2", 0.5], ["E2", 0.5], ["E2", 0.5], ["E2", 0.5], ["E2", 0.5], ["E3", 0.5],
+                              ["D2", 0.5], ["D2", 0.5], ["D2", 0.5], ["D2", 0.5], ["D2", 0.5], ["D2", 0.5], ["D2", 0.5], ["D3", 0.5],
+                              ["C2", 0.5], ["C2", 0.5], ["C2", 0.5], ["C2", 0.5], ["C2", 0.5], ["C2", 0.5], ["C2", 0.5], ["C3", 0.5],
+                              ["B1", 0.5], ["B1", 0.5], ["B1", 0.5], ["B1", 0.5], ["B1", 0.5], ["B1", 0.5], ["B1", 0.5], ["B2", 0.5]] },
+        "drums":  { "instrument": "drums", "gain": 0.82,
+                    "drums": { "kick": "x.x.x.x.x.x.x.x.", "snare": "....x.......x...", "hat": "x.x.x.x.x.x.x.x." } }
+      }
+    },
+    {
+      "name": "lift",
+      "bars": 2,
+      "_comment": "One breath of space before the chorus (Undertale-style silence as a tool): strings + choir hold C then D (VI-VII), no drums, no guitar. The gap makes the chorus hit.",
+      "parts": {
+        "strings": { "instrument": "strings", "chords": ["C", "D"], "chord_beats": 4, "octave": 3, "gain": 0.55 },
+        "choir":   { "instrument": "choir", "chords": ["C", "D"], "chord_beats": 4, "octave": 4, "gain": 0.5 },
+        "bass":    { "instrument": "bass", "notes": [["C2", 4], ["D2", 4]], "gain": 0.6 }
+      }
+    },
+    {
+      "name": "build",
+      "bars": 2,
+      "bpm": 184,
+      "bpm_end": 190,
+      "_comment": "Accelerando surge on the dominant: a rising lead run, 16th-note keys, gallop wall, and a snare fill in bar 2 slamming straight into the chorus.",
+      "parts": {
+        "lead":   { "instrument": "lead", "gain": 0.88,
+                    "notes": [["E5", 0.5], ["F#5", 0.5], ["G5", 0.5], ["A5", 0.5], ["B5", 1], ["A5", 1],
+                              ["G5", 0.5], ["A5", 0.5], ["B5", 1], ["D6", 0.5], ["B5", 0.5], ["A5", 1]] },
+        "rhythm": { "instrument": "rhythm", "chord_beats": 1, "octave": 3, "gain": 0.85,
+                    "chords": ["C5", "C5", "C5", "C5", "B5", "B5", "B5", "B5"] },
+        "bass":   { "instrument": "bass", "gain": 0.9,
+                    "notes": [["C2", 0.5], ["C2", 0.5], ["C2", 0.5], ["C2", 0.5], ["C2", 0.5], ["C2", 0.5], ["C2", 0.5], ["C2", 0.5],
+                              ["B1", 0.5], ["B1", 0.5], ["B1", 0.5], ["B1", 0.5], ["B1", 0.5], ["B1", 0.5], ["B1", 0.5], ["B1", 0.5]] },
+        "keys":   { "instrument": "keys", "gain": 0.45, "pan": -0.15,
+                    "notes": [["C5", "0.25"], ["D5", "0.25"], ["E5", "0.25"], ["G5", "0.25"],
+                              ["C6", "0.25"], ["G5", "0.25"], ["E5", "0.25"], ["G5", "0.25"],
+                              ["B4", "0.25"], ["D5", "0.25"], ["F#5", "0.25"], ["B5", "0.25"],
+                              ["D6", "0.25"], ["B5", "0.25"], ["F#5", "0.25"], ["D#5", "0.25"]] },
+        "drums":  { "instrument": "drums", "gain": 0.9,
+                    "drums": { "kick": "x.xxx.xxx.xxx.xx", "snare": "....x.......x.xx", "hat": "x.x.x.x.x.x.xxxx" } }
+      }
+    },
+    {
+      "name": "chorus",
+      "bars": 8,
+      "bpm": 190,
+      "_comment": "The payoff: the full 'anthem' hook (question+answer, reaching new-high A5) sung twice on the lead over i-VI-III-VII, a churning 16th keys arp shimmering underneath, gallop bass + double-bass drums, choir pad. Full arrangement.",
+      "parts": {
+        "lead":   { "instrument": "lead", "motif": "anthem", "repeat": 2, "gain": 0.95 },
+        "arp":    { "instrument": "keys", "arp": ["Em", "C", "G", "D"], "rate": 0.25, "pattern": "updown", "octaves": 1, "octave": 4, "gain": 0.42 },
+        "rhythm": { "instrument": "rhythm", "chord_beats": 1, "octave": 3, "gain": 0.82,
+                    "chords": ["E5", "E5", "E5", "E5", "C5", "C5", "C5", "C5", "G5", "G5", "G5", "G5", "D5", "D5", "D5", "D5"] },
+        "choir":  { "instrument": "choir", "chords": ["Em", "C", "G", "D"], "chord_beats": 4, "octave": 4, "gain": 0.34 },
+        "bass":   { "instrument": "bass", "gain": 0.9, "repeat": 2,
+                    "notes": [["E2", 0.5], ["E2", 0.5], ["E2", 0.5], ["E2", 0.5], ["E2", 0.5], ["E2", 0.5], ["E2", 0.5], ["E3", 0.5],
+                              ["C2", 0.5], ["C2", 0.5], ["C2", 0.5], ["C2", 0.5], ["C2", 0.5], ["C2", 0.5], ["C2", 0.5], ["C3", 0.5],
+                              ["G2", 0.5], ["G2", 0.5], ["G2", 0.5], ["G2", 0.5], ["G2", 0.5], ["G2", 0.5], ["G2", 0.5], ["G3", 0.5],
+                              ["D2", 0.5], ["D2", 0.5], ["D2", 0.5], ["D2", 0.5], ["D2", 0.5], ["D2", 0.5], ["D2", 0.5], ["D3", 0.5]] },
+        "drums":  { "instrument": "drums", "gain": 0.95,
+                    "drums": { "kick": "x.xxx.xxx.xxx.xx", "snare": "....x.......x...", "hat": "x.x.x.x.x.x.x.xo" } }
+      }
+    },
+    {
+      "name": "interlude",
+      "bars": 4,
+      "bpm": 190,
+      "_comment": "Breather + reset before the solo: guitars pull to an E pedal, the keys quote the neoclassical 'fanfare' cell twice, drums keep the gallop. Space for the solo to land.",
+      "parts": {
+        "rhythm": { "instrument": "rhythm", "chords": ["E5", "E5", "G5", "D5"], "chord_beats": 1, "octave": 3, "gain": 0.8 },
+        "keys":   { "instrument": "keys", "motif": "fanfare", "repeat": 2, "gain": 0.55, "pan": 0.1 },
+        "bass":   { "instrument": "bass", "gain": 0.9, "repeat": 4,
+                    "notes": [["E2", 0.5], ["E2", 0.5], ["E2", 0.5], ["E2", 0.5], ["E2", 0.5], ["E2", 0.5], ["E2", 0.5], ["E3", 0.5]] },
+        "drums":  { "instrument": "drums", "gain": 0.85,
+                    "drums": { "kick": "x.xxx.xxx.xxx.xx", "snare": "....x.......x...", "hat": "x.x.x.x.x.x.x.x." } }
+      }
+    },
+    {
+      "name": "solo",
+      "bars": 8,
+      "bpm": 190,
+      "_comment": "Neoclassical shred: a soaring lead line in E harmonic minor (D# leading tones), climbing to a high E6, over the churning two-octave 16th keys arp on i-VI-III-VII. Energy is in the accompaniment; the lead sings above it.",
+      "parts": {
+        "lead":   { "instrument": "lead", "gain": 0.92,
+                    "notes": [["E5", 0.5], ["G5", 0.5], ["B5", 1], ["A5", 0.5], ["G5", 0.5], ["F#5", 1],
+                              ["E5", 0.5], ["G5", 0.5], ["C6", 1], ["B5", 0.5], ["A5", 0.5], ["G5", 1],
+                              ["D5", 0.5], ["G5", 0.5], ["B5", 1], ["D6", 0.5], ["B5", 0.5], ["G5", 1],
+                              ["F#5", 0.5], ["A5", 0.5], ["D6", 1], ["C6", 0.5], ["A5", 0.5], ["F#5", 1],
+                              ["B5", 0.5], ["A5", 0.5], ["G5", 0.5], ["A5", 0.5], ["B5", 1], ["E6", 1],
+                              ["D6", 0.5], ["C6", 0.5], ["B5", 0.5], ["C6", 0.5], ["G5", 1], ["E6", 1],
+                              ["D6", "0.25"], ["C6", "0.25"], ["B5", "0.25"], ["A5", "0.25"], ["G5", 0.5], ["B5", 0.5], ["D6", 1], ["B5", 1],
+                              ["A5", 0.5], ["B5", 0.5], ["C6", 0.5], ["D#6", 0.5], ["E6", 2]] },
+        "arp":    { "instrument": "keys", "arp": ["Em", "C", "G", "D"], "rate": 0.25, "pattern": "updown", "octaves": 2, "octave": 3, "gain": 0.46 },
+        "rhythm": { "instrument": "rhythm", "chord_beats": 1, "octave": 3, "gain": 0.78,
+                    "chords": ["E5", "E5", "E5", "E5", "C5", "C5", "C5", "C5", "G5", "G5", "G5", "G5", "D5", "D5", "D5", "D5"] },
+        "bass":   { "instrument": "bass", "gain": 0.88, "repeat": 2,
+                    "notes": [["E2", 0.5], ["E2", 0.5], ["E2", 0.5], ["E2", 0.5], ["E2", 0.5], ["E2", 0.5], ["E2", 0.5], ["E3", 0.5],
+                              ["C2", 0.5], ["C2", 0.5], ["C2", 0.5], ["C2", 0.5], ["C2", 0.5], ["C2", 0.5], ["C2", 0.5], ["C3", 0.5],
+                              ["G2", 0.5], ["G2", 0.5], ["G2", 0.5], ["G2", 0.5], ["G2", 0.5], ["G2", 0.5], ["G2", 0.5], ["G3", 0.5],
+                              ["D2", 0.5], ["D2", 0.5], ["D2", 0.5], ["D2", 0.5], ["D2", 0.5], ["D2", 0.5], ["D2", 0.5], ["D3", 0.5]] },
+        "drums":  { "instrument": "drums", "gain": 0.92,
+                    "drums": { "kick": "x.xxx.xxx.xxx.xx", "snare": "....x.......x...", "hat": "x.x.x.x.x.x.x.xo" } }
+      }
+    },
+    {
+      "name": "final-chorus",
+      "bars": 8,
+      "bpm": 190,
+      "transpose": 2,
+      "_comment": "The euphoric key change: the whole arrangement lifts a whole step (transpose +2). The anthem returns with a soaring octave-up descant doubling its ANSWER phrase (slice 8-15, +12) — new high notes over the biggest version of the band.",
+      "parts": {
+        "lead":    { "instrument": "lead", "motif": "anthem", "repeat": 2, "gain": 0.96 },
+        "descant": { "instrument": "harmony", "motif": "anthem", "slice": [8, 15], "transpose": 12, "repeat": 4, "gain": 0.5, "pan": 0.28 },
+        "arp":     { "instrument": "keys", "arp": ["Em", "C", "G", "D"], "rate": 0.25, "pattern": "updown", "octaves": 2, "octave": 4, "gain": 0.44 },
+        "rhythm":  { "instrument": "rhythm", "chord_beats": 1, "octave": 3, "gain": 0.85,
+                     "chords": ["E5", "E5", "E5", "E5", "C5", "C5", "C5", "C5", "G5", "G5", "G5", "G5", "D5", "D5", "D5", "D5"] },
+        "choir":   { "instrument": "choir", "chords": ["Em", "C", "G", "D"], "chord_beats": 4, "octave": 4, "gain": 0.36 },
+        "bass":    { "instrument": "bass", "gain": 0.92, "repeat": 2,
+                     "notes": [["E2", 0.5], ["E2", 0.5], ["E2", 0.5], ["E2", 0.5], ["E2", 0.5], ["E2", 0.5], ["E2", 0.5], ["E3", 0.5],
+                               ["C2", 0.5], ["C2", 0.5], ["C2", 0.5], ["C2", 0.5], ["C2", 0.5], ["C2", 0.5], ["C2", 0.5], ["C3", 0.5],
+                               ["G2", 0.5], ["G2", 0.5], ["G2", 0.5], ["G2", 0.5], ["G2", 0.5], ["G2", 0.5], ["G2", 0.5], ["G3", 0.5],
+                               ["D2", 0.5], ["D2", 0.5], ["D2", 0.5], ["D2", 0.5], ["D2", 0.5], ["D2", 0.5], ["D2", 0.5], ["D3", 0.5]] },
+        "drums":   { "instrument": "drums", "gain": 0.98,
+                     "drums": { "kick": "x.xxx.xxx.xxx.xx", "snare": "....x.......x..x", "hat": "x.x.x.x.x.x.x.xo" } }
+      }
+    },
+    {
+      "name": "outro",
+      "bars": 6,
+      "bpm": 190,
+      "bpm_end": 120,
+      "_comment": "The landing: a ritardando (190 -> 120), the anthem's answer stated once more resolving to the tonic, an authentic V-i cadence (B -> Em), and a final Em power chord left to ring under sustained strings and choir. Ends on home.",
+      "parts": {
+        "lead":    { "instrument": "lead", "gain": 0.9,
+                     "notes": [["G4", 1], ["B4", 1], ["D5", 1], ["G5", 1], ["A5", 1.5], ["G5", 0.5], ["F#5", 1], ["E5", 1],
+                               ["D5", 1], ["E5", 1], ["F#5", 1], ["G5", 1], ["E5", 2], [null, 2],
+                               ["F#5", 1], ["E5", 1], ["D#5", 1], ["E5", 1], ["E5", 4]] },
+        "rhythm":  { "instrument": "rhythm", "chord_beats": 2, "octave": 3, "gain": 0.85,
+                     "chords": ["G5", "D5", "C5", "B5", "Em", "Em"] },
+        "strings": { "instrument": "strings", "chords": ["G", "D", "C", "B", "Em", "Em"], "chord_beats": 4, "octave": 3, "gain": 0.5 },
+        "choir":   { "instrument": "choir", "chords": ["G", "D", "C", "B", "Em", "Em"], "chord_beats": 4, "octave": 4, "gain": 0.42 },
+        "bass":    { "instrument": "bass", "gain": 0.9,
+                     "notes": [["G2", 2], ["D2", 2], ["C2", 2], ["B1", 2], ["E2", 2], ["E2", 2]] },
+        "drums":   { "instrument": "drums", "gain": 0.85,
+                     "drums": { "kick": "x.xxx.xxx.xxx.xx", "snare": "....x.......x...", "hat": "x.x.x.x.x.x.x.xo" } }
+      }
+    }
+  ]
+}

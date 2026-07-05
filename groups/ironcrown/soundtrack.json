@@ -1,0 +1,68 @@
+{
+  "title": "Ironcrown",
+  "aesthetic": "heroic power metal — galloping distorted guitars, soaring twin leads, neoclassical keyboard runs, thunderous double-bass drums; Helloween / Blind Guardian / Sabaton energy rendered on a pure-numpy synth",
+  "key": "E minor",
+  "bpm": 184,
+  "palette": {
+    "rhythm": {
+      "wave": "saw", "voices": 3, "detune": 0.014,
+      "adsr": [0.004, 0.06, 0.72, 0.05], "filter": 2600, "resonance": 1.1,
+      "gain": 0.85, "reverb": 0.08
+    },
+    "lead": {
+      "wave": "saw", "voices": 2, "detune": 0.010,
+      "adsr": [0.006, 0.09, 0.78, 0.16], "filter": 7200, "gain": 0.9,
+      "vibrato": {"rate": 5.5, "depth": 0.18, "delay": 0.12},
+      "delay": {"time": 0.24, "feedback": 0.26, "mix": 0.16}, "reverb": 0.14
+    },
+    "harmony": {
+      "wave": "saw", "voices": 2, "detune": 0.010,
+      "adsr": [0.006, 0.09, 0.78, 0.16], "filter": 6600, "gain": 0.6,
+      "vibrato": {"rate": 5.5, "depth": 0.16, "delay": 0.12},
+      "delay": {"time": 0.24, "feedback": 0.22, "mix": 0.12}, "reverb": 0.14
+    },
+    "bass": {
+      "wave": "saw", "voices": 1, "detune": 0.0,
+      "adsr": [0.004, 0.05, 0.9, 0.04], "filter": 1700, "resonance": 0.8, "gain": 0.9
+    },
+    "keys": {
+      "wave": "square", "voices": 1,
+      "adsr": [0.003, 0.05, 0.45, 0.06], "filter": 6200, "gain": 0.5,
+      "delay": {"time": 0.18, "feedback": 0.30, "mix": 0.26}, "reverb": 0.12
+    },
+    "strings": {
+      "wave": "saw", "voices": 4, "detune": 0.018,
+      "adsr": [0.22, 0.25, 0.85, 0.5], "filter": 3000, "gain": 0.5,
+      "reverb": {"decay": 2.4, "mix": 0.4}
+    },
+    "choir": {
+      "engine": "fm", "ratio": 1.0, "index": 1.2, "mod_decay": 1.5,
+      "adsr": [0.14, 0.2, 0.85, 0.4], "filter": 3800, "gain": 0.42,
+      "reverb": {"decay": 2.8, "mix": 0.45}
+    },
+    "drums": {"gain": 0.95}
+  },
+
+  "_motifs_note": "anthem is the chorus hook: a full 16-beat question+answer sentence over i-VI-III-VII (Em-C-G-D). The antecedent (slice 0-8) rises and is left open; the consequent (slice 8-15) climbs to a NEW high A5 the antecedent never touched, then resolves down to the tonic E5. verse is the B-material: its OWN lower, tighter, marching melody over i-VII-VI-V (Em-D-C-B), ending on the raised-7th dominant that pulls back home. fanfare is the neoclassical E-harmonic-minor shred cell (sixteenths, D# leading tone) for the intro call and the solo.",
+  "motifs": {
+    "anthem": {
+      "notes": [["B4", 1], ["E5", 1], ["G5", 1], ["F#5", 1],
+                ["E5", 1], ["C5", 1], ["D5", 1.5], ["B4", 0.5],
+                ["G4", 1], ["B4", 1], ["D5", 1], ["G5", 1],
+                ["A5", 1.5], ["G5", 0.5], ["F#5", 1], ["E5", 1]]
+    },
+    "verse": {
+      "notes": [["E4", 1], ["G4", 1], ["F#4", 1], ["E4", 1],
+                ["D4", 1], ["E4", 1], ["F#4", 1.5], ["D4", 0.5],
+                ["C4", 1], ["E4", 1], ["G4", 1], ["F#4", 1],
+                ["D#4", 1], ["F#4", 1], ["B4", 1.5], ["B4", 0.5]]
+    },
+    "fanfare": {
+      "notes": [["E5", "0.25"], ["F#5", "0.25"], ["G5", "0.25"], ["A5", "0.25"],
+                ["B5", "0.25"], ["C6", "0.25"], ["D#6", "0.25"], ["E6", "0.25"],
+                ["D#6", "0.25"], ["C6", "0.25"], ["B5", "0.25"], ["A5", "0.25"],
+                ["G5", "0.25"], ["F#5", "0.25"], ["E5", "0.5"], ["B5", "0.5"]]
+    }
+  },
+  "tracks": ["riders-of-the-ironcrown"]
+}
