@@ -94,6 +94,12 @@ parts under it move:
   whole section at once — the hi-hats, the arp's sixteenths, and the melody's
   off-beat eighths together — so the feel stays coherent. This is what separates a
   funk/lofi/synthwave cue from a metronome. See the `midnight-drive` group.
+- **Pump the sustained parts** — put a `sidechain` on the bass and pads so the
+  kick ducks them and they breathe back up:
+  `{"instrument":"bass", ..., "sidechain":{"amount":0.7,"release":0.18}}`. That
+  rhythmic swell is the heartbeat under most synthwave/EDM — the kick reads
+  louder, the low end stops fighting it, and the whole mix moves. `amount` is the
+  depth, `release` the recovery (longer = a slower, more obvious breath).
 
 Conversely, for calm cues, *thin it out* — let the melody breathe over pads.
 
@@ -184,5 +190,6 @@ the theme. That's a feature, not a gap.
 - [ ] If a track builds to a peak, it *earns* it — running `arp`, tempo ramp, and/or
       a `transpose` key-change on the final statement, not just more parts.
 - [ ] The pocket has feel, not just a grid — reach for `swing` where the genre
-      wants it, and let at least one part *move* over time (a filter swell, a fade,
-      an auto-pan) via `automation` rather than sitting at a static level.
+      wants it, `sidechain` the sustained parts to the kick where it should pump,
+      and let at least one part *move* over time (a filter swell, a fade, an
+      auto-pan) via `automation` rather than sitting at a static level.

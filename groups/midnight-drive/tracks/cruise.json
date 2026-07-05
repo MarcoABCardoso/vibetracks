@@ -2,7 +2,7 @@
   "name": "cruise",
   "extends": "../soundtrack.json",
   "swing": 0.3,
-  "_comment": "Track-level swing (0.3 ≈ a relaxed shuffle) grooves every part at once — the off-beat eighths of the melody and the arp's sixteenths all lay back. The three automation gestures are the point: a pad that SWELLS in (gain ramp), a lead filter that OPENS as the hook arrives (filter ramp), and an arp that DRIFTS across the stereo field (pan lfo).",
+  "_comment": "Track-level swing (0.3 ≈ a relaxed shuffle) grooves every part at once — the off-beat eighths of the melody and the arp's sixteenths all lay back. Then the motion tools: a pad that SWELLS in (gain ramp), a lead filter that OPENS as the hook arrives (filter ramp), an arp that DRIFTS across the stereo field (pan lfo), and a bass+keys that PUMP to the kick (sidechain).",
   "sections": [
     {
       "name": "intro",
@@ -30,7 +30,7 @@
       "name": "groove",
       "bars": 8,
       "loop": true,
-      "_comment": "The pocket drops. Swing is loudest here — the shuffled hi-hats and the lead's off-beat eighths sit late. The lead enters on a slowly OPENING filter (500 -> 6500 Hz, exp) so the hook brightens as it climbs; the arp keeps drifting across the field; a gentle gain lilt breathes on the keys.",
+      "_comment": "The pocket drops. Swing is loudest here — the shuffled hi-hats and the lead's off-beat eighths sit late. The lead enters on a slowly OPENING filter (500 -> 6500 Hz, exp); the arp keeps drifting across the field; the bass and keys DUCK to the kick (sidechain) so the whole track pumps on the beat — the synthwave heartbeat.",
       "parts": {
         "lead": {
           "instrument": "lead",
@@ -44,7 +44,8 @@
           "chord_beats": 4,
           "octave": 3,
           "gain": 0.55,
-          "automation": {"gain": {"lfo": {"rate": 0.5, "depth": 0.18, "center": 0.85}}}
+          "automation": {"gain": {"lfo": {"rate": 0.5, "depth": 0.18, "center": 0.85}}},
+          "sidechain": {"amount": 0.5, "release": 0.22}
         },
         "arp": {
           "instrument": "arp",
@@ -59,7 +60,8 @@
           "instrument": "bass",
           "notes": [["A2", 1], ["A2", 0.5], ["E2", 0.5], ["F2", 1], ["F2", 1],
                     ["C2", 1], ["C2", 1], ["G2", 1], ["G2", 1]],
-          "octave": 2
+          "octave": 2,
+          "sidechain": {"amount": 0.7, "release": 0.18}
         },
         "drums": {
           "instrument": "drums",

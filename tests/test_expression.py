@@ -1,8 +1,10 @@
-"""Tests for the expression additions: swing/groove and parameter automation.
+"""Tests for the expression additions: swing/groove, parameter automation, and
+sidechain ducking.
 
-The pure builders (``_swing_beat``, ``_automation_curve``) are checked directly;
-validation covers the new ``swing`` and ``automation`` spec fields; an end-to-end
-render proves both features survive the whole pipeline together.
+The pure builders (``_swing_beat``, ``_automation_curve``, ``_drum_onsets``,
+``_sidechain_env``) are checked directly; validation covers the new ``swing``,
+``automation`` and ``sidechain`` spec fields; end-to-end renders prove the
+features survive the whole pipeline.
 """
 
 import unittest
@@ -11,7 +13,8 @@ import numpy as np
 
 from vibetracks import spec
 from vibetracks.instruments import DEFAULT_PALETTE, merge_patch
-from vibetracks.sequencer import _automation_curve, _swing_beat, render_track
+from vibetracks.sequencer import (_automation_curve, _drum_onsets, _sidechain_env,
+                                  _swing_beat, render_track)
 
 
 def _palette():
@@ -61,6 +64,49 @@ class TestAutomationCurve(unittest.TestCase):
         self.assertGreaterEqual(c.min(), 0.1 - 0.8 - 1e-9)
 
 
+class TestSidechain(unittest.TestCase):
+    def test_drum_onsets_match_the_grid(self):
+        # 120 bpm at sr=16000 -> 0.5 s/beat -> 8000 samples/beat.
+        b2s = lambda beat: int(round(beat * 0.5 * 16000))
+        parts = {"d": {"drums": {"kick": "x...x...", "hat": "x.x.x.x."}}}
+        onsets = _drum_onsets(parts, "kick", b2s, bpb=4.0, total_beats=4.0)
+        self.assertEqual(onsets, [0, 16000])  # kicks on beat 0 and beat 2
+
+    def test_missing_voice_gives_no_onsets(self):
+        b2s = lambda beat: int(round(beat * 8000))
+        self.assertEqual(_drum_onsets({"d": {"drums": {"kick": "x..."}}},
+                                      "clap", b2s, 4.0, 4.0), [])
+
+    def test_env_dips_at_onset_and_recovers(self):
+        env = _sidechain_env([0, 16000], 32000, 16000, amount=0.7, release=0.18)
+        self.assertAlmostEqual(env[0], 0.3, places=2)   # ducked to 1-amount
+        self.assertGreater(env[8000], 0.9)              # recovered between kicks
+        self.assertLessEqual(env.max(), 1.0)
+
+    def test_empty_onsets_is_unity(self):
+        env = _sidechain_env([], 1000, 16000, amount=0.7, release=0.18)
+        self.assertTrue(np.array_equal(env, np.ones(1000)))
+
+    def test_sidechain_ducks_the_render_at_kicks(self):
+        # A bass held under a kick should be quieter right after each kick than a
+        # non-sidechained copy.
+        def _track(sidechain):
+            bass = {"instrument": "bass", "notes": [["A2", 4], ["A2", 4]]}
+            if sidechain:
+                bass["sidechain"] = {"amount": 0.85, "release": 0.2}
+            return {"name": "t", "key": "A minor", "bpm": 120,
+                    "time_signature": [4, 4], "motifs": {}, "loops": 1,
+                    "palette": _palette(),
+                    "sections": [{"name": "s", "bars": 2, "parts": {
+                        "bass": bass,
+                        "drums": {"instrument": "drums",
+                                  "drums": {"kick": "x...x...x...x..."}}}}]}
+        plain = render_track(_track(False), sr=16000, loops=1)
+        pumped = render_track(_track(True), sr=16000, loops=1)
+        self.assertEqual(plain.shape, pumped.shape)
+        self.assertFalse(np.allclose(plain, pumped))
+
+
 class TestValidation(unittest.TestCase):
     def _track(self, section, **top):
         return {"key": "C major", "bpm": 120, "time_signature": [4, 4],
@@ -101,6 +147,20 @@ class TestValidation(unittest.TestCase):
             spec._validate_track(self._track({"name": "s", "bars": 1, "parts": {
                 "a": {"instrument": "lead", "notes": [["C4", 1]],
                       "automation": [1, 2, 3]}}}), "x")
+
+    def test_sidechain_accepted(self):
+        spec._validate_track(self._track({"name": "s", "bars": 1, "parts": {
+            "a": {"instrument": "bass", "notes": [["A2", 1]],
+                  "sidechain": {"amount": 0.8, "release": 0.2, "source": "kick"}}}}),
+            "x")
+
+    def test_bad_sidechain_rejected(self):
+        for bad in ({"amount": 0}, {"amount": 1.5}, {"amount": "x"},
+                    {"release": 0}, {"release": -1}, {"source": 3}):
+            with self.assertRaises(spec.SpecError):
+                spec._validate_track(self._track({"name": "s", "bars": 1, "parts": {
+                    "a": {"instrument": "bass", "notes": [["A2", 1]],
+                          "sidechain": bad}}}), "x")
 
 
 class TestEndToEnd(unittest.TestCase):

@@ -131,6 +131,53 @@ def _automation_curve(env: dict, n: int, sr: int) -> np.ndarray:
     return np.linspace(start, end, n)
 
 
+# --- Sidechain / pump --------------------------------------------------------
+
+def _drum_onsets(parts, voice, b2s, bpb, total_beats):
+    """Sample positions of every hit of drum ``voice`` in a section.
+
+    Mirrors :func:`_render_drums`' grid so a sidechain ducks in lockstep with the
+    kick it is triggered from; any non-rest step counts as a hit.
+    """
+    onsets = []
+    n_bars = max(1, int(round(total_beats / bpb)))
+    for part in parts.values():
+        if "drums" not in part:
+            continue
+        pattern = part["drums"].get(voice)
+        if not pattern:
+            continue
+        steps = len(pattern)
+        for bar in range(n_bars):
+            for s, ch in enumerate(pattern):
+                if ch in ".-":
+                    continue
+                onsets.append(b2s(bar * bpb + (s / steps) * bpb))
+    return sorted(onsets)
+
+
+def _sidechain_env(onsets, n, sr, amount, release):
+    """Ducking envelope: dip to ``1-amount`` at each trigger, recover over ``release``.
+
+    The classic sidechain 'pump' — the kick momentarily carves a sustained part
+    (bass/pad) down and it breathes back up, the heartbeat under a lot of
+    synthwave/EDM. Recovery is a smooth exponential; overlapping ducks (fast
+    kicks) take the deepest via ``np.minimum``.
+    """
+    env = np.ones(n, dtype=np.float64)
+    if not onsets or amount <= 0:
+        return env
+    rel = max(1, int(release * sr))
+    t = np.arange(rel, dtype=np.float64) / sr
+    recovery = 1.0 - amount * np.exp(-t / (release / 3.0 + 1e-9))
+    for o in onsets:
+        if o >= n:
+            continue
+        end = min(o + rel, n)
+        env[o:end] = np.minimum(env[o:end], recovery[:end - o])
+    return env
+
+
 # --- Part renderers ----------------------------------------------------------
 
 def _render_melody(events, patch, b2s, sr, section_samples, filter_env=None):
@@ -334,8 +381,10 @@ def render_section(section, track, sr, drum_cache):
     section_samples = max(1, b2s(total_beats))
     sec_transpose = int(section.get("transpose", 0))
     stereo = np.zeros((section_samples, 2), dtype=np.float64)
+    parts = section.get("parts", {})
+    onset_cache = {}  # drum-voice -> trigger sample positions (for sidechain)
 
-    for part in section.get("parts", {}).values():
+    for part in parts.values():
         patch = track["palette"][part["instrument"]]
         pan = float(part.get("pan", 0.0))
         gain = float(part.get("gain", patch.get("gain", 0.8)))
@@ -398,6 +447,15 @@ def render_section(section, track, sr, drum_cache):
         gain_val = gain
         if "gain" in auto:
             gain_val = gain * _automation_curve(auto["gain"], section_samples, sr)
+        # Sidechain: duck this part on every hit of a drum voice (the 'pump').
+        sc = part.get("sidechain")
+        if sc:
+            voice = sc.get("source", "kick")
+            if voice not in onset_cache:
+                onset_cache[voice] = _drum_onsets(parts, voice, b2s, bpb, total_beats)
+            gain_val = gain_val * _sidechain_env(
+                onset_cache[voice], section_samples, sr,
+                float(sc.get("amount", 0.7)), float(sc.get("release", 0.18)))
         pan_val = pan
         if "pan" in auto:
             pan_val = np.clip(_automation_curve(auto["pan"], section_samples, sr),

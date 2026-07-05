@@ -3,7 +3,7 @@
   "aesthetic": "nocturnal synthwave cruise — groove and motion: a shuffled pocket, filters that breathe open, pads that swell, an arp that drifts across the stereo field",
   "key": "A minor",
   "bpm": 100,
-  "_feature_note": "This group is the worked demo for the two expression tools that shape a parameter *over time*: track/section 'swing' for a shuffled pocket, and per-part 'automation' envelopes (ramp or lfo) driving 'filter', 'gain', and 'pan'. Everything else (motif reuse, sections, arp) is here only to give those two tools something to move.",
+  "_feature_note": "This group is the worked demo for the expression tools that shape sound *over time*: track/section 'swing' for a shuffled pocket, per-part 'automation' envelopes (ramp or lfo) driving 'filter', 'gain', and 'pan', and per-part 'sidechain' ducking (the kick-triggered pump). Everything else (motif reuse, sections, arp) is here only to give those tools something to move.",
   "palette": {
     "lead": {
       "wave": "saw", "voices": 3, "detune": 0.011,

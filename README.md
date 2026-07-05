@@ -49,7 +49,7 @@ side by side is a tour of what VibeTracks can do. Start with `neon-frontier`.
 | **`verdant-vale`** | numpy engines + per-note expression | Goes beyond bare chiptune: `fm`, `karplus` (plucked string), and `subtractive` voices dressed with `vibrato`, `chorus`, `delay`, and `reverb`. The reference for the synthesis and effects params. |
 | **`sunspire`** | `soundfont` engine (sample-based orchestral) | A nine-cue mythic-heroic score built almost entirely from **real recorded instruments** (strings, brass, woodwinds, choir, percussion) via FluidSynth. Needs the optional soundfont setup to render — see below. |
 | **`aurelia`** | Long-form development + advanced sequencing | One theme grown from a lonely music-box to a full finale across seven sections — `arp` arpeggios, per-section tempo ramps (`bpm_end`), section `transpose`, and tuplet durations. |
-| **`midnight-drive`** | Groove + motion (`swing` + `automation`) | A nocturnal synthwave cruise built to move: a shuffled pocket (`swing`), and per-part `automation` envelopes that open a filter, swell a pad, and drift an arp across the stereo field — the tools for shaping a parameter *over time*. |
+| **`midnight-drive`** | Groove + motion (`swing` · `automation` · `sidechain`) | A nocturnal synthwave cruise built to move: a shuffled pocket (`swing`), per-part `automation` envelopes that open a filter, swell a pad, and drift an arp across the stereo field, and `sidechain` ducking that pumps the bass and keys to the kick — the tools for shaping sound *over time*. |
 
 ### `neon-frontier`, up close
 

@@ -111,8 +111,9 @@ Each section's `parts` is a map of part-name → part. Every part needs an
   Each string is one bar; `x`/`X` = hit, `o` = open hi-hat (on the `hat` voice),
   `.`/`-` = rest. Patterns tile across the section's bars.
 
-Optional per-part knobs: `gain` (level), `pan` (−1 left … 1 right), and
-`automation` — envelopes that move a parameter *over the section* (see below).
+Optional per-part knobs: `gain` (level), `pan` (−1 left … 1 right), `automation`
+(envelopes that move a parameter *over the section*), and `sidechain` (kick-
+triggered ducking) — both detailed below.
 
 ### `automation` — parameter movement over time
 The one lever for *continuous shape*, not just static levels — a filter that
@@ -138,6 +139,15 @@ automate exactly, per sample, for **every engine including `soundfont`**.
 `filter` automation is **numpy engines only** and sampled per note-onset (a
 stepped sweep — ideal for leads/arps/plucks; a single long pad note gets one
 value). It applies to melodic parts (`notes`/`motif`/`arp`).
+
+### `sidechain` — the kick-triggered pump
+`"sidechain": {"amount": 0.7, "release": 0.18, "source": "kick"}` ducks the part's
+level on every hit of a drum `source` voice (default `"kick"`, from a `drums` part
+in the same section), then breathes it back up over `release` seconds — the
+classic synthwave/EDM pump. `amount` in `(0, 1]` is the depth (`0.7` = drops to
+30% on the beat). Applies at the mix stage, so it works for **every engine** and
+stacks with `gain` automation. Reach for it on sustained parts (bass, pads) to
+carve space for the kick.
 
 ## Instrument engines & expression (palette patches)
 

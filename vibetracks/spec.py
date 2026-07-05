@@ -141,6 +141,23 @@ def _validate_automation(auto, where: str) -> None:
                                 f"{sorted(AUTOMATION_SHAPES)}, got {shape!r}")
 
 
+def _validate_sidechain(sc, where: str) -> None:
+    """Validate a part's ``sidechain`` duck: amount (0, 1], positive release, source."""
+    if not isinstance(sc, dict):
+        raise SpecError(f"{where}: 'sidechain' must be an object")
+    amt = sc.get("amount", 0.7)
+    if not (isinstance(amt, (int, float)) and not isinstance(amt, bool)
+            and 0 < amt <= 1):
+        raise SpecError(f"{where}: sidechain 'amount' must be a number in (0, 1], "
+                        f"got {amt!r}")
+    rel = sc.get("release", 0.18)
+    if not (isinstance(rel, (int, float)) and not isinstance(rel, bool) and rel > 0):
+        raise SpecError(f"{where}: sidechain 'release' must be a positive number, "
+                        f"got {rel!r}")
+    if "source" in sc and not isinstance(sc["source"], str):
+        raise SpecError(f"{where}: sidechain 'source' must be a drum voice name")
+
+
 def _validate_note_events(events, where: str) -> None:
     if not isinstance(events, list):
         raise SpecError(f"{where}: notes must be a list of [pitch, beats, vel?]")
@@ -260,6 +277,8 @@ def _validate_part(part: dict, track: dict, where: str) -> None:
             raise SpecError(f"{where}: 'invert' pivot {inv!r} is not a note: {e}") from e
     if "automation" in part:
         _validate_automation(part["automation"], where)
+    if "sidechain" in part:
+        _validate_sidechain(part["sidechain"], where)
     if "notes" in part:
         _validate_note_events(part["notes"], where)
     elif "motif" in part:
