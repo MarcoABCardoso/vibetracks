@@ -22,6 +22,7 @@ import os
 import sys
 
 from . import spec
+from .atlas import build_atlas
 from .compositor import render_sheet
 from .pngio import write_png
 
@@ -112,8 +113,14 @@ def _render_one(char_path, charset, cast_dir, cast_name, out_root) -> dict:
     out_path = os.path.join(out_dir, f"{ch['name']}.png")
     w, h = write_png(out_path, sheet)
     print(f"  rendered  {out_path}  ({w}x{h}, {len(ch['layers'])} layer(s))")
-    return {"character": ch["name"], "file": out_path, "width": w, "height": h,
-            "layers": len(ch["layers"])}
+    atlas_path = os.path.join(out_dir, f"{ch['name']}.atlas.json")
+    atlas = build_atlas(os.path.basename(out_path))
+    with open(atlas_path, "w", encoding="utf-8") as f:
+        json.dump(atlas, f, indent=2)
+    print(f"  atlas     {atlas_path}  ({len(atlas['frames'])} frames, "
+          f"{len(atlas['animations'])} animations)")
+    return {"character": ch["name"], "file": out_path, "atlas": atlas_path,
+            "width": w, "height": h, "layers": len(ch["layers"])}
 
 
 def cmd_render(args) -> int:
@@ -123,7 +130,10 @@ def cmd_render(args) -> int:
     info = _render_one(path, charset, c.dir, c.name, args.out_dir)
     if args.out:
         os.replace(info["file"], args.out)
-        print(f"  -> {args.out}")
+        # Keep the atlas beside the PNG, renamed to match: foo.png -> foo.atlas.json.
+        atlas_out = os.path.splitext(args.out)[0] + ".atlas.json"
+        os.replace(info["atlas"], atlas_out)
+        print(f"  -> {args.out}  (+ {atlas_out})")
     return 0
 
 
