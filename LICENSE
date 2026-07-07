@@ -2,10 +2,9 @@ VibeTracks License
 
 Copyright (c) 2026 VibeTracks contributors
 
-VibeTracks is a lab for authoring game assets as specs — songs compiled to audio,
-characters compiled to spritesheets. This license covers the parts of this
-repository that the VibeTracks authors wrote, and defers to third parties for the
-parts they wrote.
+VibeTracks is a lab for authoring game soundtracks as specs — songs compiled to
+audio. This license covers the parts of this repository that the VibeTracks authors
+wrote, and defers to third parties for the parts they wrote.
 
 1. The software and the specs
 
@@ -17,21 +16,18 @@ parts they wrote.
    If you build something out of this (a tool, a game, a derivative), please give
    reasonable credit to VibeTracks, and retain this notice in copies of the source.
 
-2. Bundled artwork and other third-party assets — their licenses come first
+2. Third-party assets — their licenses come first
 
-   This repository bundles and composes artwork created by other people (for
-   example, the Liberated Pixel Cup sprite layers under sprites/*/assets/). Those
+   Rendering the optional `soundfont` engine uses a General MIDI soundfont created
+   by other people (not committed here — installed separately, see CLAUDE.md). Such
    assets are NOT covered by Section 1. They remain under their creators' own
    licenses, which take precedence and must be honored first.
 
-   Each such asset's author, license, and source are recorded alongside it — see
-   the CREDITS files (e.g. sprites/<cast>/CREDITS.csv). Some of those licenses
-   require attribution and/or impose share-alike (copyleft) terms on works that
-   include the art. When you distribute anything that incorporates a bundled asset,
-   you must comply with that asset's license — attribution and all — before the
-   permissions in Section 1 apply to the rest.
+   When you distribute anything that incorporates a third-party asset, you must
+   comply with that asset's license — attribution and all — before the permissions
+   in Section 1 apply to the rest.
 
-   In short: credit the artists, honor their terms, then freely use what is yours.
+   In short: credit the creators, honor their terms, then freely use what is yours.
 
 3. No warranty
 
