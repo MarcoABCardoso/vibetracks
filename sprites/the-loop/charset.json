@@ -1,11 +1,11 @@
 {
   "title": "The Loop",
   "style": "lpc",
-  "_comment": "Protagonist cast for the roguelike 'The Loop' — a lone, mobility-first sword-wanderer in light leather. Sourced entirely from the MODERN Universal-LPC generator (split-per-animation art) so it can carry the expanded platformer poses (jump, climb, run) the classic combined set lacks. Every layer is fetched on demand and composited in z-order; nothing is vendored.",
+  "_comment": "Protagonist cast for the roguelike 'The Loop' — a lone, mobility-first sword-wanderer in a light leather jerkin. Sourced entirely from the MODERN Universal-LPC generator (split-per-animation art) so it can carry the expanded platformer poses (jump, climb, run) plus a battle-ready combat_idle the classic combined set lacks. Every layer covers the full animation set (the jerkin is a recolored sleeveless shirt, chosen over classic leather armour precisely because that armour lacks combat_idle art). Every layer is fetched on demand and composited in z-order; nothing is vendored.",
   "frame": [64, 64],
   "animations": [
     "spellcast", "thrust", "walk", "slash", "shoot", "hurt",
-    "climb", "idle", "jump", "sit", "emote", "run"
+    "climb", "idle", "jump", "sit", "emote", "run", "combat_idle"
   ],
   "palette": {
     "body":  {"engine": "lpc", "zPos": 10},

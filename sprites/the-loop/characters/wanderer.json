@@ -20,8 +20,14 @@
     {"layer": "feet", "variant": "brown", "assemble": {
       "base": "https://raw.githubusercontent.com/LiberatedPixelCup/Universal-LPC-Spritesheet-Character-Generator/master/spritesheets/feet/shoes/basic/male",
       "color": "brown"}},
-    {"layer": "torso", "variant": "leather", "assemble": {
-      "base": "https://raw.githubusercontent.com/LiberatedPixelCup/Universal-LPC-Spritesheet-Character-Generator/master/spritesheets/torso/armour/leather/male"}},
+    {"layer": "torso", "variant": "jerkin",
+      "_recolor_note": "A sleeveless shirt recolored from its ivory/tan reference ramp to leather browns — a light jerkin. Chosen over classic leather armour because that armour ships no combat_idle art, whereas this shirt covers the full animation set.",
+      "recolor": {
+        "#E5E6C7": "#C79A5E", "#C4B59F": "#9B6B3A", "#958080": "#6E4526",
+        "#4D4A5D": "#3E2A19", "#281820": "#1C120B", "#FFFFFF": "#E4C48C"
+      },
+      "assemble": {
+        "base": "https://raw.githubusercontent.com/LiberatedPixelCup/Universal-LPC-Spritesheet-Character-Generator/master/spritesheets/torso/clothes/sleeveless/sleeveless1/male"}},
     {"layer": "hair", "variant": "messy2",
       "_recolor_note": "messy2 hair ships only the colorless master sheet, drawn in the generator's 'orange' reference ramp; remap it to the 'chestnut' brown ramp to keep the wanderer brown-haired.",
       "recolor": {
