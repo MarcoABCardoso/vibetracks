@@ -5,6 +5,15 @@
   "layers": [
     {"layer": "body", "variant": "male", "assemble": {
       "base": "https://raw.githubusercontent.com/LiberatedPixelCup/Universal-LPC-Spritesheet-Character-Generator/master/spritesheets/body/bodies/male"}},
+    {"layer": "head", "variant": "human_male",
+      "_note": "The modern body base is headless (neck-down) — the head is its own layer, drawn in the same reference skin ramp so it matches the body's light tone.",
+      "assemble": {
+        "base": "https://raw.githubusercontent.com/LiberatedPixelCup/Universal-LPC-Spritesheet-Character-Generator/master/spritesheets/head/heads/human/male"}},
+    {"layer": "eyes", "variant": "human",
+      "_note": "The modern body base is faceless — eyes are their own layer. 'default' neutral expression, brown. Has no climb file (you face away while climbing), so that row is simply left faceless.",
+      "assemble": {
+        "base": "https://raw.githubusercontent.com/LiberatedPixelCup/Universal-LPC-Spritesheet-Character-Generator/master/spritesheets/eyes/human/adult/default",
+        "color": "brown"}},
     {"layer": "legs", "variant": "teal", "assemble": {
       "base": "https://raw.githubusercontent.com/LiberatedPixelCup/Universal-LPC-Spritesheet-Character-Generator/master/spritesheets/legs/pants/male",
       "color": "teal"}},

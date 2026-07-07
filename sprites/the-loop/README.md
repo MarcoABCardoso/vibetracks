@@ -7,7 +7,14 @@ built from **light leather**, not plate: fast and travel-worn rather than armour
 
 | Character | Archetype | Layers |
 |-----------|-----------|--------|
-| `wanderer` | Scout / duelist | light body + messy brown hair, brown leather armour, teal travelling pants, brown shoes |
+| `wanderer` | Scout / duelist | light body + **head + brown eyes**, messy brown hair, brown leather armour, teal travelling pants, brown shoes |
+
+> **Note — the modern body is headless.** Unlike the classic combined set (head +
+> eyes baked into the body), the modern generator splits them out: `body/bodies/male`
+> is neck-down, and the **head** (`head/heads/human/male`, skin-matched) and **eyes**
+> (`eyes/human/adult/default`, brown) are their own layers. Both are included here —
+> without the head layer the character renders faceless. The eyes have no `climb`
+> file (you face away while climbing), so that row is simply left faceless.
 
 ```bash
 python -m vibesprites render the-loop/wanderer   # -> out/sprites/the-loop/wanderer.png (+ .atlas.json)

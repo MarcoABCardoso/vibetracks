@@ -9,6 +9,8 @@
   ],
   "palette": {
     "body":  {"engine": "lpc", "zPos": 10},
+    "head":  {"engine": "lpc", "zPos": 15},
+    "eyes":  {"engine": "lpc", "zPos": 25},
     "legs":  {"engine": "lpc", "zPos": 30},
     "feet":  {"engine": "lpc", "zPos": 40},
     "torso": {"engine": "lpc", "zPos": 50},
