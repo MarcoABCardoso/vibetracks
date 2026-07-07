@@ -1,0 +1,53 @@
+{
+  "title": "The Loop",
+  "aesthetic": "melancholic driving synthwave — a lone wanderer's theme carried over a rising-danger undercurrent; reflective but always moving forward, like the platformer it scores",
+  "key": "D minor",
+  "bpm": 104,
+  "palette": {
+    "lead": {
+      "wave": "saw",
+      "filter": 3200,
+      "resonance": 1.2,
+      "reverb": {"decay": 2.2, "mix": 0.28, "predelay": 0.02},
+      "chorus": {"rate": 0.5, "depth": 0.25, "mix": 0.3}
+    },
+    "pad": {
+      "wave": "saw",
+      "adsr": [0.5, 0.25, 0.8, 1.4],
+      "filter": 2600,
+      "reverb": {"decay": 3.0, "mix": 0.4, "predelay": 0.03}
+    },
+    "pluck": {
+      "wave": "triangle",
+      "filter": 4200,
+      "reverb": {"decay": 1.6, "mix": 0.25}
+    },
+    "arp": {
+      "wave": "square",
+      "filter": 2600,
+      "reverb": {"decay": 1.8, "mix": 0.22}
+    },
+    "bass": {
+      "wave": "saw",
+      "filter": 900
+    }
+  },
+  "motifs": {
+    "main_theme": {
+      "_comment": "The wanderer's hook, D minor. A rising question that lands open on the 2nd (E), answered by a phrase that tops out on a new high (F5) and resolves home to D. Stepwise and singable, with a clear rhythmic fingerprint.",
+      "notes": [
+        ["D4", 1], ["F4", 1], ["A4", 1.5], ["G4", 0.5], ["F4", 1], ["A4", 1], ["E4", 1.5], [null, 0.5],
+        ["A4", 1], ["D5", 1], ["F5", 1.5], ["E5", 0.5], ["D5", 1], ["C5", 1], ["D5", 2]
+      ]
+    },
+    "danger": {
+      "_comment": "The rising-clock undercurrent — an unstable leaning phrase using the b2 (Eb, Neapolitan color) and the C# leading tone. Sits low, never resolves comfortably.",
+      "notes": [
+        ["D4", 0.75], ["Eb4", 0.75], ["D4", 0.5], ["A3", 1], ["C#4", 1]
+      ]
+    }
+  },
+  "tracks": [
+    "main-theme"
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "name": "wanderer",
+  "extends": "../charset.json",
+  "_comment": "The protagonist: a weathered traveler who resets the loop from safety and pushes the frontier a little further each run. Light leather (chest + shoulders + bracers) over a belted travelling kit — kitted for speed, not for standing still.",
+  "layers": [
+    {"layer": "body", "variant": "male/light"},
+    {"layer": "legs", "variant": "pants/male/teal_pants_male"},
+    {"layer": "feet", "variant": "shoes/male/brown_shoes_male"},
+    {"layer": "torso", "variant": "leather/chest_male"},
+    {"layer": "belt", "variant": "leather/male/leather_male", "source": "belt/leather/male/leather_male.png"},
+    {"layer": "shoulders", "variant": "leather/shoulders_male", "source": "torso/leather/shoulders_male.png"},
+    {"layer": "hands", "variant": "bracers/male/leather_bracers_male"},
+    {"layer": "hair", "variant": "male/messy2/brown"}
+  ]
+}

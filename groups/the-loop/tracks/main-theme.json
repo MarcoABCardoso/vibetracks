@@ -1,0 +1,200 @@
+{
+  "name": "main-theme",
+  "extends": "../soundtrack.json",
+  "loops": 2,
+  "sections": [
+    {
+      "name": "intro",
+      "bars": 4,
+      "parts": {
+        "pad": {
+          "instrument": "pad",
+          "chords": ["Dm", "Bb", "F", "C"],
+          "gain": 0.7
+        },
+        "pluck": {
+          "instrument": "pluck",
+          "arp": ["Dm", "Bb", "F", "C"],
+          "rate": 0.5,
+          "pattern": "updown",
+          "gain": 0.5,
+          "automation": {"gain": {"from": 0.2, "to": 0.6}}
+        },
+        "lead": {
+          "instrument": "lead",
+          "motif": "main_theme",
+          "slice": [0, 4],
+          "repeat": 2,
+          "gain": 0.45,
+          "automation": {"filter": {"from": 800, "to": 3000, "shape": "exp"}}
+        }
+      }
+    },
+    {
+      "name": "verse",
+      "bars": 4,
+      "loop": true,
+      "parts": {
+        "lead": {
+          "instrument": "lead",
+          "motif": "main_theme"
+        },
+        "bass": {
+          "instrument": "bass",
+          "notes": [
+            ["D2", 1], ["D2", 1], ["A2", 1], ["D2", 1],
+            ["Bb1", 1], ["Bb1", 1], ["F2", 1], ["Bb1", 1],
+            ["F2", 1], ["F2", 1], ["C3", 1], ["F2", 1],
+            ["C2", 1], ["C2", 1], ["G2", 1], ["C2", 1]
+          ]
+        },
+        "pad": {
+          "instrument": "pad",
+          "chords": ["Dm", "Bb", "F", "C"],
+          "gain": 0.6
+        },
+        "pluck": {
+          "instrument": "pluck",
+          "arp": ["Dm", "Bb", "F", "C"],
+          "rate": 0.5,
+          "pattern": "up",
+          "octaves": 2,
+          "gain": 0.4,
+          "pan": 0.35
+        },
+        "drums": {
+          "instrument": "drums",
+          "drums": {
+            "kick": "x...x...x...x...",
+            "snare": "....x.......x...",
+            "hat": "x.x.x.x.x.x.x.x."
+          }
+        }
+      }
+    },
+    {
+      "name": "darken",
+      "bars": 4,
+      "bpm": 104,
+      "bpm_end": 120,
+      "parts": {
+        "lead": {
+          "instrument": "lead",
+          "motif": "danger",
+          "repeat": 3,
+          "transpose": 12,
+          "gain": 0.7,
+          "automation": {"filter": {"from": 1400, "to": 4200, "shape": "exp"}}
+        },
+        "bass": {
+          "instrument": "bass",
+          "motif": "danger",
+          "repeat": 3,
+          "transpose": -12,
+          "gain": 0.9
+        },
+        "pad": {
+          "instrument": "pad",
+          "chords": ["Dm", "Bb", "Gm", "A"],
+          "gain": 0.55
+        },
+        "arp": {
+          "instrument": "arp",
+          "arp": ["Dm", "Bb", "Gm", "A"],
+          "rate": 0.25,
+          "pattern": "updown",
+          "gain": 0.4,
+          "pan": -0.3,
+          "automation": {"gain": {"from": 0.25, "to": 0.7}}
+        },
+        "drums": {
+          "instrument": "drums",
+          "drums": {
+            "kick": "x..xx..xx..xx..x",
+            "snare": "....x.......x..x",
+            "hat": "xxxxxxxxxxxxxxxx"
+          }
+        }
+      }
+    },
+    {
+      "name": "resolve",
+      "bars": 4,
+      "loop": true,
+      "bpm": 108,
+      "parts": {
+        "lead": {
+          "instrument": "lead",
+          "motif": "main_theme",
+          "gain": 1.0
+        },
+        "counter": {
+          "instrument": "pluck",
+          "motif": "main_theme",
+          "slice": [8, 15],
+          "transpose": 12,
+          "gain": 0.35,
+          "pan": 0.4
+        },
+        "bass": {
+          "instrument": "bass",
+          "notes": [
+            ["D2", 0.5], ["D2", 0.5], ["D2", 0.5], ["A2", 0.5], ["D2", 0.5], ["A2", 0.5], ["F2", 0.5], ["A2", 0.5],
+            ["Bb1", 0.5], ["Bb1", 0.5], ["F2", 0.5], ["Bb1", 0.5], ["Bb1", 0.5], ["D2", 0.5], ["F2", 0.5], ["Bb1", 0.5],
+            ["F2", 0.5], ["F2", 0.5], ["C3", 0.5], ["A2", 0.5], ["F2", 0.5], ["A2", 0.5], ["C3", 0.5], ["A2", 0.5],
+            ["C2", 0.5], ["C2", 0.5], ["G2", 0.5], ["C3", 0.5], ["C2", 0.5], ["E2", 0.5], ["G2", 0.5], ["C2", 0.5]
+          ]
+        },
+        "pad": {
+          "instrument": "pad",
+          "chords": ["Dm", "Bb", "F", "C"],
+          "gain": 0.65
+        },
+        "arp": {
+          "instrument": "arp",
+          "arp": ["Dm", "Bb", "F", "C"],
+          "rate": 0.25,
+          "pattern": "updown",
+          "octaves": 2,
+          "gain": 0.35,
+          "pan": -0.35
+        },
+        "drums": {
+          "instrument": "drums",
+          "drums": {
+            "kick": "x...x...x...x...",
+            "snare": "....x.......x...",
+            "hat": "x.xxx.xxx.xxx.xx"
+          }
+        }
+      }
+    },
+    {
+      "name": "outro",
+      "bars": 2,
+      "bpm": 108,
+      "parts": {
+        "pad": {
+          "instrument": "pad",
+          "chords": ["Dm"],
+          "chord_beats": 8,
+          "gain": 0.7
+        },
+        "lead": {
+          "instrument": "lead",
+          "motif": "main_theme",
+          "slice": [13, 15],
+          "gain": 0.6
+        },
+        "pluck": {
+          "instrument": "pluck",
+          "arp": ["Dm"],
+          "chord_beats": 8,
+          "rate": 1.0,
+          "octaves": 2,
+          "gain": 0.3
+        }
+      }
+    }
+  ]
+}
