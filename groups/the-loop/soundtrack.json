@@ -1,7 +1,7 @@
 {
   "title": "The Loop",
-  "aesthetic": "melancholic driving synthwave — a lone wanderer's theme carried over a rising-danger undercurrent; reflective but always moving forward, like the platformer it scores",
-  "key": "D minor",
+  "aesthetic": "bright, wandering synthwave in lydian — a lone explorer's theme with a wondering, wide-open lift (the raised 4th), shadowed by a rising-danger undercurrent that borrows darker chromatic tones; always moving forward, like the platformer it scores",
+  "key": "E lydian",
   "bpm": 104,
   "palette": {
     "lead": {
@@ -34,16 +34,16 @@
   },
   "motifs": {
     "main_theme": {
-      "_comment": "The wanderer's hook, D minor. A rising question that lands open on the 2nd (E), answered by a phrase that tops out on a new high (F5) and resolves home to D. Stepwise and singable, with a clear rhythmic fingerprint.",
+      "_comment": "The wanderer's hook, E lydian. Starts on the 3rd (G#) — not the tonic — and climbs the bright 3-#4-5-6 steps (the A# raised 4th is the lydian signature), leaps an octave to E5, and lands open on the 5th (B). The answer tops out on a new high (G#5) it never touched, then falls through the D#->E leading-tone to resolve home. Deliberately not a tonic-triad arpeggio.",
       "notes": [
-        ["D4", 1], ["F4", 1], ["A4", 1.5], ["G4", 0.5], ["F4", 1], ["A4", 1], ["E4", 1.5], [null, 0.5],
-        ["A4", 1], ["D5", 1], ["F5", 1.5], ["E5", 0.5], ["D5", 1], ["C5", 1], ["D5", 2]
+        ["G#4", 1], ["A#4", 1], ["B4", 1], ["C#5", 1], ["E5", 1.5], ["A#4", 0.5], ["B4", 2],
+        ["B4", 1], ["E5", 1], ["G#5", 1.5], ["F#5", 0.5], ["E5", 1], ["C#5", 1], ["D#5", 1], ["E5", 1]
       ]
     },
     "danger": {
-      "_comment": "The rising-clock undercurrent — an unstable leaning phrase using the b2 (Eb, Neapolitan color) and the C# leading tone. Sits low, never resolves comfortably.",
+      "_comment": "The rising-clock undercurrent — a squirming low phrase that borrows the b6 (C natural, foreign to the bright lydian scale) and leans through the #4 (A#). Sits low, never resolves comfortably; the borrowed C is the 'something's wrong' color against the theme's brightness.",
       "notes": [
-        ["D4", 0.75], ["Eb4", 0.75], ["D4", 0.5], ["A3", 1], ["C#4", 1]
+        ["B3", 0.75], ["C4", 0.75], ["B3", 0.5], ["A#3", 1], ["F#3", 1]
       ]
     }
   },
