@@ -1,26 +1,14 @@
 {
   "name": "cleric",
   "extends": "../charset.json",
+  "_comment": "Healer. Holy white-and-gold: a long-sleeved white robe over white skirts with gilded shoes, fair hair. Light, unarmoured, and covered across the full animation set including combat_idle. Assemble bases are relative to the charset 'remote'.",
   "layers": [
-    {
-      "layer": "body",
-      "variant": "male/light"
-    },
-    {
-      "layer": "legs",
-      "variant": "pants/male/white_pants_male"
-    },
-    {
-      "layer": "feet",
-      "variant": "shoes/male/black_shoes_male"
-    },
-    {
-      "layer": "torso",
-      "variant": "gold/chest_male"
-    },
-    {
-      "layer": "hair",
-      "variant": "male/plain/blonde"
-    }
+    {"layer": "body", "variant": "male", "assemble": {"base": "body/bodies/male"}},
+    {"layer": "head", "variant": "human_male", "assemble": {"base": "head/heads/human/male"}},
+    {"layer": "eyes", "variant": "human", "assemble": {"base": "eyes/human/adult/default", "color": "blue"}},
+    {"layer": "legs", "variant": "white", "assemble": {"base": "legs/pants/male", "color": "white"}},
+    {"layer": "feet", "variant": "gold", "assemble": {"base": "feet/shoes/basic/male", "color": "gold"}},
+    {"layer": "torso", "variant": "longsleeve2", "assemble": {"base": "torso/clothes/longsleeve/longsleeve2/male"}},
+    {"layer": "hair", "variant": "plain", "assemble": {"base": "hair/plain/adult"}}
   ]
 }

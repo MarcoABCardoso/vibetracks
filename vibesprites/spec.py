@@ -154,6 +154,27 @@ def resolve_character(path: str, charset: Charset | None = None) -> dict:
     return resolved
 
 
+def compiled_spec(character: dict) -> dict:
+    """A JSON-friendly, self-contained copy of a resolved character.
+
+    This is the *compiled* spec — the charset already folded in, so it needs no
+    ``extends`` — written beside the rendered sheet so the output ships with the
+    exact recipe that produced it. ``animations`` is flattened from the internal
+    ``(name, frames, dirs)`` tuples back to the ordered list of names.
+    """
+    out = {
+        "name": character["name"],
+        "frame": list(character["frame"]),
+        "animations": [name for name, _f, _d in character["animations"]],
+        "palette": character["palette"],
+        "outfits": character.get("outfits", {}),
+        "layers": character["layers"],
+    }
+    if character.get("remote"):
+        out["remote"] = character["remote"]
+    return out
+
+
 def _validate_character(c: dict, path: str) -> None:
     _validate_frame(c["frame"], path)
     _validate_palette(c["palette"], path)

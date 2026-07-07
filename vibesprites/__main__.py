@@ -119,8 +119,13 @@ def _render_one(char_path, charset, cast_dir, cast_name, out_root) -> dict:
         json.dump(atlas, f, indent=2)
     print(f"  atlas     {atlas_path}  ({len(atlas['frames'])} frames, "
           f"{len(atlas['animations'])} animations)")
+    spec_path = os.path.join(out_dir, f"{ch['name']}.spec.json")
+    with open(spec_path, "w", encoding="utf-8") as f:
+        json.dump(spec.compiled_spec(ch), f, indent=2)
+    print(f"  spec      {spec_path}  ({len(ch['layers'])} layer(s), "
+          f"{len(ch['animations'])} animations)")
     return {"character": ch["name"], "file": out_path, "atlas": atlas_path,
-            "width": w, "height": h, "layers": len(ch["layers"])}
+            "spec": spec_path, "width": w, "height": h, "layers": len(ch["layers"])}
 
 
 def cmd_render(args) -> int:
@@ -130,10 +135,14 @@ def cmd_render(args) -> int:
     info = _render_one(path, charset, c.dir, c.name, args.out_dir)
     if args.out:
         os.replace(info["file"], args.out)
-        # Keep the atlas beside the PNG, renamed to match: foo.png -> foo.atlas.json.
-        atlas_out = os.path.splitext(args.out)[0] + ".atlas.json"
+        # Keep the atlas + spec beside the PNG, renamed to match: foo.png ->
+        # foo.atlas.json, foo.spec.json.
+        stem = os.path.splitext(args.out)[0]
+        atlas_out = stem + ".atlas.json"
+        spec_out = stem + ".spec.json"
         os.replace(info["atlas"], atlas_out)
-        print(f"  -> {args.out}  (+ {atlas_out})")
+        os.replace(info["spec"], spec_out)
+        print(f"  -> {args.out}  (+ {atlas_out}, {spec_out})")
     return 0
 
 

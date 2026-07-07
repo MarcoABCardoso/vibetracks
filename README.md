@@ -117,14 +117,17 @@ vibesprites/                     # the sprite compositor (layout, layers, compos
 tests/                           # theory, validation, engines, export, soundfont, render sanity
 .claude/skills/soundtrack        # the authoring workflow skill
 out/<group>/                     # rendered WAVs (gitignored) + per-group manifest.json
-out/sprites/<cast>/              # rendered PNGs + a per-character <name>.atlas.json frame map
+out/sprites/<cast>/              # rendered PNGs + per-character <name>.atlas.json + <name>.spec.json
 ```
 
-Each rendered sprite ships a `<name>.atlas.json` beside its PNG — a frame map
-(sheet/frame size, direction order, and every animation's row range + frame rects)
-derived from `vibesprites/layout.py`, so a consumer that can't eyeball the sheet
-(a game engine, or a model) knows exactly which rows are `walk`, `slash`, `hurt`, …
-without guessing at the ragged grid.
+Each rendered sprite ships two JSON sidecars beside its PNG. The
+`<name>.atlas.json` is a frame map (sheet/frame size, direction order, and every
+animation's row range + frame rects) derived from `vibesprites/layout.py`, so a
+consumer that can't eyeball the sheet (a game engine, or a model) knows exactly
+which rows are `walk`, `slash`, `hurt`, … without guessing at the ragged grid. The
+`<name>.spec.json` is the **compiled spec** — the character with its charset already
+folded in (no `extends` to resolve) and `animations` flattened to names — so the
+rendered output travels with the exact recipe that produced it.
 
 **Animation set.** A cast renders the **classic six** poses (`spellcast`, `thrust`,
 `walk`, `slash`, `shoot`, `hurt` → an 832×1344 sheet) by default. Set
@@ -135,8 +138,10 @@ without guessing at the ragged grid.
 [classic LPC repo](https://github.com/jrconway3/Universal-LPC-spritesheet); the
 expanded poses live only in the modern
 [LPC generator](https://github.com/LiberatedPixelCup/Universal-LPC-Spritesheet-Character-Generator),
-whose split-per-animation art an `assemble` layer stitches in (see `mage`/the
-expanded demo). The atlas always documents exactly the set that was rendered.
+whose split-per-animation art an `assemble` layer stitches in. Both demo casts are
+built this way: `the-loop`'s wanderer and the whole `rpg-party` opt into the
+expanded set (rpg-party through `combat_idle`). The atlas always documents exactly
+the set that was rendered.
 
 ## Tests
 

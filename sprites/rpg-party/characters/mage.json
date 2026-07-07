@@ -1,17 +1,15 @@
 {
   "name": "mage",
   "extends": "../charset.json",
-  "_comment": "Wizardess: classic female body/hair (combined sheets from the cast remote) under a real robe + wizard hat ASSEMBLED from the modern LPC library, whose per-animation 64px files are stitched into the classic 832x1344 grid. The robe omits thrust/shoot upstream, so those rows show the underclothes.",
+  "_comment": "Caster. Long hair under a blue pointed wizard hat, a long-sleeved gown over dark navy trousers and black shoes. The modern robe proper (torso/clothes/robe) ships only a handful of poses, so the mage wears a full-coverage long-sleeve top instead — battle-ready in every pose, hat included. Built on the male base, which the generator draws the widest pose set for. Assemble bases are relative to the charset 'remote'.",
   "layers": [
-    {"layer": "body", "variant": "female/light"},
-    {"layer": "legs", "variant": "pants/female/white_pants_female"},
-    {"layer": "feet", "variant": "shoes/female/black_shoes_female"},
-    {"layer": "hair", "variant": "female/long/black"},
-    {"layer": "torso", "variant": "robe/purple", "assemble": {
-      "base": "https://raw.githubusercontent.com/LiberatedPixelCup/Universal-LPC-Spritesheet-Character-Generator/master/spritesheets/torso/clothes/robe/female",
-      "color": "purple"}},
-    {"layer": "head", "variant": "wizard/black", "assemble": {
-      "base": "https://raw.githubusercontent.com/LiberatedPixelCup/Universal-LPC-Spritesheet-Character-Generator/master/spritesheets/hat/magic/wizard/base/adult",
-      "color": "base_black"}}
+    {"layer": "body", "variant": "male", "assemble": {"base": "body/bodies/male"}},
+    {"layer": "head", "variant": "human_male", "assemble": {"base": "head/heads/human/male"}},
+    {"layer": "eyes", "variant": "human", "assemble": {"base": "eyes/human/adult/default", "color": "brown"}},
+    {"layer": "legs", "variant": "navy", "assemble": {"base": "legs/pants/male", "color": "navy"}},
+    {"layer": "feet", "variant": "black", "assemble": {"base": "feet/shoes/basic/male", "color": "black"}},
+    {"layer": "torso", "variant": "longsleeve", "assemble": {"base": "torso/clothes/longsleeve/longsleeve/male"}},
+    {"layer": "hair", "variant": "long", "assemble": {"base": "hair/long/adult"}},
+    {"layer": "hat", "variant": "wizard", "assemble": {"base": "hat/magic/wizard/base/adult", "color": "blue"}}
   ]
 }

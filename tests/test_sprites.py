@@ -50,6 +50,23 @@ class TestSpec(unittest.TestCase):
         names = [c.name for c in spec.discover_casts(ROOT)]
         self.assertIn("rpg-party", names)
 
+    def test_compiled_spec_is_self_contained_and_json_friendly(self):
+        import json
+        cast = spec.find_cast("rpg-party", ROOT)
+        ch = spec.resolve_character(cast.character_path(
+            cast.character_names()[0]), cast.load_charset())
+        out = spec.compiled_spec(ch)
+        # No 'extends' — the charset is already folded in.
+        self.assertNotIn("extends", out)
+        # animations flattened from (name, frames, dirs) tuples back to names.
+        self.assertEqual(out["animations"],
+                         [name for name, _f, _d in ch["animations"]])
+        self.assertTrue(all(isinstance(a, str) for a in out["animations"]))
+        self.assertEqual(out["name"], ch["name"])
+        self.assertEqual(out["layers"], ch["layers"])
+        # Round-trips through JSON (nothing but plain lists/dicts/str/num).
+        json.loads(json.dumps(out))
+
 
 class TestValidation(unittest.TestCase):
     def _char(self, layers, outfits=None):
@@ -212,11 +229,19 @@ class TestExpandedAtlas(unittest.TestCase):
 
 
 class TestAnimationSelection(unittest.TestCase):
-    def test_character_defaults_to_classic(self):
+    def test_defaults_to_classic_without_an_animation_set(self):
+        # A character that names no animations (and whose charset names none)
+        # falls back to the classic six.
+        self.assertEqual(layout.resolve_animations(None), layout.ANIMATIONS)
+
+    def test_character_inherits_charset_animation_set(self):
+        # rpg-party opts the whole cast into the expanded catalog, incl combat_idle.
         cs = spec.load_charset(os.path.join(CAST_DIR, spec.CHARSET_FILE))
         ch = spec.resolve_character(
             os.path.join(CAST_DIR, "characters", "warrior.json"), cs)
-        self.assertEqual(ch["animations"], layout.ANIMATIONS)
+        names = [n for n, _f, _d in ch["animations"]]
+        self.assertIn("combat_idle", names)
+        self.assertIn("jump", names)
 
     def test_bad_animation_name_in_charset_rejected(self):
         with self.assertRaises(spec.SpriteSpecError):
@@ -336,13 +361,16 @@ class TestRender(unittest.TestCase):
         ch = spec.resolve_character(
             cast.character_path("mage"), cast.load_charset())
         try:  # first render fetches art; skip (don't fail) when offline
-            return compositor.render_sheet(ch, cast.dir)
+            return ch, compositor.render_sheet(ch, cast.dir)
         except lpc.LPCError as e:
             self.skipTest(f"LPC art unavailable (offline?): {e}")
 
     def test_mage_composites_to_universal_sheet(self):
-        sheet = self._render_mage()
-        self.assertEqual(sheet.shape, (1344, 832, 4))
+        ch, sheet = self._render_mage()
+        # Sheet is sized to the character's selected animation set (rpg-party opts
+        # into the expanded catalog through combat_idle), not the classic default.
+        w, h = layout.sheet_size(ch["animations"])
+        self.assertEqual(sheet.shape, (h, w, 4))
         self.assertEqual(sheet.dtype, np.uint8)
         # Compositing real layers must produce visible (non-empty) pixels.
         self.assertGreater(int(sheet[..., 3].max()), 0)
@@ -351,12 +379,13 @@ class TestRender(unittest.TestCase):
     def test_write_png_produces_readable_file(self):
         import tempfile
         from PIL import Image
-        sheet = self._render_mage()
+        ch, sheet = self._render_mage()
+        w, h = layout.sheet_size(ch["animations"])
         with tempfile.TemporaryDirectory() as d:
             path = os.path.join(d, "mage.png")
             pngio.write_png(path, sheet)
             with Image.open(path) as im:
-                self.assertEqual(im.size, (832, 1344))
+                self.assertEqual(im.size, (w, h))
                 self.assertEqual(im.mode, "RGBA")
 
 

@@ -1,50 +1,22 @@
 {
   "title": "Adventurers' Guild",
   "style": "lpc",
-  "_comment": "A stereotypical 4-person RPG party \u2014 tank, scout, caster, healer \u2014 each a z-ordered stack of real Universal-LPC layers fetched from 'remote'. The mage's blue robe is the same leather+cloth art recolored by the engine.",
-  "frame": [
-    64,
-    64
+  "_comment": "The classic four-person RPG party — tank, scout, caster, healer — rebuilt entirely from the MODERN Universal-LPC generator (split-per-animation art) so the whole party carries the expanded platformer poses (jump, climb, run, sit…) plus a battle-ready 'combat_idle' the classic combined set never had. Every layer is fetched on demand from 'remote' and composited in z-order; nothing is vendored. Each member is dressed only in pieces whose art covers the full animation set, so no pose renders half-equipped.",
+  "frame": [64, 64],
+  "remote": "https://raw.githubusercontent.com/LiberatedPixelCup/Universal-LPC-Spritesheet-Character-Generator/master/spritesheets",
+  "animations": [
+    "spellcast", "thrust", "walk", "slash", "shoot", "hurt",
+    "climb", "idle", "jump", "sit", "emote", "run", "combat_idle"
   ],
-  "remote": "https://raw.githubusercontent.com/jrconway3/Universal-LPC-spritesheet/master",
   "palette": {
-    "body": {
-      "engine": "lpc",
-      "zPos": 10
-    },
-    "legs": {
-      "engine": "lpc",
-      "zPos": 30
-    },
-    "feet": {
-      "engine": "lpc",
-      "zPos": 40
-    },
-    "torso": {
-      "engine": "lpc",
-      "zPos": 50
-    },
-    "shoulders": {
-      "engine": "lpc",
-      "zPos": 55
-    },
-    "hands": {
-      "engine": "lpc",
-      "zPos": 58
-    },
-    "hair": {
-      "engine": "lpc",
-      "zPos": 60
-    },
-    "head": {
-      "engine": "lpc",
-      "zPos": 70
-    }
+    "body":  {"engine": "lpc", "zPos": 10},
+    "head":  {"engine": "lpc", "zPos": 15},
+    "eyes":  {"engine": "lpc", "zPos": 25},
+    "legs":  {"engine": "lpc", "zPos": 30},
+    "feet":  {"engine": "lpc", "zPos": 40},
+    "torso": {"engine": "lpc", "zPos": 50},
+    "hair":  {"engine": "lpc", "zPos": 60},
+    "hat":   {"engine": "lpc", "zPos": 70}
   },
-  "characters": [
-    "warrior",
-    "ranger",
-    "mage",
-    "cleric"
-  ]
+  "characters": ["warrior", "ranger", "mage", "cleric"]
 }

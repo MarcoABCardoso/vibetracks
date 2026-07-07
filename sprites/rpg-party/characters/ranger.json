@@ -1,35 +1,20 @@
 {
   "name": "ranger",
   "extends": "../charset.json",
+  "_comment": "Scout. Light and mobile — a sleeveless tunic over teal travelling pants and brown shoes, messy brown hair, no armour to slow the run/jump/climb poses. Every layer covers the full animation set including combat_idle. Assemble bases are relative to the charset 'remote'.",
   "layers": [
-    {
-      "layer": "body",
-      "variant": "male/tanned2"
-    },
-    {
-      "layer": "legs",
-      "variant": "pants/male/teal_pants_male"
-    },
-    {
-      "layer": "feet",
-      "variant": "shoes/male/black_shoes_male"
-    },
-    {
-      "layer": "torso",
-      "variant": "leather/chest_male"
-    },
-    {
-      "layer": "shoulders",
-      "variant": "leather/shoulders_male",
-      "source": "torso/leather/shoulders_male.png"
-    },
-    {
-      "layer": "hands",
-      "variant": "bracers/male/leather_bracers_male"
-    },
-    {
-      "layer": "hair",
-      "variant": "male/messy2/brown"
-    }
+    {"layer": "body", "variant": "male", "assemble": {"base": "body/bodies/male"}},
+    {"layer": "head", "variant": "human_male", "assemble": {"base": "head/heads/human/male"}},
+    {"layer": "eyes", "variant": "human", "assemble": {"base": "eyes/human/adult/default", "color": "brown"}},
+    {"layer": "legs", "variant": "teal", "assemble": {"base": "legs/pants/male", "color": "teal"}},
+    {"layer": "feet", "variant": "brown", "assemble": {"base": "feet/shoes/basic/male", "color": "brown"}},
+    {"layer": "torso", "variant": "sleeveless", "assemble": {"base": "torso/clothes/sleeveless/sleeveless1/male"}},
+    {"layer": "hair", "variant": "messy2",
+      "_recolor_note": "messy2 ships only the colorless master sheet, drawn in the generator's 'orange' reference ramp; remap it to the 'chestnut' brown ramp to keep the ranger brown-haired.",
+      "recolor": {
+        "#260D14": "#200C0D", "#6A1108": "#3A130E", "#A42600": "#63200B",
+        "#BF4000": "#81310A", "#E55600": "#B6550E", "#FF8A00": "#D28102"
+      },
+      "assemble": {"base": "hair/messy2/adult"}}
   ]
 }

@@ -1,26 +1,14 @@
 {
   "name": "warrior",
   "extends": "../charset.json",
+  "_comment": "Tank. Full steel plate over dark gambeson trousers, a great helm, and boots — every piece is drawn across the whole animation set (the plate torso and the great helm both ship combat_idle), so the knight stays fully armoured in every pose. Assemble bases are relative to the charset 'remote' (the modern LPC generator).",
   "layers": [
-    {
-      "layer": "body",
-      "variant": "male/light"
-    },
-    {
-      "layer": "legs",
-      "variant": "armor/male/metal_pants_male"
-    },
-    {
-      "layer": "feet",
-      "variant": "armor/male/metal_boots_male"
-    },
-    {
-      "layer": "torso",
-      "variant": "plate/chest_male"
-    },
-    {
-      "layer": "head",
-      "variant": "helms/male/metal_helm_male"
-    }
+    {"layer": "body", "variant": "male", "assemble": {"base": "body/bodies/male"}},
+    {"layer": "head", "variant": "human_male", "assemble": {"base": "head/heads/human/male"}},
+    {"layer": "eyes", "variant": "human", "assemble": {"base": "eyes/human/adult/default", "color": "brown"}},
+    {"layer": "legs", "variant": "charcoal", "assemble": {"base": "legs/pants/male", "color": "charcoal"}},
+    {"layer": "feet", "variant": "iron", "assemble": {"base": "feet/shoes/basic/male", "color": "iron"}},
+    {"layer": "torso", "variant": "plate", "assemble": {"base": "torso/armour/plate/male"}},
+    {"layer": "hat", "variant": "greathelm", "assemble": {"base": "hat/helmet/greathelm/male"}}
   ]
 }
