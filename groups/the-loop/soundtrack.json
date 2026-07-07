@@ -34,10 +34,10 @@
   },
   "motifs": {
     "main_theme": {
-      "_comment": "The wanderer's hook, E lydian. Starts on the 3rd (G#) — not the tonic — and climbs the bright 3-#4-5-6 steps (the A# raised 4th is the lydian signature), leaps an octave to E5, and lands open on the 5th (B). The answer tops out on a new high (G#5) it never touched, then falls through the D#->E leading-tone to resolve home. Deliberately not a tonic-triad arpeggio.",
+      "_comment": "The wanderer's hook, E lydian — written to move by STEP, never by outlining the E-G#-B tonic triad (that arpeggio is the default this repo keeps reproducing). Question: a stepwise climb 3-#4-5-6 (G#-A#-B-C#) that features the A# raised 4th, then one wide expressive leap up to a color tone (F#5, the 9th), and settles open on the 6th (C#). Answer: a scalar run up to the G#5 peak (reached by step, not a jump), turning back through the D#->E leading tone to resolve home. Chord tones only ever land as passing steps, so no triad is spelled out.",
       "notes": [
-        ["G#4", 1], ["A#4", 1], ["B4", 1], ["C#5", 1], ["E5", 1.5], ["A#4", 0.5], ["B4", 2],
-        ["B4", 1], ["E5", 1], ["G#5", 1.5], ["F#5", 0.5], ["E5", 1], ["C#5", 1], ["D#5", 1], ["E5", 1]
+        ["G#4", 1], ["A#4", 1], ["B4", 0.5], ["C#5", 0.5], ["A#4", 1], ["F#5", 1.5], ["E5", 0.5], ["C#5", 1], [null, 1],
+        ["C#5", 0.5], ["D#5", 0.5], ["E5", 1], ["F#5", 1], ["G#5", 1], ["F#5", 1], ["E5", 1], ["D#5", 1], ["E5", 1]
       ]
     },
     "danger": {

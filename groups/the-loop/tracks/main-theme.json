@@ -131,7 +131,7 @@
         "counter": {
           "instrument": "pluck",
           "motif": "main_theme",
-          "slice": [8, 15],
+          "slice": [11, 18],
           "transpose": 12,
           "gain": 0.35,
           "pan": 0.4
@@ -183,7 +183,7 @@
         "lead": {
           "instrument": "lead",
           "motif": "main_theme",
-          "slice": [13, 15],
+          "slice": [16, 18],
           "gain": 0.6
         },
         "pluck": {
