@@ -1,15 +1,25 @@
 {
   "name": "wanderer",
   "extends": "../charset.json",
-  "_comment": "The protagonist: a weathered traveler who resets the loop from safety and pushes the frontier a little further each run. Light leather (chest + shoulders + bracers) over a belted travelling kit — kitted for speed, not for standing still.",
+  "_comment": "The protagonist, assembled from modern LPC split-per-animation art so it carries jump/climb/run. Light body + messy brown hair, brown leather armour over teal travelling pants and brown shoes — the same look as before, now across the full 12-pose platformer set. Bodies/armour/hair are recolorable single sheets (colour is the sheet default); pants/shoes are colour-split (teal/brown chosen by path).",
   "layers": [
-    {"layer": "body", "variant": "male/light"},
-    {"layer": "legs", "variant": "pants/male/teal_pants_male"},
-    {"layer": "feet", "variant": "shoes/male/brown_shoes_male"},
-    {"layer": "torso", "variant": "leather/chest_male"},
-    {"layer": "belt", "variant": "leather/male/leather_male", "source": "belt/leather/male/leather_male.png"},
-    {"layer": "shoulders", "variant": "leather/shoulders_male", "source": "torso/leather/shoulders_male.png"},
-    {"layer": "hands", "variant": "bracers/male/leather_bracers_male"},
-    {"layer": "hair", "variant": "male/messy2/brown"}
+    {"layer": "body", "variant": "male", "assemble": {
+      "base": "https://raw.githubusercontent.com/LiberatedPixelCup/Universal-LPC-Spritesheet-Character-Generator/master/spritesheets/body/bodies/male"}},
+    {"layer": "legs", "variant": "teal", "assemble": {
+      "base": "https://raw.githubusercontent.com/LiberatedPixelCup/Universal-LPC-Spritesheet-Character-Generator/master/spritesheets/legs/pants/male",
+      "color": "teal"}},
+    {"layer": "feet", "variant": "brown", "assemble": {
+      "base": "https://raw.githubusercontent.com/LiberatedPixelCup/Universal-LPC-Spritesheet-Character-Generator/master/spritesheets/feet/shoes/basic/male",
+      "color": "brown"}},
+    {"layer": "torso", "variant": "leather", "assemble": {
+      "base": "https://raw.githubusercontent.com/LiberatedPixelCup/Universal-LPC-Spritesheet-Character-Generator/master/spritesheets/torso/armour/leather/male"}},
+    {"layer": "hair", "variant": "messy2",
+      "_recolor_note": "messy2 hair ships only the colorless master sheet, drawn in the generator's 'orange' reference ramp; remap it to the 'chestnut' brown ramp to keep the wanderer brown-haired.",
+      "recolor": {
+        "#260D14": "#200C0D", "#6A1108": "#3A130E", "#A42600": "#63200B",
+        "#BF4000": "#81310A", "#E55600": "#B6550E", "#FF8A00": "#D28102"
+      },
+      "assemble": {
+        "base": "https://raw.githubusercontent.com/LiberatedPixelCup/Universal-LPC-Spritesheet-Character-Generator/master/spritesheets/hair/messy2/adult"}}
   ]
 }

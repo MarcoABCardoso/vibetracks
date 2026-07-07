@@ -7,16 +7,32 @@ built from **light leather**, not plate: fast and travel-worn rather than armour
 
 | Character | Archetype | Layers |
 |-----------|-----------|--------|
-| `wanderer` | Scout / duelist | light body + messy brown hair, leather chest + shoulders + bracers over a leather belt, teal travelling pants, brown shoes |
+| `wanderer` | Scout / duelist | light body + messy brown hair, brown leather armour, teal travelling pants, brown shoes |
 
 ```bash
-python -m vibesprites render the-loop/wanderer   # -> out/sprites/the-loop/wanderer.png
+python -m vibesprites render the-loop/wanderer   # -> out/sprites/the-loop/wanderer.png (+ .atlas.json)
 ```
 
-Every layer is a real [Universal-LPC](https://github.com/jrconway3/Universal-LPC-spritesheet)
-classic sheet, fetched on demand and composited in z-order — nothing is vendored
-here. The output is a full 832×1344 LPC sheet (spellcast / thrust / walk / slash /
-shoot / hurt, four facings), ready to slice into a Phaser atlas.
+## Sourced from the modern generator — for the platformer poses
 
-Attribution and licensing for every layer are in `CREDITS.csv` (classic LPC art is
-**CC-BY-SA 3.0 / GPL 3.0** — redistributing the rendered sheet carries those terms).
+Every layer is assembled from the **modern**
+[Universal-LPC generator](https://github.com/LiberatedPixelCup/Universal-LPC-Spritesheet-Character-Generator)
+(split-per-animation art), not the classic combined set, because *The Loop* needs
+the **expanded poses** — the charset opts into the 12-animation platformer set
+(`spellcast, thrust, walk, slash, shoot, hurt, climb, idle, jump, sit, emote, run`),
+so the output is an **832×2688** sheet that includes **jump and climb**. The classic
+`jrconway3` art only has the six base poses and can't carry those.
+
+Bodies, armour, and hair are recolorable single sheets (colour is the sheet
+default); pants and shoes are colour-split (teal / brown chosen by path). The
+`messy2` hair ships only its colourless master (the generator's `orange` reference
+ramp), so a `recolor` remaps it to the `chestnut` brown ramp to keep the wanderer
+brown-haired.
+
+Nothing is vendored — layers are fetched on demand and composited in z-order. The
+render also emits `wanderer.atlas.json`: a frame map (row range + rects per
+animation) so a consumer knows exactly where `jump.down.2`, `climb.*.4`, etc. live.
+
+Attribution and licensing for every layer are in `CREDITS.csv` (modern LPC art is
+**OGA-BY 3.0 / CC-BY-SA 3.0 / GPL 3.0**; redistributing the rendered sheet carries
+those terms).

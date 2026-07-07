@@ -1,18 +1,18 @@
 {
   "title": "The Loop",
   "style": "lpc",
-  "_comment": "Protagonist cast for the roguelike 'The Loop' — a lone, mobility-first sword-wanderer in light leather. One z-ordered stack of real Universal-LPC classic layers, fetched on demand (nothing vendored). Leather over plate: the design centers on running/jumping/evasion, not a tank.",
+  "_comment": "Protagonist cast for the roguelike 'The Loop' — a lone, mobility-first sword-wanderer in light leather. Sourced entirely from the MODERN Universal-LPC generator (split-per-animation art) so it can carry the expanded platformer poses (jump, climb, run) the classic combined set lacks. Every layer is fetched on demand and composited in z-order; nothing is vendored.",
   "frame": [64, 64],
-  "remote": "https://raw.githubusercontent.com/jrconway3/Universal-LPC-spritesheet/master",
+  "animations": [
+    "spellcast", "thrust", "walk", "slash", "shoot", "hurt",
+    "climb", "idle", "jump", "sit", "emote", "run"
+  ],
   "palette": {
-    "body":      {"engine": "lpc", "zPos": 10},
-    "legs":      {"engine": "lpc", "zPos": 30},
-    "feet":      {"engine": "lpc", "zPos": 40},
-    "torso":     {"engine": "lpc", "zPos": 50},
-    "belt":      {"engine": "lpc", "zPos": 52},
-    "shoulders": {"engine": "lpc", "zPos": 55},
-    "hands":     {"engine": "lpc", "zPos": 58},
-    "hair":      {"engine": "lpc", "zPos": 60}
+    "body":  {"engine": "lpc", "zPos": 10},
+    "legs":  {"engine": "lpc", "zPos": 30},
+    "feet":  {"engine": "lpc", "zPos": 40},
+    "torso": {"engine": "lpc", "zPos": 50},
+    "hair":  {"engine": "lpc", "zPos": 60}
   },
   "characters": ["wanderer"]
 }

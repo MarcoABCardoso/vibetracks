@@ -1,9 +1,6 @@
 source_path,category,authors,license,fetched_from
-body/male/light.png,body,"Stephen Challener (Redshrike); Johannes Sjölund (wulax); Matthew Krohn; Marcus Nelson (makrohn)","CC-BY-SA 3.0 / GPL 3.0",https://github.com/jrconway3/Universal-LPC-spritesheet
-hair/male/messy2/brown.png,hair,"Manuel Riecke (MrBeast); Marcus Nelson (makrohn)","CC-BY-SA 3.0 / GPL 3.0",https://github.com/jrconway3/Universal-LPC-spritesheet
-torso/leather/chest_male.png,torso,"Johannes Sjölund (wulax)","CC-BY-SA 3.0 / GPL 3.0",https://github.com/jrconway3/Universal-LPC-spritesheet
-torso/leather/shoulders_male.png,shoulders,"Johannes Sjölund (wulax)","CC-BY-SA 3.0 / GPL 3.0",https://github.com/jrconway3/Universal-LPC-spritesheet
-hands/bracers/male/leather_bracers_male.png,hands,"Johannes Sjölund (wulax)","CC-BY-SA 3.0 / GPL 3.0",https://github.com/jrconway3/Universal-LPC-spritesheet
-belt/leather/male/leather_male.png,belt,"Johannes Sjölund (wulax)","CC-BY-SA 3.0 / GPL 3.0",https://github.com/jrconway3/Universal-LPC-spritesheet
-legs/pants/male/teal_pants_male.png,legs,"Liberated Pixel Cup contributors (see upstream AUTHORS.txt)","CC-BY-SA 3.0 / GPL 3.0",https://github.com/jrconway3/Universal-LPC-spritesheet
-feet/shoes/male/brown_shoes_male.png,feet,"Liberated Pixel Cup contributors (see upstream AUTHORS.txt)","CC-BY-SA 3.0 / GPL 3.0",https://github.com/jrconway3/Universal-LPC-spritesheet
+body/bodies/male,body,"bluecarrot16; JaidynReiman; Benjamin K. Smith (BenCreating); Evert; Eliza Wyatt (ElizaWy); TheraHedwig; MuffinElZangano; Durrani; Johannes Sjölund (wulax); Stephen Challener (Redshrike)","OGA-BY 3.0 / CC-BY-SA 3.0 / GPL 3.0",https://github.com/LiberatedPixelCup/Universal-LPC-Spritesheet-Character-Generator
+hair/messy2/adult,hair,"JaidynReiman; Manuel Riecke (MrBeast)","CC-BY-SA 3.0 / GPL 3.0",https://github.com/LiberatedPixelCup/Universal-LPC-Spritesheet-Character-Generator
+torso/armour/leather/male,torso,"Johannes Sjölund (wulax); bluecarrot16; JaidynReiman","OGA-BY 3.0 / CC-BY-SA 3.0 / GPL 3.0",https://github.com/LiberatedPixelCup/Universal-LPC-Spritesheet-Character-Generator
+legs/pants/male (teal),legs,"bluecarrot16; JaidynReiman; ElizaWy; Matthew Krohn (makrohn); Johannes Sjölund (wulax); Stephen Challener (Redshrike)","OGA-BY 3.0 / CC-BY-SA 3.0 / GPL 3.0",https://github.com/LiberatedPixelCup/Universal-LPC-Spritesheet-Character-Generator
+feet/shoes/basic/male (brown),feet,"JaidynReiman; bluecarrot16; Johannes Sjölund (wulax)","OGA-BY 3.0 / CC-BY-SA 3.0 / GPL 3.0",https://github.com/LiberatedPixelCup/Universal-LPC-Spritesheet-Character-Generator
