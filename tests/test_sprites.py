@@ -11,7 +11,7 @@ import unittest
 
 import numpy as np
 
-from vibesprites import compositor, layout, lpc, pngio, spec
+from vibesprites import atlas, compositor, layout, lpc, pngio, spec
 from vibesprites.layers import ENGINES, SHEET_ENGINES
 
 HAVE_LPC = lpc.available()
@@ -117,6 +117,46 @@ class TestExpandLayers(unittest.TestCase):
         # Source path defaults to <layer>/<variant>.png.
         body = next(l for l in got if l["layer"] == "body")
         self.assertEqual(body["source"], "body/b.png")
+
+
+class TestAtlas(unittest.TestCase):
+    """The frame map is pure (derived from ``layout``), so it always runs."""
+
+    def setUp(self):
+        self.atlas = atlas.build_atlas("hero.png")
+
+    def test_header_matches_layout(self):
+        self.assertEqual(self.atlas["image"], "hero.png")
+        self.assertEqual(self.atlas["frame_size"], [layout.FRAME, layout.FRAME])
+        self.assertEqual(self.atlas["sheet_size"], [layout.WIDTH, layout.HEIGHT])
+        self.assertEqual(self.atlas["direction_order"], list(layout.DIRECTIONS))
+
+    def test_every_animation_row_matches_layout(self):
+        for name, cols, dirs in layout.ANIMATIONS:
+            block = self.atlas["animations"][name]
+            self.assertEqual(block["row"], layout.animation_row(name))
+            self.assertEqual(block["rows"], dirs)
+            self.assertEqual(block["frames"], cols)
+
+    def test_frame_count_is_the_ragged_total(self):
+        # Ragged sheet: sum of cols*dirs, NOT a full COLS*ROWS grid.
+        expected = sum(cols * dirs for _, cols, dirs in layout.ANIMATIONS)
+        self.assertEqual(len(self.atlas["frames"]), expected)
+        self.assertLess(expected, layout.COLS * layout.ROWS)
+
+    def test_directional_frame_rect(self):
+        # walk = rows 8-11 (up/left/down/right); "down" is the 3rd facing (row 10).
+        rect = self.atlas["frames"]["walk.down.3"]
+        self.assertEqual(rect, {"x": 3 * 64, "y": 10 * 64, "w": 64, "h": 64})
+
+    def test_single_row_block_is_not_split_by_direction(self):
+        # hurt is one shared row (20), keyed without a direction segment.
+        self.assertEqual(self.atlas["animations"]["hurt"]["directions"],
+                         [atlas.NON_DIRECTIONAL])
+        self.assertIn("hurt.0", self.atlas["frames"])
+        self.assertNotIn("hurt.down.0", self.atlas["frames"])
+        self.assertEqual(self.atlas["frames"]["hurt.5"],
+                         {"x": 5 * 64, "y": 20 * 64, "w": 64, "h": 64})
 
 
 class TestPngIo(unittest.TestCase):

@@ -111,10 +111,20 @@ groups/<name>/soundtrack.json   # a group's bible
 groups/<name>/tracks/*.json      # one spec per track in that group
 vibetracks/                      # the compiler (theory, synth, instruments, sequencer,
                                  #   soundfont, audioexport, wavio, CLI)
+sprites/<cast>/                  # a sprite cast: charset.json + characters/*.json
+vibesprites/                     # the sprite compositor (layout, layers, compositor,
+                                 #   lpc, atlas, pngio, CLI)
 tests/                           # theory, validation, engines, export, soundfont, render sanity
 .claude/skills/soundtrack        # the authoring workflow skill
 out/<group>/                     # rendered WAVs (gitignored) + per-group manifest.json
+out/sprites/<cast>/              # rendered PNGs + a per-character <name>.atlas.json frame map
 ```
+
+Each rendered sprite ships a `<name>.atlas.json` beside its PNG — a frame map
+(sheet/frame size, direction order, and every animation's row range + frame rects)
+derived from `vibesprites/layout.py`, so a consumer that can't eyeball the sheet
+(a game engine, or a model) knows exactly which rows are `walk`, `slash`, `hurt`, …
+without guessing at the ragged grid.
 
 ## Tests
 
