@@ -22,6 +22,7 @@ import json
 import os
 from dataclasses import dataclass, field
 
+from . import layout
 from .layers import DEFAULT_PALETTE, ENGINES, merge_patch
 from .layout import FRAME
 
@@ -52,6 +53,7 @@ class Charset:
     outfits: dict = field(default_factory=dict)
     characters: list = field(default_factory=list)
     remote: str | None = None  # base URL layer art is fetched from (see lpc.py)
+    animations: list | None = None  # animation subset (default: the classic six)
 
     def resolved_palette(self) -> dict:
         """Palette defaults merged with the charset's per-category overrides."""
@@ -74,9 +76,18 @@ def load_charset(path: str) -> Charset:
         outfits=data.get("outfits", {}),
         characters=data.get("characters", []),
         remote=data.get("remote"),
+        animations=data.get("animations"),
     )
     _validate_charset(cs)
     return cs
+
+
+def _resolve_animation_set(names, where: str) -> tuple:
+    """Validate an animation selection into ``((name, frames, dirs), ...)``."""
+    try:
+        return layout.resolve_animations(names)
+    except KeyError as e:
+        raise SpriteSpecError(f"{where}: {e}") from e
 
 
 def _validate_frame(frame, where: str) -> None:
@@ -96,6 +107,7 @@ def _validate_palette(palette: dict, where: str) -> None:
 def _validate_charset(cs: Charset) -> None:
     _validate_frame(cs.frame, cs.path)
     _validate_palette(cs.resolved_palette(), cs.path)
+    _resolve_animation_set(cs.animations, cs.path)  # reject unknown animation names
     if cs.remote is not None and not (isinstance(cs.remote, str)
                                       and cs.remote.startswith(("http://", "https://"))):
         raise SpriteSpecError(f"{cs.path}: 'remote' must be an http(s) URL, got {cs.remote!r}")
@@ -127,12 +139,15 @@ def resolve_character(path: str, charset: Charset | None = None) -> dict:
     for cat, override in (data.get("palette") or {}).items():
         palette[cat] = merge_patch(palette.get(cat, {}), override)
 
+    anim_names = data.get("animations", charset.animations if charset else None)
+
     resolved = {
         "name": name,
         "frame": frame,
         "palette": palette,
         "outfits": outfits,
         "remote": data.get("remote", charset.remote if charset else None),
+        "animations": _resolve_animation_set(anim_names, path),
         "layers": data.get("layers", []),
     }
     _validate_character(resolved, path)
@@ -173,9 +188,13 @@ def _validate_layer(entry: dict, character: dict, where: str) -> None:
 def _validate_assemble(assemble, where: str) -> None:
     if assemble is None:
         return
-    if not isinstance(assemble, dict) or not isinstance(assemble.get("base"), str) \
-            or not isinstance(assemble.get("color"), str):
-        raise SpriteSpecError(f"{where}: 'assemble' needs string 'base' and 'color'")
+    if not isinstance(assemble, dict) or not isinstance(assemble.get("base"), str):
+        raise SpriteSpecError(f"{where}: 'assemble' needs a string 'base'")
+    # 'color' is optional: present -> <base>/<anim>/<color>.png (color-split art,
+    # e.g. robes); absent -> <base>/<anim>.png (a recolorable single sheet, e.g.
+    # bodies/armour, tinted via a palette 'recolor').
+    if assemble.get("color") is not None and not isinstance(assemble["color"], str):
+        raise SpriteSpecError(f"{where}: 'assemble.color' must be a string when set")
 
 
 def _validate_recolor(recolor, where: str) -> None:
