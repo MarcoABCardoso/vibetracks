@@ -126,6 +126,18 @@ derived from `vibesprites/layout.py`, so a consumer that can't eyeball the sheet
 (a game engine, or a model) knows exactly which rows are `walk`, `slash`, `hurt`, …
 without guessing at the ragged grid.
 
+**Animation set.** A cast renders the **classic six** poses (`spellcast`, `thrust`,
+`walk`, `slash`, `shoot`, `hurt` → an 832×1344 sheet) by default. Set
+`"animations"` on a charset or character to opt into the full Universal-LPC catalog
+— `climb`, `idle`, `jump`, `sit`, `emote`, `run`, `combat_idle`, `backslash`,
+`halfslash` — and the sheet grows taller, with each block at its canonical row
+(`jump` always row 26, `run` always 38…). The classic set is combined art from the
+[classic LPC repo](https://github.com/jrconway3/Universal-LPC-spritesheet); the
+expanded poses live only in the modern
+[LPC generator](https://github.com/LiberatedPixelCup/Universal-LPC-Spritesheet-Character-Generator),
+whose split-per-animation art an `assemble` layer stitches in (see `mage`/the
+expanded demo). The atlas always documents exactly the set that was rendered.
+
 ## Tests
 
 ```bash

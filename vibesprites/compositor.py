@@ -80,15 +80,24 @@ def alpha_over(dst: np.ndarray, src: np.ndarray, offset=(0, 0)) -> None:
 
 
 def render_sheet(character: dict, cast_dir: str | None = None) -> np.ndarray:
-    """Composite a resolved character into an ``(h, w, 4)`` uint8 RGBA sheet."""
+    """Composite a resolved character into an ``(h, w, 4)`` uint8 RGBA sheet.
+
+    The canvas is sized to the character's selected ``animations`` (default: the
+    classic six → 832x1344); opting into expanded poses (jump/climb/…) makes it
+    taller. A classic combined layer only covers the classic rows and leaves the
+    expanded rows transparent — the coverage gap shows through as the body beneath.
+    """
     fw, fh = character["frame"]
     remote = character.get("remote")
-    canvas = np.zeros((layout.ROWS * fh, layout.COLS * fw, 4), dtype=np.uint8)
+    anims = character.get("animations") or layout.ANIMATIONS
+    canvas = np.zeros((layout.sheet_rows(anims) * fh, layout.COLS * fw, 4),
+                      dtype=np.uint8)
     for lyr in expand_layers(character):
         engine = lyr["engine"]
         if engine in ("lpc",):  # SHEET_ENGINES
             if lyr["assemble"]:  # build a sheet from split-per-animation art
-                sheet = lpc.assemble_sheet(lyr["assemble"], cast_dir, remote=remote)
+                sheet = lpc.assemble_sheet(lyr["assemble"], cast_dir,
+                                           remote=remote, anims=anims)
             else:
                 sheet = lpc.load_layer_sheet(
                     lpc.find_asset(lyr["source"], cast_dir, remote=remote))

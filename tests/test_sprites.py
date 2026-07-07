@@ -91,12 +91,18 @@ class TestValidation(unittest.TestCase):
         with self.assertRaises(spec.SpriteSpecError):
             spec._validate_character(
                 self._char([{"layer": "body", "variant": "v",
-                             "assemble": {"base": "http://x"}}]), "x")  # missing color
+                             "assemble": {"color": "blue"}}]), "x")  # missing base
 
     def test_valid_assemble_accepted(self):
         spec._validate_character(
             self._char([{"layer": "body", "variant": "v",
                          "assemble": {"base": "http://x", "color": "blue"}}]), "x")
+
+    def test_colorless_assemble_accepted(self):
+        # Recolorable single-sheet convention (bodies/armour): base, no color.
+        spec._validate_character(
+            self._char([{"layer": "body", "variant": "v",
+                         "assemble": {"base": "http://x"}}]), "x")
 
 
 class TestExpandLayers(unittest.TestCase):
@@ -157,6 +163,64 @@ class TestAtlas(unittest.TestCase):
         self.assertNotIn("hurt.down.0", self.atlas["frames"])
         self.assertEqual(self.atlas["frames"]["hurt.5"],
                          {"x": 5 * 64, "y": 20 * 64, "w": 64, "h": 64})
+
+
+class TestAnimationCatalog(unittest.TestCase):
+    """The expanded universal catalog + selectable animation sets."""
+
+    def test_catalog_has_expanded_poses(self):
+        names = [n for n, *_ in layout.ANIMATION_CATALOG]
+        for pose in ("jump", "climb", "run", "idle", "sit", "emote"):
+            self.assertIn(pose, names)
+
+    def test_canonical_rows_match_generator_offsets(self):
+        # Verified against the modern generator's ANIMATION_OFFSETS.
+        self.assertEqual(layout.animation_row("walk"), 8)
+        self.assertEqual(layout.animation_row("hurt"), 20)
+        self.assertEqual(layout.animation_row("climb"), 21)
+        self.assertEqual(layout.animation_row("jump"), 26)
+        self.assertEqual(layout.animation_row("run"), 38)
+
+    def test_default_is_the_classic_six(self):
+        self.assertEqual(layout.resolve_animations(), layout.ANIMATIONS)
+        self.assertEqual(layout.sheet_size(layout.ANIMATIONS), (832, 1344))
+
+    def test_resolve_returns_canonical_order(self):
+        got = layout.resolve_animations(["jump", "walk"])  # given out of order
+        self.assertEqual([n for n, *_ in got], ["walk", "jump"])
+
+    def test_unknown_animation_rejected(self):
+        with self.assertRaises(KeyError):
+            layout.resolve_animations(["moonwalk"])
+
+    def test_expanded_sheet_is_taller(self):
+        anims = layout.resolve_animations(
+            list(layout.CLASSIC_ANIMATIONS) + ["jump", "climb"])
+        self.assertEqual(layout.sheet_size(anims), (832, (26 + 4) * 64))
+
+
+class TestExpandedAtlas(unittest.TestCase):
+    def test_atlas_places_jump_at_canonical_row(self):
+        anims = layout.resolve_animations(["walk", "jump"])
+        a = atlas.build_atlas("hero.png", anims)
+        self.assertEqual(a["animations"]["jump"]["row"], 26)
+        self.assertEqual(a["animations"]["jump"]["frames"], 5)
+        self.assertEqual(a["frames"]["jump.down.0"],
+                         {"x": 0, "y": (26 + 2) * 64, "w": 64, "h": 64})
+        self.assertEqual(a["sheet_size"], [832, (26 + 4) * 64])
+        self.assertNotIn("spellcast", a["animations"])  # not selected
+
+
+class TestAnimationSelection(unittest.TestCase):
+    def test_character_defaults_to_classic(self):
+        cs = spec.load_charset(os.path.join(CAST_DIR, spec.CHARSET_FILE))
+        ch = spec.resolve_character(
+            os.path.join(CAST_DIR, "characters", "warrior.json"), cs)
+        self.assertEqual(ch["animations"], layout.ANIMATIONS)
+
+    def test_bad_animation_name_in_charset_rejected(self):
+        with self.assertRaises(spec.SpriteSpecError):
+            spec._validate_charset(spec.Charset(path="x", animations=["boogie"]))
 
 
 class TestPngIo(unittest.TestCase):

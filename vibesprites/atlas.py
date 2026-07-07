@@ -48,19 +48,24 @@ from . import layout
 NON_DIRECTIONAL = "*"
 
 
-def build_atlas(image: str) -> dict:
+def build_atlas(image: str, anims=None) -> dict:
     """Build the frame-map dict for a sheet whose file name is ``image``.
 
-    Pure and Pillow-free — derived from :mod:`layout`, so it always matches the
-    grid the compositor drew onto.
+    ``anims`` is the character's selected animation set (``((name, frames, dirs),
+    …)`` as :func:`layout.resolve_animations` returns); ``None`` defaults to the
+    classic six. Each block is placed at its **canonical** universal-sheet row
+    (walk always 8, jump always 26…), so the map matches the grid the compositor
+    drew — including empty bands when a subset skips an intervening block. Pure and
+    Pillow-free.
     """
+    anims = anims or layout.ANIMATIONS
     fw = fh = layout.FRAME
     order = list(layout.DIRECTIONS)
 
     animations: dict = {}
     frames: dict = {}
-    row = 0
-    for name, cols, dirs in layout.ANIMATIONS:
+    for name, cols, dirs in anims:
+        row = layout.animation_row(name)  # canonical offset, not packed
         directional = dirs == len(order)
         labels = order[:dirs] if directional else [NON_DIRECTIONAL]
         animations[name] = {
@@ -75,12 +80,11 @@ def build_atlas(image: str) -> dict:
             for c in range(cols):
                 key = f"{name}.{label}.{c}" if label else f"{name}.{c}"
                 frames[key] = {"x": c * fw, "y": y, "w": fw, "h": fh}
-        row += dirs
 
     return {
         "image": image,
         "frame_size": [fw, fh],
-        "sheet_size": [layout.WIDTH, layout.HEIGHT],
+        "sheet_size": list(layout.sheet_size(anims)),
         "direction_order": order,
         "animations": animations,
         "frames": frames,
