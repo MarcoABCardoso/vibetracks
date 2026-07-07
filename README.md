@@ -111,8 +111,6 @@ groups/<name>/soundtrack.json   # a group's bible
 groups/<name>/tracks/*.json      # one spec per track in that group
 vibetracks/                      # the compiler (theory, synth, instruments, sequencer,
                                  #   soundfont, audioexport, wavio, CLI)
-sprites/<cast>/                  # a sprite cast: charset.json + characters/*.json
-vibesprites/                     # the sprite compositor (layout, layers, compositor,
                                  #   lpc, atlas, pngio, CLI)
 tests/                           # theory, validation, engines, export, soundfont, render sanity
 .claude/skills/soundtrack        # the authoring workflow skill
