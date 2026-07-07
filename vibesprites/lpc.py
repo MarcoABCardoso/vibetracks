@@ -146,27 +146,36 @@ def load_layer_sheet(path: str) -> np.ndarray:
 
 
 def assemble_sheet(assemble: dict, cast_dir: str | None = None,
-                   remote: str | None = None) -> np.ndarray:
-    """Build a classic 832x1344 sheet from a *split-per-animation* source.
+                   remote: str | None = None, anims=None) -> np.ndarray:
+    """Build a sheet from a *split-per-animation* source.
 
-    The modern LPC library stores one PNG per animation (``<base>/<anim>/<color>.png``)
-    instead of one combined sheet, which unlocks thousands of assets (robes, cloaks,
-    hats…) the classic set lacks. Given ``assemble = {"base", "color", "slot"?}``, this
-    fetches each classic animation's file and pastes it at that animation's row, so the
+    The modern LPC library stores one PNG per animation instead of one combined
+    sheet, which unlocks thousands of assets (robes, cloaks, hats, and — crucially —
+    the expanded poses jump/climb/run/idle…) the classic set lacks. This fetches each
+    requested animation's file and pastes it at that animation's canonical row, so the
     result drops into the same compositor as a combined layer.
 
-    Animations the source omits (e.g. a robe with no ``thrust``) are skipped, leaving
-    those rows transparent. Oversize-frame art (some weapons) does not fit the 64px grid
-    and is out of scope here.
+    Two on-disk conventions are supported via ``assemble = {"base", "color"?, "slot"?}``:
+
+    * ``color`` set → ``<base>/<anim>/<color>.png`` — colour-split art (e.g. robes).
+    * ``color`` absent → ``<base>/<anim>.png`` — a single recolorable sheet (e.g.
+      bodies and armour, whose colour comes from a palette ``recolor``, not the path).
+
+    ``anims`` selects which animations to pull (default: the classic six). Animations
+    the source omits are skipped, leaving those rows transparent. Oversize-frame art
+    (some weapons) does not fit the 64px grid and is out of scope here.
     """
     base = assemble["base"].rstrip("/")
-    color = assemble["color"]
+    color = assemble.get("color")
     slot = assemble.get("slot")
     mid = f"{slot}/" if slot else ""
-    canvas = np.zeros((layout.HEIGHT, layout.WIDTH, 4), dtype=np.uint8)
+    anims = anims or layout.ANIMATIONS
+    canvas = np.zeros((layout.sheet_rows(anims) * layout.FRAME, layout.WIDTH, 4),
+                      dtype=np.uint8)
     placed = 0
-    for name, _frames, _dirs in layout.ANIMATIONS:
-        sub = f"{base}/{name}/{mid}{color}.png"
+    for name, _frames, _dirs in anims:
+        sub = (f"{base}/{name}/{mid}{color}.png" if color
+               else f"{base}/{mid}{name}.png")
         try:
             path = find_asset(sub, cast_dir, remote=remote)
         except LPCError:

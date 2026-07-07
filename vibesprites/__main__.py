@@ -114,7 +114,7 @@ def _render_one(char_path, charset, cast_dir, cast_name, out_root) -> dict:
     w, h = write_png(out_path, sheet)
     print(f"  rendered  {out_path}  ({w}x{h}, {len(ch['layers'])} layer(s))")
     atlas_path = os.path.join(out_dir, f"{ch['name']}.atlas.json")
-    atlas = build_atlas(os.path.basename(out_path))
+    atlas = build_atlas(os.path.basename(out_path), ch.get("animations"))
     with open(atlas_path, "w", encoding="utf-8") as f:
         json.dump(atlas, f, indent=2)
     print(f"  atlas     {atlas_path}  ({len(atlas['frames'])} frames, "
