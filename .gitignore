@@ -1,9 +1,6 @@
 # Rendered audio + manifest are build artifacts — regenerate with `python -m vibetracks render-all`.
 out/
 
-# Fetched LPC layer art (copyleft) is cached locally on first render, never committed.
-.cache/
-
 __pycache__/
 *.pyc
 *.egg-info/
